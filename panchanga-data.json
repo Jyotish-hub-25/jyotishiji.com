@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <title>दैनिक पंचाङ्ग</title>
+  <style>
+    body { font-family: 'Noto Sans Devanagari', sans-serif; background-color: #fff8e1; padding: 20px; }
+    .panchang-box { border: 1px solid #c8b560; padding: 20px; background-color: #fff; border-radius: 10px; }
+    .panchang-box h2 { color: #b8860b; }
+    .item { margin: 5px 0; }
+    #dateSelect { margin-bottom: 15px; padding: 5px; font-size: 1rem; }
+  </style>
+</head>
+<body>
+  <div class="panchang-box">
+    <h2>दैनिक पंचाङ्ग</h2>
+    <label for="dateSelect"><strong>तिथि चुनें:</strong></label>
+    <input type="date" id="dateSelect" />
+    <div id="panchanga"></div>
+  </div>
+
+  <script>
+    let panchangData = [];
+
+    fetch('panchanga-data.json')
+      .then(response => response.json())
+      .then(data => {
+        panchangData = data;
+        const today = new Date().toISOString().slice(0, 10);
+        document.getElementById('dateSelect').value = today;
+        displayPanchanga(today);
+      });
+
+    document.getElementById('dateSelect').addEventListener('change', function () {
+      displayPanchanga(this.value);
+    });
+
+    function displayPanchanga(date) {
+      const panchang = panchangData.find(p => p.date === date);
+      if (!panchang) {
+        document.getElementById('panchanga').innerText = 'इस तिथि की जानकारी उपलब्ध नहीं है।';
+        return;
+      }
+      const html = `
+        <div class='item'><strong>तिथि:</strong> ${panchang.tithi}</div>
+        <div class='item'><strong>पक्ष:</strong> ${panchang.paksha}</div>
+        <div class='item'><strong>मास:</strong> ${panchang.masa}</div>
+        <div class='item'><strong>ऋतु:</strong> ${panchang.ritu}</div>
+        <div class='item'><strong>विक्रम संवत्:</strong> ${panchang.samvat}</div>
+        <div class='item'><strong>शक संवत्:</strong> ${panchang.shak_samvat}</div>
+        <div class='item'><strong>संवत्सर:</strong> ${panchang.samvatsara}</div>
+        <div class='item'><strong>नक्षत्र:</strong> ${panchang.nakshatra}</div>
+        <div class='item'><strong>चन्द्र राशि:</strong> ${panchang.moon_rashi}</div>
+        <div class='item'><strong>सूर्योदय:</strong> ${panchang.sunrise}</div>
+        <div class='item'><strong>सूर्यास्त:</strong> ${panchang.sunset}</div>
+        <div class='item'><strong>वार:</strong> ${panchang.var}</div>
+        <div class='item'><strong>योग:</strong> ${panchang.yoga}</div>
+        <div class='item'><strong>टिप्पणी:</strong> ${panchang.comment}</div>
+      `;
+      document.getElementById('panchanga').innerHTML = html;
+    }
+  </script>
+</body>
+</html>
