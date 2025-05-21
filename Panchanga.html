@@ -4,54 +4,46 @@
 <head>
   <meta charset="UTF-8">
   <title>काशीस्थ पञ्चाङ्ग</title>
-  <style>
-    body {
-      font-family: 'Noto Serif Devanagari', 'Mangal', serif;
-      background-color: #f2f6f7;
-      color: #111;
-      padding: 1rem;
-      max-width: 700px;
-      margin: auto;
-    }
-    .panchang-box {
-      background-color: #eef6f9;
-      padding: 1rem;
-      border-left: 4px solid #008080;
-      border-right: 4px solid #008080;
-      margin-bottom: 1.5rem;
-      white-space: pre-wrap;
-      line-height: 1.5;
-    }
-    h1 {
-      color: #b30000;
-      text-align: center;
-    }
-    .highlight {
-      font-weight: bold;
-      color: #004d4d;
-    }
-    .title-highlight {
-      color: #800000;
-      font-weight: bold;
-    }
-    .date-highlight {
-      color: #006600;
-      font-weight: bold;
-    }
-    button {
-      margin: 1rem 0;
-      padding: 0.5rem 1rem;
-      font-size: 1rem;
-      background-color: #008080;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    #oldPanchang {
-      display: none;
-    }
-  </style>
+ <style>
+        body {
+            background-color: #e3fbe1;
+            font-family: 'Noto Sans Devanagari', sans-serif;
+        }
+        .container {
+            background-color: #d2f5cb;
+            max-width: 700px;
+            margin: 30px auto;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px #aaa;
+        }
+        h2, .highlight {
+            text-align: center;
+        }
+        .highlight {
+            font-size: 1.2em;
+        }
+        .section {
+            margin-top: 20px;
+            line-height: 1.7em;
+        }
+        .note {
+            margin-top: 20px;
+            text-align: center;
+            font-style: italic;
+            color: #333;
+        }
+        .button {
+            display: block;
+            margin: 20px auto;
+            background-color: #a8e6a1;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+    </style>
   <script>
     function toggleOldPanchang() {
       var x = document.getElementById("oldPanchang");
