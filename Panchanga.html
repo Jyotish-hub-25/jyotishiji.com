@@ -106,5 +106,15 @@
       document.getElementById(key).innerText = panchangaData[key];
     }
   </script>
+    
+  <script>
+    fetch('panchanga-data.json')
+      .then(response => response.json())
+      .then(panchangaData => {
+        for (let key in panchangaData) {
+          document.getElementById(key).innerText = panchangaData[key];
+        }
+      });
+  </script>
 </body>
 </html>
