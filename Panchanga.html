@@ -9,6 +9,15 @@
       font-family: 'Sanskrit Text', 'Noto Serif Devanagari', 'Mangal', serif;
       padding: 20px;
     }
+    .container {
+            background-color: #d2f5cb;
+            max-width: 700px;
+            margin: 30px auto;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px #aaa;
+        }
+
     .title {
       text-align: center;
       font-weight: bold;
@@ -48,7 +57,7 @@
   <div class="section">
     <span class="highlight">वार</span> - <span id="vaar"></span><br>
     <span class="highlight">तिथि</span> - <span id="tithi"></span><br>
-    <span class="highlight">नक्षत्र*</span> - <span id="nakshatra"></span><br>
+    <span class="highlight">नक्षत्र</span> - <span id="nakshatra"></span><br>
     <span id="chandraRashi"></span>
   </div>
 
@@ -77,14 +86,14 @@
 
   <div class="section">
     ॥ तन्मेमनः शिवसङ्कल्पमस्तु ॥<br>
-    ************<br>
+    **********************<br>
     <div class="admin-note">(कृपया समय २४ घण्टे के प्रारूप में पढ़ें)</div>
   </div>
 
   <script>
     // Load from JSON or script-injected object (simulation below)
     const panchangaData = {
-      vikramSamvat: "२०८२ 'सिद्धार्थ नामक संवत्सर'",
+      vikramSamvat: "२०८२ "सिद्धार्थ नामक संवत्सर"",
       shakSamvat: "१९४७",
       ritu: "ग्रीष्म",
       maasPaksha: "ज्येष्ठकृष्णपक्ष",
