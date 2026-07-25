@@ -239,9 +239,7 @@
         <span class="data-value" id="nakshatra"></span>
       </div>
 
-      <p class="moon-note">
-        (चन्द्रमा <span id="chandraRashi"></span>)
-      </p>        
+      <p class="moon-note" id="chandraRashi"></p>        
 
     </section>
 
@@ -344,15 +342,16 @@
   }
 
   if (key === "chandraRashi") {
+  let text = panchangaData[key];
 
-    let text = panchangaData[key];
+  text = text.replace(
+    /([ऀ-ॿ]+ राशि)/g,
+    "<strong>$1</strong>"
+  );
 
-    text = text.replace(
-        /([ऀ-ॿ]+ राशि)/g,
-        "<strong>$1</strong>"
-    );
-
-    element.innerHTML = "(चन्द्रमा " + text + ")";
+  element.innerHTML = "(चन्द्रमा " + text + ")";
+} else {
+  element.textContent = panchangaData[key];
 } else {
     element.textContent = panchangaData[key];
   }
