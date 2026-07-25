@@ -2,122 +2,300 @@
 <html lang="sa">
 <head>
   <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
   <title>श्रीसूर्यसिद्धान्तीय काशीस्थ पञ्चाङ्ग</title>
+
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      background-color: #e0ffe0;
-      font-family: 'Sanskrit Text', 'Noto Serif Devanagari', 'Mangal', serif;
+      margin: 0;
       padding: 20px;
+      background-color: #edf7f8;
+      font-family:
+        "Noto Serif Devanagari",
+        "Sanskrit Text",
+        "Mangal",
+        serif;
+      color: #111;
     }
+
+    .panchanga-container {
+      width: 100%;
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 26px 30px;
+      background-color: #d9ffd4;
+      border-left: 4px solid #008b8b;
+      border-right: 4px solid #008b8b;
+      border-radius: 12px;
+      box-shadow: 0 5px 18px rgba(0, 70, 70, 0.16);
+    }
+
     .title {
-      text-align: center;
-      font-weight: bold;
-      font-size: 1.3em;
+      margin-bottom: 25px;
+      text-align: left;
+      line-height: 1.8;
     }
-    .highlight {
-      font-weight: bold;
-      color: #000080;
+
+    .ganesh-heading {
+      margin: 0 0 9px;
+      font-size: 1.08rem;
+      font-weight: 700;
     }
-    .emoji {
-      font-size: 1.2em;
+
+    .panchanga-heading {
+      margin: 0;
+      color: #003f5c;
+      font-size: 1.18rem;
+      font-weight: 700;
     }
+
     .section {
-      margin-bottom: 12px;
+      margin-bottom: 22px;
+      line-height: 1.8;
     }
+
+    .section p {
+      margin: 3px 0;
+    }
+
+    .label {
+      display: inline-block;
+      min-width: 78px;
+      font-weight: 700;
+    }
+
+    .main-label {
+      font-weight: 700;
+    }
+
+    .date-section {
+      margin-top: 26px;
+      line-height: 1.8;
+    }
+
+    .shiv-sankalp {
+      margin-top: 22px;
+      color: #003f5c;
+      font-weight: 700;
+    }
+
+    .separator {
+      margin: 2px 0;
+      letter-spacing: 1px;
+    }
+
     .admin-note {
-      font-style: italic;
-      color: #555;
+      margin-top: 3px;
+      color: #333;
+      font-size: 0.94rem;
+    }
+
+    .error-message {
+      padding: 15px;
+      color: #8b0000;
+      background: #fff0f0;
+      border: 1px solid #d7a3a3;
+      border-radius: 6px;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 8px;
+      }
+
+      .panchanga-container {
+        padding: 18px 12px;
+        border-left-width: 2px;
+        border-right-width: 2px;
+        border-radius: 7px;
+      }
+
+      .panchanga-heading {
+        font-size: 1.06rem;
+      }
+
+      .section {
+        margin-bottom: 19px;
+      }
+
+      .label {
+        min-width: 72px;
+      }
     }
   </style>
 </head>
+
 <body>
-  <div class="title">
-    ॐ श्रीगणेशाय नमः।।<br>
-    ॥श्रीसूर्यसिद्धान्तीय <span class="emoji">🌞</span> काशीस्थ पञ्चाङ्ग॥
-  </div>
 
-  <div class="section">
-    <ul>
-      <li>विक्रम संवत - <span id="vikramSamvat"></span></li>
-      <li>शक संवत - <span id="shakSamvat"></span></li>
-    </ul>
-    • ऋतु - <span id="ritu"></span><br>
-    • मास व पक्ष – <span id="maasPaksha"></span>
-  </div>
+  <main class="panchanga-container">
 
-  <div class="section">
-    <span class="highlight">वार</span> - <span id="vaar"></span><br>
-    <span class="highlight">तिथि</span> - <span id="tithi"></span><br>
-    <span class="highlight">नक्षत्र</span> - <span id="nakshatra"></span><br>
-    <span id="chandraRashi"></span>
-  </div>
+    <header class="title">
+      <p class="ganesh-heading">
+        ॥ॐ श्रीगणेशाय नमः॥
+      </p>
 
-  <div class="section">
-    <span class="highlight">करण १</span> - <span id="karan1"></span><br>
-    <span class="highlight">करण २</span> - <span id="karan2"></span><br>
-    <span class="highlight">करण ३</span> - <span id="karan3"></span><br>
-  </div>
+      <p class="panchanga-heading">
+        ॥श्रीसूर्यसिद्धान्तीय
+        <span aria-hidden="true">🌞</span>
+        काशीस्थ पञ्चाङ्ग॥
+      </p>
+    </header>
 
-  <div class="section">
-    <span class="highlight">योग</span> - <span id="yoga"></span>
-  </div>
+    <section class="section">
+      <p>
+        विक्रम सम्वत -
+        <span id="vikramSamvat"></span>
+      </p>
 
-  <div class="section">
-    • सूर्योदय - <span id="sunrise"></span><br>
-    • सूर्यास्त - <span id="sunset"></span><br>
-   </div>
-  
-  <div class="section">
-    • दिशाशूल - <span id="dishashool"></span>
-  </div>
- <div class="section"> 
-   <span id="dishashool"></span>
-   </div>
-  
-  <div class="section">
-    ख्रिष्टीय वर्षानुसार दिनांक <span id="date"></span>
-  </div>
+      <p>
+        शक सम्वत -
+        <span id="shakSamvat"></span>
+      </p>
+    </section>
 
-  <div class="section">
-    ॥ तन्मेमनः शिवसङ्कल्पमस्तु ॥<br>
-    ************<br>
-    <div class="admin-note">(कृपया समय २४ घण्टे के प्रारूप में पढ़ें)</div>
-  </div>
+    <section class="section">
+      <p>
+        ऋतु -
+        <span id="ritu"></span>
+      </p>
+    </section>
+
+    <section class="section">
+      <p>
+        मास व पक्ष –
+        <span id="maasPaksha"></span>
+      </p>
+    </section>
+
+    <section class="section">
+      <p>
+        <span class="label">वार</span>
+        <span id="vaar"></span>
+      </p>
+    </section>
+
+    <section class="section">
+      <p>
+        <span class="label main-label">तिथि</span>
+        <span id="tithi"></span>
+      </p>
+
+      <p>
+        <span class="label main-label">नक्षत्र</span>
+        <span id="nakshatra"></span>
+      </p>
+
+      <p>
+        <span id="chandraRashi"></span>
+      </p>
+    </section>
+
+    <section class="section">
+      <p>
+        <span class="label main-label">करण १</span>
+        -
+        <span id="karan1"></span>
+      </p>
+
+      <p>
+        <span class="label main-label">करण २</span>
+        -
+        <span id="karan2"></span>
+      </p>
+
+      <p>
+        <span class="label main-label">करण ३</span>
+        -
+        <span id="karan3"></span>
+      </p>
+    </section>
+
+    <section class="section">
+      <p>
+        <span class="label main-label">योग</span>
+        -
+        <span id="yoga"></span>
+      </p>
+    </section>
+
+    <section class="section">
+      <p>
+        सूर्योदय -
+        <span id="sunrise"></span>
+      </p>
+
+      <p>
+        सूर्यास्त -
+        <span id="sunset"></span>
+      </p>
+    </section>
+
+    <section class="section">
+      <p>
+        दिशाशूल -
+        <span id="dishashool"></span>
+      </p>
+    </section>
+
+    <section class="date-section">
+      <p>
+        ख्रिष्टीय वर्षानुसार दिनांक
+        <strong id="date"></strong>
+      </p>
+    </section>
+
+    <footer>
+      <p class="shiv-sankalp">
+        ॥तन्मेमनः शिवसङ्कल्पमस्तु॥
+      </p>
+
+      <p class="separator">
+        ********************
+      </p>
+
+      <p class="admin-note">
+        (कृपया समय २४ घण्टे के प्रारूप में पढ़ें)
+      </p>
+    </footer>
+
+  </main>
 
   <script>
-    // Load from JSON or script-injected object (simulation below)
-    const panchangaData = {
-      vikramSamvat: "२०८२ 'सिद्धार्थ नामक संवत्सर'",
-      shakSamvat: "१९४७",
-      ritu: "ग्रीष्म",
-      maasPaksha: "ज्येष्ठशुक्लपक्ष",
-      vaar: "सोमवार",
-      tithi: "सप्तमी (रात्रि ००:१० बजे तक)",
-      nakshatra: "मघा (रात्रि ०२:३७ बजे तक)",
-      chandraRashi: "(चन्द्रमा *सिंह राशि* में अहोरात्र)",
-      karan1: "गर (१२:०४ बजे तक)",
-      karan2: "वणिज (रात्रि ००:१० बजे तक),
-      karan3: "विष्टि *(भद्रा)* (सूर्योदयपर्यन्त)",
-      yoga: "व्याघात (१२:२९ बजे तक)",
-      sunrise: "०५:११ बजे",
-      sunset: "१८:४१ बजे",
-      dishashool: "पूर्व",
-      date: "०२ जून २०२५ ई०"
-    };
-
-    for (let key in panchangaData) {
-      document.getElementById(key).innerText = panchangaData[key];
-    }
-  </script>
-    
-  <script>
-    fetch('panchanga-data.json')
-      .then(response => response.json())
-      .then(panchangaData => {
-        for (let key in panchangaData) {
-          document.getElementById(key).innerText = panchangaData[key];
+    fetch("panchanga-data.json")
+      .then(function (response) {
+        if (!response.ok) {
+          throw new Error("पञ्चाङ्ग विवरण प्राप्त नहीं हुआ।");
         }
+
+        return response.json();
+      })
+      .then(function (panchangaData) {
+        Object.keys(panchangaData).forEach(function (key) {
+          const element = document.getElementById(key);
+
+          if (element) {
+            element.textContent = panchangaData[key];
+          }
+        });
+      })
+      .catch(function (error) {
+        console.error(error);
+
+        document.querySelector(".panchanga-container").innerHTML =
+          '<div class="error-message">' +
+          "पञ्चाङ्ग विवरण प्रदर्शित नहीं हो सका।" +
+          "</div>";
       });
   </script>
+
 </body>
 </html>
