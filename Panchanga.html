@@ -337,12 +337,30 @@
       })
       .then(function (panchangaData) {
         Object.keys(panchangaData).forEach(function (key) {
-          const element = document.getElementById(key);
+  const element = document.getElementById(key);
 
-          if (element) {
-            element.textContent = panchangaData[key];
-          }
-        });
+  if (!element) {
+    return;
+  }
+
+  if (key === "chandraRashi") {
+    let text = panchangaData[key];
+
+    text = text.replace(
+      "वृश्चिक राशि",
+      "<strong>वृश्चिक राशि</strong>"
+    );
+
+    text = text.replace(
+      "धनु राशि",
+      "<strong>धनु राशि</strong>"
+    );
+
+    element.innerHTML = text;
+  } else {
+    element.textContent = panchangaData[key];
+  }
+});
       })
       .catch(function (error) {
         console.error(error);
