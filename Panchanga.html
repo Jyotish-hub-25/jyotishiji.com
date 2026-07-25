@@ -325,47 +325,42 @@
   </main>
 
   <script>
-    fetch("panchanga-data.json")
-      .then(function (response) {
-        if (!response.ok) {
-          throw new Error("पञ्चाङ्ग विवरण प्राप्त नहीं हुआ।");
+  fetch("panchanga-data.json")
+    .then(function (response) {
+      if (!response.ok) {
+        throw new Error("पञ्चाङ्ग विवरण प्राप्त नहीं हुआ।");
+      }
+
+      return response.json();
+    })
+    .then(function (panchangaData) {
+      Object.keys(panchangaData).forEach(function (key) {
+        const element = document.getElementById(key);
+
+        if (!element) {
+          return;
         }
 
-        return response.json();
-      })
-      .then(function (panchangaData) {
-        Object.keys(panchangaData).forEach(function (key) {
-  const element = document.getElementById(key);
+        if (key === "chandraRashi") {
+          let text = panchangaData[key];
 
-  if (!element) {
-    return;
-  }
+          text = text.replace(
+            /([ऀ-ॿ]+ राशि)/g,
+            "<strong>$1</strong>"
+          );
 
-  if (key === "chandraRashi") {
-  let text = panchangaData[key];
-
-  text = text.replace(
-    /([ऀ-ॿ]+ राशि)/g,
-    "<strong>$1</strong>"
-  );
-
-  element.innerHTML = "(चन्द्रमा " + text + ")";
-} else {
-  element.textContent = panchangaData[key];
-} else {
-    element.textContent = panchangaData[key];
-  }
-});
-      })
-      .catch(function (error) {
-        console.error(error);
-
-        document.querySelector(".panchanga-container").innerHTML =
-          '<div class="error-message">' +
-          "पञ्चाङ्ग विवरण प्रदर्शित नहीं हो सका।" +
-          "</div>";
+          element.innerHTML = "(चन्द्रमा " + text + ")";
+        } else {
+          element.textContent = panchangaData[key];
+        }
       });
-  </script>
+    })
+    .catch(function (error) {
+      console.error("Panchanga error:", error);
 
-</body>
-</html>
+      document.querySelector(".panchanga-container").innerHTML =
+        '<div class="error-message">' +
+        "पञ्चाङ्ग विवरण प्रदर्शित नहीं हो सका।" +
+        "</div>";
+    });
+</script>
