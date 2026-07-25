@@ -240,7 +240,7 @@
       </div>
 
       <p class="moon-note">
-        (चन्द्रमा <strong id="chandraRashi"></strong>)
+        (चन्द्रमा <span id="chandraRashi"></span>)
       </p>        
 
     </section>
@@ -357,8 +357,7 @@
         "<strong>धनु राशि</strong>"
     );
 
-    element.innerHTML =
-        "(चन्द्रमा " + text + ")";
+    element.innerHTML = text;
 } else {
     element.textContent = panchangaData[key];
   }
