@@ -19,34 +19,37 @@
       margin: 0;
       padding: 20px;
       background-color: #edf7f8;
+      color: #111;
+
       font-family:
         "Noto Serif Devanagari",
         "Sanskrit Text",
         "Mangal",
         serif;
-      color: #111;
     }
 
     .panchanga-container {
       width: 100%;
       max-width: 760px;
       margin: 0 auto;
-      padding: 26px 30px;
+      padding: 24px 30px;
+
       background-color: #d9ffd4;
       border-left: 4px solid #008b8b;
       border-right: 4px solid #008b8b;
       border-radius: 12px;
+
       box-shadow: 0 5px 18px rgba(0, 70, 70, 0.16);
     }
 
     .title {
-      margin-bottom: 18px;
+      margin-bottom: 24px;
       text-align: center;
       line-height: 1.8;
     }
 
     .ganesh-heading {
-      margin: 0 0 9px;
+      margin: 0 0 8px;
       font-size: 1.08rem;
       font-weight: 700;
     }
@@ -60,44 +63,63 @@
 
     .section {
       margin-bottom: 22px;
-      line-height: 1.8;
+      line-height: 1.75;
     }
 
-    .section p {
-      margin: 3px 0;
+    .data-row {
+      display: grid;
+
+      grid-template-columns:
+        105px
+        15px
+        minmax(0, 1fr);
+
+      align-items: start;
+      margin: 4px 0;
     }
 
-    .label {
-      display: inline-block;
-      min-width: 78px;
+    .data-label {
       font-weight: 700;
     }
 
-    .main-label {
-      font-weight: 700;
+    .normal-label {
+      font-weight: 400;
+    }
+
+    .dash {
+      text-align: center;
+    }
+
+    .data-value {
+      min-width: 0;
+    }
+
+    .moon-note {
+      margin: 4px 0 0;
+      line-height: 1.75;
     }
 
     .date-section {
-      margin-top: 26px;
+      margin-top: 27px;
       line-height: 1.8;
     }
 
     .shiv-sankalp {
-      margin-top: 14px;
+      margin: 20px 0 0;
       color: #003f5c;
       font-weight: 700;
-      text-align: center;    
-}
+      text-align: center;
+    }
 
     .separator {
+      width: fit-content;
       margin: 8px auto;
-      widgh: fit-content;
+      letter-spacing: 0;
       text-align: center;
-      letter-spacing: o;
     }
 
     .admin-note {
-      margin-top: 8px;
+      margin: 8px 0 0;
       color: #333;
       font-size: 0.94rem;
       text-align: center;
@@ -106,7 +128,7 @@
     .error-message {
       padding: 15px;
       color: #8b0000;
-      background: #fff0f0;
+      background-color: #fff0f0;
       border: 1px solid #d7a3a3;
       border-radius: 6px;
     }
@@ -131,8 +153,11 @@
         margin-bottom: 19px;
       }
 
-      .label {
-        min-width: 72px;
+      .data-row {
+        grid-template-columns:
+          88px
+          13px
+          minmax(0, 1fr);
       }
     }
   </style>
@@ -155,109 +180,134 @@
     </header>
 
     <section class="section">
-      <p>
-        विक्रम सम्वत -
-        <span id="vikramSamvat"></span>
-      </p>
 
-      <p>
-        शक सम्वत -
-        <span id="shakSamvat"></span>
-      </p>
+      <div class="data-row">
+        <span class="data-label normal-label">विक्रम सम्वत</span>
+        <span class="dash">-</span>
+        <span class="data-value" id="vikramSamvat"></span>
+      </div>
+
+      <div class="data-row">
+        <span class="data-label normal-label">शक सम्वत</span>
+        <span class="dash">-</span>
+        <span class="data-value" id="shakSamvat"></span>
+      </div>
+
     </section>
 
     <section class="section">
-      <p>
-        ऋतु -
-        <span id="ritu"></span>
-      </p>
+
+      <div class="data-row">
+        <span class="data-label normal-label">ऋतु</span>
+        <span class="dash">-</span>
+        <span class="data-value" id="ritu"></span>
+      </div>
+
     </section>
 
     <section class="section">
-      <p>
-        मास व पक्ष –
-        <span id="maasPaksha"></span>
-      </p>
+
+      <div class="data-row">
+        <span class="data-label normal-label">मास व पक्ष</span>
+        <span class="dash">-</span>
+        <span class="data-value" id="maasPaksha"></span>
+      </div>
+
     </section>
 
     <section class="section">
-      <p>
-        <span class="label">वार</span>
-        <span id="vaar"></span>
-      </p>
+
+      <div class="data-row">
+        <span class="data-label">वार</span>
+        <span class="dash">-</span>
+        <span class="data-value" id="vaar"></span>
+      </div>
+
     </section>
 
     <section class="section">
-      <p>
-        <span class="label main-label">तिथि</span>
-        <span id="tithi"></span>
-      </p>
 
-      <p>
-        <span class="label main-label">नक्षत्र</span>
-        <span id="nakshatra"></span>
-      </p>
+      <div class="data-row">
+        <span class="data-label">तिथि</span>
+        <span class="dash">-</span>
+        <span class="data-value" id="tithi"></span>
+      </div>
 
-      <p>
-        <span id="chandraRashi"></span>
-      </p>
+      <div class="data-row">
+        <span class="data-label">नक्षत्र</span>
+        <span class="dash">-</span>
+        <span class="data-value" id="nakshatra"></span>
+      </div>
+
+      <p class="moon-note" id="chandraRashi"></p>
+
     </section>
 
     <section class="section">
-      <p>
-        <span class="label main-label">करण १</span>
-        -
-        <span id="karan1"></span>
-      </p>
 
-      <p>
-        <span class="label main-label">करण २</span>
-        -
-        <span id="karan2"></span>
-      </p>
+      <div class="data-row">
+        <span class="data-label">करण १</span>
+        <span class="dash">-</span>
+        <span class="data-value" id="karan1"></span>
+      </div>
 
-      <p>
-        <span class="label main-label">करण ३</span>
-        -
-        <span id="karan3"></span>
-      </p>
+      <div class="data-row">
+        <span class="data-label">करण २</span>
+        <span class="dash">-</span>
+        <span class="data-value" id="karan2"></span>
+      </div>
+
+      <div class="data-row">
+        <span class="data-label">करण ३</span>
+        <span class="dash">-</span>
+        <span class="data-value" id="karan3"></span>
+      </div>
+
     </section>
 
     <section class="section">
-      <p>
-        <span class="label main-label">योग</span>
-        -
-        <span id="yoga"></span>
-      </p>
+
+      <div class="data-row">
+        <span class="data-label">योग</span>
+        <span class="dash">-</span>
+        <span class="data-value" id="yoga"></span>
+      </div>
+
     </section>
 
     <section class="section">
-      <p>
-        <span class="label">सूर्योदय</span> -
-        <span id="sunrise"></span>
-      </p>
 
-      <p>
-        <span class="label">सूर्यास्त</span> -
-        <span id="sunset"></span>
-      </p>
+      <div class="data-row">
+        <span class="data-label">सूर्योदय</span>
+        <span class="dash">-</span>
+        <span class="data-value" id="sunrise"></span>
+      </div>
+
+      <div class="data-row">
+        <span class="data-label">सूर्यास्त</span>
+        <span class="dash">-</span>
+        <span class="data-value" id="sunset"></span>
+      </div>
+
     </section>
 
     <section class="section">
-      <p>
-        <span class="label">दिशाशूल</span> -
-        <span id="dishashool"></span>
-      </p>
+
+      <div class="data-row">
+        <span class="data-label">दिशाशूल</span>
+        <span class="dash">-</span>
+        <span class="data-value" id="dishashool"></span>
+      </div>
+
     </section>
 
     <section class="date-section">
-      <p>
-        ख्रिष्टीय वर्षानुसार दिनांक
-        <strong id="date"></strong>
-      </p>
+      ख्रिष्टीय वर्षानुसार दिनाङ्क
+      <strong id="date"></strong>
     </section>
 
     <footer>
+
       <p class="shiv-sankalp">
         ॥तन्मेमनः शिवसङ्कल्पमस्तु॥
       </p>
@@ -269,6 +319,7 @@
       <p class="admin-note">
         (कृपया समय २४ घण्टे के प्रारूप में पढ़ें)
       </p>
+
     </footer>
 
   </main>
