@@ -344,20 +344,22 @@
   }
 
   if (key === "chandraRashi") {
+
     let text = panchangaData[key];
 
     text = text.replace(
-      "वृश्चिक राशि",
-      "<strong>वृश्चिक राशि</strong>"
+        "वृश्चिक राशि",
+        "<strong>वृश्चिक राशि</strong>"
     );
 
     text = text.replace(
-      "धनु राशि",
-      "<strong>धनु राशि</strong>"
+        "धनु राशि",
+        "<strong>धनु राशि</strong>"
     );
 
-    element.innerHTML = text;
-  } else {
+    element.innerHTML =
+        "(चन्द्रमा " + text + ")";
+} else {
     element.textContent = panchangaData[key];
   }
 });
