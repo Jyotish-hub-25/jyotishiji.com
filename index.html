@@ -164,8 +164,12 @@
     }
 
     .section p {
-      margin: 0 0 12px;
-    }
+  margin: 0 0 12px;
+
+  text-align: justify;
+  text-justify: inter-word;
+  overflow-wrap: break-word;
+}
 
     /* दूसरे खण्ड की अतिरिक्त दूरी घटाना */
 
@@ -260,31 +264,37 @@
     /* बहुत छोटे mobile screen */
 
     @media (max-width: 420px) {
-      header h1 {
-        font-size: 24px;
-      }
+  header h1 {
+    font-size: 26px;
+  }
 
-      nav {
-        gap: 5px 13px;
-      }
+  nav {
+    gap: 6px 15px;
+  }
 
-      nav a {
-        font-size: 17px;
-      }
+  nav a {
+    font-size: 17px;
+  }
 
-      .hero h2 {
-        font-size: 25px;
-      }
+  .hero h2 {
+    font-size: 27px;
+  }
 
-      .section {
-        padding-left: 17px;
-        padding-right: 17px;
-      }
+  /* यह नया नियम स्वयं जोड़ना है */
+  .hero p {
+    font-size: 18px;
+    line-height: 1.7;
+  }
 
-      .section h2 {
-        font-size: 22px;
-      }
-    }
+  .section {
+    padding-left: 17px;
+    padding-right: 17px;
+  }
+
+  .section h2 {
+    font-size: 24px;
+  }
+}
   </style>
 </head>
 
