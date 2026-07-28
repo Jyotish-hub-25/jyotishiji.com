@@ -24,6 +24,7 @@
       font-family:
         "Noto Serif Devanagari",
         "Sanskrit Text",
+        "Nirmala UI",
         "Mangal",
         serif;
     }
@@ -92,10 +93,16 @@
 
     .data-value {
       min-width: 0;
+      overflow-wrap: break-word;
     }
 
     .moon-note {
       margin: 4px 0 0;
+      line-height: 1.75;
+    }
+
+    .special-section {
+      margin: 2px 0 22px;
       line-height: 1.75;
     }
 
@@ -131,6 +138,10 @@
       background-color: #fff0f0;
       border: 1px solid #d7a3a3;
       border-radius: 6px;
+    }
+
+    [hidden] {
+      display: none !important;
     }
 
     @media (max-width: 600px) {
@@ -239,7 +250,7 @@
         <span class="data-value" id="nakshatra"></span>
       </div>
 
-      <p class="moon-note" id="chandraRashi"></p>        
+      <p class="moon-note" id="chandraRashi"></p>
 
     </section>
 
@@ -257,16 +268,26 @@
         <span class="data-value" id="karan2"></span>
       </div>
 
-      <div class="data-row">
+      <div
+        class="data-row"
+        id="karan3Row"
+        hidden
+      >
         <span class="data-label">करण ३</span>
         <span class="dash">-</span>
         <span class="data-value" id="karan3"></span>
       </div>
 
-      <div id="karan4Row" style="display: none;">
-        <strong>करण ४</strong> —
-        <span id="karan4"></span>
-      </div>      
+      <div
+        class="data-row"
+        id="karan4Row"
+        hidden
+      >
+        <span class="data-label">करण ४</span>
+        <span class="dash">-</span>
+        <span class="data-value" id="karan4"></span>
+      </div>
+
     </section>
 
     <section class="section">
@@ -305,11 +326,18 @@
 
     </section>
 
-    <div id="visheshRow" style="display: none;">
-      <strong>विशेष :</strong>
-      <span id="vishesh"></span>
-    </div>
-      
+    <section
+      class="special-section"
+      id="visheshRow"
+      hidden
+    >
+      <div class="data-row">
+        <span class="data-label">विशेष</span>
+        <span class="dash">-</span>
+        <span class="data-value" id="vishesh"></span>
+      </div>
+    </section>
+
     <section class="date-section">
       ख्रिष्टीय वर्षानुसार दिनाङ्क
       <strong id="date"></strong>
@@ -334,60 +362,138 @@
   </main>
 
   <script>
-  fetch("panchanga-data.json")
-    .then(function (response) {
-      if (!response.ok) {
-        throw new Error("पञ्चाङ्ग विवरण प्राप्त नहीं हुआ।");
+    function setTextValue(data, key) {
+      const element = document.getElementById(key);
+
+      if (!element) {
+        return;
       }
 
-      return response.json();
-    })
-    .then(function (panchangaData) {
-      Object.keys(panchangaData).forEach(function (key) {
-        const element = document.getElementById(key);
+      const value = data[key];
 
-        if (!element) {
-          return;
+      element.textContent =
+        value !== undefined && value !== null
+          ? String(value)
+          : "";
+    }
+
+    function setOptionalField(data, key, valueId, rowId) {
+      const valueElement = document.getElementById(valueId);
+      const rowElement = document.getElementById(rowId);
+
+      if (!valueElement || !rowElement) {
+        return;
+      }
+
+      const value = data[key];
+      const hasValue =
+        value !== undefined &&
+        value !== null &&
+        String(value).trim() !== "";
+
+      if (hasValue) {
+        valueElement.textContent = String(value);
+        rowElement.hidden = false;
+      } else {
+        valueElement.textContent = "";
+        rowElement.hidden = true;
+      }
+    }
+
+    fetch(
+      "panchanga-data.json?time=" + Date.now(),
+      {
+        cache: "no-store"
+      }
+    )
+      .then(function (response) {
+        if (!response.ok) {
+          throw new Error(
+            "पञ्चाङ्ग विवरण प्राप्त नहीं हुआ। HTTP स्थिति: " +
+            response.status
+          );
         }
-        function setOptionalField(data, key, valueId, rowId) {
-  const valueElement = document.getElementById(valueId);
-  const rowElement = document.getElementById(rowId);
 
-  if (data[key] && String(data[key]).trim() !== "") {
-    valueElement.textContent = data[key];
-    rowElement.style.display = "";
-  } else {
-    valueElement.textContent = "";
-    rowElement.style.display = "none";
-  }
-}
+        return response.json();
+      })
+      .then(function (panchangaData) {
 
-document.getElementById("karan1").textContent = data.karan1 || "";
-document.getElementById("karan2").textContent = data.karan2 || "";
+        const fixedFields = [
+          "vikramSamvat",
+          "shakSamvat",
+          "ritu",
+          "maasPaksha",
+          "vaar",
+          "tithi",
+          "nakshatra",
+          "karan1",
+          "karan2",
+          "yoga",
+          "sunrise",
+          "sunset",
+          "dishashool",
+          "date"
+        ];
 
-setOptionalField(data, "karan3", "karan3", "karan3Row");
-setOptionalField(data, "karan4", "karan4", "karan4Row");
+        fixedFields.forEach(function (key) {
+          setTextValue(panchangaData, key);
+        });
 
-        if (key === "chandraRashi") {
-          let text = panchangaData[key];
+        const moonElement =
+          document.getElementById("chandraRashi");
 
-          text = text.replace(
+        if (
+          moonElement &&
+          panchangaData.chandraRashi
+        ) {
+          let moonText =
+            String(panchangaData.chandraRashi);
+
+          moonText = moonText.replace(
             /([ऀ-ॿ]+ राशि)/g,
             "<strong>$1</strong>"
           );
 
-          element.innerHTML = "(चन्द्रमा " + text + ")";
-        } else {
-          element.textContent = panchangaData[key];
+          moonElement.innerHTML =
+            "(चन्द्रमा " + moonText + ")";
+        } else if (moonElement) {
+          moonElement.textContent = "";
         }
-      });
-    })
-    .catch(function (error) {
-      console.error("Panchanga error:", error);
 
-      document.querySelector(".panchanga-container").innerHTML =
-        '<div class="error-message">' +
-        "पञ्चाङ्ग विवरण प्रदर्शित नहीं हो सका।" +
-        "</div>";
-    });
-</script>
+        setOptionalField(
+          panchangaData,
+          "karan3",
+          "karan3",
+          "karan3Row"
+        );
+
+        setOptionalField(
+          panchangaData,
+          "karan4",
+          "karan4",
+          "karan4Row"
+        );
+
+        setOptionalField(
+          panchangaData,
+          "vishesh",
+          "vishesh",
+          "visheshRow"
+        );
+      })
+      .catch(function (error) {
+        console.error("Panchanga error:", error);
+
+        const container =
+          document.querySelector(".panchanga-container");
+
+        container.innerHTML =
+          '<div class="error-message">' +
+          "पञ्चाङ्ग विवरण प्रदर्शित नहीं हो सका। " +
+          "कृपया panchanga-data.json की जाँच करें।" +
+          "</div>";
+      });
+  </script>
+
+</body>
+</html>
