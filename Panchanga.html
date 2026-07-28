@@ -263,6 +263,10 @@
         <span class="data-value" id="karan3"></span>
       </div>
 
+      <div id="karan4Row" style="display: none;">
+        <strong>करण ४</strong> —
+        <span id="karan4"></span>
+      </div>      
     </section>
 
     <section class="section">
@@ -301,6 +305,11 @@
 
     </section>
 
+    <div id="visheshRow" style="display: none;">
+      <strong>विशेष :</strong>
+      <span id="vishesh"></span>
+    </div>
+      
     <section class="date-section">
       ख्रिष्टीय वर्षानुसार दिनाङ्क
       <strong id="date"></strong>
@@ -340,6 +349,24 @@
         if (!element) {
           return;
         }
+        function setOptionalField(data, key, valueId, rowId) {
+  const valueElement = document.getElementById(valueId);
+  const rowElement = document.getElementById(rowId);
+
+  if (data[key] && String(data[key]).trim() !== "") {
+    valueElement.textContent = data[key];
+    rowElement.style.display = "";
+  } else {
+    valueElement.textContent = "";
+    rowElement.style.display = "none";
+  }
+}
+
+document.getElementById("karan1").textContent = data.karan1 || "";
+document.getElementById("karan2").textContent = data.karan2 || "";
+
+setOptionalField(data, "karan3", "karan3", "karan3Row");
+setOptionalField(data, "karan4", "karan4", "karan4Row");
 
         if (key === "chandraRashi") {
           let text = panchangaData[key];
