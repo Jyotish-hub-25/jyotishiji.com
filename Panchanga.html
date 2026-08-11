@@ -1,25 +1,29 @@
 <!DOCTYPE html>
+
 <html lang="hi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="श्रीसूर्यसिद्धान्तीय काशीस्थ दैनिक पञ्चाङ्ग तथा भारतीय काल गणना के आधार।" name="description"/>
+<title>श्रीसूर्यसिद्धान्तीय काशीस्थ पञ्चाङ्ग एवं भारतीय काल गणना</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<style>
+:root{--site-red:#8b0000;--site-red-dark:#760000;--site-cream:#fffaf0;--site-cream-2:#f5e6cc;--site-brown:#5a2a00;--site-text:#2e2e2e;--site-gold:#d9b36c;}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;min-height:100vh;background:var(--site-cream);color:var(--site-text);font-family:"Noto Serif Devanagari","Sanskrit Text","Nirmala UI","Mangal",serif;font-size:18px;line-height:1.75}
+.site-header{background:var(--site-red);color:#fff;text-align:center;padding:18px 16px 14px;border-bottom:1px solid rgba(255,255,255,.18)}
+.site-header h1{margin:0 0 8px;font-size:clamp(1.55rem,3vw,2rem);line-height:1.35;font-weight:700}
+.site-nav{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:6px 26px}
+.site-nav a{color:#fff;text-decoration:none;font-size:1.05rem;font-weight:600;line-height:1.5;padding:3px 0}
+.site-nav a:hover,.site-nav a:focus-visible{text-decoration:underline;text-underline-offset:4px}
+.site-footer{background:var(--site-red);color:#fff;text-align:center;padding:13px 14px;font-size:.88rem;line-height:1.5;margin-top:auto}
+a{overflow-wrap:anywhere}
+@media(max-width:700px){body{font-size:17px;line-height:1.72}.site-header{padding:14px 10px 12px}.site-nav{gap:5px 15px}.site-nav a{font-size:1rem}}
+@media(max-width:420px){body{font-size:16.5px}.site-nav{gap:4px 12px}.site-nav a{font-size:.98rem}}
 
-  <meta
-    name="description"
-    content="श्रीसूर्यसिद्धान्तीय काशीस्थ दैनिक पञ्चाङ्ग तथा भारतीय काल गणना के आधार।"
-  >
-
-  <title>श्रीसूर्यसिद्धान्तीय काशीस्थ पञ्चाङ्ग एवं भारतीय काल गणना</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-  <link
-    href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@400;600;700&display=swap"
-    rel="stylesheet"
-  >
-
-  <style>
     :root {
       --page-background: #edf5f2;
       --panchanga-background: #dcf8d8;
@@ -43,7 +47,7 @@
 
     body {
       margin: 0;
-      padding: 22px;
+      padding: 0;
       background:
         radial-gradient(
           circle at top left,
@@ -62,8 +66,9 @@
     }
 
     .page-shell {
-      width: min(100%, 1320px);
+      width: min(100%, 1364px);
       margin: 0 auto;
+      padding: 22px;
       display: grid;
       grid-template-columns:
         minmax(410px, 0.82fr)
@@ -334,10 +339,11 @@
 
     @media (max-width: 980px) {
       body {
-        padding: 14px;
+        padding: 0;
       }
 
       .page-shell {
+        padding: 14px;
         grid-template-columns: 1fr;
         gap: 20px;
       }
@@ -354,9 +360,11 @@
 
     @media (max-width: 600px) {
   body {
-    padding: 8px;
+    padding: 0;
     font-size: 17px;
   }
+
+  .page-shell { padding: 8px; }
 
   .panchanga-card,
   .article-card {
@@ -436,209 +444,184 @@
     line-height: 1.92;
   }
 }
-  </style>
+  
+body{display:flex;flex-direction:column;min-height:100vh}
+.site-header{flex:0 0 auto}
+.page-shell{flex:1}
+.site-footer{margin-top:0}
+@media(max-width:600px){.kalman-table{min-width:0}.kalman-table th,.kalman-table td{padding:10px 8px}.kalman-table th:first-child,.kalman-table td:first-child{width:34%}}
+</style>
 </head>
-
 <body>
-
-  <main class="page-shell">
-
-    <aside class="panchanga-column">
-      <section class="panchanga-card">
-
-        <header class="panchanga-title">
-          <p class="ganesh-heading">॥ॐ श्रीगणेशाय नमः॥</p>
-
-          <p class="main-panchanga-heading">
+<header class="site-header">
+<h1>॥ कालः कलयतामहम् ॥</h1>
+<nav aria-label="मुख्य नेविगेशन" class="site-nav">
+<a href="index.html">मुख्यपृष्ठ</a>
+<a href="articles.html">लेख</a>
+<a href="Panchanga.html">पञ्चाङ्ग</a>
+<a href="Grahashanti.htm">ग्रहशान्ति</a>
+<a href="contact.html">सम्पर्क</a>
+</nav></header><main class="page-shell">
+<aside class="panchanga-column">
+<section class="panchanga-card">
+<header class="panchanga-title">
+<p class="ganesh-heading">॥ॐ श्रीगणेशाय नमः॥</p>
+<p class="main-panchanga-heading">
             ॥श्रीसूर्यसिद्धान्तीय
             <span aria-hidden="true">🌞</span>
             काशीस्थ पञ्चाङ्ग॥
           </p>
-        </header>
-
-        <div id="panchangaContent">
-
-          <section class="panchanga-section">
-            <div class="data-row">
-              <span class="data-label normal-label">विक्रम सम्वत</span>
-              <span class="dash">-</span>
-              <span class="data-value" id="vikramSamvat"></span>
-            </div>
-
-            <div class="data-row">
-              <span class="data-label normal-label">शक सम्वत</span>
-              <span class="dash">-</span>
-              <span class="data-value" id="shakSamvat"></span>
-            </div>
-          </section>
-
-          <section class="panchanga-section">
-            <div class="data-row">
-              <span class="data-label normal-label">ऋतु</span>
-              <span class="dash">-</span>
-              <span class="data-value" id="ritu"></span>
-            </div>
-          </section>
-
-          <section class="panchanga-section">
-            <div class="data-row">
-              <span class="data-label normal-label">मास व पक्ष</span>
-              <span class="dash">-</span>
-              <span class="data-value" id="maasPaksha"></span>
-            </div>
-          </section>
-
-          <section class="panchanga-section">
-            <div class="data-row">
-              <span class="data-label">वार</span>
-              <span class="dash">-</span>
-              <span class="data-value" id="vaar"></span>
-            </div>
-          </section>
-
-          <section class="panchanga-section">
-            <div class="data-row">
-              <span class="data-label">तिथि</span>
-              <span class="dash">-</span>
-              <span class="data-value" id="tithi"></span>
-            </div>
-
-            <div class="data-row">
-              <span class="data-label">नक्षत्र</span>
-              <span class="dash">-</span>
-              <span class="data-value" id="nakshatra"></span>
-            </div>
-
-            <p class="moon-note" id="chandraRashi"></p>
-          </section>
-
-          <section class="panchanga-section">
-            <div class="data-row">
-              <span class="data-label">करण १</span>
-              <span class="dash">-</span>
-              <span class="data-value" id="karan1"></span>
-            </div>
-
-            <div class="data-row">
-              <span class="data-label">करण २</span>
-              <span class="dash">-</span>
-              <span class="data-value" id="karan2"></span>
-            </div>
-
-            <div class="data-row" id="karan3Row" hidden>
-              <span class="data-label">करण ३</span>
-              <span class="dash">-</span>
-              <span class="data-value" id="karan3"></span>
-            </div>
-
-            <div class="data-row" id="karan4Row" hidden>
-              <span class="data-label">करण ४</span>
-              <span class="dash">-</span>
-              <span class="data-value" id="karan4"></span>
-            </div>
-          </section>
-
-          <section class="panchanga-section">
-            <div class="data-row">
-              <span class="data-label">योग</span>
-              <span class="dash">-</span>
-              <span class="data-value" id="yoga"></span>
-            </div>
-          </section>
-
-          <section class="panchanga-section">
-            <div class="data-row">
-              <span class="data-label normal-label">सूर्योदय</span>
-              <span class="dash">-</span>
-              <span class="data-value" id="sunrise"></span>
-            </div>
-
-            <div class="data-row">
-              <span class="data-label normal-label">सूर्यास्त</span>
-              <span class="dash">-</span>
-              <span class="data-value" id="sunset"></span>
-            </div>
-          </section>
-
-          <section class="panchanga-section">
-            <div class="data-row">
-              <span class="data-label normal-label">दिशाशूल</span>
-              <span class="dash">-</span>
-              <span class="data-value" id="dishashool"></span>
-            </div>
-          </section>
-
-          <section class="special-section" id="visheshRow" hidden>
-            <div class="data-row">
-              <span class="data-label">विशेष</span>
-              <span class="dash">-</span>
-              <span class="data-value" id="vishesh"></span>
-            </div>
-          </section>
-
-          <section class="date-section">
+</header>
+<div id="panchangaContent">
+<section class="panchanga-section">
+<div class="data-row">
+<span class="data-label normal-label">विक्रम सम्वत</span>
+<span class="dash">-</span>
+<span class="data-value" id="vikramSamvat"></span>
+</div>
+<div class="data-row">
+<span class="data-label normal-label">शक सम्वत</span>
+<span class="dash">-</span>
+<span class="data-value" id="shakSamvat"></span>
+</div>
+</section>
+<section class="panchanga-section">
+<div class="data-row">
+<span class="data-label normal-label">ऋतु</span>
+<span class="dash">-</span>
+<span class="data-value" id="ritu"></span>
+</div>
+</section>
+<section class="panchanga-section">
+<div class="data-row">
+<span class="data-label normal-label">मास व पक्ष</span>
+<span class="dash">-</span>
+<span class="data-value" id="maasPaksha"></span>
+</div>
+</section>
+<section class="panchanga-section">
+<div class="data-row">
+<span class="data-label">वार</span>
+<span class="dash">-</span>
+<span class="data-value" id="vaar"></span>
+</div>
+</section>
+<section class="panchanga-section">
+<div class="data-row">
+<span class="data-label">तिथि</span>
+<span class="dash">-</span>
+<span class="data-value" id="tithi"></span>
+</div>
+<div class="data-row">
+<span class="data-label">नक्षत्र</span>
+<span class="dash">-</span>
+<span class="data-value" id="nakshatra"></span>
+</div>
+<p class="moon-note" id="chandraRashi"></p>
+</section>
+<section class="panchanga-section">
+<div class="data-row">
+<span class="data-label">करण १</span>
+<span class="dash">-</span>
+<span class="data-value" id="karan1"></span>
+</div>
+<div class="data-row">
+<span class="data-label">करण २</span>
+<span class="dash">-</span>
+<span class="data-value" id="karan2"></span>
+</div>
+<div class="data-row" hidden="" id="karan3Row">
+<span class="data-label">करण ३</span>
+<span class="dash">-</span>
+<span class="data-value" id="karan3"></span>
+</div>
+<div class="data-row" hidden="" id="karan4Row">
+<span class="data-label">करण ४</span>
+<span class="dash">-</span>
+<span class="data-value" id="karan4"></span>
+</div>
+</section>
+<section class="panchanga-section">
+<div class="data-row">
+<span class="data-label">योग</span>
+<span class="dash">-</span>
+<span class="data-value" id="yoga"></span>
+</div>
+</section>
+<section class="panchanga-section">
+<div class="data-row">
+<span class="data-label normal-label">सूर्योदय</span>
+<span class="dash">-</span>
+<span class="data-value" id="sunrise"></span>
+</div>
+<div class="data-row">
+<span class="data-label normal-label">सूर्यास्त</span>
+<span class="dash">-</span>
+<span class="data-value" id="sunset"></span>
+</div>
+</section>
+<section class="panchanga-section">
+<div class="data-row">
+<span class="data-label normal-label">दिशाशूल</span>
+<span class="dash">-</span>
+<span class="data-value" id="dishashool"></span>
+</div>
+</section>
+<section class="special-section" hidden="" id="visheshRow">
+<div class="data-row">
+<span class="data-label">विशेष</span>
+<span class="dash">-</span>
+<span class="data-value" id="vishesh"></span>
+</div>
+</section>
+<section class="date-section">
             ख्रिष्टीय वर्षानुसार दिनाङ्क
             <strong id="date"></strong>
-          </section>
-
-          <footer>
-            <p class="shiv-sankalp">॥तन्मेमनः शिवसङ्कल्पमस्तु॥</p>
-            <p class="separator">********************</p>
-            <p class="admin-note">(कृपया समय २४ घण्टे के प्रारूप में पढ़ें)</p>
-          </footer>
-
-        </div>
-
-        <div class="error-message" id="panchangaError" hidden>
+</section>
+<footer>
+<p class="shiv-sankalp">॥तन्मेमनः शिवसङ्कल्पमस्तु॥</p>
+<p class="separator">********************</p>
+<p class="admin-note">(कृपया समय २४ घण्टे के प्रारूप में पढ़ें)</p>
+</footer>
+</div>
+<div class="error-message" hidden="" id="panchangaError">
           पञ्चाङ्ग विवरण प्रदर्शित नहीं हो सका।
           कृपया panchanga-data.json की जाँच करें।
         </div>
-
-      </section>
-    </aside>
-
-    <article class="article-card">
-
-      <p class="article-invocation">॥ॐ कालात्मने नमः॥</p>
-
-      <h1 class="article-title">भारतीय काल गणना के आधार</h1>
-
-      <p class="article-subtitle">
+</section>
+</aside>
+<article class="article-card">
+<p class="article-invocation">॥ॐ कालात्मने नमः॥</p>
+<h1 class="article-title">भारतीय काल गणना के आधार</h1>
+<p class="article-subtitle">
         और संवत् २०८३ का वासन्तीय नवरात्र
       </p>
-
-      <section class="article-section">
-        <h2>१. भारतीय नववर्ष और वासन्तीय नवरात्र</h2>
-
-        <p>
+<section class="article-section">
+<h2>१. भारतीय नववर्ष और वासन्तीय नवरात्र</h2>
+<p>
           भारतीय नववर्ष चैत्र शुक्लपक्ष प्रतिपदा से प्रारम्भ होता है,
           परन्तु इस वर्ष प्रतिपदा का क्षय होने के कारण नववर्ष चैत्र
           शुक्लपक्ष द्वितीया तदनुसार अंग्रेज़ी कैलेण्डर के अनुसार
           २० मार्च २०२६, शुक्रवार को इस नववर्ष का आरम्भ हो रहा है।
         </p>
-      </section>
-
-      <section class="article-section">
-        <h2>२. भारतीय कालमान के नौ प्रकार</h2>
-
-        <p>
+</section>
+<section class="article-section">
+<h2>२. भारतीय कालमान के नौ प्रकार</h2>
+<p>
           समय की गणना के लिए ज्योतिष में ९ प्रकार के कालमान
           (गणना की विधियों) की चर्चा है।
         </p>
-
-        <div class="shloka-box">
-          ब्राह्मं दिव्यं तथा पैत्र्यं प्राजापत्यं च गौरवम्।<br>
+<div class="shloka-box">
+          ब्राह्मं दिव्यं तथा पैत्र्यं प्राजापत्यं च गौरवम्।<br/>
           सौरं च सावनं चान्द्रमार्क्ष्यं मानानि वै नव॥
         </div>
-
-        <p>
+<p>
           ब्राह्मकाल (ब्राह्मवर्ष), दिव्यवर्ष (देवताओं का वर्ष), पैत्र्य
           (पितरों का) वर्ष, प्राजापत्य (मन्वादि) वर्ष, गौरव
           (बार्हस्पत्य) वर्ष, सौरवर्ष, सावन वर्ष, चान्द्र और
           नाक्षत्र वर्ष — ये नौ प्रकार के कालमान कहे गए हैं।
         </p>
-
-        <p>
+<p>
           इन नौ प्रकार के कालमान में मनुष्यों के प्रयोग में आने वाले
           केवल चार — सौरमान, सावनमान, चान्द्रमान और नाक्षत्रमान — ही होते हैं।
           बार्हस्पत्य काल दैनिक उपयोग में नहीं आता बल्कि इसका उपयोग
@@ -647,133 +630,111 @@
           देवताओं के वर्षों की गणना होती है और प्राजापत्य वर्ष भी
           मानवेतर गणना में उपयोगी होता है।
         </p>
-      </section>
-
-      <section class="article-section">
-        <h2>३. मनुष्यों के व्यवहार में प्रयुक्त चार कालमान</h2>
-
-        <div class="kalman-table-wrap">
-          <table class="kalman-table">
-            <thead>
-              <tr>
-                <th>कालमान</th>
-                <th>मुख्य उपयोग</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              <tr>
-                <td>सौरमान</td>
-                <td>वर्ष, अयन और ऋतु आदि की गणना</td>
-              </tr>
-
-              <tr>
-                <td>चान्द्रमान</td>
-                <td>मास और तिथि की गणना</td>
-              </tr>
-
-              <tr>
-                <td>सावनमान</td>
-                <td>व्रत, उपवास, संस्कार आदि कर्मों की गणना</td>
-              </tr>
-
-              <tr>
-                <td>नाक्षत्रमान</td>
-                <td>घटी-पल आदि का विचार</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section class="article-section">
-        <h2>४. सौर, चान्द्र, नाक्षत्र और सावन दिन</h2>
-
-        <p>
+</section>
+<section class="article-section">
+<h2>३. मनुष्यों के व्यवहार में प्रयुक्त चार कालमान</h2>
+<div class="kalman-table-wrap">
+<table class="kalman-table">
+<thead>
+<tr>
+<th>कालमान</th>
+<th>मुख्य उपयोग</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>सौरमान</td>
+<td>वर्ष, अयन और ऋतु आदि की गणना</td>
+</tr>
+<tr>
+<td>चान्द्रमान</td>
+<td>मास और तिथि की गणना</td>
+</tr>
+<tr>
+<td>सावनमान</td>
+<td>व्रत, उपवास, संस्कार आदि कर्मों की गणना</td>
+</tr>
+<tr>
+<td>नाक्षत्रमान</td>
+<td>घटी-पल आदि का विचार</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section class="article-section">
+<h2>४. सौर, चान्द्र, नाक्षत्र और सावन दिन</h2>
+<p>
           जितने समय में सूर्य एक अंश चलते हैं वह एक सौर दिन कहा जाता है,
           सूर्य और चन्द्रमा के बीच १२ अंश की कोणीय दूरी को एक तिथि
           कहते हैं और इस मान को एक चान्द्र दिन कहते हैं।
         </p>
-
-        <p>
+<p>
           एक नक्षत्र के आरम्भ से उसकी समाप्ति तक का समय एक नाक्षत्र दिन
           कहा जाता है और एक सूर्योदय से दूसरे सूर्योदय के मान को एक
           सावन दिन कहते हैं। रविवार, सोमवार आदि की गणना सावन मान के
           अन्तर्गत आती है।
         </p>
-      </section>
-
-      <section class="article-section">
-        <h2>५. वारप्रवृत्ति का शास्त्रीय नियम</h2>
-
-        <div class="important-box">
+</section>
+<section class="article-section">
+<h2>५. वारप्रवृत्ति का शास्त्रीय नियम</h2>
+<div class="important-box">
           अतः वारप्रवृत्ति को सूर्योदय से सूर्योदय तक समझना चाहिए।
           आजकल व्रतादि में प्रायः लोग रात्रि के १२ बजे के बाद दिन का
           परिवर्तन मानकर आहार ग्रहण कर लेते हैं, यह अनुचित है।
           अंग्रेजी दिनांक अंग्रेजी पद्धति के अनुसार मानना चाहिए जबकि
           दिन (वार) सूर्योदय से अगले सूर्योदय तक; इसका ध्यान रखें।
         </div>
-      </section>
+</section>
+<section class="article-section">
+<h2>६. विभिन्न कालमानों का प्रयोग</h2>
+<p>
 
-      <section class="article-section">
-        <h2>६. विभिन्न कालमानों का प्रयोग</h2>
-
-        <p>
-          <strong>
             वर्ष, अयन, ऋतु आदि की गणना सौरमान से, मास और तिथि की गणना
             चान्द्रमान से, व्रत, उपवास, संस्कार आदि कर्मों के लिए गणना
             सावन मान से और घटी-पल आदि का विचार नाक्षत्र मान से करना चाहिये।
-          </strong>
-        </p>
-
-        <div class="shloka-box">
+          
+</p>
+<div class="shloka-box">
           वर्षायनर्तुयुगपूर्वकमत्रसौरात्
-          मासास्तथा च तिथयस्तुहिनांशुमानात्।<br>
+          मासास्तथा च तिथयस्तुहिनांशुमानात्।<br/>
           यत् कृच्छ्रसूतकचिकित्सितवासराद्यं
           तत्सावनाच्च घटिकादिकमार्क्षमानात्॥
         </div>
-      </section>
-
-      <section class="article-section">
-        <h2>७. देवताओं और असुरों का दिन-रात्रि</h2>
-
-        <p>
+</section>
+<section class="article-section">
+<h2>७. देवताओं और असुरों का दिन-रात्रि</h2>
+<p>
           मकर राशि से लेकर मिथुन राशि तक सूर्य के रहने को देवताओं का
           दिन कहते हैं, और इसे ही सौम्यायन भी कहते हैं। इसी प्रकार कर्क
           से लेकर धनु राशि तक सूर्य के रहने पर असुरों का दिन होता है,
           जो याम्यायन कहा जाता है।
         </p>
-
-        <p>
+<p>
           देवताओं का दिन असुरों की रात्रि होती है, इसी प्रकार असुरों का
           दिन देवताओं की रात्रि कही जाती है और ये छह-छह महीनों के होते हैं।
           देवताओं और असुरों के इस दिन-रात्रि को मिलाकर एक दिव्य दिन होता है,
           जिससे दिव्य वर्ष की गणना होती है। इस प्रकार मानवों के ३६० वर्ष
           देवताओं (और असुरों का भी) एक वर्ष होता है।
         </p>
-
-        <p>
+<p>
           मेषसंक्रान्ति (जो आजकल सामान्यतः १३ से १५ अप्रैल के मध्य पड़ती है)
           देवताओं का मध्यदिवस होती है। मकर संक्रान्ति आजकल १४-१५ जनवरी को
           होती है और कर्क संक्रान्ति १५-१६ जुलाई के आसपास होती है।
         </p>
-      </section>
-
-      <section class="article-section">
-        <h2>८. षष्ट्यब्द संवत्सर और “रौद्र” संवत्सर</h2>
-
-        <p>
+</section>
+<section class="article-section">
+<h2>८. षष्ट्यब्द संवत्सर और “रौद्र” संवत्सर</h2>
+<p>
           प्रभावादि कुल ६० संवत्सर होते हैं, जिनकी गणना बृहस्पति से की जाती है।
           इस वर्ष श्रीसूर्यसिद्धान्तीय गणना से स्पष्ट बार्हस्पत्य मान के अनुसार
           वर्षपर्यन्त संकल्प आदि में “रौद्र” नामक संवत्सर का प्रयोग होगा।
         </p>
-      </section>
-
-    </article>
-
-  </main>
-
-  <script>
+</section>
+</article>
+</main><footer class="site-footer">© <span class="site-year"></span> Jyotishiji.com — सर्वाधिकार सुरक्षित</footer>
+<script>document.querySelectorAll('.site-year').forEach(function(el){el.textContent=new Date().getFullYear();});</script>
+<script>
     function setTextValue(data, key) {
       const element = document.getElementById(key);
 
@@ -892,6 +853,5 @@
         document.getElementById("panchangaError").hidden = false;
       });
   </script>
-
 </body>
 </html>

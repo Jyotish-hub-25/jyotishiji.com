@@ -1,313 +1,98 @@
 <!DOCTYPE html>
+
 <html lang="hi">
-
 <head>
-    <meta charset="UTF-8">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>सम्पर्क | Jyotishiji</title>
+<meta content="ज्योतिषीय परामर्श, जन्मपत्रिका, मुहूर्त, ग्रहशान्ति तथा पञ्चाङ्ग सम्बन्धी कार्यों के लिए सम्पर्क करें।" name="description"/>
+<style>
+:root{--site-red:#8b0000;--site-red-dark:#760000;--site-cream:#fffaf0;--site-cream-2:#f5e6cc;--site-brown:#5a2a00;--site-text:#2e2e2e;--site-gold:#d9b36c;}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;min-height:100vh;background:var(--site-cream);color:var(--site-text);font-family:"Noto Serif Devanagari","Sanskrit Text","Nirmala UI","Mangal",serif;font-size:18px;line-height:1.75}
+.site-header{background:var(--site-red);color:#fff;text-align:center;padding:18px 16px 14px;border-bottom:1px solid rgba(255,255,255,.18)}
+.site-header h1{margin:0 0 8px;font-size:clamp(1.55rem,3vw,2rem);line-height:1.35;font-weight:700}
+.site-nav{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:6px 26px}
+.site-nav a{color:#fff;text-decoration:none;font-size:1.05rem;font-weight:600;line-height:1.5;padding:3px 0}
+.site-nav a:hover,.site-nav a:focus-visible{text-decoration:underline;text-underline-offset:4px}
+.site-footer{background:var(--site-red);color:#fff;text-align:center;padding:13px 14px;font-size:.88rem;line-height:1.5;margin-top:auto}
+a{overflow-wrap:anywhere}
+@media(max-width:700px){body{font-size:17px;line-height:1.72}.site-header{padding:14px 10px 12px}.site-nav{gap:5px 15px}.site-nav a{font-size:1rem}}
+@media(max-width:420px){body{font-size:16.5px}.site-nav{gap:4px 12px}.site-nav a{font-size:.98rem}}
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+body{display:flex;flex-direction:column;background:#f8e9cc;color:#3b210c}
+.page-title{text-align:center;padding:42px 20px 22px;background:var(--site-cream-2)}
+.page-title h2{margin:0;color:#6d3000;font-size:clamp(2rem,5vw,2.75rem);line-height:1.35}
+.page-title p{max-width:760px;margin:12px auto 0;font-size:1.02rem;line-height:1.75}
+.contact-container{width:min(92%,760px);margin:24px auto 52px;flex:1}
+.contact-box{background:#fffaf0;border:1px solid #d8bd91;border-radius:12px;padding:30px;box-shadow:0 6px 20px rgba(70,35,10,.10)}
+.contact-box h3{margin:0 0 24px;color:#850000;font-size:1.65rem}.contact-item{margin-bottom:22px}.contact-item:last-child{margin-bottom:0}
+.contact-item strong{display:block;color:#6d3000;margin-bottom:5px;font-size:1.05rem}.contact-item a{color:#8b0000;text-decoration:none;font-weight:700}.contact-item a:hover{text-decoration:underline}.contact-text{margin:0;text-align:justify;text-justify:inter-word}
+@media(max-width:760px){.page-title{padding:32px 16px 20px}.contact-container{width:calc(100% - 28px);margin:18px auto 34px}.contact-box{padding:22px 18px}.contact-box h3{font-size:1.5rem}}
+</style>
 
-    <title>सम्पर्क | Jyotishiji</title>
-
-    <meta name="description"
-          content="ज्योतिषीय परामर्श, जन्मपत्रिका, मुहूर्त, ग्रहशान्ति तथा पञ्चाङ्ग सम्बन्धी कार्यों के लिए सम्पर्क करें।">
-
-    <style>
-
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            font-family: Georgia, "Times New Roman", serif;
-            background-color: #f8e9cc;
-            color: #3b210c;
-            line-height: 1.6;
-        }
-
-        /* Header */
-
-        header {
-            background-color: #990000;
-            color: white;
-            text-align: center;
-            padding: 30px 15px 20px;
-        }
-
-        header h1 {
-            margin: 0 0 12px;
-            font-size: 38px;
-        }
-
-        /* Navigation */
-
-        nav {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 12px 30px;
-        }
-
-        nav a {
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 17px;
-            padding: 5px;
-        }
-
-        nav a:hover {
-            color: #ffd78a;
-        }
-
-        nav a.active {
-            color: #ffd78a;
-            border-bottom: 2px solid #ffd78a;
-        }
-
-        /* Page title */
-
-        .page-title {
-            text-align: center;
-            padding: 50px 20px 25px;
-        }
-
-        .page-title h2 {
-            margin: 0;
-            color: #6d3000;
-            font-size: 44px;
-        }
-
-        .page-title p {
-            max-width: 760px;
-            margin: 12px auto 0;
-            font-size: 18px;
-        }
-
-        /* Contact section */
-
-        .contact-container {
-            width: 92%;
-            max-width: 760px;
-            margin: 20px auto 60px;
-        }
-
-        .contact-box {
-            background-color: #fffaf0;
-            border: 1px solid #d8bd91;
-            border-radius: 10px;
-            padding: 32px;
-
-            box-shadow:
-                0 6px 20px rgba(70, 35, 10, 0.10);
-        }
-
-        .contact-box h3 {
-            margin-top: 0;
-            margin-bottom: 25px;
-            color: #850000;
-            font-size: 30px;
-        }
-
-        .contact-item {
-            margin-bottom: 24px;
-        }
-
-        .contact-item strong {
-            display: block;
-            color: #6d3000;
-            margin-bottom: 5px;
-            font-size: 18px;
-        }
-
-        .contact-item a {
-            color: #8b0000;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .contact-item a:hover {
-            text-decoration: underline;
-        }
-
-        .contact-text {
-            margin: 0;
-        }
-
-        /* Footer */
-
-        footer {
-            background-color: #810000;
-            color: white;
-            text-align: center;
-            padding: 18px;
-        }
-
-        /* Mobile layout */
-
-        @media screen and (max-width: 760px) {
-
-            header h1 {
-                font-size: 29px;
-            }
-
-            nav {
-                gap: 8px 18px;
-            }
-
-            .page-title {
-                padding-top: 35px;
-            }
-
-            .page-title h2 {
-                font-size: 35px;
-            }
-
-            .page-title p {
-                font-size: 16px;
-            }
-
-            .contact-box {
-                padding: 24px 20px;
-            }
-
-            .contact-box h3 {
-                font-size: 26px;
-            }
-
-        }
-
-    </style>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
 </head>
-
-
 <body>
-
-    <header>
-
-        <h1>॥ कालः कलयतामहम् ॥</h1>
-
-        <nav>
-
-            <a href="index.html">
-                Home
-            </a>
-
-            <a href="Articles.html">
-                Articles
-            </a>
-
-            <a href="Panchanga.html">
-                Panchanga
-            </a>
-
-            <a href="Grahashanti.htm">
-                Grahashanti
-            </a>
-
-            <a href="contact.html"
-               class="active">
-                Contact
-            </a>
-
-        </nav>
-
-    </header>
-
-
-    <section class="page-title">
-
-        <h2>सम्पर्क करें</h2>
-
-        <p>
+<header class="site-header">
+<h1>॥ कालः कलयतामहम् ॥</h1>
+<nav aria-label="मुख्य नेविगेशन" class="site-nav">
+<a href="index.html">मुख्यपृष्ठ</a>
+<a href="articles.html">लेख</a>
+<a href="Panchanga.html">पञ्चाङ्ग</a>
+<a href="Grahashanti.htm">ग्रहशान्ति</a>
+<a href="contact.html">सम्पर्क</a>
+</nav></header>
+<section class="page-title">
+<h2>सम्पर्क करें</h2>
+<p>
             ज्योतिषीय परामर्श, जन्मपत्रिका-विवेचन, विवाह एवं गुणमिलान,
             मुहूर्त, ग्रहशान्ति तथा पञ्चाङ्ग सम्बन्धी विषयों के लिए
             नीचे दिये गये माध्यमों से सम्पर्क करें।
         </p>
-
-    </section>
-
-
-    <main class="contact-container">
-
-        <section class="contact-box">
-
-            <h3>सम्पर्क-विवरण</h3>
-
-
-            <div class="contact-item">
-
-                <strong>
+</section>
+<main class="contact-container">
+<section class="contact-box">
+<h3>सम्पर्क-विवरण</h3>
+<div class="contact-item">
+<strong>
                     WhatsApp
                 </strong>
-
-                <p class="contact-text">
+<p class="contact-text">
                     @gcdwivedi
                 </p>
-
-            </div>
-
-
-            <div class="contact-item">
-
-                <strong>
+</div>
+<div class="contact-item">
+<strong>
                     ई-मेल
                 </strong>
-
-                <a href="mailto:jyotishsamvad@gmail.com">
+<a href="mailto:jyotishsamvad@gmail.com">
                     jyotishsamvad@gmail.com
                 </a>
-
-            </div>
-
-
-            <div class="contact-item">
-
-                <strong>
+</div>
+<div class="contact-item">
+<strong>
                     सम्पर्क का समय
                 </strong>
-
-                <p class="contact-text">
+<p class="contact-text">
                     ईमेल किसी भी समय किया जा सकता है। 
                 </p>
-
-            </div>
-
-
-            <div class="contact-item">
-
-                <strong>
+</div>
+<div class="contact-item">
+<strong>
                     जन्मपत्रिका-विवेचन के लिए
                 </strong>
-
-                <p class="contact-text">
+<p class="contact-text">
                     जिनकी कुण्डली दिखानी हो उन जातक का जन्मविवरण (यदि जन्म रात्रि १२ बजे के बाद का हो तो सम्बन्धित दोनों दिनांक का उल्लेख करें), सम्बन्धित प्रश्न, जातक के दोनों हाथों की फोटो के साथ स्पष्ट रूप से लिखकर ईमेल भेजें। एक से अधिक जातकों की कुण्डली दिखानी हो तो प्रत्येक के लिये अलग ईमेल में जानकारी भेजना ठीक होगा|
                 </p>
-
-            </div>
-            
-        </section>
-
-    </main>
-
-
-    <footer>
-
-        © <span id="year"></span>
-        Jyotishiji.com —
-        सर्वाधिकार सुरक्षित
-
-    </footer>
-
-
-    <script>
-
-        document.getElementById("year").textContent =
-            new Date().getFullYear();
-
-    </script>
+</div>
+</section>
+</main>
+<footer class="site-footer">© <span class="site-year"></span> Jyotishiji.com — सर्वाधिकार सुरक्षित</footer>
+<script>document.querySelectorAll('.site-year').forEach(function(el){el.textContent=new Date().getFullYear();});</script>
 
 </body>
-
 </html>
