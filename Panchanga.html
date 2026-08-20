@@ -772,6 +772,248 @@ body{display:flex;flex-direction:column;min-height:100vh}
 </section>
 </aside>
 <article class="article-card">
+    <!-- =========================================================
+     पञ्चाङ्ग : विशेष सूचना एवं आधार
+     इसे <article class="article-card"> के ठीक नीचे रखें
+========================================================= -->
+
+<style>
+  .panchanga-info-stack {
+    margin: 0 0 34px;
+  }
+
+  .panchanga-info-box {
+    margin: 0 0 20px;
+    padding: 18px 20px;
+    background: #eef8f4;
+    border: 1px solid rgba(11, 85, 85, 0.21);
+    border-left: 4px solid var(--primary);
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(24, 62, 58, 0.06);
+  }
+
+  .panchanga-info-box:last-child {
+    margin-bottom: 0;
+  }
+
+  .panchanga-info-box h2 {
+    margin: 0 0 11px;
+    padding: 0 0 7px;
+    color: var(--heading);
+    font-size: 1.20rem;
+    line-height: 1.55;
+    border-bottom: 1px solid rgba(23, 63, 85, 0.16);
+  }
+
+  .panchanga-info-box p {
+    margin: 0 0 12px;
+    line-height: 1.90;
+    text-align: justify;
+    text-align-last: left;
+  }
+
+  .panchanga-info-box p:last-child {
+    margin-bottom: 0;
+  }
+
+  /* आगामी पर्व वाला बॉक्स */
+  .festival-info-box {
+    background: #fff5d8;
+    border-color: rgba(139, 90, 22, 0.25);
+    border-left-color: #b7791f;
+  }
+
+  .festival-info-box h2 {
+    color: #7a4b10;
+    border-bottom-color: rgba(139, 90, 22, 0.18);
+  }
+
+  .festival-name {
+    margin: 0 0 8px;
+    color: var(--secondary);
+    font-size: 1.10rem;
+    font-weight: 700;
+  }
+
+  /* पूरा पढ़ें */
+  .siddhanta-details {
+    margin-top: 7px;
+  }
+
+  .siddhanta-details summary {
+    width: fit-content;
+    margin: 13px auto 0;
+    padding: 7px 15px;
+    color: var(--primary);
+    background: rgba(255, 255, 255, 0.60);
+    border: 1px solid rgba(11, 85, 85, 0.28);
+    border-radius: 7px;
+    font-weight: 700;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+  }
+
+  .siddhanta-details summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .siddhanta-details summary:hover {
+    background: #ffffff;
+  }
+
+  .close-label {
+    display: none;
+  }
+
+  .siddhanta-details[open] .open-label {
+    display: none;
+  }
+
+  .siddhanta-details[open] .close-label {
+    display: inline;
+  }
+
+  .siddhanta-expanded {
+    margin-top: 16px;
+  }
+
+  @media (max-width: 600px) {
+    .panchanga-info-stack {
+      margin-bottom: 28px;
+    }
+
+    .panchanga-info-box {
+      padding: 15px 14px;
+      margin-bottom: 16px;
+      border-left-width: 3px;
+      border-radius: 8px;
+    }
+
+    .panchanga-info-box h2 {
+      font-size: 1.18rem;
+    }
+
+    .panchanga-info-box p {
+      font-size: 1.04rem;
+      line-height: 1.88;
+    }
+  }
+</style>
+
+
+<div class="panchanga-info-stack">
+
+
+  <!-- 1. आगामी पर्व / विशेष विचार -->
+  <section class="panchanga-info-box festival-info-box">
+
+    <h2>आगामी पर्व / विशेष विचार</h2>
+
+    <div class="festival-name">रक्षाबन्धन</div>
+
+    <p>
+      रक्षाबन्धन पर्व की तिथि, भद्रा-विचार, शास्त्रसम्मत
+      रक्षाबन्धन-काल तथा इससे सम्बन्धित आवश्यक शास्त्रीय विचार
+      यहाँ प्रस्तुत किये जाएँगे।
+    </p>
+
+  </section>
+
+
+  <!-- 2. पञ्चाङ्ग के आधार -->
+  <section class="panchanga-info-box">
+
+    <h2>पञ्चाङ्ग के आधार <small style="font-weight:400;">(संक्षिप्त सूचना)</small></h2>
+
+    <p>
+      पञ्चाङ्ग दो शब्दों—“पञ्च” व “अङ्ग”—से मिलकर बना है।
+      अतः इसमें मुख्यतः पाँच अङ्गों—वार, तिथि, नक्षत्र,
+      करण व योग—का समावेश होता है।
+    </p>
+
+    <p>
+      पञ्चाङ्ग-निर्माण का आधार स्थानीय सूर्योदय होता है,
+      जो स्थानानुसार भिन्न होता है; इसलिये पूरे भारत के लिये
+      कोई एक पञ्चाङ्ग लागू नहीं किया जा सकता।
+      यहाँ प्रदर्शित श्रीसूर्यसिद्धान्तीय पञ्चाङ्ग भी
+      स्थानीय सूर्योदय-आधारित है। अतः शुद्ध पञ्चाङ्ग देखने के लिये
+      उपयोगकर्ता को अपने निकटतम स्थान का चयन करना चाहिये।
+    </p>
+
+  </section>
+
+
+  <!-- 3. श्रीसूर्यसिद्धान्तीय व दृक्पक्षीय पञ्चाङ्ग -->
+  <section class="panchanga-info-box">
+
+    <h2>श्रीसूर्यसिद्धान्तीय व दृक्पक्षीय पञ्चाङ्ग में अन्तर</h2>
+
+    <p>
+      जिस प्रकार प्लेनेटोरियम में ब्रह्माण्ड, सौरमण्डल,
+      आकाशगंगा आदि के कृत्रिम प्रतिरूप दिखाये जाते हैं,
+      जबकि उनका वास्तविक अस्तित्व अन्यत्र होता है;
+      उसी प्रकार भूलोक के पाञ्चभौतिक ग्रहपिण्ड
+      ज्योतिषीय ग्रहदेवताओं के प्रतिनिधि हैं।
+      ग्रहदेवता भुवर्लोक में रहते हैं और जीवों के कर्मफल देने की
+      शक्ति उन्हीं में होती है, भौतिक ग्रहपिण्डों में नहीं।
+    </p>
+
+    <p>
+      आधुनिक दूरबीनों से भौतिक ग्रहपिण्ड देखे जा सकते हैं,
+      ज्योतिषीय नवग्रह नहीं। खगोलीय कार्यों के लिये
+      Astronomical गणना तथा ज्योतिषीय फल-विचार के लिये
+      Astrological गणना का अपना पृथक् प्रयोजन है।
+    </p>
+
+
+    <details class="siddhanta-details">
+
+      <summary>
+        <span class="open-label">पूरा पढ़ें ▼</span>
+        <span class="close-label">संक्षिप्त करें ▲</span>
+      </summary>
+
+      <div class="siddhanta-expanded">
+
+        <p>
+          आजकल के अधिकांश सॉफ्टवेयर भौतिक ग्रहपिण्डों की
+          गणना पर आधारित होते हैं, इसलिये उनके मान
+          श्रीसूर्यसिद्धान्तीय गणना से भिन्न होते हैं।
+        </p>
+
+        <p>
+          जहाँ रॉकेट आदि के लिये ग्रहों की भौतिक स्थिति जाननी हो,
+          वहाँ खगोलीय (Astronomical) गणना आवश्यक है;
+          परन्तु जहाँ ज्योतिष के माध्यम से अदृष्ट फल का विचार
+          करना हो, वहाँ ज्योतिषीय (Astrological) गणना की
+          आवश्यकता होती है।
+        </p>
+
+        <p>
+          ग्रहण आदि प्रत्यक्ष खगोलीय घटनाओं के लिये
+          दृग्पक्षीय गणना ग्रहण की जा सकती है, परन्तु
+          जन्मकुण्डली-निर्माण आदि ज्योतिषीय कार्यों में
+          दृग्पक्षीय गणना का ग्रहण नहीं करना चाहिये।
+        </p>
+
+        <p>
+          ज्योतिष का प्रमाण ग्रहों का दिखाई देना नहीं,
+          बल्कि फलित की सत्यता है। अतः ज्योतिषीय प्रयोजनों के लिये
+          श्रीसूर्यसिद्धान्तीय गणना ही प्रयुक्त होनी चाहिये।
+        </p>
+
+      </div>
+
+    </details>
+
+  </section>
+
+</div>
+
+<!-- =========================================================
+     नये बॉक्स समाप्त
+========================================================= -->
 <p class="article-invocation">॥ॐ कालात्मने नमः॥</p>
 <h1 class="article-title">भारतीय काल गणना के आधार</h1>
 <p class="article-subtitle">
