@@ -1,0 +1,1997 @@
+<!DOCTYPE html>
+
+<html lang="hi">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="श्रीसूर्यसिद्धान्तीय काशीस्थ दैनिक पञ्चाङ्ग तथा भारतीय काल गणना के आधार।" name="description"/>
+<title>श्रीसूर्यसिद्धान्तीय काशीस्थ पञ्चाङ्ग एवं भारतीय काल गणना</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root{--site-red:#8b0000;--site-red-dark:#760000;--site-cream:#fffaf0;--site-cream-2:#f5e6cc;--site-brown:#5a2a00;--site-text:#2e2e2e;--site-gold:#d9b36c;}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;min-height:100vh;background:var(--site-cream);color:var(--site-text);font-family:"Noto Serif Devanagari","Sanskrit Text","Nirmala UI","Mangal",serif;font-size:18px;line-height:1.75}
+.site-header{background:var(--site-red);color:#fff;text-align:center;padding:18px 16px 14px;border-bottom:1px solid rgba(255,255,255,.18)}
+.site-header h1{margin:0 0 8px;font-size:clamp(1.55rem,3vw,2rem);line-height:1.35;font-weight:700}
+.site-nav{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:6px 26px}
+.site-nav a{color:#fff;text-decoration:none;font-size:1.05rem;font-weight:600;line-height:1.5;padding:3px 0}
+.site-nav a:hover,.site-nav a:focus-visible{text-decoration:underline;text-underline-offset:4px}
+.site-footer{background:var(--site-red);color:#fff;text-align:center;padding:13px 14px;font-size:.88rem;line-height:1.5;margin-top:auto}
+a{overflow-wrap:anywhere}
+@media(max-width:700px){body{font-size:17px;line-height:1.72}.site-header{padding:14px 10px 12px}.site-nav{gap:5px 15px}.site-nav a{font-size:1rem}}
+@media(max-width:420px){body{font-size:16.5px}.site-nav{gap:4px 12px}.site-nav a{font-size:.98rem}}
+
+    :root {
+      --page-background: #edf5f2;
+      --panchanga-background: #dcf8d8;
+      --article-background: #fffaf0;
+      --primary: #0b5555;
+      --secondary: #8b5a16;
+      --heading: #173f55;
+      --text: #151515;
+      --muted: #4b4b4b;
+      --border: rgba(11, 85, 85, 0.22);
+      --shadow: 0 8px 26px rgba(24, 62, 58, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background:
+        radial-gradient(
+          circle at top left,
+          rgba(255, 255, 255, 0.9),
+          transparent 34%
+        ),
+        var(--page-background);
+      color: var(--text);
+
+      font-family:
+        "Noto Serif Devanagari",
+        "Sanskrit Text",
+        "Nirmala UI",
+        "Mangal",
+        serif;
+    }
+
+    .page-shell {
+      width: min(100%, 1364px);
+      margin: 0 auto;
+      padding: 22px;
+      display: grid;
+      grid-template-columns:
+        minmax(410px, 0.82fr)
+        minmax(0, 1.18fr);
+      gap: 26px;
+      align-items: start;
+    }
+
+    .panchanga-column {
+  position: sticky;
+  top: 14px;
+  align-self: start;
+}
+
+    .panchanga-card,
+    .article-card {
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .panchanga-card {
+      padding: 20px 27px 18px;
+      background:
+        linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.30),
+          transparent 34%
+        ),
+        var(--panchanga-background);
+      border-top: 1px solid rgba(255, 255, 255, 0.75);
+      border-bottom: 1px solid var(--border);
+      border-left: 5px solid var(--primary);
+      border-right: 5px solid var(--primary);
+    }
+
+    .panchanga-title {
+      margin-bottom: 16px;
+      text-align: center;
+      line-height: 1.62;
+    }
+
+    .ganesh-heading {
+      margin: 0 0 5px;
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    .main-panchanga-heading {
+      margin: 0;
+      color: var(--heading);
+      font-size: 1.19rem;
+      font-weight: 700;
+    }
+
+    .panchanga-section {
+      margin-bottom: 14px;
+      line-height: 1.62;
+    }
+
+    .data-row {
+      display: grid;
+      grid-template-columns: 108px 16px minmax(0, 1fr);
+      align-items: start;
+      margin: 2px 0;
+    }
+
+    .data-label {
+      font-weight: 700;
+    }
+
+    .normal-label {
+      font-weight: 400;
+    }
+
+    .dash {
+      text-align: center;
+    }
+
+    .data-value {
+      min-width: 0;
+      overflow-wrap: break-word;
+    }
+
+    .moon-note {
+      margin: 3px 0 0;
+      line-height: 1.68;
+    }
+
+    .special-section {
+      margin: 0 0 14px;
+      padding: 9px 12px;
+      background: rgba(255, 251, 220, 0.8);
+      border: 1px solid rgba(139, 90, 22, 0.24);
+      border-radius: 8px;
+      line-height: 1.62;
+    }
+
+    .date-section {
+      margin-top: 17px;
+      line-height: 1.7;
+    }
+
+    .shiv-sankalp {
+      margin: 12px 0 0;
+      color: var(--heading);
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .separator {
+      width: fit-content;
+      margin: 1px auto 3px;
+      line-height: 1.2;
+      text-align: center;
+    }
+
+    .admin-note {
+      margin: 3px 0 0;
+      color: #333;
+      font-size: 0.92rem;
+      line-height: 1.45;
+      text-align: center;
+    }
+
+    .article-card {
+      padding: 31px 38px 40px;
+      background:
+        linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.72),
+          transparent 26%
+        ),
+        var(--article-background);
+      border: 1px solid rgba(139, 90, 22, 0.22);
+      border-left: 5px solid #b67624;
+    }
+
+    .article-invocation {
+      margin: 0 0 13px;
+      color: var(--secondary);
+      font-size: 1.08rem;
+      font-weight: 700;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    .article-title {
+      margin: 0;
+      color: var(--heading);
+      font-size: clamp(1.55rem, 2.2vw, 2.12rem);
+      line-height: 1.42;
+      text-align: center;
+    }
+
+    .article-subtitle {
+      margin: 8px 0 29px;
+      color: var(--heading);
+      font-size: clamp(1.02rem, 1.4vw, 1.23rem);
+      font-weight: 600;
+      line-height: 1.65;
+      text-align: center;
+    }
+
+    .article-section {
+      margin-top: 29px;
+    }
+
+    .article-section:first-of-type {
+      margin-top: 0;
+    }
+
+    .article-section h2 {
+      margin: 0 0 12px;
+      padding-bottom: 7px;
+      color: var(--heading);
+      font-size: 1.2rem;
+      line-height: 1.55;
+      border-bottom: 1px solid rgba(23, 63, 85, 0.18);
+    }
+
+    .article-card p {
+  margin: 0 0 15px;
+  line-height: 1.96;
+  text-align: justify;
+  text-align-last: left;
+  text-justify: inter-word;
+  overflow-wrap: break-word;
+}
+
+.article-card .article-invocation,
+.article-card .article-subtitle {
+  text-align: center;
+  text-align-last: center;
+}
+
+    .shloka-box {
+      margin: 19px 0;
+      padding: 16px 19px;
+      background: #fff5d8;
+      border: 1px solid rgba(139, 90, 22, 0.23);
+      border-left: 4px solid #b7791f;
+      border-radius: 8px;
+      color: #412f13;
+      font-weight: 600;
+      line-height: 2.05;
+      text-align: center;
+    }
+
+    .important-box {
+  margin: 20px 0;
+  padding: 15px 17px;
+  background: #eef8f4;
+  border: 1px solid rgba(11, 85, 85, 0.21);
+  border-left: 4px solid var(--primary);
+  border-radius: 8px;
+  line-height: 1.9;
+  text-align: justify;
+  text-align-last: left;
+  text-justify: inter-word;
+  overflow-wrap: break-word;
+}
+
+    .important-box strong {
+      color: var(--primary);
+    }
+
+    .kalman-table-wrap {
+      margin: 20px 0;
+      overflow-x: auto;
+      border: 1px solid rgba(23, 63, 85, 0.16);
+      border-radius: 10px;
+    }
+
+    .kalman-table {
+      width: 100%;
+      min-width: 520px;
+      border-collapse: collapse;
+      background: rgba(255, 255, 255, 0.52);
+    }
+
+    .kalman-table th,
+    .kalman-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(23, 63, 85, 0.13);
+      vertical-align: top;
+      line-height: 1.7;
+      text-align: left;
+    }
+
+    .kalman-table th {
+      color: var(--heading);
+      background: rgba(23, 63, 85, 0.06);
+      font-weight: 700;
+    }
+
+    .kalman-table tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .error-message {
+      margin-top: 12px;
+      padding: 14px;
+      color: #8b0000;
+      background-color: #fff0f0;
+      border: 1px solid #d7a3a3;
+      border-radius: 7px;
+      line-height: 1.65;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    @media (max-width: 980px) {
+      body {
+        padding: 0;
+      }
+
+      .page-shell {
+        padding: 14px;
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .panchanga-column {
+        position: static;
+      }
+
+      .panchanga-card {
+        max-width: 760px;
+        margin: 0 auto;
+      }
+    }
+
+    @media (max-width: 600px) {
+  body {
+    padding: 0;
+    font-size: 17px;
+  }
+
+  .page-shell { padding: 8px; }
+
+  .panchanga-card,
+  .article-card {
+    border-radius: 9px;
+  }
+
+  .panchanga-card {
+    padding: 17px 13px 15px;
+    border-left-width: 3px;
+    border-right-width: 3px;
+    font-size: 1.08rem;
+  }
+
+  .article-card {
+    padding: 24px 16px 30px;
+    border-left-width: 3px;
+    font-size: 1.08rem;
+  }
+
+  .ganesh-heading {
+    font-size: 1.12rem;
+  }
+
+  .main-panchanga-heading {
+    font-size: 1.18rem;
+    line-height: 1.6;
+  }
+
+  .article-invocation {
+    font-size: 1.12rem;
+  }
+
+  .article-title {
+    font-size: 1.75rem;
+    line-height: 1.4;
+  }
+
+  .article-subtitle {
+    font-size: 1.14rem;
+    line-height: 1.6;
+  }
+
+  .panchanga-section {
+    margin-bottom: 12px;
+  }
+
+  .data-row {
+    grid-template-columns: 92px 13px minmax(0, 1fr);
+    font-size: 1.05rem;
+  }
+
+  .moon-note {
+    font-size: 1.03rem;
+    line-height: 1.7;
+  }
+
+  .date-section {
+    font-size: 1.03rem;
+  }
+
+  .shiv-sankalp,
+  .separator,
+  .admin-note {
+    font-size: 1rem;
+  }
+
+  .article-section h2 {
+    font-size: 1.24rem;
+  }
+
+  .article-card p,
+  .important-box,
+  .shloka-box,
+  .kalman-table th,
+  .kalman-table td {
+    font-size: 1.04rem;
+    line-height: 1.92;
+  }
+}
+  
+body{display:flex;flex-direction:column;min-height:100vh}
+.site-header{flex:0 0 auto}
+.page-shell{flex:1}
+.site-footer{margin-top:0}
+@media(max-width:600px){.kalman-table{min-width:0}.kalman-table th,.kalman-table td{padding:10px 8px}.kalman-table th:first-child,.kalman-table td:first-child{width:34%}}
+
+/* ===== स्थान/दिनाङ्क चयन-पट्ट : केवल बाएँ पञ्चाङ्ग के ऊपर ===== */
+.panchanga-selector{
+  width:100%;
+  margin:0 0 12px;
+  padding:11px 12px 12px;
+  background:#fffaf0;
+  border:1px solid rgba(11,85,85,.20);
+  border-top:3px solid var(--primary);
+  border-radius:10px;
+  box-shadow:0 4px 14px rgba(24,62,58,.08);
+}
+.panchanga-selector-title{
+  margin:0 0 8px;
+  color:var(--heading);
+  font-size:.96rem;
+  line-height:1.45;
+  font-weight:700;
+  text-align:center;
+}
+.panchanga-selector-grid{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto;
+  gap:7px;
+  align-items:end;
+}
+.panchanga-selector-field label{
+  display:block;
+  margin:0 0 2px;
+  color:#222;
+  font-size:.83rem;
+  line-height:1.35;
+  font-weight:600;
+}
+.panchanga-selector select,
+.panchanga-selector input,
+.panchanga-selector button{
+  min-height:36px;
+  border-radius:6px;
+  font-family:"Noto Serif Devanagari","Sanskrit Text","Nirmala UI","Mangal",serif;
+  font-size:.88rem;
+}
+.panchanga-selector select,
+.panchanga-selector input{
+  width:100%;
+  padding:5px 7px;
+  color:#111;
+  background:#fff;
+  border:1px solid #b9caca;
+}
+.panchanga-selector button{
+  min-width:94px;
+  padding:5px 9px;
+  color:#fff;
+  background:var(--primary);
+  border:0;
+  font-weight:700;
+  cursor:pointer;
+}
+.panchanga-selector button:hover{filter:brightness(.92)}
+.panchanga-selector-status{
+  margin:6px 0 0;
+  color:#555;
+  font-size:.78rem;
+  line-height:1.45;
+  text-align:center;
+}
+.panchanga-selector-warning{
+  margin:7px 0 0;
+  padding:7px 8px;
+  color:#5a4300;
+  background:#fff6d8;
+  border:1px solid #dabf77;
+  border-radius:6px;
+  font-size:.76rem;
+  line-height:1.45;
+}
+@media(max-width:600px){
+  .panchanga-selector{
+    margin-bottom:9px;
+    padding:10px 10px 11px;
+  }
+  .panchanga-selector-grid{
+    grid-template-columns:1fr;
+    gap:6px;
+  }
+  .panchanga-selector button{
+    width:100%;
+  }
+  .panchanga-selector select,
+  .panchanga-selector input,
+  .panchanga-selector button{
+    min-height:39px;
+    font-size:.95rem;
+  }
+}
+
+
+.panchanga-selector-range{
+  margin:7px 0 0;
+  padding-top:7px;
+  border-top:1px solid rgba(11,85,85,.14);
+  color:var(--heading);
+  font-size:.80rem;
+  line-height:1.48;
+  font-weight:600;
+  text-align:center;
+}
+@media(max-width:600px){
+  .panchanga-selector-range{
+    font-size:.88rem;
+  }
+}
+
+</style>
+</head>
+<body>
+<header class="site-header">
+<h1>॥ कालः कलयतामहम् ॥</h1>
+<nav aria-label="मुख्य नेविगेशन" class="site-nav">
+<a href="index.html">मुख्यपृष्ठ</a>
+<a href="articles.html">लेख</a>
+<a href="Panchanga.html">पञ्चाङ्ग</a>
+<a href="Grahashanti.htm">ग्रहशान्ति</a>
+<a href="contact.html">सम्पर्क</a>
+</nav></header><main class="page-shell">
+<aside class="panchanga-column">
+
+<section class="panchanga-card">
+<header class="panchanga-title">
+<p class="ganesh-heading">॥ॐ श्रीगणेशाय नमः॥</p>
+<p class="main-panchanga-heading">
+            ॥श्रीसूर्यसिद्धान्तीय
+            <span aria-hidden="true">🌞</span>
+            <span id="placeHeading">काशीस्थ पञ्चाङ्ग</span>॥
+          </p>
+</header>
+<div id="panchangaContent">
+<section class="panchanga-section">
+<div class="data-row">
+<span class="data-label normal-label">विक्रम सम्वत</span>
+<span class="dash">-</span>
+<span class="data-value" id="vikramSamvat"></span>
+</div>
+<div class="data-row">
+<span class="data-label normal-label">शक सम्वत</span>
+<span class="dash">-</span>
+<span class="data-value" id="shakSamvat"></span>
+</div>
+</section>
+<section class="panchanga-section">
+<div class="data-row">
+<span class="data-label normal-label">ऋतु</span>
+<span class="dash">-</span>
+<span class="data-value" id="ritu"></span>
+</div>
+</section>
+<section class="panchanga-section">
+<div class="data-row">
+<span class="data-label normal-label">मास व पक्ष</span>
+<span class="dash">-</span>
+<span class="data-value" id="maasPaksha"></span>
+</div>
+</section>
+<section class="panchanga-section">
+<div class="data-row">
+<span class="data-label">वार</span>
+<span class="dash">-</span>
+<span class="data-value" id="vaar"></span>
+</div>
+</section>
+<section class="panchanga-section">
+<div class="data-row">
+<span class="data-label">तिथि</span>
+<span class="dash">-</span>
+<span class="data-value" id="tithi"></span>
+</div>
+<div class="data-row">
+<span class="data-label">नक्षत्र</span>
+<span class="dash">-</span>
+<span class="data-value" id="nakshatra"></span>
+</div>
+<p class="moon-note" id="chandraRashi"></p>
+</section>
+<section class="panchanga-section">
+<div class="data-row">
+<span class="data-label">करण १</span>
+<span class="dash">-</span>
+<span class="data-value" id="karan1"></span>
+</div>
+<div class="data-row">
+<span class="data-label">करण २</span>
+<span class="dash">-</span>
+<span class="data-value" id="karan2"></span>
+</div>
+<div class="data-row" hidden="" id="karan3Row">
+<span class="data-label">करण ३</span>
+<span class="dash">-</span>
+<span class="data-value" id="karan3"></span>
+</div>
+<div class="data-row" hidden="" id="karan4Row">
+<span class="data-label">करण ४</span>
+<span class="dash">-</span>
+<span class="data-value" id="karan4"></span>
+</div>
+</section>
+<section class="panchanga-section">
+<div class="data-row">
+<span class="data-label">योग</span>
+<span class="dash">-</span>
+<span class="data-value" id="yoga"></span>
+</div>
+</section>
+<section class="panchanga-section">
+<div class="data-row">
+<span class="data-label normal-label">सूर्योदय</span>
+<span class="dash">-</span>
+<span class="data-value" id="sunrise"></span>
+</div>
+<div class="data-row">
+<span class="data-label normal-label">सूर्यास्त</span>
+<span class="dash">-</span>
+<span class="data-value" id="sunset"></span>
+</div>
+</section>
+<section class="panchanga-section">
+<div class="data-row">
+<span class="data-label normal-label">दिशाशूल</span>
+<span class="dash">-</span>
+<span class="data-value" id="dishashool"></span>
+</div>
+</section>
+<section class="special-section" hidden="" id="visheshRow">
+<div class="data-row">
+<span class="data-label">विशेष</span>
+<span class="dash">-</span>
+<span class="data-value" id="vishesh"></span>
+</div>
+</section>
+<section class="date-section">
+            ख्रिष्टीय वर्षानुसार दिनाङ्क
+            <strong id="date"></strong>
+</section>
+<footer>
+<p class="shiv-sankalp">॥तन्मेमनः शिवसङ्कल्पमस्तु॥</p>
+<p class="separator">********************</p>
+<p class="admin-note">(कृपया समय २४ घण्टे के प्रारूप में पढ़ें)</p>
+</footer>
+</div>
+<div class="error-message" hidden="" id="panchangaError">
+          पञ्चाङ्ग विवरण प्रदर्शित नहीं हो सका।
+          कृपया panchanga-data.json की जाँच करें।
+        </div>
+</section>
+
+<section class="panchanga-selector">
+  <p class="panchanga-selector-title">स्थान एवं दिनाङ्कानुसार पञ्चाङ्ग</p>
+
+  <div class="panchanga-selector-grid">
+    <div class="panchanga-selector-field">
+      <label for="fileLink">स्थान</label>
+      <select id="fileLink">
+        <option value="">स्थान चुनें</option>
+
+        <option
+          data-place="kashi"
+          selected
+          value="https://dl.dropboxusercontent.com/scl/fi/f0wbxmv8o980slrf9tu78/kashi2026.xlsx?rlkey=rcg3wqkgtr5h96eagaq9lrhsr&amp;st=9qdszwtc"
+        >काशी</option>
+
+        <option
+          data-place="jammu"
+          value="https://dl.dropboxusercontent.com/scl/fi/0bqwm2tujar29lx3lojkk/Jammu2026.xlsx?rlkey=zh2ilevfrdcyg0eav0xitcr58&amp;st=861magrj"
+        >जम्मू</option>
+
+        <option
+          data-place="jaipur"
+          value="https://dl.dropboxusercontent.com/scl/fi/pfs2i8vwidu9ae30a74ge/Jaipur2026.xlsx?rlkey=zgnab4o66ualfuv0z10mxf3ef&amp;st=8od76qgz"
+        >जयपुर</option>
+
+        <option
+          data-place="darbhanga"
+          value="https://dl.dropboxusercontent.com/scl/fi/80ko4l0ahvm5pfyzbcubi/Darbhanga2026.xlsx?rlkey=pjb5cffap0t0ysy2b244361co&amp;st=5cbwkijc&amp;dl=0"
+        >दरभङ्गा</option>
+
+        <option
+          data-place="delhi"
+          value="https://dl.dropboxusercontent.com/scl/fi/14dto41n2vzhw7x6qio60/NewDelhi2026.xlsx?rlkey=ktm6wgjgpykq2g50mz0oi8m9r&amp;st=xtvigu8y"
+        >नई दिल्ली</option>
+
+        <option
+          data-place="ludhiana"
+          value="https://dl.dropboxusercontent.com/scl/fi/vujop3gfrrvvb9ym4mrcc/Ludhiana2026.xlsx?rlkey=jwgiee421mbdijv25xpx6p5rd&amp;st=6gss7hi5"
+        >लुधियाना</option>
+      </select>
+    </div>
+
+    <div class="panchanga-selector-field" id="dateField">
+      <label for="datePicker">दिनाङ्क</label>
+      <input type="date" id="datePicker"/>
+    </div>
+
+    <button id="selectorButton" type="button" onclick="handleSelectorButton()">
+      पञ्चाङ्ग देखें
+    </button>
+  </div>
+
+  <p class="panchanga-selector-range" id="availableRange">
+    उपलब्ध पञ्चाङ्ग-अवधि आँकड़े लोड होने पर यहाँ दिखाई जाएगी।
+  </p>
+
+  <p class="panchanga-selector-status" id="selectorStatus">आज का काशीस्थ पञ्चाङ्ग लोड हो रहा है...</p>
+  <div class="panchanga-selector-warning" id="selectorWarning" hidden></div>
+</section>
+</aside>
+<article class="article-card">
+    <!-- =========================================================
+     पञ्चाङ्ग : विशेष सूचना एवं आधार
+     इसे <article class="article-card"> के ठीक नीचे रखें
+========================================================= -->
+
+<style>
+  .panchanga-info-stack {
+    margin: 0 0 34px;
+  }
+
+  .panchanga-info-box {
+    margin: 0 0 20px;
+    padding: 18px 20px;
+    background: #eef8f4;
+    border: 1px solid rgba(11, 85, 85, 0.21);
+    border-left: 4px solid var(--primary);
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(24, 62, 58, 0.06);
+  }
+
+  .panchanga-info-box:last-child {
+    margin-bottom: 0;
+  }
+
+  .panchanga-info-box h2 {
+    margin: 0 0 11px;
+    padding: 0 0 7px;
+    color: var(--heading);
+    font-size: 1.20rem;
+    line-height: 1.55;
+    border-bottom: 1px solid rgba(23, 63, 85, 0.16);
+  }
+
+  .panchanga-info-box p {
+    margin: 0 0 12px;
+    line-height: 1.90;
+    text-align: justify;
+    text-align-last: left;
+  }
+
+  .panchanga-info-box p:last-child {
+    margin-bottom: 0;
+  }
+
+  /* आगामी पर्व वाला बॉक्स */
+  .festival-info-box {
+    background: #fff5d8;
+    border-color: rgba(139, 90, 22, 0.25);
+    border-left-color: #b7791f;
+  }
+
+  .festival-info-box h2 {
+    color: #7a4b10;
+    border-bottom-color: rgba(139, 90, 22, 0.18);
+  }
+
+  .festival-name {
+    margin: 0 0 8px;
+    color: var(--secondary);
+    font-size: 1.10rem;
+    font-weight: 700;
+  }
+
+  /* पूरा पढ़ें */
+  .siddhanta-details {
+    margin-top: 7px;
+  }
+
+  .siddhanta-details summary {
+    width: fit-content;
+    margin: 13px auto 0;
+    padding: 7px 15px;
+    color: var(--primary);
+    background: rgba(255, 255, 255, 0.60);
+    border: 1px solid rgba(11, 85, 85, 0.28);
+    border-radius: 7px;
+    font-weight: 700;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+  }
+
+  .siddhanta-details summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .siddhanta-details summary:hover {
+    background: #ffffff;
+  }
+
+  .close-label {
+    display: none;
+  }
+
+  .siddhanta-details[open] .open-label {
+    display: none;
+  }
+
+  .siddhanta-details[open] .close-label {
+    display: inline;
+  }
+
+  .siddhanta-expanded {
+    margin-top: 16px;
+  }
+
+  @media (max-width: 600px) {
+    .panchanga-info-stack {
+      margin-bottom: 28px;
+    }
+
+    .panchanga-info-box {
+      padding: 15px 14px;
+      margin-bottom: 16px;
+      border-left-width: 3px;
+      border-radius: 8px;
+    }
+
+    .panchanga-info-box h2 {
+      font-size: 1.18rem;
+    }
+
+    .panchanga-info-box p {
+      font-size: 1.04rem;
+      line-height: 1.88;
+    }
+  }
+</style>
+
+
+<div class="panchanga-info-stack">
+
+
+  <!-- 1. आगामी पर्व / विशेष विचार -->
+  <section class="panchanga-info-box festival-info-box" id="festivalInfoBox" hidden>
+
+    <h2>आगामी पर्व / विशेष विचार</h2>
+
+    <div class="festival-name" id="festivalName"></div>
+
+    <div id="festivalSummary"></div>
+
+    <details class="siddhanta-details" id="festivalDetailsBox">
+      <summary>
+        <span class="open-label">पूरा पढ़ें ▼</span>
+        <span class="close-label">संक्षिप्त करें ▲</span>
+      </summary>
+
+      <div class="siddhanta-expanded" id="festivalDetails"></div>
+    </details>
+
+  </section>
+
+  <script>
+  /* =========================================================
+     आगामी पर्व / विशेष विचार
+     भविष्य में पर्व बदलने के लिये केवल इसी FESTIVAL_NOTICE
+     वस्तु की सामग्री बदलें। नीचे का render-code न बदलें।
+  ========================================================= */
+  const FESTIVAL_NOTICE = {
+    active: true,
+
+    name: "श्रावणी पर्व एवं रक्षाबन्धन",
+
+    summary: `
+      <p>
+        शास्त्र के अनुसार श्रावणशुक्लपूर्णिमा को श्रावणी पर्व मनाया जाता है।
+        श्रावणी उपाकर्म भद्रा में नहीं करना चाहिये तथा रक्षासूत्रबन्धन के लिये भी
+        भद्रा का त्याग करना चाहिये।
+      </p>
+
+      <p>
+        <strong>
+          इस वर्ष श्रावणशुक्लपूर्णिमा अंग्रजी दिनाङ्क २८ अगस्त को है और इस दिन
+          भद्रा नहीं है; अतः रक्षासूत्रबन्धन पूरे दिन किया जा सकता है।
+        </strong>
+      </p>
+    `,
+
+    details: `
+      <p>
+        शास्त्र के अनुसार श्रावणशुक्लपूर्णिमा को श्रावणी पर्व मनाया जाता है।
+        वस्तुतः श्रावणी उपाकर्म द्विजमात्र के लिये प्रशस्त है जिसमें ब्राह्मण
+        यज्ञोपवीत पूजन आदि का कार्य करते हैं।
+      </p>
+
+      <p>
+        पूर्व में धर्म के रक्षार्थ ब्राह्मण पुरोहित सभी को अभिमन्त्रित रक्षासूत्र
+        का बन्धन कर धर्मपर चलने के लिये वचनबद्ध तथा धर्म के रक्षार्थ आबद्ध करते थे।
+      </p>
+
+      <p>
+        यद्यपि भाई बहन का पारम्परिक पर्व भ्रातृद्वितीया (भैयादूज) है तथापि
+        कालान्तर में श्रावणी का पर्व बहन के रक्षार्थ भाई के सङ्कल्प और उसके
+        पुनःस्मरण करने हेतु मनाया जाने लगा। इस प्रकार यह पर्व भाईबहन के पर्व के
+        रूप में वर्तमान में जाना जाता है।
+      </p>
+
+      <p>
+        श्रावणी उपाकर्म भद्रा में नहीं करना चाहिये रक्षासूत्रबन्धन के लिये भी
+        भद्रा का त्याग करना चाहिये।
+      </p>
+
+      <p>
+        <strong>
+          इस वर्ष श्रावणशुक्लपूर्णिमा अंग्रजी दिनाङ्क २८ अगस्त को है और इस दिन
+          भद्रा नहीं है अतः रक्षासूत्रबन्धन पूरे दिन किया जा सकता है।
+        </strong>
+      </p>
+    `
+  };
+
+  (function renderFestivalNotice(){
+    const box = document.getElementById("festivalInfoBox");
+    const name = document.getElementById("festivalName");
+    const summary = document.getElementById("festivalSummary");
+    const detailsBox = document.getElementById("festivalDetailsBox");
+    const details = document.getElementById("festivalDetails");
+
+    if (!box) return;
+
+    if (!FESTIVAL_NOTICE.active) {
+      box.hidden = true;
+      return;
+    }
+
+    name.textContent = FESTIVAL_NOTICE.name || "";
+    summary.innerHTML = FESTIVAL_NOTICE.summary || "";
+    details.innerHTML = FESTIVAL_NOTICE.details || "";
+    detailsBox.hidden = !String(FESTIVAL_NOTICE.details || "").trim();
+    box.hidden = false;
+  })();
+  </script>
+
+
+  <!-- 2. पञ्चाङ्ग के आधार -->
+  <section class="panchanga-info-box">
+
+    <h2>पञ्चाङ्ग के आधार <small style="font-weight:400;">(संक्षिप्त सूचना)</small></h2>
+
+    <p>
+      पञ्चाङ्ग दो शब्दों—“पञ्च” व “अङ्ग”—से मिलकर बना है।
+      अतः इसमें मुख्यतः पाँच अङ्गों—वार, तिथि, नक्षत्र,
+      करण व योग—का समावेश होता है।
+    </p>
+
+    <p>
+      पञ्चाङ्ग-निर्माण का आधार स्थानीय सूर्योदय होता है,
+      जो स्थानानुसार भिन्न होता है; इसलिये पूरे भारत के लिये
+      कोई एक पञ्चाङ्ग लागू नहीं किया जा सकता।
+      यहाँ प्रदर्शित श्रीसूर्यसिद्धान्तीय पञ्चाङ्ग भी
+      स्थानीय सूर्योदय-आधारित है। अतः शुद्ध पञ्चाङ्ग देखने के लिये
+      उपयोगकर्ता को अपने निकटतम स्थान का चयन करना चाहिये।
+    </p>
+
+  </section>
+
+
+  <!-- 3. श्रीसूर्यसिद्धान्तीय व दृक्पक्षीय पञ्चाङ्ग -->
+  <section class="panchanga-info-box">
+
+    <h2>श्रीसूर्यसिद्धान्तीय व दृक्पक्षीय पञ्चाङ्ग में अन्तर</h2>
+
+    <p>
+      जिस प्रकार प्लेनेटोरियम में ब्रह्माण्ड, सौरमण्डल,
+      आकाशगंगा आदि के कृत्रिम प्रतिरूप दिखाये जाते हैं,
+      जबकि उनका वास्तविक अस्तित्व अन्यत्र होता है;
+      उसी प्रकार भूलोक के पाञ्चभौतिक ग्रहपिण्ड
+      ज्योतिषीय ग्रहदेवताओं के प्रतिनिधि हैं।
+      ग्रहदेवता भुवर्लोक में रहते हैं और जीवों के कर्मफल देने की
+      शक्ति उन्हीं में होती है, भौतिक ग्रहपिण्डों में नहीं।
+    </p>
+
+    <p>
+      आधुनिक दूरबीनों से भौतिक ग्रहपिण्ड देखे जा सकते हैं,
+      ज्योतिषीय नवग्रह नहीं। खगोलीय कार्यों के लिये
+      Astronomical गणना तथा ज्योतिषीय फल-विचार के लिये
+      Astrological गणना का अपना पृथक् प्रयोजन है।
+    </p>
+
+
+    <details class="siddhanta-details">
+
+      <summary>
+        <span class="open-label">पूरा पढ़ें ▼</span>
+        <span class="close-label">संक्षिप्त करें ▲</span>
+      </summary>
+
+      <div class="siddhanta-expanded">
+
+        <p>
+          आजकल के अधिकांश सॉफ्टवेयर भौतिक ग्रहपिण्डों की
+          गणना पर आधारित होते हैं, इसलिये उनके मान
+          श्रीसूर्यसिद्धान्तीय गणना से भिन्न होते हैं।
+        </p>
+
+        <p>
+          जहाँ रॉकेट आदि के लिये ग्रहों की भौतिक स्थिति जाननी हो,
+          वहाँ खगोलीय (Astronomical) गणना आवश्यक है;
+          परन्तु जहाँ ज्योतिष के माध्यम से अदृष्ट फल का विचार
+          करना हो, वहाँ ज्योतिषीय (Astrological) गणना की
+          आवश्यकता होती है।
+        </p>
+
+        <p>
+          ग्रहण आदि प्रत्यक्ष खगोलीय घटनाओं के लिये
+          दृग्पक्षीय गणना ग्रहण की जा सकती है, परन्तु
+          जन्मकुण्डली-निर्माण आदि ज्योतिषीय कार्यों में
+          दृग्पक्षीय गणना का ग्रहण नहीं करना चाहिये।
+        </p>
+
+        <p>
+          ज्योतिष का प्रमाण ग्रहों का दिखाई देना नहीं,
+          बल्कि फलित की सत्यता है। अतः ज्योतिषीय प्रयोजनों के लिये
+          श्रीसूर्यसिद्धान्तीय गणना ही प्रयुक्त होनी चाहिये।
+        </p>
+
+      </div>
+
+    </details>
+
+  </section>
+
+</div>
+
+<!-- =========================================================
+     नये बॉक्स समाप्त
+========================================================= -->
+<p class="article-invocation">॥ॐ कालात्मने नमः॥</p>
+<h1 class="article-title">भारतीय काल गणना के आधार</h1>
+<p class="article-subtitle">
+        और संवत् २०८३ का वासन्तीय नवरात्र
+      </p>
+<section class="article-section">
+<h2>१. भारतीय नववर्ष और वासन्तीय नवरात्र</h2>
+<p>
+          भारतीय नववर्ष चैत्र शुक्लपक्ष प्रतिपदा से प्रारम्भ होता है,
+          परन्तु इस वर्ष प्रतिपदा का क्षय होने के कारण नववर्ष चैत्र
+          शुक्लपक्ष द्वितीया तदनुसार अंग्रेज़ी कैलेण्डर के अनुसार
+          २० मार्च २०२६, शुक्रवार को इस नववर्ष का आरम्भ हो रहा है।
+        </p>
+</section>
+<section class="article-section">
+<h2>२. भारतीय कालमान के नौ प्रकार</h2>
+<p>
+          समय की गणना के लिए ज्योतिष में ९ प्रकार के कालमान
+          (गणना की विधियों) की चर्चा है।
+        </p>
+<div class="shloka-box">
+          ब्राह्मं दिव्यं तथा पैत्र्यं प्राजापत्यं च गौरवम्।<br/>
+          सौरं च सावनं चान्द्रमार्क्ष्यं मानानि वै नव॥
+        </div>
+<p>
+          ब्राह्मकाल (ब्राह्मवर्ष), दिव्यवर्ष (देवताओं का वर्ष), पैत्र्य
+          (पितरों का) वर्ष, प्राजापत्य (मन्वादि) वर्ष, गौरव
+          (बार्हस्पत्य) वर्ष, सौरवर्ष, सावन वर्ष, चान्द्र और
+          नाक्षत्र वर्ष — ये नौ प्रकार के कालमान कहे गए हैं।
+        </p>
+<p>
+          इन नौ प्रकार के कालमान में मनुष्यों के प्रयोग में आने वाले
+          केवल चार — सौरमान, सावनमान, चान्द्रमान और नाक्षत्रमान — ही होते हैं।
+          बार्हस्पत्य काल दैनिक उपयोग में नहीं आता बल्कि इसका उपयोग
+          षष्ट्यब्द ज्ञान के लिए होता है। इसी प्रकार ब्राह्म मान
+          ब्रह्मा जी की आयु की गणना करने के काम आता है, दिव्यवर्ष से
+          देवताओं के वर्षों की गणना होती है और प्राजापत्य वर्ष भी
+          मानवेतर गणना में उपयोगी होता है।
+        </p>
+</section>
+<section class="article-section">
+<h2>३. मनुष्यों के व्यवहार में प्रयुक्त चार कालमान</h2>
+<div class="kalman-table-wrap">
+<table class="kalman-table">
+<thead>
+<tr>
+<th>कालमान</th>
+<th>मुख्य उपयोग</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>सौरमान</td>
+<td>वर्ष, अयन और ऋतु आदि की गणना</td>
+</tr>
+<tr>
+<td>चान्द्रमान</td>
+<td>मास और तिथि की गणना</td>
+</tr>
+<tr>
+<td>सावनमान</td>
+<td>व्रत, उपवास, संस्कार आदि कर्मों की गणना</td>
+</tr>
+<tr>
+<td>नाक्षत्रमान</td>
+<td>घटी-पल आदि का विचार</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section class="article-section">
+<h2>४. सौर, चान्द्र, नाक्षत्र और सावन दिन</h2>
+<p>
+          जितने समय में सूर्य एक अंश चलते हैं वह एक सौर दिन कहा जाता है,
+          सूर्य और चन्द्रमा के बीच १२ अंश की कोणीय दूरी को एक तिथि
+          कहते हैं और इस मान को एक चान्द्र दिन कहते हैं।
+        </p>
+<p>
+          एक नक्षत्र के आरम्भ से उसकी समाप्ति तक का समय एक नाक्षत्र दिन
+          कहा जाता है और एक सूर्योदय से दूसरे सूर्योदय के मान को एक
+          सावन दिन कहते हैं। रविवार, सोमवार आदि की गणना सावन मान के
+          अन्तर्गत आती है।
+        </p>
+</section>
+<section class="article-section">
+<h2>५. वारप्रवृत्ति का शास्त्रीय नियम</h2>
+<div class="important-box">
+          वारप्रवृत्ति (रविवार, सोमवार, भौमवार आदि) सूर्योदय से आरम्भ होकर अगले सूर्योदय के पूर्व तक होती है, अतः वार को इसी प्रकार समझना चाहिए।
+          आजकल व्रतादि में प्रायः लोग रात्रि के १२ बजे के बाद दिन का
+          परिवर्तन मानकर व्रत का पारण करने के उद्देश्य से आहार ग्रहण कर लेते हैं, यह सर्वथा अनुचित है।
+          अंग्रेजी दिनाङ्क अंग्रेजी पद्धति के अनुसार मानना चाहिए जबकि
+          दिन (वार) सूर्योदय से अगले सूर्योदय तक; इसका ध्यान रखें।
+        </div>
+</section>
+<section class="article-section">
+<h2>६. विभिन्न कालमानों का प्रयोग</h2>
+<p>
+
+            वर्ष, अयन, ऋतु आदि की गणना सौरमान से, मास और तिथि की गणना
+            चान्द्रमान से, व्रत, उपवास, संस्कार आदि कर्मों के लिए गणना
+            सावन मान से और घटी-पल आदि का विचार नाक्षत्र मान से करना चाहिये।
+          
+</p>
+<div class="shloka-box">
+          वर्षायनर्तुयुगपूर्वकमत्रसौरात्
+          मासास्तथा च तिथयस्तुहिनांशुमानात्।<br/>
+          यत् कृच्छ्रसूतकचिकित्सितवासराद्यं
+          तत्सावनाच्च घटिकादिकमार्क्षमानात्॥
+        </div>
+</section>
+<section class="article-section">
+<h2>७. देवताओं और असुरों का दिन-रात्रि</h2>
+<p>
+          मकर राशि से लेकर मिथुन राशि तक सूर्य के रहने को देवताओं का
+          दिन कहते हैं, और इसे ही सौम्यायन भी कहते हैं। इसी प्रकार कर्क
+          से लेकर धनु राशि तक सूर्य के रहने पर असुरों का दिन होता है,
+          जो याम्यायन कहा जाता है।
+        </p>
+<p>
+          देवताओं का दिन असुरों की रात्रि होती है, इसी प्रकार असुरों का
+          दिन देवताओं की रात्रि कही जाती है और ये छह-छह महीनों के होते हैं।
+          देवताओं और असुरों के इस दिन-रात्रि को मिलाकर एक दिव्य दिन होता है,
+          जिससे दिव्य वर्ष की गणना होती है। इस प्रकार मानवों के ३६० वर्ष
+          देवताओं (और असुरों का भी) एक वर्ष होता है।
+        </p>
+<p>
+          मेषसंक्रान्ति (जो आजकल सामान्यतः १३ से १५ अप्रैल के मध्य पड़ती है)
+          देवताओं का मध्यदिवस होती है। मकर संक्रान्ति आजकल १४-१५ जनवरी को
+          होती है और कर्क संक्रान्ति १५-१६ जुलाई के आसपास होती है।
+        </p>
+</section>
+<section class="article-section">
+<h2>८. षष्ट्यब्द संवत्सर और “रौद्र” संवत्सर</h2>
+<p>
+          प्रभावादि कुल ६० संवत्सर होते हैं, जिनकी गणना बृहस्पति से की जाती है।
+          इस वर्ष श्रीसूर्यसिद्धान्तीय गणना से स्पष्ट बार्हस्पत्य मान के अनुसार
+          वर्षपर्यन्त संकल्प आदि में “रौद्र” नामक संवत्सर का प्रयोग होगा।
+        </p>
+</section>
+</article>
+</main><footer class="site-footer">© <span class="site-year"></span> Jyotishiji.com — सर्वाधिकार सुरक्षित</footer>
+<script>document.querySelectorAll('.site-year').forEach(function(el){el.textContent=new Date().getFullYear();});</script>
+<script>
+let workbookData = null;
+let currentPlaceKey = "";
+let currentPlaceName = "";
+
+const DEV_DIGITS = ["०","१","२","३","४","५","६","७","८","९"];
+
+const PLACE_META = {
+  kashi:     {heading:"काशीस्थ पञ्चाङ्ग", name:"काशी"},
+  jammu:     {heading:"जम्मूस्थ पञ्चाङ्ग", name:"जम्मू"},
+  jaipur:    {heading:"जयपुरस्थ पञ्चाङ्ग", name:"जयपुर"},
+  darbhanga: {heading:"दरभङ्गास्थ पञ्चाङ्ग", name:"दरभङ्गा"},
+  delhi:     {heading:"नई दिल्लीस्थ पञ्चाङ्ग", name:"नई दिल्ली"},
+  ludhiana:  {heading:"लुधियानास्थ पञ्चाङ्ग", name:"लुधियाना"}
+};
+
+const DAY_MAP = {
+  Sun:"रविवार",
+  Mon:"सोमवार",
+  Tue:"मङ्गलवार",
+  Wed:"बुधवार",
+  Thu:"बृहस्पतिवार",
+  Fri:"शुक्रवार",
+  Sat:"शनिवार"
+};
+
+const DIKSHOOL_MAP = {
+  Sun:"पश्चिम",
+  Mon:"पूर्व",
+  Tue:"उत्तर",
+  Wed:"उत्तर",
+  Thu:"दक्षिण",
+  Fri:"पश्चिम",
+  Sat:"पूर्व"
+};
+
+const NAKSHATRA_MAP = {
+  1:"अश्विनी",
+  2:"भरणी",
+  3:"कृत्तिका",
+  4:"रोहिणी",
+  5:"मृगशिरा",
+  6:"आर्द्रा",
+  7:"पुनर्वसु",
+  8:"पुष्य",
+  9:"आश्लेषा",
+  10:"मघा",
+  11:"पूर्वाफाल्गुनी",
+  12:"उत्तराफाल्गुनी",
+  13:"हस्त",
+  14:"चित्रा",
+  15:"स्वाती",
+  16:"विशाखा",
+  17:"अनुराधा",
+  18:"ज्येष्ठा",
+  19:"मूल",
+  20:"पूर्वाषाढा",
+  21:"उत्तराषाढा",
+  22:"श्रवण",
+  23:"धनिष्ठा",
+  24:"शतभिषा",
+  25:"पूर्वभाद्रपद",
+  26:"उत्तरभाद्रपद",
+  27:"रेवती"
+};
+
+const YOG_MAP = {
+  "01:Viškambh":"विष्कम्भ",
+  "02:Preeti":"प्रीति",
+  "03:Ayušmän":"आयुष्मान",
+  "04:Saubhägy":"सौभाग्य",
+  "05:Shobhan":"शोभन",
+  "06:Atigand":"अतिगण्ड",
+  "07:Sukarman":"सुकर्मा",
+  "08:Dhriti":"धृति",
+  "09:Shoola":"शूल",
+  "10:Ganda":"गण्ड",
+  "11:Vriddhi":"वृद्धि",
+  "12:Dhruva":"ध्रुव",
+  "13:Vyäghät":"व्याघात",
+  "14:Haršan":"हर्षण",
+  "15:Vajra":"वज्र",
+  "16:Siddhi":"सिद्धि",
+  "17:Vyatipät":"व्यतीपात",
+  "18:Variyän":"वरीयान्",
+  "19:Parigha":"परिघ",
+  "20:Shiva":"शिव",
+  "21:Siddha":"सिद्ध",
+  "22:Sädhy":"साध्य",
+  "23:Shubha":"शुभ",
+  "24:Shukla":"शुक्ल",
+  "25:Brahma":"ब्रह्म",
+  "26:Indra":"इन्द्र",
+  "27:Vædhrti":"वैधृति"
+};
+
+const TITHI_MAP = {
+  1:"प्रतिपदा",2:"द्वितीया",3:"तृतीया",4:"चतुर्थी",5:"पञ्चमी",
+  6:"षष्ठी",7:"सप्तमी",8:"अष्टमी",9:"नवमी",10:"दशमी",
+  11:"एकादशी",12:"द्वादशी",13:"त्रयोदशी",14:"चतुर्दशी",15:"पूर्णिमा",
+  16:"प्रतिपदा",17:"द्वितीया",18:"तृतीया",19:"चतुर्थी",20:"पञ्चमी",
+  21:"षष्ठी",22:"सप्तमी",23:"अष्टमी",24:"नवमी",25:"दशमी",
+  26:"एकादशी",27:"द्वादशी",28:"त्रयोदशी",29:"चतुर्दशी",30:"अमावस्या"
+};
+
+const RASHI_MAP = {
+  1:"मेष",2:"वृषभ",3:"मिथुन",4:"कर्क",5:"सिंह",6:"कन्या",
+  7:"तुला",8:"वृश्चिक",9:"धनु",10:"मकर",11:"कुम्भ",12:"मीन"
+};
+
+const RITU_MAP = {
+  1:"वसन्त",
+  2:"ग्रीष्म",
+  3:"ग्रीष्म",
+  4:"वर्षा",
+  5:"वर्षा",
+  6:"शरद",
+  7:"शरद",
+  8:"हेमन्त",
+  9:"हेमन्त",
+  10:"शिशिर",
+  11:"शिशिर",
+  12:"वसन्त"
+};
+
+const KARANA_NAMES = {
+  Bava:"बव",
+  "Bälav":"बालव",
+  Kaulav:"कौलव",
+  Taitil:"तैतिल",
+  Gara:"गर",
+  Vanij:"वणिज",
+  "Višti":"विष्टि (भद्रा)",
+  Shakun:"शकुनि",
+  "Chatuš":"चतुष्पद",
+  "Näga":"नाग",
+  Kimstu:"किन्स्तुघ्न"
+};
+
+const MOVABLE_KARANAS = [
+  "Bava","Bälav","Kaulav","Taitil","Gara","Vanij","Višti"
+];
+
+const EXTENDED_KARANAS = [
+  "Bava","Bälav","Kaulav","Taitil","Gara","Vanij","Višti",
+  "Shakun","Chatuš","Näga","Kimstu"
+];
+
+function toDev(value){
+  return String(value ?? "").replace(/\d/g, d => DEV_DIGITS[Number(d)]);
+}
+
+function normalizeDate(value){
+  if(value === undefined || value === null || value === "") return "";
+
+  if(!isNaN(value)){
+    const base = new Date(Date.UTC(1899,11,30));
+    base.setUTCDate(base.getUTCDate() + Number(value));
+    return base.toLocaleDateString("en-GB",{timeZone:"UTC"});
+  }
+
+  const text = String(value).trim();
+
+  if(/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(text)){
+    const [d,m,y] = text.split("/");
+    return `${d.padStart(2,"0")}/${m.padStart(2,"0")}/${y}`;
+  }
+
+  const date = new Date(value);
+  if(!isNaN(date)) return date.toLocaleDateString("en-GB");
+
+  return text;
+}
+
+function pickerToGB(value){
+  const [y,m,d] = value.split("-");
+  return `${d}/${m}/${y}`;
+}
+
+function excelTime(value){
+  if(value === "" || value === null || value === undefined) return "";
+
+  if(typeof value === "string"){
+    const text = value.trim();
+
+    if(/^\d{1,2}:\d{2}(:\d{2})?$/.test(text)){
+      const p = text.split(":");
+      return `${p[0].padStart(2,"0")}:${p[1].padStart(2,"0")}`;
+    }
+
+    return text;
+  }
+
+  if(isNaN(value)) return String(value);
+
+  const totalMinutes = Math.round(Number(value) * 24 * 60);
+  const h = Math.floor(totalMinutes / 60);
+  const m = totalMinutes % 60;
+
+  return `${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}`;
+}
+
+function excelTimeDev(value){
+  return toDev(excelTime(value));
+}
+
+function setText(id,value){
+  const el = document.getElementById(id);
+  if(el) el.textContent = value ?? "";
+}
+
+function mapNakshatra(raw){
+  if(raw === undefined || raw === null) return "";
+
+  const match = String(raw).match(/^\s*(\d{1,2})/);
+
+  if(match){
+    const number = Number(match[1]);
+    if(NAKSHATRA_MAP[number]) return NAKSHATRA_MAP[number];
+  }
+
+  return String(raw);
+}
+
+function karanaCycle(tithiNumber){
+  return (tithiNumber === 29 || tithiNumber === 30 || tithiNumber === 1)
+    ? EXTENDED_KARANAS
+    : MOVABLE_KARANAS;
+}
+
+function karanaSequence(firstKey,tithiNumber){
+  const cycle = karanaCycle(tithiNumber);
+  const start = cycle.indexOf(firstKey);
+
+  if(start < 0) return [firstKey];
+
+  const out = [];
+
+  for(let i=0;i<4;i++){
+    out.push(cycle[(start+i) % cycle.length]);
+  }
+
+  return out;
+}
+
+function karanaCountForDay(rowIndex,row,tithiNumber){
+  const seq = karanaSequence(row[7],tithiNumber);
+  const nextRow = workbookData[rowIndex+1];
+
+  if(!nextRow || seq.length < 2){
+    return {count:3,seq};
+  }
+
+  const nextSunriseKarana = String(nextRow[7] || "");
+
+  if(nextSunriseKarana === seq[1]) return {count:2,seq};
+  if(nextSunriseKarana === seq[2]) return {count:3,seq};
+  if(nextSunriseKarana === seq[3]) return {count:4,seq};
+
+  return {count:3,seq};
+}
+
+function placeMeta(){
+  return PLACE_META[currentPlaceKey] || {
+    heading:currentPlaceName + " पञ्चाङ्ग",
+    name:currentPlaceName
+  };
+}
+
+function indianDate(gb){
+  const [d,m,y] = gb.split("/").map(Number);
+
+  const months = [
+    "",
+    "जनवरी","फरवरी","मार्च","अप्रैल","मई","जून",
+    "जुलाई","अगस्त","सितम्बर","अक्टूबर","नवम्बर","दिसम्बर"
+  ];
+
+  return `${toDev(d)} ${months[m]} ${toDev(y)} ई०`;
+}
+
+function showOptionalKarana(rowId,valueId,value,show){
+  const row = document.getElementById(rowId);
+  const val = document.getElementById(valueId);
+
+  if(!row || !val) return;
+
+  if(show){
+    val.textContent = value;
+    row.hidden = false;
+  }else{
+    val.textContent = "";
+    row.hidden = true;
+  }
+}
+
+
+function parseGBDate(gbDate){
+  if(!gbDate || !/^\d{2}\/\d{2}\/\d{4}$/.test(gbDate)) return null;
+
+  const [d,m,y] = gbDate.split("/").map(Number);
+  const date = new Date(y,m-1,d);
+
+  if(
+    date.getFullYear() !== y ||
+    date.getMonth() !== m-1 ||
+    date.getDate() !== d
+  ){
+    return null;
+  }
+
+  return date;
+}
+
+function formatAvailabilityDate(date){
+  if(!(date instanceof Date) || isNaN(date)) return "";
+
+  const months = [
+    "",
+    "जनवरी","फरवरी","मार्च","अप्रैल","मई","जून",
+    "जुलाई","अगस्त","सितम्बर","अक्टूबर","नवम्बर","दिसम्बर"
+  ];
+
+  return (
+    toDev(date.getDate()) + " " +
+    months[date.getMonth()+1] + " " +
+    toDev(date.getFullYear())
+  );
+}
+
+function updateAvailableRange(){
+  const rangeEl = document.getElementById("availableRange");
+
+  if(!rangeEl || !workbookData || workbookData.length < 2){
+    return;
+  }
+
+  const dates = workbookData
+    .slice(1)
+    .map(row => normalizeDate(row[0]))
+    .map(parseGBDate)
+    .filter(Boolean)
+    .sort((a,b) => a - b);
+
+  if(!dates.length){
+    rangeEl.textContent = "उपलब्ध पञ्चाङ्ग-अवधि निर्धारित नहीं हो सकी।";
+    return;
+  }
+
+  const firstDate = dates[0];
+  const lastDate = dates[dates.length - 1];
+
+  rangeEl.textContent =
+    "उपलब्ध पञ्चाङ्ग: " +
+    formatAvailabilityDate(firstDate) +
+    " से " +
+    formatAvailabilityDate(lastDate) +
+    " तक";
+}
+
+async function handleSelectorButton(){
+  const select = document.getElementById("fileLink");
+  const option = select.options[select.selectedIndex];
+  const selectedPlaceKey = option ? (option.dataset.place || "") : "";
+
+  if(!select.value){
+    document.getElementById("selectorStatus").textContent =
+      "कृपया स्थान चुनें।";
+    return;
+  }
+
+  if(!document.getElementById("datePicker").value){
+    document.getElementById("selectorStatus").textContent =
+      "कृपया दिनाङ्क चुनें।";
+    return;
+  }
+
+  if(!workbookData || currentPlaceKey !== selectedPlaceKey){
+    const loaded = await loadSelectedFile();
+    if(!loaded) return;
+  }
+
+  showSelectedDate();
+}
+
+async function loadSelectedFile(){
+  const select = document.getElementById("fileLink");
+  const link = select.value.trim();
+  const status = document.getElementById("selectorStatus");
+
+  if(!link){
+    status.textContent = "कृपया स्थान चुनें।";
+    return false;
+  }
+
+  const option = select.options[select.selectedIndex];
+
+  currentPlaceKey = option.dataset.place || "";
+  currentPlaceName = option.textContent.trim();
+
+  status.textContent = "पञ्चाङ्ग-आँकड़े प्राप्त किए जा रहे हैं...";
+
+  try{
+    const response = await fetch(link);
+
+    if(!response.ok){
+      throw new Error("HTTP " + response.status);
+    }
+
+    const buffer = await response.arrayBuffer();
+
+    const wb = XLSX.read(
+      new Uint8Array(buffer),
+      {type:"array"}
+    );
+
+    const sheet = wb.Sheets[wb.SheetNames[0]];
+
+    workbookData = XLSX.utils.sheet_to_json(
+      sheet,
+      {
+        header:1,
+        raw:true,
+        defval:""
+      }
+    );
+
+    updateAvailableRange();
+
+    const meta = placeMeta();
+    setText("placeHeading",meta.heading);
+
+    return true;
+
+  }catch(error){
+    console.error(error);
+
+    workbookData = null;
+
+    status.textContent =
+      "आँकड़े प्राप्त नहीं हो सके। " + (error.message || error);
+
+    return false;
+  }
+}
+
+function showSelectedDate(){
+  const picker = document.getElementById("datePicker");
+  const status = document.getElementById("selectorStatus");
+
+  if(!picker.value){
+    status.textContent = "कृपया दिनाङ्क चुनें।";
+    return;
+  }
+
+  const selectedDate = pickerToGB(picker.value);
+
+  const rowIndex = workbookData.findIndex(
+    (row,index) => index > 0 && normalizeDate(row[0]) === selectedDate
+  );
+
+  if(rowIndex < 0){
+    status.textContent = selectedDate + " का पञ्चाङ्ग उपलब्ध नहीं है।";
+    return;
+  }
+
+  const row = workbookData[rowIndex];
+  const tithiNumber = Number(row[3]);
+
+  const meta = placeMeta();
+  setText("placeHeading",meta.heading);
+
+  /* मास-पक्ष */
+  const paksha =
+    !isNaN(tithiNumber)
+      ? (tithiNumber <= 15 ? "शुक्लपक्ष" : "कृष्णपक्ष")
+      : "";
+
+  setText("maasPaksha",(row[1] || "") + paksha);
+
+  /* वार */
+  setText("vaar",DAY_MAP[row[2]] || row[2] || "");
+
+  /* तिथि */
+  const tithiName =
+    (!isNaN(tithiNumber) && TITHI_MAP[tithiNumber])
+      ? TITHI_MAP[tithiNumber]
+      : (row[3] || "");
+
+  setText(
+    "tithi",
+    `${tithiName} (${excelTimeDev(row[4])} बजे तक)`
+  );
+
+  /* नक्षत्र */
+  setText(
+    "nakshatra",
+    `${mapNakshatra(row[16])} (${excelTimeDev(row[15])} बजे तक)`
+  );
+
+  /* योग */
+  setText(
+    "yoga",
+    `${YOG_MAP[row[5]] || row[5] || ""} (${excelTimeDev(row[6])} बजे तक)`
+  );
+
+  /* सूर्योदय/सूर्यास्त */
+  setText("sunrise",excelTimeDev(row[10]) + " बजे");
+  setText("sunset",excelTimeDev(row[11]) + " बजे");
+
+  /* दिशाशूल */
+  setText("dishashool",DIKSHOOL_MAP[row[2]] || "");
+
+  /* राशि */
+  let rashi = NaN;
+
+  if(row[14] !== undefined && row[14] !== null){
+    const n = Number(String(row[14]).split(":")[0]);
+    if(!isNaN(n)) rashi = n + 1;
+  }
+
+  if(rashi === 13) rashi = 1;
+
+  let rashi2 = rashi + 1;
+  if(rashi2 === 13) rashi2 = 1;
+
+  const rashiEndRaw = excelTime(row[13]);
+  const moonEl = document.getElementById("chandraRashi");
+
+  if(moonEl){
+    if(row[13] === 0 || rashiEndRaw === "00:00" || rashiEndRaw === "00:00:00"){
+      moonEl.innerHTML =
+        `(चन्द्रमा <strong>${RASHI_MAP[rashi] || ""} राशि</strong> में अहोरात्र)`;
+    }else{
+      moonEl.innerHTML =
+        `(चन्द्रमा <strong>${RASHI_MAP[rashi] || ""} राशि</strong> में ` +
+        `${toDev(rashiEndRaw)} बजे तक तदुपरान्त ` +
+        `<strong>${RASHI_MAP[rashi2] || ""} राशि</strong> में)`;
+    }
+  }
+
+  /* ऋतु */
+  let suryaRashi = NaN;
+
+  if(row[12] !== undefined && row[12] !== null){
+    const n = Number(String(row[12]).split(":")[0]);
+    if(!isNaN(n)) suryaRashi = n + 1;
+  }
+
+  if(suryaRashi === 13) suryaRashi = 1;
+
+  setText("ritu",RITU_MAP[suryaRashi] || "");
+
+  /* विक्रम/शक सम्वत — मूल GovindJiStyle.html वाला ही गणना-तन्त्र */
+  const [day,month,year] = selectedDate.split("/").map(Number);
+  const d = new Date(year,month-1,day);
+
+  const oldYearBoundary = new Date(2026,2,20);
+  const newYearBoundary = new Date(year,2,20);
+
+  const vsName =
+    d < oldYearBoundary
+      ? "सिद्धार्थ नामक संवत्सर"
+      : "रौद्र नामक संवत्सर";
+
+  const vsYear =
+    d < newYearBoundary
+      ? year + 56
+      : year + 57;
+
+  setText(
+    "vikramSamvat",
+    `${toDev(vsYear)} "${vsName}"`
+  );
+
+  setText(
+    "shakSamvat",
+    toDev(vsYear - 135)
+  );
+
+  /* करण — प्रथम Excel से, अगले क्रम से */
+  const k = karanaCountForDay(rowIndex,row,tithiNumber);
+  const seq = k.seq;
+
+  const k1 =
+    `${KARANA_NAMES[seq[0]] || seq[0] || ""} ` +
+    `(${excelTimeDev(row[8])} बजे तक)`;
+
+  setText("karan1",k1);
+
+  if(k.count === 2){
+    setText(
+      "karan2",
+      `${KARANA_NAMES[seq[1]] || seq[1] || ""} (सूर्योदयपर्यन्त)`
+    );
+
+    showOptionalKarana("karan3Row","karan3","",false);
+    showOptionalKarana("karan4Row","karan4","",false);
+  }
+
+  if(k.count === 3){
+    setText(
+      "karan2",
+      `${KARANA_NAMES[seq[1]] || seq[1] || ""} ` +
+      `(${excelTimeDev(row[9])} बजे तक)`
+    );
+
+    showOptionalKarana(
+      "karan3Row",
+      "karan3",
+      `${KARANA_NAMES[seq[2]] || seq[2] || ""} (सूर्योदयपर्यन्त)`,
+      true
+    );
+
+    showOptionalKarana("karan4Row","karan4","",false);
+  }
+
+  if(k.count === 4){
+    setText(
+      "karan2",
+      `${KARANA_NAMES[seq[1]] || seq[1] || ""} ` +
+      `(${excelTimeDev(row[9])} बजे तक)`
+    );
+
+    /* मूल Excel में तीसरे करण का पृथक् अन्त-समय नहीं है;
+       नाम अनुमानित क्रम से, चौथा सूर्योदयपर्यन्त। */
+    showOptionalKarana(
+      "karan3Row",
+      "karan3",
+      `${KARANA_NAMES[seq[2]] || seq[2] || ""}`,
+      true
+    );
+
+    showOptionalKarana(
+      "karan4Row",
+      "karan4",
+      `${KARANA_NAMES[seq[3]] || seq[3] || ""} (सूर्योदयपर्यन्त)`,
+      true
+    );
+  }
+
+  /* विशेष अभी Excel में पृथक् field नहीं */
+  document.getElementById("visheshRow").hidden = true;
+  setText("vishesh","");
+
+  /* दिनाङ्क */
+  setText("date",indianDate(selectedDate));
+
+  /* error box सुनिश्चित रूप से छिपा रहे */
+  document.getElementById("panchangaContent").hidden = false;
+  document.getElementById("panchangaError").hidden = true;
+
+  /* चार करण पर केवल स्रोत-सीमा की सूचना */
+  const warning = document.getElementById("selectorWarning");
+
+  if(k.count === 4){
+    warning.hidden = false;
+    warning.textContent =
+      "इस दिन चार करण हैं। तीसरे करण का अन्त-समय मूल Excel में पृथक् स्तम्भ में उपलब्ध नहीं है; इसलिए उसे अनुमान से नहीं जोड़ा गया है।";
+  }else{
+    warning.hidden = true;
+    warning.textContent = "";
+  }
+
+  status.textContent =
+    `${currentPlaceName} — ${toDev(selectedDate)} का पञ्चाङ्ग प्रदर्शित है।`;
+}
+
+document.getElementById("fileLink").addEventListener("change",function(){
+  workbookData = null;
+  document.getElementById("selectorWarning").hidden = true;
+  document.getElementById("availableRange").textContent =
+    "उपलब्ध पञ्चाङ्ग-अवधि आँकड़े लोड होने पर यहाँ दिखाई जाएगी।";
+  document.getElementById("selectorStatus").textContent =
+    "स्थान अथवा दिनाङ्क बदलकर “पञ्चाङ्ग देखें” दबाएँ।";
+});
+
+/* Browser के स्थानीय दिनाङ्क को YYYY-MM-DD में दें */
+function todayForDateInput(){
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = String(now.getMonth() + 1).padStart(2,"0");
+  const d = String(now.getDate()).padStart(2,"0");
+  return `${y}-${m}-${d}`;
+}
+
+/* पृष्ठ खुलते ही काशी का आज का पञ्चाङ्ग */
+async function showDefaultKashiToday(){
+  const select = document.getElementById("fileLink");
+  const picker = document.getElementById("datePicker");
+
+  const kashiOption = Array.from(select.options).find(
+    option => option.dataset.place === "kashi"
+  );
+
+  if(kashiOption){
+    select.value = kashiOption.value;
+  }
+
+  picker.value = todayForDateInput();
+
+  const loaded = await loadSelectedFile();
+
+  if(loaded){
+    showSelectedDate();
+  }
+}
+    function updatePanchangaStickyPosition() {
+  const column = document.querySelector(".panchanga-column");
+  if (!column) return;
+
+  // Mobile और tablet पर sticky नहीं रखना
+  if (window.innerWidth <= 980) {
+    column.style.removeProperty("top");
+    return;
+  }
+
+  const gap = 14;
+  const columnHeight = column.offsetHeight;
+  const viewportHeight = window.innerHeight;
+
+  // Column viewport से बड़ा हो तो उसका निचला भाग
+  // दिखाई देने पर वहीं रुक जाए
+  const stickyTop = Math.min(
+    gap,
+    viewportHeight - columnHeight - gap
+  );
+
+  column.style.top = stickyTop + "px";
+}
+
+window.addEventListener("resize", updatePanchangaStickyPosition);
+
+const panchangaColumn = document.querySelector(".panchanga-column");
+
+if (panchangaColumn && "ResizeObserver" in window) {
+  const panchangaResizeObserver =
+    new ResizeObserver(updatePanchangaStickyPosition);
+
+  panchangaResizeObserver.observe(panchangaColumn);
+}
+
+updatePanchangaStickyPosition();
+
+if(document.readyState === "loading"){
+  document.addEventListener("DOMContentLoaded", showDefaultKashiToday);
+}else{
+  showDefaultKashiToday();
+}
+</script>
+</body>
+</html>
