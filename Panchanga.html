@@ -1618,6 +1618,42 @@ async function showDefaultKashiToday(){
     showSelectedDate();
   }
 }
+    function updatePanchangaStickyPosition() {
+  const column = document.querySelector(".panchanga-column");
+  if (!column) return;
+
+  // Mobile और tablet पर sticky नहीं रखना
+  if (window.innerWidth <= 980) {
+    column.style.removeProperty("top");
+    return;
+  }
+
+  const gap = 14;
+  const columnHeight = column.offsetHeight;
+  const viewportHeight = window.innerHeight;
+
+  // Column viewport से बड़ा हो तो उसका निचला भाग
+  // दिखाई देने पर वहीं रुक जाए
+  const stickyTop = Math.min(
+    gap,
+    viewportHeight - columnHeight - gap
+  );
+
+  column.style.top = stickyTop + "px";
+}
+
+window.addEventListener("resize", updatePanchangaStickyPosition);
+
+const panchangaColumn = document.querySelector(".panchanga-column");
+
+if (panchangaColumn && "ResizeObserver" in window) {
+  const panchangaResizeObserver =
+    new ResizeObserver(updatePanchangaStickyPosition);
+
+  panchangaResizeObserver.observe(panchangaColumn);
+}
+
+updatePanchangaStickyPosition();
 
 if(document.readyState === "loading"){
   document.addEventListener("DOMContentLoaded", showDefaultKashiToday);
