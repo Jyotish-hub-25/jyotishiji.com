@@ -1367,6 +1367,9 @@ const RITU_MAP = {
   11:"शिशिर",
   12:"वसन्त"
 };
+    const VISHESH_BY_DATE = {
+  "23/08/2026": "एकादशी व्रत आज"
+};
 
 const KARANA_NAMES = {
   Bava:"बव",
@@ -1884,10 +1887,13 @@ function showSelectedDate(){
     );
   }
 
-  /* विशेष अभी Excel में पृथक् field नहीं */
-  document.getElementById("visheshRow").hidden = true;
-  setText("vishesh","");
+  /* दिनाङ्कानुसार विशेष सूचना */
+const visheshText = VISHESH_BY_DATE[selectedDate] || "";
+const visheshRow = document.getElementById("visheshRow");
 
+setText("vishesh", visheshText);
+visheshRow.hidden = !visheshText;
+    
   /* दिनाङ्क */
   setText("date",indianDate(selectedDate));
 
