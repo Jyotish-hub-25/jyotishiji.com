@@ -1448,10 +1448,34 @@ function excelTime(value){
   return `${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}`;
 }
 
-function excelTimeDev(value){
-  return toDev(excelTime(value));
-}
+const RATRISHESH_FROM_HOUR = 4;
 
+function excelTimeDev(value){
+  const raw = excelTime(value);
+  const match = String(raw).match(/^(\d{1,2}):(\d{2})$/);
+
+  if(!match) return toDev(raw);
+
+  const hour = Number(match[1]);
+  const minute = match[2];
+
+  // उसी दिन का सामान्य समय
+  if(hour < 24){
+    return toDev(raw);
+  }
+
+  // २४:xx, २५:xx आदि को अगली रात्रि के समय में बदलना
+  const nextHour = hour % 24;
+  const displayHour = nextHour === 0 ? 12 : nextHour;
+
+  // प्रातः ४ बजे से रात्रिशेष
+  const label =
+    nextHour >= RATRISHESH_FROM_HOUR
+      ? "रात्रिशेष"
+      : "रात्रि";
+
+  return `${label} ${toDev(displayHour)}:${toDev(minute)}`;
+}
 function setText(id,value){
   const el = document.getElementById(id);
   if(el) el.textContent = value ?? "";
