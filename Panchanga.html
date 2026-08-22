@@ -1797,6 +1797,7 @@ function showSelectedDate(){
   if(rashi2 === 13) rashi2 = 1;
 
   const rashiEndRaw = excelTime(row[13]);
+    const rashiEndDisplay = excelTimeDev(row[13]);
   const moonEl = document.getElementById("chandraRashi");
 
   if(moonEl){
@@ -1806,7 +1807,7 @@ function showSelectedDate(){
     }else{
       moonEl.innerHTML =
         `(चन्द्रमा <strong>${RASHI_MAP[rashi] || ""} राशि</strong> में ` +
-        `${toDev(rashiEndRaw)} बजे तक तदुपरान्त ` +
+        `${rashiEndDisplay} बजे तक तदुपरान्त ` +
         `<strong>${RASHI_MAP[rashi2] || ""} राशि</strong> में)`;
     }
   }
