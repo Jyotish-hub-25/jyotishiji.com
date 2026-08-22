@@ -1466,7 +1466,7 @@ function excelTimeDev(value){
 
   // २४:xx, २५:xx आदि को अगली रात्रि के समय में बदलना
   const nextHour = hour % 24;
-  const displayHour = nextHour === 0 ? 12 : nextHour;
+  const displayHour = String(nextHour).padStart(2, "0");
 
   // प्रातः ४ बजे से रात्रिशेष
   const label =
