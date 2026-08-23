@@ -1640,6 +1640,523 @@ function isVriddhi(value){
   return String(value ?? "").trim().toLowerCase() === "vriddhi";
 }
 
+    const ATHARVA_DAY_MUHURTA_NAMES = {
+  1:"रौद्र",
+  2:"श्वेत",
+  3:"मैत्र",
+  4:"सारभट",
+  5:"सावित्र",
+  6:"वैराज",
+  7:"विश्वावसु",
+  8:"अभिजित",
+  9:"रोहिण",
+  10:"बल",
+  11:"विजय",
+  12:"नैऋत",
+  13:"वारुण",
+  14:"सौम्य",
+  15:"भग"
+};
+
+const SPECIAL_MUHURTA_NAMES = {
+  8:"कुतप",
+  11:"विन्द"
+};
+
+
+/* Excel अथवा text time को seconds में बदलना */
+function muhurtaTimeToSeconds(value){
+  if(value === "" || value === null || value === undefined){
+    return null;
+  }
+
+  if(typeof value === "number" && isFinite(value)){
+    let fraction = value % 1;
+
+    if(fraction < 0){
+      fraction += 1;
+    }
+
+    return Math.round(fraction * 86400);
+  }
+
+  const text = String(value).trim();
+
+  const match = text.match(
+    /^(\d{1,2}):(\d{2})(?::(\d{2}(?:\.\d+)?))?$/
+  );
+
+  if(!match){
+    return null;
+  }
+
+  return Math.round(
+    Number(match[1]) * 3600 +
+    Number(match[2]) * 60 +
+    Number(match[3] || 0)
+  );
+}
+
+
+/* सामान्य clock-time */
+function muhurtaClock(totalSeconds){
+  let seconds = Math.round(totalSeconds);
+
+  seconds =
+    ((seconds % 86400) + 86400) % 86400;
+
+  const hour =
+    Math.floor(seconds / 3600);
+
+  const minute =
+    Math.floor((seconds % 3600) / 60);
+
+  const second =
+    seconds % 60;
+
+  return toDev(
+    String(hour).padStart(2,"0") + ":" +
+    String(minute).padStart(2,"0") + ":" +
+    String(second).padStart(2,"0")
+  );
+}
+
+
+/* मध्यरात्रि-पार समय */
+function muhurtaNightClock(totalSeconds){
+  const rounded =
+    Math.round(totalSeconds);
+
+  const dayShift =
+    Math.floor(rounded / 86400);
+
+  const seconds =
+    ((rounded % 86400) + 86400) % 86400;
+
+  const hour =
+    Math.floor(seconds / 3600);
+
+  const clock =
+    muhurtaClock(seconds);
+
+  if(dayShift >= 1){
+    const label =
+      hour >= RATRISHESH_FROM_HOUR
+        ? "रात्रिशेष"
+        : "रात्रि";
+
+    return `${label} ${clock}`;
+  }
+
+  return clock;
+}
+
+
+/* अवधि HH:MM:SS */
+function muhurtaDuration(seconds){
+  seconds = Math.round(seconds);
+
+  const hour =
+    Math.floor(seconds / 3600);
+
+  const minute =
+    Math.floor((seconds % 3600) / 60);
+
+  const second =
+    seconds % 60;
+
+  return toDev(
+    String(hour).padStart(2,"0") + ":" +
+    String(minute).padStart(2,"0") + ":" +
+    String(second).padStart(2,"0")
+  );
+}
+
+
+/* पल को घटी-पल में */
+function muhurtaGhatiPala(totalPala){
+  totalPala = Math.round(totalPala);
+
+  const ghati =
+    Math.floor(totalPala / 60);
+
+  const pala =
+    totalPala % 60;
+
+  return (
+    toDev(ghati) +
+    " घटी " +
+    toDev(String(pala).padStart(2,"0")) +
+    " पल"
+  );
+}
+
+
+function renderMuhurtaBox(rowIndex,row){
+  const summary =
+    document.getElementById("muhurtaSummary");
+
+  const kalaTable =
+    document.getElementById("muhurtaKalaTable");
+
+  const muhurtaRows =
+    document.getElementById("muhurtaRows");
+
+  if(!summary || !kalaTable || !muhurtaRows){
+    return;
+  }
+
+  const nextRow =
+    workbookData[rowIndex + 1];
+
+  if(!nextRow){
+    summary.textContent =
+      "अगले दिन का सूर्योदय उपलब्ध नहीं होने के कारण पूर्ण गणना नहीं हो सकी।";
+
+    kalaTable.innerHTML = "";
+    muhurtaRows.innerHTML = "";
+    return;
+  }
+
+  const sunrise =
+    muhurtaTimeToSeconds(row[10]);
+
+  const sunset =
+    muhurtaTimeToSeconds(row[11]);
+
+  const nextSunriseClock =
+    muhurtaTimeToSeconds(nextRow[10]);
+
+  if(
+    sunrise === null ||
+    sunset === null ||
+    nextSunriseClock === null
+  ){
+    summary.textContent =
+      "सूर्योदय अथवा सूर्यास्त का आवश्यक समय उपलब्ध नहीं है।";
+
+    kalaTable.innerHTML = "";
+    muhurtaRows.innerHTML = "";
+    return;
+  }
+
+  /*
+    अगले दिन के सूर्योदय को निरन्तर समयरेखा में रखना।
+  */
+  const nextSunrise =
+    nextSunriseClock + 86400;
+
+  if(
+    sunset <= sunrise ||
+    nextSunrise <= sunset
+  ){
+    summary.textContent =
+      "सूर्योदय-सूर्यास्त के समयों से मान्य कालक्रम नहीं बन सका।";
+
+    kalaTable.innerHTML = "";
+    muhurtaRows.innerHTML = "";
+    return;
+  }
+
+
+  /*
+    एक सूर्योदय से अगले सूर्योदय तक का
+    सम्पूर्ण सावन अहोरात्र = ६० घटी
+  */
+  const ahoratra =
+    nextSunrise - sunrise;
+
+  const oneGhati =
+    ahoratra / 60;
+
+
+  /* वास्तविक दिनमान एवं रात्रिमान */
+  const dayLength =
+    sunset - sunrise;
+
+  const nightLength =
+    nextSunrise - sunset;
+
+
+  /*
+    ६० घटी = ३६०० पल
+  */
+  const dayPala =
+    Math.round(
+      (dayLength / ahoratra) * 3600
+    );
+
+  const nightPala =
+    3600 - dayPala;
+
+
+  /*
+    दिन और रात्रि — अपने-अपने १५ मुहूर्त्त
+  */
+  const dayMuhurta =
+    dayLength / 15;
+
+  const nightMuhurta =
+    nightLength / 15;
+
+  const dayMuhurtaPala =
+    dayPala / 15;
+
+  const nightMuhurtaPala =
+    nightPala / 15;
+
+
+  summary.innerHTML = `
+    <div class="muhurta-summary-row">
+      <span>सूर्योदय</span>
+      <span>${muhurtaClock(sunrise)}</span>
+    </div>
+
+    <div class="muhurta-summary-row">
+      <span>सूर्यास्त</span>
+      <span>${muhurtaClock(sunset)}</span>
+    </div>
+
+    <div class="muhurta-summary-row">
+      <span>अगला सूर्योदय</span>
+      <span>${muhurtaClock(nextSunrise)}</span>
+    </div>
+
+    <div class="muhurta-summary-row">
+      <span>दिनमान</span>
+      <span>
+        ${muhurtaGhatiPala(dayPala)}
+        (${muhurtaDuration(dayLength)})
+      </span>
+    </div>
+
+    <div class="muhurta-summary-row">
+      <span>रात्रिमान</span>
+      <span>
+        ${muhurtaGhatiPala(nightPala)}
+        (${muhurtaDuration(nightLength)})
+      </span>
+    </div>
+
+    <div class="muhurta-summary-row">
+      <span>एक दिवा-मुहूर्त्त</span>
+      <span>
+        लगभग ${muhurtaGhatiPala(dayMuhurtaPala)}
+        (${muhurtaDuration(dayMuhurta)})
+      </span>
+    </div>
+
+    <div class="muhurta-summary-row">
+      <span>एक रात्रि-मुहूर्त्त</span>
+      <span>
+        लगभग ${muhurtaGhatiPala(nightMuhurtaPala)}
+        (${muhurtaDuration(nightMuhurta)})
+      </span>
+    </div>
+  `;
+
+
+  /* दिन के पाँच त्रिमुहूर्त्तीय विभाग */
+  const kalaRows = [
+    {
+      name:"प्रातः",
+      basis:"दिवा-मुहूर्त्त १–३",
+      start:sunrise,
+      end:sunrise + 3 * dayMuhurta
+    },
+
+    {
+      name:"संगव (पूर्वाह्नभाग)",
+      basis:"दिवा-मुहूर्त्त ४–६",
+      start:sunrise + 3 * dayMuhurta,
+      end:sunrise + 6 * dayMuhurta
+    },
+
+    {
+      name:"मध्याह्न",
+      basis:"दिवा-मुहूर्त्त ७–९",
+      start:sunrise + 6 * dayMuhurta,
+      end:sunrise + 9 * dayMuhurta
+    },
+
+    {
+      name:"अपराह्ण",
+      basis:"दिवा-मुहूर्त्त १०–१२",
+      start:sunrise + 9 * dayMuhurta,
+      end:sunrise + 12 * dayMuhurta
+    },
+
+    {
+      name:"सायाह्न",
+      basis:"दिवा-मुहूर्त्त १३–१५",
+      start:sunrise + 12 * dayMuhurta,
+      end:sunset
+    },
+
+    {
+      name:"प्रदोषकाल",
+      basis:"रात्रि के प्रथम ३ मुहूर्त्त",
+      start:sunset,
+      end:sunset + 3 * nightMuhurta
+    },
+
+    {
+      name:"निशीथमध्य",
+      basis:"रात्रिमान का मध्य",
+      point:sunset + nightLength / 2
+    },
+
+    {
+      name:"उषःकाल",
+      basis:"अहोरात्र की ५५वीं–५७वीं घटी",
+      start:sunrise + 55 * oneGhati,
+      end:sunrise + 57 * oneGhati
+    },
+
+    {
+      name:"अरुणोदय",
+      basis:"अहोरात्र की ५७वीं–५८वीं घटी",
+      start:sunrise + 57 * oneGhati,
+      end:sunrise + 58 * oneGhati
+    },
+
+    {
+      name:"प्रातःकाल (सूर्योदयपूर्व)",
+      basis:"अहोरात्र की ५८वीं–६०वीं घटी",
+      start:sunrise + 58 * oneGhati,
+      end:nextSunrise
+    }
+  ];
+
+
+  let kalaHtml = `
+    <table class="muhurta-table">
+      <thead>
+        <tr>
+          <th>काल</th>
+          <th>आधार</th>
+          <th>स्थानीय समय</th>
+        </tr>
+      </thead>
+      <tbody>
+  `;
+
+
+  kalaRows.forEach(item => {
+    let timeText;
+
+    if(item.point !== undefined){
+      timeText =
+        muhurtaNightClock(item.point);
+    }else{
+      const startText =
+        item.start >= 86400
+          ? muhurtaNightClock(item.start)
+          : muhurtaClock(item.start);
+
+      let endText;
+
+      if(Math.abs(item.end - nextSunrise) < 2){
+        endText =
+          muhurtaClock(item.end);
+      }else{
+        endText =
+          item.end >= 86400
+            ? muhurtaNightClock(item.end)
+            : muhurtaClock(item.end);
+      }
+
+      timeText =
+        `${startText} — ${endText}`;
+    }
+
+    kalaHtml += `
+      <tr>
+        <td><strong>${item.name}</strong></td>
+        <td>${item.basis}</td>
+        <td>${timeText}</td>
+      </tr>
+    `;
+  });
+
+
+  kalaHtml += `
+      </tbody>
+    </table>
+  `;
+
+  kalaTable.innerHTML =
+    kalaHtml;
+
+
+  /* तीसों मुहूर्त्त */
+  let rowsHtml = "";
+
+  for(let i = 1; i <= 30; i++){
+    let start;
+    let end;
+    let division;
+    let atharvaName = "—";
+
+    if(i <= 15){
+      division = "दिवा";
+
+      start =
+        sunrise +
+        (i - 1) * dayMuhurta;
+
+      end =
+        sunrise +
+        i * dayMuhurta;
+
+      atharvaName =
+        ATHARVA_DAY_MUHURTA_NAMES[i] || "—";
+    }else{
+      division = "रात्रि";
+
+      const nightIndex =
+        i - 15;
+
+      start =
+        sunset +
+        (nightIndex - 1) * nightMuhurta;
+
+      end =
+        sunset +
+        nightIndex * nightMuhurta;
+    }
+
+    const specialName =
+      SPECIAL_MUHURTA_NAMES[i] || "—";
+
+    const startText =
+      start >= 86400
+        ? muhurtaNightClock(start)
+        : muhurtaClock(start);
+
+    const endText =
+      i === 30
+        ? muhurtaClock(end)
+        : (
+            end >= 86400
+              ? muhurtaNightClock(end)
+              : muhurtaClock(end)
+          );
+
+    rowsHtml += `
+      <tr>
+        <td>${toDev(i)}</td>
+        <td>${division}</td>
+        <td>${atharvaName}</td>
+        <td>${specialName}</td>
+        <td>${startText} — ${endText}</td>
+      </tr>
+    `;
+  }
+
+  muhurtaRows.innerHTML =
+    rowsHtml;
+}
 function setText(id,value){
   const el = document.getElementById(id);
   if(el) el.textContent = value ?? "";
