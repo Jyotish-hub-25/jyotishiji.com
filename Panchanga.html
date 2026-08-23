@@ -2465,8 +2465,13 @@ setText(
   );
 
   /* सूर्योदय/सूर्यास्त */
-  setText("sunrise",excelTimeDev(row[10]) + " बजे");
-  setText("sunset",excelTimeDev(row[11]) + " बजे");
+setText("sunrise",excelTimeDev(row[10]) + " बजे");
+setText("sunset",excelTimeDev(row[11]) + " बजे");
+
+/* उसी स्थान एवं दिनाङ्क का काल-मुहूर्त्त-विभाजन */
+renderMuhurtaBox(rowIndex,row);
+
+/* दिशाशूल */
 
   /* दिशाशूल */
   setText("dishashool",DIKSHOOL_MAP[row[2]] || "");
