@@ -2074,20 +2074,29 @@ function renderMuhurtaBox(rowIndex,row){
     },
 
     {
-      name:"प्रदोषकाल",
-      basis:"रात्रि के प्रथम ३ मुहूर्त्त",
-      start:sunset,
-      end:sunset + 3 * nightMuhurta
-    },
+      {
+  name:"प्रदोषकाल",
+  basis:"रात्रि-मुहूर्त्त १–३",
+  start:sunset,
+  end:sunset + 3 * nightMuhurta
+},
 
-    {
-      name:"निशीथमध्य",
-      basis:"रात्रिमान का मध्य",
-      point:sunset + nightLength / 2
-    },
+{
+  name:"निशीथकाल",
+  basis:"रात्रि-मुहूर्त्त ४–६",
+  start:sunset + 3 * nightMuhurta,
+  end:sunset + 6 * nightMuhurta
+},
 
-    {
-      name:"उषःकाल",
+{
+  name:"महानिशा",
+  basis:"रात्रि-मुहूर्त्त ७–९",
+  start:sunset + 6 * nightMuhurta,
+  end:sunset + 9 * nightMuhurta
+},
+
+{
+  name:"उषःकाल",
       basis:"अहोरात्र की ५५वीं–५७वीं घटी",
       start:sunrise + 55 * oneGhati,
       end:sunrise + 57 * oneGhati
