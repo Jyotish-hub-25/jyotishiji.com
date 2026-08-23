@@ -678,17 +678,96 @@ body{display:flex;flex-direction:column;min-height:100vh}
 }
 
 @media(max-width:600px){
+
+  /* केवल मुहूर्त्त-box को mobile में सीमित रखें */
   .muhurta-box{
-    padding:13px 11px 15px;
+    width:100%;
+    max-width:100%;
+    min-width:0;
+    margin-top:12px;
+    padding:14px 12px 16px;
+    overflow:hidden;
+  }
+
+  .muhurta-box h3{
+    font-size:1.08rem;
+    line-height:1.55;
   }
 
   .muhurta-summary{
-    font-size:.92rem;
+    font-size:1rem;
+    line-height:1.65;
   }
 
-  .muhurta-table{
-    min-width:590px;
-    font-size:.86rem;
+  .muhurta-summary-row{
+    grid-template-columns:125px minmax(0,1fr);
+    gap:8px;
+  }
+
+  /* किसी table को page की width बढ़ाने न दें */
+  .muhurta-table-wrap{
+    width:100%;
+    max-width:100%;
+    min-width:0;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+
+  /* ऊपर वाला काल-विभाजन table */
+  #muhurtaKalaTable .muhurta-table{
+    width:100%;
+    min-width:0;
+    table-layout:fixed;
+    font-size:.96rem;
+    line-height:1.55;
+  }
+
+  #muhurtaKalaTable .muhurta-table th,
+  #muhurtaKalaTable .muhurta-table td{
+    padding:8px 6px;
+    overflow-wrap:anywhere;
+  }
+
+  #muhurtaKalaTable .muhurta-table th:nth-child(1),
+  #muhurtaKalaTable .muhurta-table td:nth-child(1){
+    width:28%;
+  }
+
+  #muhurtaKalaTable .muhurta-table th:nth-child(2),
+  #muhurtaKalaTable .muhurta-table td:nth-child(2){
+    width:32%;
+  }
+
+  #muhurtaKalaTable .muhurta-table th:nth-child(3),
+  #muhurtaKalaTable .muhurta-table td:nth-child(3){
+    width:40%;
+  }
+
+  /*
+    ३० मुहूर्त्तों की पाँच-column table:
+    font छोटा करने के बजाय box के भीतर horizontal scroll
+  */
+  .muhurta-details .muhurta-table{
+    width:720px;
+    min-width:720px;
+    font-size:.98rem;
+    line-height:1.55;
+  }
+
+  .muhurta-details .muhurta-table th,
+  .muhurta-details .muhurta-table td{
+    padding:8px 9px;
+    white-space:normal;
+  }
+
+  .muhurta-details summary{
+    font-size:.98rem;
+    padding:7px 13px;
+  }
+
+  .muhurta-note{
+    font-size:.88rem;
+    line-height:1.65;
   }
 }
 </style>
