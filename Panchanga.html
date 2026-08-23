@@ -583,6 +583,114 @@ body{display:flex;flex-direction:column;min-height:100vh}
   }
 }
 
+/* ===== काल एवं मुहूर्त्त-विभाजन ===== */
+
+.muhurta-box{
+  width:100%;
+  margin:14px 0 0;
+  padding:15px 16px 17px;
+  background:#fffaf0;
+  border:1px solid rgba(11,85,85,.20);
+  border-top:3px solid var(--primary);
+  border-radius:10px;
+  box-shadow:0 4px 14px rgba(24,62,58,.08);
+}
+
+.muhurta-box h3{
+  margin:0 0 12px;
+  color:var(--heading);
+  font-size:1.04rem;
+  line-height:1.5;
+  text-align:center;
+}
+
+.muhurta-summary{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:4px;
+  margin-bottom:13px;
+  font-size:.88rem;
+  line-height:1.55;
+}
+
+.muhurta-summary-row{
+  display:grid;
+  grid-template-columns:minmax(135px,auto) 1fr;
+  gap:9px;
+  padding:3px 0;
+  border-bottom:1px dotted rgba(11,85,85,.14);
+}
+
+.muhurta-summary-row span:first-child{
+  font-weight:600;
+}
+
+.muhurta-table-wrap{
+  width:100%;
+  overflow-x:auto;
+  margin-top:9px;
+}
+
+.muhurta-table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:.82rem;
+  line-height:1.45;
+  background:rgba(255,255,255,.45);
+}
+
+.muhurta-table th,
+.muhurta-table td{
+  padding:7px 8px;
+  border:1px solid rgba(23,63,85,.14);
+  vertical-align:top;
+  text-align:left;
+}
+
+.muhurta-table th{
+  background:rgba(23,63,85,.06);
+  color:var(--heading);
+  font-weight:700;
+}
+
+.muhurta-details{
+  margin-top:13px;
+}
+
+.muhurta-details summary{
+  width:fit-content;
+  margin:0 auto;
+  padding:6px 12px;
+  color:var(--primary);
+  background:#fff;
+  border:1px solid rgba(11,85,85,.25);
+  border-radius:6px;
+  font-size:.86rem;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.muhurta-note{
+  margin:10px 0 0;
+  color:#555;
+  font-size:.75rem;
+  line-height:1.55;
+}
+
+@media(max-width:600px){
+  .muhurta-box{
+    padding:13px 11px 15px;
+  }
+
+  .muhurta-summary{
+    font-size:.92rem;
+  }
+
+  .muhurta-table{
+    min-width:590px;
+    font-size:.86rem;
+  }
+}
 </style>
 </head>
 <body>
