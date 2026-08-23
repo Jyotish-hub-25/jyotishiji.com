@@ -1786,10 +1786,14 @@ setText(
   `${tithiName} (${tithiEndText})`
 );
   /* नक्षत्र */
-  setText(
-    "nakshatra",
-    `${mapNakshatra(row[16])} (${excelTimeDev(row[15])} बजे तक)`
-  );
+const nakshatraEndText = isVriddhi(row[15])
+  ? "अहोरात्र, नक्षत्रवृद्धि से"
+  : `${excelTimeDev(row[15])} बजे तक`;
+
+setText(
+  "nakshatra",
+  `${mapNakshatra(row[16])} (${nakshatraEndText})`
+);
 
   /* योग */
   setText(
