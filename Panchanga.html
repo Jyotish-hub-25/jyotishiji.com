@@ -1489,6 +1489,11 @@ function excelTimeDev(value){
 
   return `${label} ${toDev(displayHour)}:${toDev(minute)}`;
 }
+
+function isVriddhi(value){
+  return String(value ?? "").trim().toLowerCase() === "vriddhi";
+}
+
 function setText(id,value){
   const el = document.getElementById(id);
   if(el) el.textContent = value ?? "";
@@ -1771,12 +1776,15 @@ function showSelectedDate(){
     (!isNaN(tithiNumber) && TITHI_MAP[tithiNumber])
       ? TITHI_MAP[tithiNumber]
       : (row[3] || "");
+  
+    const tithiEndText = isVriddhi(row[4])
+  ? "तिथिवृद्धि"
+  : `${excelTimeDev(row[4])} बजे तक`;    
 
-  setText(
-    "tithi",
-    `${tithiName} (${excelTimeDev(row[4])} बजे तक)`
-  );
-
+setText(
+  "tithi",
+  `${tithiName} (${tithiEndText})`
+);
   /* नक्षत्र */
   setText(
     "nakshatra",
