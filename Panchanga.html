@@ -773,6 +773,210 @@ body{display:flex;flex-direction:column;min-height:100vh}
     line-height:1.65;
   }
 }
+/* =========================================================
+   औदयिक ग्रहस्पष्ट एवं ग्रहचक्र
+========================================================= */
+.odayika-box{
+  width:100%;
+  max-width:100%;
+  min-width:0;
+  margin:14px 0 0;
+  padding:15px 16px 16px;
+  background:#fffaf0;
+  border:1px solid rgba(11,85,85,.20);
+  border-top:3px solid var(--primary);
+  border-radius:10px;
+  box-shadow:0 4px 14px rgba(24,62,58,.08);
+}
+
+.odayika-title{
+  margin:0;
+  color:var(--heading);
+  font-size:1.08rem;
+  line-height:1.5;
+  text-align:center;
+}
+
+.odayika-date-line,
+.odayika-place-line{
+  margin:5px 0 0;
+  text-align:center;
+  line-height:1.5;
+}
+
+.odayika-date-line{
+  font-size:.91rem;
+  font-weight:700;
+}
+
+.odayika-place-line{
+  color:#444;
+  font-size:.84rem;
+}
+
+.odayika-subhead{
+  margin:11px 0 8px;
+  color:var(--heading);
+  text-align:center;
+  font-size:.92rem;
+  font-weight:700;
+}
+
+/* ग्रहस्पष्ट बाएँ, चक्र दाएँ */
+.odayika-dual{
+  display:grid;
+  grid-template-columns:minmax(185px,.92fr) minmax(235px,1.08fr);
+  gap:8px;
+  align-items:start;
+}
+
+.odayika-spashta{
+  min-width:0;
+  padding:7px 9px 8px;
+  background:rgba(255,255,255,.52);
+  border:1px solid rgba(11,85,85,.20);
+  border-radius:8px;
+}
+
+.odayika-sp-row{
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:6px;
+  align-items:baseline;
+  min-height:29px;
+  padding:3px 0;
+  border-bottom:1px dotted rgba(23,63,85,.20);
+  white-space:nowrap;
+  font-size:.88rem;
+}
+
+.odayika-sp-row:last-child{
+  border-bottom:0;
+}
+
+.odayika-sp-name{
+  color:var(--heading);
+  font-weight:700;
+}
+
+.odayika-sp-val{
+  text-align:right;
+  font-variant-numeric:tabular-nums;
+  letter-spacing:.01em;
+}
+
+.odayika-state{
+  margin-left:2px;
+  color:#7b3f00;
+  font-weight:700;
+}
+
+.odayika-chart-box{
+  width:100%;
+  max-width:315px;
+  justify-self:center;
+  padding:4px;
+  background:rgba(255,255,255,.48);
+  border:1px solid rgba(11,85,85,.20);
+  border-radius:8px;
+}
+
+.odayika-chart{
+  display:block;
+  width:100%;
+  height:auto;
+  aspect-ratio:1/1;
+}
+
+.odayika-frame,
+.odayika-ln{
+  fill:none;
+  stroke:#173f55;
+  vector-effect:non-scaling-stroke;
+}
+
+.odayika-frame{stroke-width:2.25}
+.odayika-ln{stroke-width:1.85}
+
+/* राशि-संख्या और ग्रह दोनों बड़े */
+.odayika-num{
+  fill:#173f55;
+  font-size:48px;
+  font-weight:700;
+  text-anchor:middle;
+  dominant-baseline:middle;
+}
+
+.odayika-pl{
+  fill:#111;
+  font-size:44px;
+  font-weight:700;
+  text-anchor:middle;
+  dominant-baseline:middle;
+}
+
+.odayika-legend{
+  margin:8px 0 0;
+  color:#444;
+  font-size:.72rem;
+  line-height:1.45;
+  text-align:center;
+}
+
+.odayika-note{
+  margin:4px 0 0;
+  color:var(--heading);
+  font-size:.82rem;
+  font-weight:700;
+  line-height:1.45;
+  text-align:center;
+}
+
+@media(max-width:600px){
+  .odayika-box{
+    margin-top:12px;
+    padding:13px 7px 14px;
+    overflow:hidden;
+  }
+
+  .odayika-title{font-size:1.06rem}
+  .odayika-date-line{font-size:.80rem}
+  .odayika-place-line{font-size:.76rem}
+  .odayika-subhead{font-size:.84rem}
+
+  /* मोबाइल पर भी अगल-बगल */
+  .odayika-dual{
+    grid-template-columns:minmax(122px,.90fr) minmax(178px,1.10fr);
+    gap:5px;
+  }
+
+  .odayika-spashta{
+    padding:5px 6px 6px;
+  }
+
+  .odayika-sp-row{
+    min-height:25px;
+    padding:2px 0;
+    gap:3px;
+    font-size:.73rem;
+  }
+
+  .odayika-chart-box{
+    max-width:none;
+    padding:3px;
+  }
+
+  .odayika-num{font-size:46px}
+  .odayika-pl{font-size:42px}
+
+  .odayika-legend{
+    font-size:.63rem;
+  }
+
+  .odayika-note{
+    font-size:.75rem;
+  }
+}
 </style>
 </head>
 <body>
