@@ -987,6 +987,60 @@ body{display:flex;flex-direction:column;min-height:100vh}
   <p class="panchanga-selector-status" id="selectorStatus">आज का काशीस्थ पञ्चाङ्ग लोड हो रहा है...</p>
   <div class="panchanga-selector-warning" id="selectorWarning" hidden></div>
 </section>
+    <!-- =========================================================
+     औदयिक ग्रहस्पष्ट एवं ग्रहचक्र
+     स्थान/दिनाङ्क selector के बाद और muhurtaBox के पहले रखें
+========================================================= -->
+<section class="odayika-box" id="odayikaBox">
+  <h3 class="odayika-title">॥ औदयिक ग्रहस्पष्ट एवं ग्रहचक्र ॥</h3>
+
+  <p class="odayika-date-line" id="odayikaDateLine"></p>
+  <p class="odayika-place-line" id="odayikaPlaceLine"></p>
+
+  <p class="odayika-subhead">ग्रहस्पष्ट (राशि।अंश।कला।विकला)</p>
+
+  <div class="odayika-dual">
+    <div class="odayika-spashta" id="odayikaSpashta" aria-label="औदयिक ग्रहस्पष्ट"></div>
+
+    <div class="odayika-chart-box">
+      <svg class="odayika-chart"
+           viewBox="0 0 1000 1000"
+           role="img"
+           aria-labelledby="odayikaChartTitle odayikaChartDesc">
+
+        <title id="odayikaChartTitle">सूर्योदयकालीन ग्रहचक्र</title>
+        <desc id="odayikaChartDesc">चयनित स्थान एवं दिनाङ्क के सूर्योदयकालीन ग्रहों का राशिचक्र</desc>
+
+        <rect class="odayika-frame" x="12" y="12" width="976" height="976" rx="5"/>
+        <path class="odayika-ln" d="M500 12 L988 500 L500 988 L12 500 Z"/>
+        <path class="odayika-ln" d="M12 12 L500 500"/>
+        <path class="odayika-ln" d="M988 12 L500 500"/>
+        <path class="odayika-ln" d="M12 988 L500 500"/>
+        <path class="odayika-ln" d="M988 988 L500 500"/>
+
+        <!-- राशि-संख्याएँ : प्रत्येक खाने में एक ही संख्या -->
+        <text class="odayika-num" x="500" y="145">१</text>
+        <text class="odayika-num" x="255" y="125">२</text>
+        <text class="odayika-num" x="115" y="300">३</text>
+        <text class="odayika-num" x="250" y="500">४</text>
+        <text class="odayika-num" x="115" y="700">५</text>
+        <text class="odayika-num" x="255" y="875">६</text>
+        <text class="odayika-num" x="500" y="855">७</text>
+        <text class="odayika-num" x="745" y="875">८</text>
+        <text class="odayika-num" x="885" y="700">९</text>
+        <text class="odayika-num" x="750" y="500">१०</text>
+        <text class="odayika-num" x="885" y="300">११</text>
+        <text class="odayika-num" x="745" y="125">१२</text>
+
+        <!-- ग्रह JavaScript से चयनित स्थान/दिनाङ्क के अनुसार आएँगे -->
+        <g id="odayikaPlanetLayer"></g>
+      </svg>
+    </div>
+  </div>
+
+  <p class="odayika-legend" id="odayikaLegend">व० = वक्री · अ० = अस्त</p>
+  <p class="odayika-note" id="odayikaNote"></p>
+</section>
     
 <section class="muhurta-box" id="muhurtaBox">
   <h3>आज का काल एवं मुहूर्त्त-विभाजन</h3>
