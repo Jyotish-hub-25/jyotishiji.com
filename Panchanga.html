@@ -3090,7 +3090,10 @@ setText(
 
   /* सूर्योदय/सूर्यास्त */
 setText("sunrise",excelTimeDev(row[10],selectedDate) + " बजे");
-setText("sunset",excelTimeDev(row[11],selectedDate) + " बजे");
+setText("sunset",excelTimeDev(row[11]),selectedDate);
+
+/* उसी स्थान एवं दिनाङ्क का औदयिक ग्रहस्पष्ट एवं ग्रहचक्र */
+renderOdayikaGrahaBox(rowIndex,row,selectedDate);
 
 /* उसी स्थान एवं दिनाङ्क का काल-मुहूर्त्त-विभाजन */
 renderMuhurtaBox(rowIndex,row,selectedDate);
