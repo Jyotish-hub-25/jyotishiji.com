@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<title>सामान्य यात्रा-मुहूर्त परीक्षण इंजन</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root{--bg:#edf5f2;--card:#fffaf0;--green:#0b5555;--blue:#173f55;--line:rgba(11,85,85,.22);--bad:#8b0000;--warn:#9a5a00;--good:#0d664d;--soft:#eef8f4}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:#171717;font-family:"Noto Serif Devanagari","Nirmala UI","Mangal",serif;line-height:1.62}
+.page{width:min(1100px,100%);margin:auto;padding:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:13px;box-shadow:0 7px 22px rgba(28,69,63,.09);padding:15px;margin-bottom:13px}
+.hero{border-top:5px solid var(--green);text-align:center}
+h1{margin:0;color:var(--blue);font-size:clamp(1.35rem,4vw,2rem);line-height:1.35}
+h2{color:var(--blue);font-size:1.13rem;margin:0 0 10px}.sub{color:#555;margin:5px 0 0}
+.controls{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+label{font-size:.86rem;font-weight:700;color:#333}
+select,input,button{width:100%;margin-top:4px;min-height:42px;padding:7px 9px;border:1px solid rgba(23,63,85,.25);border-radius:8px;background:#fff;font:inherit}
+button{background:var(--green);color:#fff;font-weight:700;cursor:pointer}
+.checkrow{display:flex;gap:14px;flex-wrap:wrap;margin:10px 0}
+.checkrow label{font-weight:600;display:flex;align-items:center;gap:5px}.checkrow input{width:auto;min-height:auto;margin:0}
+.status{margin-top:10px;padding-top:8px;border-top:1px solid var(--line);text-align:center;color:#555}
+.summary{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.mini{background:var(--soft);border:1px solid var(--line);border-radius:9px;padding:9px;text-align:center}
+.mini b{display:block;color:var(--blue);font-size:.78rem}.mini span{display:block;margin-top:3px}
+.verdict{font-weight:700}.v-best{color:var(--good)}.v-good{color:#176b47}.v-mid{color:var(--warn)}.v-bad{color:var(--bad)}
+.windows{display:grid;gap:7px}.window{display:grid;grid-template-columns:110px 145px 1fr;gap:8px;border:1px solid var(--line);border-radius:9px;padding:8px 10px;background:#fff}
+.window .time{font-weight:700;color:var(--blue)}.window .why{font-size:.86rem;color:#444}
+.rulegrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.rule{border:1px solid var(--line);border-radius:9px;background:#fff;padding:9px}.rule b{color:var(--blue)}
+.note{background:#fff4dc;border:1px solid rgba(154,90,0,.25);border-left:4px solid var(--warn);padding:10px;border-radius:8px;font-size:.88rem}
+.tests{font-size:.9rem}.pass{color:var(--good);font-weight:700}.fail{color:var(--bad);font-weight:700}.small{font-size:.82rem;color:#555}
+@media(max-width:780px){.controls{grid-template-columns:1fr 1fr}.summary{grid-template-columns:1fr 1fr}.rulegrid{grid-template-columns:1fr}.window{grid-template-columns:95px 1fr}.window .why{grid-column:1/-1}}
+@media(max-width:430px){.controls,.summary{grid-template-columns:1fr}.page{padding:7px}}
+</style>
+</head>
+<body>
+<main class="page">
+<section class="card hero">
+  <h1>॥ सामान्य यात्रा-मुहूर्त परीक्षण इंजन ॥</h1>
+  <p class="sub">जन्मकुण्डली-आधारित नियमों को अभी पृथक् रखकर शास्त्रीय सामान्य नियमों की गणनात्मक जाँच</p>
+</section>
+
+<section class="card">
+  <h2>यात्रा विवरण</h2>
+  <div class="controls">
+    <label>स्थान
+      <select id="place">
+        <option value="kashi">काशी</option><option value="jammu">जम्मू</option><option value="jaipur">जयपुर</option>
+        <option value="darbhanga">दरभङ्गा</option><option value="delhi">नई दिल्ली</option><option value="ludhiana">लुधियाना</option>
+        <option value="vidisha">विदिशा</option><option value="london">लन्दन</option><option value="doha">दोहा</option>
+      </select>
+    </label>
+    <label>दिनाङ्क<input id="date" type="date" value="2026-08-26"></label>
+    <label>यात्रा-दिशा
+      <select id="direction">
+        <option value="E">पूर्व</option><option value="SE">आग्नेय</option><option value="S">दक्षिण</option><option value="SW">नैऋत्य</option>
+        <option value="W">पश्चिम</option><option value="NW">वायव्य</option><option value="N">उत्तर</option><option value="NE">ईशान</option>
+      </select>
+    </label>
+    <label>यात्रा का स्तर
+      <select id="distance"><option value="long">दूर/मुख्य यात्रा</option><option value="ordinary">सामान्य यात्रा</option></select>
+    </label>
+  </div>
+  <div class="checkrow">
+    <label><input id="sameDay" type="checkbox"> उसी दिन गमन और प्रवेश</label>
+    <label><input id="showBad" type="checkbox"> त्याज्य काल भी दिखाएँ</label>
+  </div>
+  <button id="calc">मुहूर्त निकालें</button>
+  <div class="status" id="status">आँकड़े लोड होंगे।</div>
+</section>
+
+<section class="card" id="result" hidden>
+  <div class="summary">
+    <div class="mini"><b>सूर्योदय</b><span id="sunrise">—</span></div>
+    <div class="mini"><b>सूर्यास्त</b><span id="sunset">—</span></div>
+    <div class="mini"><b>वार</b><span id="weekday">—</span></div>
+    <div class="mini"><b>सूर्योदय तिथि</b><span id="tithi">—</span></div>
+    <div class="mini"><b>सूर्योदय नक्षत्र</b><span id="nak">—</span></div>
+  </div>
+</section>
+
+<section class="card" id="bestCard" hidden><h2>प्राप्त कालखण्ड</h2><div id="windows" class="windows"></div></section>
+
+<section class="card">
+  <h2>v1 में सक्रिय सामान्य नियम</h2>
+  <div class="rulegrid">
+    <div class="rule"><b>तिथि-निषेध</b><br>षष्ठी, अष्टमी, द्वादशी, रिक्ता, अमावस्या तथा शुक्ल प्रतिपदा।</div>
+    <div class="rule"><b>नक्षत्र-श्रेणी</b><br>श्रेष्ठ, मध्यम और वर्ज्य यात्रा-नक्षत्र।</div>
+    <div class="rule"><b>वारफल</b><br>दूरयात्रा में बुधवार का विशेष निषेध; रवि, भौम, शनि को प्रतिकूल भार।</div>
+    <div class="rule"><b>वार-दिक्शूल एवं विदिक्शूल</b><br>चार प्रधान और चार कोण-दिशाओं का निषेध।</div>
+    <div class="rule"><b>नक्षत्रशूल</b><br>ज्येष्ठा-पूर्व, पूर्वभाद्रपद-दक्षिण, रोहिणी-पश्चिम, उत्तराफाल्गुनी-उत्तर।</div>
+    <div class="rule"><b>काल-पाश</b><br>वारानुसार दिन और रात्रि में सम्मुख काल/पाश दिशा का निषेध।</div>
+    <div class="rule"><b>योगिनी</b><br>तिथि से दिशा; सम्मुख/दक्षिण (दाहिने) को दोष, वाम/पृष्ठ को शुभ।</div>
+    <div class="rule"><b>दिक्चन्द्र</b><br>चन्द्रराशि से दिशा; सम्मुख एवं दक्षिण शुभ, पृष्ठ एवं वाम प्रतिकूल।</div>
+    <div class="rule"><b>कुम्भ-मीन चन्द्र</b><br>दक्षिण यात्रा में स्पष्ट निषेध।</div>
+    <div class="rule"><b>अभिजित</b><br>आठवाँ दिवामुहूर्त; बुधवार और दक्षिण यात्रा में अभिजित का लाभ नहीं।</div>
+    <div class="rule"><b>समयबल</b><br>उत्तर-पूर्वाह्ण, पूर्व-मध्यदिन, दक्षिण-अपराह्ण; पश्चिम-अर्धरात्रि को सकारात्मक बल।</div>
+    <div class="rule"><b>एक-दिन गमन-प्रवेश</b><br>ऐसे चयन पर वारशूल, नक्षत्रशूल और योगिनी को निर्णय से हटाया जाता है।</div>
+  </div>
+</section>
+
+<section class="card">
+  <h2>अभी जानबूझकर लंबित</h2>
+  <div class="note">
+    यह पहला सत्यापन-संस्करण है। अभी <b>जन्मतारा, घातचन्द्र/घाततिथि/घातवार/घातनक्षत्र, जन्मराशि/जन्मलग्न, यात्रा-लग्न</b>
+    जैसे व्यक्तिगत नियम शामिल नहीं हैं। इसके अतिरिक्त <b>परिघदण्ड का २८-नक्षत्रीय अभिजित-सहित सूक्ष्म विभाजन,
+    यामार्द्ध-राहु, प्रतिशुक्र/प्रतिबुध की वास्तविक उदय-दिशा, शुक्रास्त/बाल्य/वृद्धत्व, भद्रा-व्यतीपात-वैधृति,
+    गोधूलि तथा अकालवृष्टि</b> को पहले अलग से सूत्र-सत्यापन के बाद जोड़ा जाएगा।
+  </div>
+</section>
+
+<section class="card"><h2>नियम-इंजन स्वपरीक्षण</h2><div id="tests" class="tests"></div>
+<p class="small">ये परीक्षण Excel data नहीं, नियम-functions की logical consistency जाँचते हैं। वास्तविक दिन की जाँच ऊपर के live Excel data पर होती है।</p></section>
+</main>
+
+<script>
+const DEV=["०","१","२","३","४","५","६","७","८","९"];
+const toDev=x=>String(x??"").replace(/\d/g,d=>DEV[+d]);
+
+const PLACE={
+ kashi:{name:"काशी",file:"panchang-data/kashi2026.xlsx"},jammu:{name:"जम्मू",file:"panchang-data/Jammu2026.xlsx"},
+ jaipur:{name:"जयपुर",file:"panchang-data/Jaipur2026.xlsx"},darbhanga:{name:"दरभङ्गा",file:"panchang-data/Darbhanga2026.xlsx"},
+ delhi:{name:"नई दिल्ली",file:"panchang-data/NewDelhi2026.xlsx"},ludhiana:{name:"लुधियाना",file:"panchang-data/Ludhiana2026.xlsx"},
+ vidisha:{name:"विदिशा",file:"panchang-data/Vidisha2026.xlsx"},london:{name:"लन्दन",file:"panchang-data/London2026.xlsx"},
+ doha:{name:"दोहा",file:"panchang-data/Doha2026.xlsx"}
+};
+const NAK={1:"अश्विनी",2:"भरणी",3:"कृत्तिका",4:"रोहिणी",5:"मृगशिरा",6:"आर्द्रा",7:"पुनर्वसु",8:"पुष्य",9:"आश्लेषा",10:"मघा",11:"पूर्वाफाल्गुनी",12:"उत्तराफाल्गुनी",13:"हस्त",14:"चित्रा",15:"स्वाती",16:"विशाखा",17:"अनुराधा",18:"ज्येष्ठा",19:"मूल",20:"पूर्वाषाढा",21:"उत्तराषाढा",22:"श्रवण",23:"धनिष्ठा",24:"शतभिषा",25:"पूर्वभाद्रपद",26:"उत्तरभाद्रपद",27:"रेवती"};
+const TITHI={1:"प्रतिपदा",2:"द्वितीया",3:"तृतीया",4:"चतुर्थी",5:"पञ्चमी",6:"षष्ठी",7:"सप्तमी",8:"अष्टमी",9:"नवमी",10:"दशमी",11:"एकादशी",12:"द्वादशी",13:"त्रयोदशी",14:"चतुर्दशी",15:"पूर्णिमा",16:"प्रतिपदा",17:"द्वितीया",18:"तृतीया",19:"चतुर्थी",20:"पञ्चमी",21:"षष्ठी",22:"सप्तमी",23:"अष्टमी",24:"नवमी",25:"दशमी",26:"एकादशी",27:"द्वादशी",28:"त्रयोदशी",29:"चतुर्दशी",30:"अमावस्या"};
+const DAYMAP={Sun:"रविवार",Mon:"सोमवार",Tue:"मंगलवार",Wed:"बुधवार",Thu:"गुरुवार",Fri:"शुक्रवार",Sat:"शनिवार"};
+const DAYKEY={रविवार:"Sun",सोमवार:"Mon",मंगलवार:"Tue",बुधवार:"Wed",गुरुवार:"Thu",शुक्रवार:"Fri",शनिवार:"Sat"};
+const DIRNAME={E:"पूर्व",SE:"आग्नेय",S:"दक्षिण",SW:"नैऋत्य",W:"पश्चिम",NW:"वायव्य",N:"उत्तर",NE:"ईशान"};
+const ANG={E:0,SE:45,S:90,SW:135,W:180,NW:225,N:270,NE:315};
+const OPP={E:"W",SE:"NW",S:"N",SW:"NE",W:"E",NW:"SE",N:"S",NE:"SW"};
+
+const BEST_NAK=new Set([23,22,13,17,27,1,5,7,8]);
+const MID_NAK=new Set([19,11,20,25,18,4,24,12,21,26]);
+const BAD_NAK=new Set([14,15,16,10,9,3,6,2]);
+const VAR_SHOOLA={E:new Set(["Mon","Sat"]),S:new Set(["Thu"]),W:new Set(["Sun","Fri"]),N:new Set(["Tue","Wed"])};
+const VIDIK_SHOOLA={SE:new Set(["Mon","Thu"]),SW:new Set(["Sun","Fri"]),NE:new Set(["Wed"]),NW:new Set(["Tue"])};
+const NAK_SHOOLA={E:18,S:25,W:4,N:12};
+const KAAL_DAY={Sun:"N",Mon:"NW",Tue:"W",Wed:"SW",Thu:"S",Fri:"SE",Sat:"E"};
+const YOGINI_DIR={1:"E",9:"E",30:"NE",8:"NE",3:"SE",11:"SE",5:"S",13:"S",12:"SW",4:"SW",6:"W",14:"W",7:"NW",15:"NW",2:"N",10:"N"};
+
+let rows=null,currentPlace=null;
+
+function normalizeDate(v){
+ if(v===null||v===undefined||v==="")return "";
+ if(typeof v==="number"&&Number.isFinite(v)){const d=new Date(Date.UTC(1899,11,30)+Math.round(v)*86400000);return `${String(d.getUTCDate()).padStart(2,"0")}/${String(d.getUTCMonth()+1).padStart(2,"0")}/${d.getUTCFullYear()}`;}
+ const s=String(v).trim(),m=s.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{4})$/);if(m)return `${m[1].padStart(2,"0")}/${m[2].padStart(2,"0")}/${m[3]}`;
+ const d=new Date(v);return isNaN(d)?"":`${String(d.getDate()).padStart(2,"0")}/${String(d.getMonth()+1).padStart(2,"0")}/${d.getFullYear()}`;
+}
+function pickerGB(v){const [y,m,d]=v.split("-");return `${d}/${m}/${y}`}
+function dateBase(gb){const [d,m,y]=gb.split("/").map(Number);return Date.UTC(y,m-1,d)/60000}
+function timeMin(v){if(typeof v==="number"&&Number.isFinite(v))return Math.round(v*1440);const m=String(v??"").trim().match(/^(\d{1,3}):(\d{2})(?::(\d{2}))?$/);return m?(+m[1]*60 + +m[2] + Math.round(+(m[3]||0)/60)):NaN}
+function parseLon(v){const m=String(v??"").trim().match(/^(\d{1,2})\s*:\s*(\d{1,2})\s*°\s*(\d{1,2})\s*['′]\s*(\d{1,2}(?:\.\d+)?)\s*["″]?$/);return m?((+m[1]%12)*30 + +m[2] + +m[3]/60 + +m[4]/3600):NaN}
+function unwrapNext(a,b){if(!Number.isFinite(a)||!Number.isFinite(b))return b;while(b<=a)b+=360;return b}
+function fmtAbs(abs,gb){const base=dateBase(gb);let min=Math.round(abs-base),dayOff=Math.floor(min/1440);min=((min%1440)+1440)%1440;const hh=String(Math.floor(min/60)).padStart(2,"0"),mm=String(min%60).padStart(2,"0");return (dayOff===0?"":dayOff===1?"अगले दिन ":"पिछले दिन ")+toDev(`${hh}:${mm}`)}
+function fmtClock(min){if(!Number.isFinite(min))return "—";min=((Math.round(min)%1440)+1440)%1440;return toDev(`${String(Math.floor(min/60)).padStart(2,"0")}:${String(min%60).padStart(2,"0")}`)}
+function weekdayKey(row,gb){const raw=String(row?.[2]??"").trim();if(DAYMAP[raw])return raw;if(DAYKEY[raw])return DAYKEY[raw];const [d,m,y]=gb.split("/").map(Number);return ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][new Date(Date.UTC(y,m-1,d)).getUTCDay()]}
+function tithiNumAt(row,abs,base){const n=+row[3],end=timeMin(row[4]);if(!Number.isFinite(n))return NaN;if(Number.isFinite(end)&&abs>=base+end)return n===30?1:n+1;return n}
+function nakNumAt(row,abs,base){const n=parseInt(String(row[16]??"").match(/\d{1,2}/)?.[0]||"",10),end=timeMin(row[15]);if(!Number.isFinite(n))return NaN;if(Number.isFinite(end)&&abs>=base+end)return n===27?1:n+1;return n}
+function relativePos(objDir,travelDir){const d=(ANG[objDir]-ANG[travelDir]+360)%360;if(d===0)return "front";if(d===180)return "back";if(d>0&&d<180)return "right";return "left"}
+function moonDirFromSign(sign1){if([1,5,9].includes(sign1))return "E";if([2,6,10].includes(sign1))return "S";if([3,7,11].includes(sign1))return "W";return "N"}
+function sunQuality(sign1){if([1,5,9].includes(sign1))return "श्रेष्ठ";if([11,10,6,3,2,7].includes(sign1))return "मध्यम";return "निन्दित"}
+function exactTithiForbidden(n){return [1,4,6,8,9,12,14,19,21,23,24,27,29,30].includes(n)}
+function nakGrade(n){return BEST_NAK.has(n)?"श्रेष्ठ":MID_NAK.has(n)?"मध्यम":BAD_NAK.has(n)?"वर्ज्य":"सामान्य"}
+function yoginiDir(tn){const civil=tn<=15?tn:tn-15,key=tn===30?30:civil;return YOGINI_DIR[key]||null}
+function moonLonAt(c,a){const f=(a-c.sunriseAbs)/(c.nextSunriseAbs-c.sunriseAbs);return c.moon0+(c.moon1-c.moon0)*f}
+function sunLonAt(c,a){const f=(a-c.sunriseAbs)/(c.nextSunriseAbs-c.sunriseAbs);return c.sun0+(c.sun1-c.sun0)*f}
+function isDay(c,a){return a>=c.sunriseAbs&&a<c.sunsetAbs}
+function inAbhijit(c,a){const one=(c.sunsetAbs-c.sunriseAbs)/15;return a>=c.sunriseAbs+7*one&&a<c.sunriseAbs+8*one}
+function timeBala(c,a,dir){
+ const dayLen=c.sunsetAbs-c.sunriseAbs;
+ if(a>=c.sunriseAbs&&a<c.sunsetAbs){const p=(a-c.sunriseAbs)/dayLen;if(dir==="N"&&p<1/3)return true;if(dir==="E"&&p>=1/3&&p<2/3)return true;if(dir==="S"&&p>=2/3)return true}
+ if(dir==="W"&&a>=c.sunsetAbs&&a<c.nextSunriseAbs){const mid=(c.sunsetAbs+c.nextSunriseAbs)/2,span=(c.nextSunriseAbs-c.sunsetAbs)/6;return Math.abs(a-mid)<=span}
+ return false
+}
+function buildContext(gb){
+ const idx=rows.findIndex((r,i)=>i>0&&normalizeDate(r[0])===gb);if(idx<0||!rows[idx+1])throw new Error("दिनाङ्क/अगले दिन का data उपलब्ध नहीं।");
+ const row=rows[idx],next=rows[idx+1],base=dateBase(gb),sr=timeMin(row[10]),ss=timeMin(row[11]),ns=timeMin(next[10]);if(![sr,ss,ns].every(Number.isFinite))throw new Error("सूर्योदय/सूर्यास्त data अपूर्ण है।");
+ let m0=parseLon(row[14]),m1=unwrapNext(m0,parseLon(next[14])),s0=parseLon(row[12]),s1=unwrapNext(s0,parseLon(next[12]));
+ return {idx,row,next,gb,base,sunriseAbs:base+sr,sunsetAbs:base+ss,nextSunriseAbs:base+1440+ns,moon0:m0,moon1:m1,sun0:s0,sun1:s1,weekday:weekdayKey(row,gb)}
+}
+function evaluate(c,a,dir,{longJourney=true,sameDay=false}={}){
+ const hard=[],warn=[],good=[],t=tithiNumAt(c.row,a,c.base),n=nakNumAt(c.row,a,c.base),day=c.weekday;
+ if(exactTithiForbidden(t))hard.push(`निषिद्ध तिथि: ${TITHI[t]||t}`);
+ const ng=nakGrade(n);if(ng==="वर्ज्य")hard.push(`वर्ज्य यात्रा-नक्षत्र: ${NAK[n]}`);else if(ng==="श्रेष्ठ")good.push(`श्रेष्ठ नक्षत्र: ${NAK[n]}`);else if(ng==="मध्यम")warn.push(`मध्यम नक्षत्र: ${NAK[n]}`);
+ if(day==="Sun")warn.push("रविवार यात्रा-फल प्रतिकूल");if(day==="Tue")warn.push("मंगलवार यात्रा-फल प्रतिकूल");if(day==="Sat")warn.push("शनिवार यात्रा-फल प्रतिकूल");if(day==="Wed"&&longJourney)hard.push("दूरयात्रा में बुधवार निषिद्ध");if(["Mon","Thu","Fri"].includes(day))good.push("वारफल अनुकूल");
+ if(!sameDay){if(VAR_SHOOLA[dir]?.has(day))hard.push(`वार-दिक्शूल: ${DIRNAME[dir]}`);if(VIDIK_SHOOLA[dir]?.has(day))hard.push(`वार-विदिक्शूल: ${DIRNAME[dir]}`);if(NAK_SHOOLA[dir]===n)hard.push(`नक्षत्रशूल: ${NAK[n]} में ${DIRNAME[dir]}`)}
+ const kd=KAAL_DAY[day],kaal=isDay(c,a)?kd:OPP[kd],pasha=OPP[kaal];if(dir===kaal)hard.push(`काल सम्मुख: ${DIRNAME[kaal]}`);if(dir===pasha)hard.push(`पाश सम्मुख: ${DIRNAME[pasha]}`);
+ if(!sameDay){const yd=yoginiDir(t),pos=yd?relativePos(yd,dir):null;if(pos==="front")hard.push(`योगिनी सम्मुख (${DIRNAME[yd]})`);else if(pos==="right")hard.push(`योगिनी दक्षिणभाग (${DIRNAME[yd]})`);else if(pos==="left")good.push(`योगिनी वामभाग (${DIRNAME[yd]})`);else if(pos==="back")good.push(`योगिनी पृष्ठभाग (${DIRNAME[yd]})`)}
+ const ml=moonLonAt(c,a),sign1=(Math.floor((((ml%360)+360)%360)/30)%12)+1,md=moonDirFromSign(sign1),mp=relativePos(md,dir);
+ if(mp==="front")good.push(`चन्द्र सम्मुख (${DIRNAME[md]})`);else if(mp==="right")good.push(`चन्द्र दक्षिणभाग (${DIRNAME[md]})`);else if(mp==="back")hard.push(`चन्द्र पृष्ठभाग (${DIRNAME[md]})`);else if(mp==="left")hard.push(`चन्द्र वामभाग (${DIRNAME[md]})`);
+ if(dir==="S"&&[11,12].includes(sign1))hard.push("दक्षिण यात्रा में कुम्भ/मीन चन्द्र निषिद्ध");
+ const sl=sunLonAt(c,a),ssign=(Math.floor((((sl%360)+360)%360)/30)%12)+1,sq=sunQuality(ssign);if(sq==="श्रेष्ठ")good.push("सूर्यराशि से यात्रा श्रेष्ठ");else if(sq==="निन्दित")warn.push("सूर्यराशि से यात्रा निन्दित");
+ if(inAbhijit(c,a)){if(day==="Wed")warn.push("बुधवार होने से अभिजित प्रशस्त नहीं");else if(dir==="S")warn.push("दक्षिण यात्रा में अभिजित वर्जित");else good.push("अभिजित मुहूर्त")}
+ if(timeBala(c,a,dir))good.push("दिशानुकूल समयबल");
+ let verdict;if(hard.length)verdict="त्याज्य";else{const score=good.length-warn.length;if(score>=4&&!warn.length)verdict="उत्तम";else if(score>=2)verdict="शुभ";else verdict="मध्यम"}
+ return {verdict,hard,warn,good,tithi:t,nak:n,moonSign:sign1}
+}
+function cls(v){return v==="उत्तम"?"v-best":v==="शुभ"?"v-good":v==="मध्यम"?"v-mid":"v-bad"}
+function compress(c,dir,opts){
+ const arr=[];let start=c.sunriseAbs,prev=null,last=null;
+ for(let a=c.sunriseAbs;a<=c.nextSunriseAbs;a++){const e=a===c.nextSunriseAbs?null:evaluate(c,a,dir,opts),sig=e?`${e.verdict}|${e.hard.join(";")}|${e.warn.join(";")}|${e.good.join(";")}`:"END";
+   if(prev===null){prev=sig;start=a;last=e;continue}if(sig!==prev){arr.push({start,end:a,eval:last});start=a;prev=sig;last=e}}
+ return arr
+}
+function render(){
+ if(!rows)return;
+ try{
+  const gb=pickerGB(document.getElementById("date").value),dir=document.getElementById("direction").value,opts={longJourney:document.getElementById("distance").value==="long",sameDay:document.getElementById("sameDay").checked},c=buildContext(gb);
+  document.getElementById("sunrise").textContent=fmtClock(c.sunriseAbs-c.base);document.getElementById("sunset").textContent=fmtClock(c.sunsetAbs-c.base);document.getElementById("weekday").textContent=DAYMAP[c.weekday]||c.weekday;document.getElementById("tithi").textContent=TITHI[+c.row[3]]||c.row[3];const nn=parseInt(String(c.row[16]).match(/\d{1,2}/)?.[0]||"",10);document.getElementById("nak").textContent=NAK[nn]||c.row[16];document.getElementById("result").hidden=false;
+  let ws=compress(c,dir,opts);if(!document.getElementById("showBad").checked)ws=ws.filter(x=>x.eval.verdict!=="त्याज्य");const rank={उत्तम:0,शुभ:1,मध्यम:2,त्याज्य:3},useful=ws.filter(x=>x.end-x.start>=5).sort((a,b)=>rank[a.eval.verdict]-rank[b.eval.verdict]||a.start-b.start);
+  const box=document.getElementById("windows");box.innerHTML="";if(!useful.length)box.innerHTML='<div class="note">इस दिशा/दिन में v1 के सक्रिय नियमों से पाँच मिनट या अधिक का दोषरहित काल नहीं मिला।</div>';else useful.slice(0,30).forEach(w=>{const reasons=[...w.eval.good,...w.eval.warn,...w.eval.hard].slice(0,5).join(" · "),el=document.createElement("div");el.className="window";el.innerHTML=`<div class="time">${fmtAbs(w.start,gb)}–${fmtAbs(w.end,gb)}</div><div class="verdict ${cls(w.eval.verdict)}">${w.eval.verdict}</div><div class="why">${reasons||"कोई विशेष अतिरिक्त संकेत नहीं"}</div>`;box.appendChild(el)});
+  document.getElementById("bestCard").hidden=false;document.getElementById("status").textContent=`${PLACE[currentPlace].name} · ${toDev(gb)} · ${DIRNAME[dir]} यात्रा`;
+ }catch(e){document.getElementById("status").textContent="गणना नहीं हो सकी: "+(e?.message||e)}
+}
+async function load(){
+ currentPlace=document.getElementById("place").value;const meta=PLACE[currentPlace];document.getElementById("status").textContent=`${meta.name} का Excel लोड हो रहा है…`;
+ try{const r=await fetch(meta.file,{cache:"no-store"});if(!r.ok)throw new Error("HTTP "+r.status);const wb=XLSX.read(await r.arrayBuffer(),{type:"array"}),ws=wb.Sheets[wb.SheetNames[0]];rows=XLSX.utils.sheet_to_json(ws,{header:1,raw:true,defval:""});render()}
+ catch(e){document.getElementById("status").textContent="Excel data लोड नहीं हुआ: "+(e?.message||e)}
+}
+function selfTests(){
+ const t=[],assert=(name,ok)=>t.push({name,ok});
+ assert("सोमवार + पूर्व = वारशूल",VAR_SHOOLA.E.has("Mon"));assert("गुरुवार + आग्नेय = विदिक्शूल",VIDIK_SHOOLA.SE.has("Thu"));assert("ज्येष्ठा + पूर्व = नक्षत्रशूल",NAK_SHOOLA.E===18);assert("पञ्चमी की योगिनी दक्षिण",yoginiDir(5)==="S");assert("पूर्व यात्रा में दक्षिण = दाहिना भाग",relativePos("S","E")==="right");assert("दक्षिण यात्रा में उत्तर = पृष्ठभाग",relativePos("N","S")==="back");assert("कुम्भ चन्द्र की दिशा पश्चिम",moonDirFromSign(11)==="W");assert("शुक्ल प्रतिपदा निषिद्ध",exactTithiForbidden(1));assert("कृष्ण प्रतिपदा निषिद्ध नहीं",!exactTithiForbidden(16));assert("अश्विनी श्रेष्ठ यात्रा-नक्षत्र",nakGrade(1)==="श्रेष्ठ");
+ document.getElementById("tests").innerHTML=t.map(x=>`<div><span class="${x.ok?"pass":"fail"}">${x.ok?"✓":"✗"}</span> ${x.name}</div>`).join("")
+}
+document.getElementById("calc").addEventListener("click",render);document.getElementById("place").addEventListener("change",load);["date","direction","distance","sameDay","showBad"].forEach(id=>document.getElementById(id).addEventListener("change",()=>rows&&render()));
+selfTests();load();
+</script>
+</body>
+</html>
