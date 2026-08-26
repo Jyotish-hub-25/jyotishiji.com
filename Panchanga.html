@@ -3155,11 +3155,19 @@ function odayikaSpashtaRow(name,state,parts){
     `${odayikaDisplayRashi(parts)}।${odayikaDisplayPart(parts?.degree)}।${odayikaDisplayPart(parts?.minute)}।${odayikaDisplayPart(parts?.second)}`;
 
   return `
-    <div class="odayika-sp-row odayika-sp-grid">
-      <span class="odayika-sp-cell odayika-sp-name">
-        ${name}${state ? ` <span class="odayika-state">${state}</span>` : ""}
-      </span>
+    <div class="odayika-sp-row ${state ? "has-state" : ""}">
+      
+      <span class="odayika-sp-name">${name}</span>
+
+      <span class="odayika-sp-dash">-</span>
+
       <span class="odayika-sp-value">${compactValue}</span>
+
+      ${state
+        ? `<span class="odayika-state odayika-sp-state-right">${state}</span>`
+        : ""
+      }
+
     </div>
   `;
 }
