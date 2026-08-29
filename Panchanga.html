@@ -5945,8 +5945,24 @@ function annualDecisionJobs(){
 }
 
 function scheduleAnnualFestivalCalculation(){
-  if(!workbookData) return;
-  if(ANNUAL_DECISION_CACHE && ANNUAL_DECISION_CACHE.workbook===workbookData && ANNUAL_DECISION_CACHE.place===currentPlaceKey){
+  if(
+  ANNUAL_DECISION_CACHE &&
+  ANNUAL_DECISION_CACHE.workbook===workbookData &&
+  ANNUAL_DECISION_CACHE.place===currentPlaceKey
+){
+  updateRakshaFestivalNoticeFromItems(
+    ANNUAL_DECISION_CACHE.items
+  );
+
+  const trigger =
+    document.getElementById(
+      "festivalAuditTriggerWrap"
+    );
+
+  if(trigger) trigger.hidden=false;
+
+  return;
+}
     const trigger=document.getElementById("festivalAuditTriggerWrap");
     if(trigger) trigger.hidden=false;
     return;
