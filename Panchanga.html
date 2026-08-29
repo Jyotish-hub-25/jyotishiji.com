@@ -5039,7 +5039,114 @@ function decideAkshayaTritiya(){
   const c=chooseSunriseTithi(iv,"later");
   return makeDecision({id:"akshaya-tritiya",title:"अक्षयतृतीया",observanceGB:c.gb,activeDates:[c.gb],status:festivalStatus("नियम लागू","verified"),source:"निर्णयसिन्धु/धर्मनिबन्ध-परम्परा; व्रत-परिचय - गीताप्रेस",rule:"वैशाख शुक्ल तृतीया; औदयिक तृतीया को प्रधानता; द्वितीयाविद्धा से परा तृतीया श्रेष्ठ।",details:[`तृतीया - ${formatAbsForFestival(iv.start)} से ${formatAbsForFestival(iv.end)} तक`,c.reason==="sunrise"?"औदयिक तृतीया उपलब्ध।":"तृतीया सूर्योदय को न मिलने से क्षय-स्थिति fallback; पुनः शास्त्रीय जाँच अपेक्षित।"]});
 }
+function festivalIntervalIntersection(a,b){
+  if(!a || !b) return null;
 
+  const start = Math.max(a.start,b.start);
+  const end   = Math.min(a.end,b.end);
+
+  return end > start
+    ? {start,end}
+    : null;
+}
+
+
+function festivalSubtractIntervals(base,cuts){
+  if(!base) return [];
+
+  let parts = [{start:base.start,end:base.end}];
+
+  for(const cut of (cuts || [])){
+    const next = [];
+
+    for(const part of parts){
+      if(!intervalsOverlap(part,cut)){
+        next.push(part);
+        continue;
+      }
+
+      if(cut.start > part.start){
+        next.push({
+          start:part.start,
+          end:Math.min(cut.start,part.end)
+        });
+      }
+
+      if(cut.end < part.end){
+        next.push({
+          start:Math.max(cut.end,part.start),
+          end:part.end
+        });
+      }
+    }
+
+    parts = next;
+  }
+
+  return parts.filter(x => x.end - x.start >= 1);
+}
+
+
+function festivalShortTimeRange(iv){
+  if(!iv) return "";
+
+  const a = absMinutesToGBClock(iv.start);
+  const b = absMinutesToGBClock(iv.end);
+
+  if(a.gb === b.gb){
+    return `${toDev(a.clock)} से ${toDev(b.clock)} बजे तक`;
+  }
+
+  return (
+    `${festivalDateLabel(a.gb)} ${toDev(a.clock)} से ` +
+    `${festivalDateLabel(b.gb)} ${toDev(b.clock)} तक`
+  );
+}
+
+
+function rakshaBandhanFreeWindows(
+  purnimaInterval,
+  observanceGB,
+  bhadraIntervals,
+  pradoshaOnly
+){
+  const periods = pradoshaOnly
+    ? [
+        ["प्रदोष",festivalKaal(observanceGB,"pradosha")]
+      ]
+    : [
+        ["अपराह्ण",festivalKaal(observanceGB,"aparahna")],
+        ["प्रदोष",festivalKaal(observanceGB,"pradosha")]
+      ];
+
+  const windows = [];
+
+  for(const [label,kaal] of periods){
+    const usableBase =
+      festivalIntervalIntersection(
+        purnimaInterval,
+        kaal
+      );
+
+    if(!usableBase) continue;
+
+    const freeParts =
+      festivalSubtractIntervals(
+        usableBase,
+        bhadraIntervals
+      );
+
+    freeParts.forEach(part => {
+      windows.push({
+        label,
+        start:part.start,
+        end:part.end
+      });
+    });
+  }
+
+  return windows;
+}
 function decideRakshaBandhan(){
   const iv=tithiInterval("श्रावण",15,4); if(!iv) return null;
   const srDates=tithiAtSunriseDates(iv);
