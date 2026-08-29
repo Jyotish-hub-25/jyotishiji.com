@@ -5148,21 +5148,143 @@ function rakshaBandhanFreeWindows(
   return windows;
 }
 function decideRakshaBandhan(){
-  const iv=tithiInterval("श्रावण",15,4); if(!iv) return null;
-  const srDates=tithiAtSunriseDates(iv);
-  let gb=srDates.length?srDates[srDates.length-1]:intervalDates(iv,0)[0];
+  const iv = tithiInterval("श्रावण",15,4);
+  if(!iv) return null;
+
+  const srDates =
+    tithiAtSunriseDates(iv);
+
+  let gb =
+    srDates.length
+      ? srDates[srDates.length - 1]
+      : intervalDates(iv,0)[0];
+
+  let noticeMode =
+    srDates.length
+      ? "same-day"
+      : "fallback";
+
+  /*
+    यदि सूर्योदय के बाद पूर्णिमा
+    तीन मुहूर्त (१४४ मिनट) से कम रहती है,
+    तो पूर्वदिन का प्रदोष लिया जाता है।
+  */
   if(srDates.length){
-    const sr=festivalKaal(gb,"sunrise");
-    const remain=iv.end-sr.start;
-    if(remain<144) gb=addDaysGB(gb,-1);
+    const sunrise =
+      festivalSunriseAbs(gb);
+
+    const remain =
+      Number.isFinite(sunrise)
+        ? iv.end - sunrise
+        : Infinity;
+
+    if(remain < 144){
+      gb = addDaysGB(gb,-1);
+      noticeMode = "previous-pradosha";
+    }
   }
-  const ap=festivalKaal(gb,"aparahna"), pr=festivalKaal(gb,"pradosha");
-  const bh=[...bhadraOverlaps(ap),...bhadraOverlaps(pr)];
-  const uniq=[...new Map(bh.map(x=>[`${x.start}-${x.end}`,x])).values()];
-  const details=[`पूर्णिमा - ${formatAbsForFestival(iv.start)} से ${formatAbsForFestival(iv.end)} तक`];
-  if(uniq.length) details.push(...uniq.map(x=>`भद्रा - ${formatAbsForFestival(x.start)} से ${formatAbsForFestival(x.end)} तक; इस अवधि का त्याग।`));
-  else details.push("अपराह्ण/प्रदोष के परीक्षण में भद्रा-स्पर्श नहीं मिला।");
-  return makeDecision({id:"raksha-bandhan",title:"श्रावणी पर्व एवं रक्षाबन्धन",observanceGB:gb,activeDates:[gb],status:festivalStatus("मुख्य नियम लागू","verified"),source:"धर्मसिन्धु (धर्मसिन्धुसार)，व्रत-परिचय - गीताप्रेस।",rule:"श्रावण शुक्ल पूर्णिमा; भद्रा त्याज्य। सूर्योदय पर पूर्णिमा ३ मुहूर्त से अधिक रहे तो वही दिन, अल्प रहे तो पूर्वदिन का भद्रारहित प्रदोष।",details});
+
+
+  /*
+    चुने हुए पर्व-दिन में पूर्णिमा के भीतर
+    पड़ने वाली वास्तविक भद्रा।
+  */
+  const dayStart =
+    gbToOrdinalMinutes(gb,0);
+
+  const dayEnd =
+    gbToOrdinalMinutes(
+      addDaysGB(gb,1),
+      0
+    );
+
+  const dayWindow = {
+    start:dayStart,
+    end:dayEnd
+  };
+
+  const bhadras =
+    festivalAstroIndex().karana.filter(x =>
+      x.isBhadra &&
+      intervalsOverlap(x,iv) &&
+      intervalsOverlap(x,dayWindow)
+    );
+
+
+  /*
+    सामान्य दशा:
+    अपराह्ण + प्रदोष
+
+    अल्प औदयिक पूर्णिमा:
+    केवल पूर्वदिन का प्रदोष
+  */
+  const windows =
+    rakshaBandhanFreeWindows(
+      iv,
+      gb,
+      bhadras,
+      noticeMode === "previous-pradosha"
+    );
+
+
+  const details = [
+    `पूर्णिमा - ${formatAbsForFestival(iv.start)} से ${formatAbsForFestival(iv.end)} तक`
+  ];
+
+  if(bhadras.length){
+    bhadras.forEach(x => {
+      details.push(
+        `भद्रा - ${formatAbsForFestival(x.start)} से ${formatAbsForFestival(x.end)} तक; त्याज्य।`
+      );
+    });
+  }else{
+    details.push(
+      "पर्व-दिन की पूर्णिमा में भद्रा-स्पर्श नहीं मिला।"
+    );
+  }
+
+  if(windows.length){
+    windows.forEach(x => {
+      details.push(
+        `${x.label} का भद्रारहित उपलब्ध काल - ${festivalShortTimeRange(x)}`
+      );
+    });
+  }else{
+    details.push(
+      "निर्धारित अपराह्ण/प्रदोष में भद्रारहित उपलब्ध काल नहीं मिला।"
+    );
+  }
+
+
+  return makeDecision({
+    id:"raksha-bandhan",
+
+    title:"श्रावणी पर्व एवं रक्षाबन्धन",
+
+    observanceGB:gb,
+
+    activeDates:[gb],
+
+    status:
+      festivalStatus(
+        "मुख्य नियम लागू",
+        "verified"
+      ),
+
+    source:
+      "धर्मसिन्धु (धर्मसिन्धुसार)，व्रत-परिचय - गीताप्रेस।",
+
+    rule:
+      "श्रावण शुक्ल पूर्णिमा; भद्रा त्याज्य। सूर्योदय पर पूर्णिमा ३ मुहूर्त से अधिक रहे तो वही दिन, अल्प रहे तो पूर्वदिन का भद्रारहित प्रदोष।",
+
+    details,
+
+    notice:{
+      mode:noticeMode,
+      windows,
+      bhadras
+    }
+  });
 }
 
 function decideJanmashtami(){
