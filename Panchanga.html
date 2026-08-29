@@ -5653,12 +5653,262 @@ function auditDateText(d){
   return festivalDateLabel(d.observanceGB);
 }
 
+function currentFestivalPlaceGB(){
+  const meta = placeMeta();
+
+  const timeZone =
+    meta?.timeZone ||
+    Intl.DateTimeFormat()
+      .resolvedOptions()
+      .timeZone;
+
+  try{
+    const parts = {};
+
+    const formatter =
+      new Intl.DateTimeFormat(
+        "en-GB",
+        {
+          timeZone,
+          year:"numeric",
+          month:"2-digit",
+          day:"2-digit"
+        }
+      );
+
+    for(const part of formatter.formatToParts(new Date())){
+      if(part.type !== "literal"){
+        parts[part.type] = part.value;
+      }
+    }
+
+    return (
+      `${parts.day}/${parts.month}/${parts.year}`
+    );
+
+  }catch(error){
+    const now = new Date();
+
+    return (
+      `${String(now.getDate()).padStart(2,"0")}/` +
+      `${String(now.getMonth()+1).padStart(2,"0")}/` +
+      `${now.getFullYear()}`
+    );
+  }
+}
+
+
+function festivalDayDifference(fromGB,toGB){
+  const a = gbDateParts(fromGB);
+  const b = gbDateParts(toGB);
+
+  if(!a || !b) return NaN;
+
+  const x =
+    Date.UTC(
+      a.year,
+      a.month-1,
+      a.day
+    );
+
+  const y =
+    Date.UTC(
+      b.year,
+      b.month-1,
+      b.day
+    );
+
+  return Math.round(
+    (y-x) / 86400000
+  );
+}
+
+
 function updateRakshaFestivalNoticeFromItems(items){
-  if(!workbookData || !Array.isArray(items)) return;
-  const d=items.find(x=>x.id==="raksha-bandhan");
-  if(!d) return;
-  const line=`${currentPlaceName} के स्थानीय पञ्चाङ्गानुसार इस वर्ष श्रावणी पर्व एवं रक्षाबन्धन का निर्णय ${festivalDateLabel(d.observanceGB)} को प्राप्त होता है। भद्रा का त्याग अपेक्षित है; स्थानानुसार भद्रा-विवरण ऊपर निर्णय-प्रणाली में देखें।`;
-  document.querySelectorAll(".raksha-dynamic-decision").forEach(el=>{el.textContent=line;});
+  const box =
+    document.getElementById("festivalInfoBox");
+
+  const name =
+    document.getElementById("festivalName");
+
+  const summary =
+    document.getElementById("festivalSummary");
+
+  const detailsBox =
+    document.getElementById("festivalDetailsBox");
+
+  const details =
+    document.getElementById("festivalDetails");
+
+  if(!box) return;
+
+  /*
+    प्रत्येक बार पहले छिपाएँ।
+  */
+  box.hidden = true;
+
+  if(summary) summary.innerHTML = "";
+  if(details) details.innerHTML = "";
+  if(detailsBox) detailsBox.hidden = true;
+
+  if(
+    !workbookData ||
+    !Array.isArray(items)
+  ){
+    return;
+  }
+
+  const d =
+    items.find(
+      x => x.id === "raksha-bandhan"
+    );
+
+  if(!d || !d.observanceGB){
+    return;
+  }
+
+
+  /*
+    चुने हुए स्थान का वास्तविक आज का दिन।
+  */
+  const todayGB =
+    currentFestivalPlaceGB();
+
+  const daysLeft =
+    festivalDayDifference(
+      todayGB,
+      d.observanceGB
+    );
+
+
+  /*
+    केवल पर्व के सात दिन पूर्व से
+    पर्व-दिन तक प्रदर्शित करें।
+    पर्व बीतते ही स्वतः गायब।
+  */
+  if(
+    !Number.isFinite(daysLeft) ||
+    daysLeft < 0 ||
+    daysLeft > FESTIVAL_NOTICE.leadDays
+  ){
+    return;
+  }
+
+
+  if(name){
+    name.textContent =
+      FESTIVAL_NOTICE.name;
+  }
+
+
+  const weekday =
+    weekdayHi(d.observanceGB);
+
+  let arrivalText = "";
+
+  if(daysLeft === 0){
+    arrivalText = "आज";
+  }else if(daysLeft === 1){
+    arrivalText = "कल";
+  }else{
+    arrivalText =
+      `${toDev(daysLeft)} दिन बाद`;
+  }
+
+
+  const windows =
+    d.notice?.windows || [];
+
+  const bhadras =
+    d.notice?.bhadras || [];
+
+
+  const muhurtaText =
+    windows.length
+      ? windows.map(x =>
+          `<strong>${x.label}</strong> — ${festivalShortTimeRange(x)}`
+        ).join("<br>")
+      : "निर्धारित अपराह्ण/प्रदोष में भद्रारहित काल उपलब्ध नहीं मिला।";
+
+
+  const bhadraText =
+    bhadras.length
+      ? bhadras.map(x =>
+          festivalShortTimeRange(x)
+        ).join(" तथा ")
+      : "";
+
+
+  let decisionComment = "";
+
+  if(
+    d.notice?.mode ===
+    "previous-pradosha"
+  ){
+    decisionComment =
+      "पूर्णिमा सूर्योदय के बाद तीन मुहूर्त से कम रहने के कारण पूर्वदिन का भद्रारहित प्रदोष ग्रहण किया गया है।";
+
+  }else if(
+    d.notice?.mode ===
+    "same-day"
+  ){
+    decisionComment =
+      "पूर्णिमा सूर्योदय के बाद तीन मुहूर्त से अधिक रहने के कारण इसी दिन के भद्रारहित अपराह्ण/प्रदोष का विचार किया गया है।";
+
+  }else{
+    decisionComment =
+      "उपलब्ध स्थानीय पञ्चाङ्ग-आँकड़ों से पर्व-दिन का निर्णय किया गया है।";
+  }
+
+
+  if(summary){
+    summary.innerHTML = `
+      <p>
+        <strong>
+          ${festivalDateLabel(d.observanceGB)},
+          ${weekday}
+          (${arrivalText})
+        </strong>
+        को ${currentPlaceName} के स्थानीय पञ्चाङ्गानुसार
+        श्रावणी पर्व एवं रक्षाबन्धन है।
+      </p>
+
+      <p>
+        श्रावणी उपाकर्म तथा रक्षासूत्रबन्धन में
+        <strong>भद्रा का त्याग</strong> करना चाहिये।
+      </p>
+
+      ${
+        bhadraText
+          ? `
+            <p>
+              <strong>भद्रा —</strong>
+              ${bhadraText}
+            </p>
+          `
+          : ""
+      }
+
+      <p>
+        <strong>रक्षासूत्रबन्धन हेतु भद्रारहित काल —</strong><br>
+        ${muhurtaText}
+      </p>
+
+      <p>
+        ${decisionComment}
+      </p>
+    `;
+  }
+
+
+  /*
+    पुराना लम्बा “पूरा पढ़ें” भाग नहीं दिखेगा।
+  */
+  if(detailsBox){
+    detailsBox.hidden = true;
+  }
+
+  box.hidden = false;
 }
 
 function annualDecisionJobs(){
