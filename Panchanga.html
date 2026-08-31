@@ -6399,29 +6399,36 @@ renderMuhurtaBox(rowIndex,row,selectedDate);
   }
 
   if(k.count === 4){
-    setText(
-      "karan2",
-      `${KARANA_NAMES[seq[1]] || seq[1] || ""} ` +
-      `(${excelTimeDev(row[9],selectedDate)} बजे तक)`
+  setText(
+    "karan2",
+    `${KARANA_NAMES[seq[1]] || seq[1] || ""} ` +
+    `(${excelTimeDev(row[9],selectedDate)} बजे तक)`
+  );
+
+  const karan3End =
+    computedThirdKaranaEnd(
+      rowIndex,
+      row,
+      selectedDate
     );
 
-    /* मूल Excel में तीसरे करण का पृथक् अन्त-समय नहीं है;
-       नाम अनुमानित क्रम से, चौथा सूर्योदयपर्यन्त। */
-    showOptionalKarana(
-      "karan3Row",
-      "karan3",
-      `${KARANA_NAMES[seq[2]] || seq[2] || ""}`,
-      true
-    );
+  showOptionalKarana(
+    "karan3Row",
+    "karan3",
+    karan3End
+      ? `${KARANA_NAMES[seq[2]] || seq[2] || ""} ` +
+        `(${karan3End.display} बजे तक)`
+      : `${KARANA_NAMES[seq[2]] || seq[2] || ""}`,
+    true
+  );
 
-    showOptionalKarana(
-      "karan4Row",
-      "karan4",
-      `${KARANA_NAMES[seq[3]] || seq[3] || ""} (सूर्योदयपर्यन्त)`,
-      true
-    );
-  }
-
+  showOptionalKarana(
+    "karan4Row",
+    "karan4",
+    `${KARANA_NAMES[seq[3]] || seq[3] || ""} (सूर्योदयपर्यन्त)`,
+    true
+  );
+}
   /* दिनाङ्कानुसार विशेष सूचना */
 const visheshText = VISHESH_BY_DATE[selectedDate] || "";
 const visheshRow = document.getElementById("visheshRow");
