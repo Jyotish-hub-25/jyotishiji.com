@@ -3058,8 +3058,208 @@ function computedThirdKaranaEnd(rowIndex,row,selectedDate){
 
   if(!nextRow) return "";
 
-  const sunrise = rawExcelMinutes(row[10]);
-  const nextSunrise = rawExcelMinutes(nextRow[10]);
+  /*
+    तृतीय करण का अन्त स्वतंत्र अनुमान से नहीं निकालेंगे।
+
+    यदि प्रथम करण का अन्त = वर्तमान तिथि का अन्त,
+    तो तृतीय करण का अन्त = अगली तिथि का अन्त।
+
+    यदि द्वितीय करण का अन्त = वर्तमान तिथि का अन्त,
+    तो तृतीय करण का अन्त = अगली तिथि का अर्द्धमान।
+  */
+
+  const tithiEnd =
+    rawExcelMinutes(row[4]);
+
+  const karan1End =
+    rawExcelMinutes(row[8]);
+
+  const karan2End =
+    rawExcelMinutes(row[9]);
+
+  const nextTithiEnd =
+    rawExcelMinutes(nextRow[4]);
+
+
+  function makeResult(thirdEndAbs){
+    if(!Number.isFinite(thirdEndAbs)){
+      return "";
+    }
+
+    const selectedDateStart =
+      gbToOrdinalMinutes(
+        selectedDate,
+        0
+      );
+
+    let totalSeconds =
+      Math.round(
+        (thirdEndAbs - selectedDateStart) * 60
+      );
+
+    if(totalSeconds < 0){
+      return "";
+    }
+
+    const h =
+      Math.floor(totalSeconds / 3600);
+
+    totalSeconds -=
+      h * 3600;
+
+    const m =
+      Math.floor(totalSeconds / 60);
+
+    const s =
+      totalSeconds % 60;
+
+    const raw =
+      `${String(h).padStart(2,"0")}:` +
+      `${String(m).padStart(2,"0")}:` +
+      `${String(s).padStart(2,"0")}`;
+
+    return {
+      raw,
+      display:
+        excelTimeDev(
+          raw,
+          selectedDate
+        )
+    };
+  }
+
+
+  /*
+    Excel में एक ही काल के दो मान
+    display-rounding के कारण कुछ seconds/minute
+    अलग हो सकते हैं।
+  */
+  function sameTime(a,b){
+    return (
+      Number.isFinite(a) &&
+      Number.isFinite(b) &&
+      Math.abs(a-b) <= 2
+    );
+  }
+
+
+  if(
+    Number.isFinite(tithiEnd) &&
+    Number.isFinite(nextTithiEnd)
+  ){
+    const currentDateStart =
+      gbToOrdinalMinutes(
+        selectedDate,
+        0
+      );
+
+    const nextDate =
+      addDaysGB(
+        selectedDate,
+        1
+      );
+
+    const nextDateStart =
+      gbToOrdinalMinutes(
+        nextDate,
+        0
+      );
+
+    const currentTithiEndAbs =
+      currentDateStart +
+      tithiEnd;
+
+    let nextTithiEndAbs =
+      nextDateStart +
+      nextTithiEnd;
+
+
+    /*
+      सुरक्षा:
+      अगली तिथि का अन्त वर्तमान तिथि-अन्त
+      के बाद ही होना चाहिए।
+    */
+    while(
+      nextTithiEndAbs <=
+      currentTithiEndAbs
+    ){
+      nextTithiEndAbs += 1440;
+    }
+
+
+    /*
+      CASE 1
+
+      करण १ का अन्त ही वर्तमान तिथि का अन्त है।
+
+      उदाहरण:
+      01-09-2026
+
+      करण 1 = चतुर्थी-अन्त
+      करण 2 = पञ्चमी प्रथमार्ध
+      करण 3 = पञ्चमी द्वितीयार्ध
+
+      इसलिए करण 3 का अन्त =
+      पञ्चमी का अन्त।
+    */
+    if(
+      sameTime(
+        karan1End,
+        tithiEnd
+      )
+    ){
+      return makeResult(
+        nextTithiEndAbs
+      );
+    }
+
+
+    /*
+      CASE 2
+
+      करण २ का अन्त वर्तमान तिथि का अन्त है।
+
+      उदाहरण:
+      06-09-2026
+
+      करण 2 = दशमी-अन्त
+      करण 3 = एकादशी प्रथमार्ध
+
+      इसलिए करण 3 का अन्त =
+      एकादशी का अर्द्धमान।
+    */
+    if(
+      sameTime(
+        karan2End,
+        tithiEnd
+      )
+    ){
+      const halfTithiAbs =
+        currentTithiEndAbs +
+        (
+          nextTithiEndAbs -
+          currentTithiEndAbs
+        ) / 2;
+
+      return makeResult(
+        halfTithiAbs
+      );
+    }
+  }
+
+
+  /*
+    यदि किसी असामान्य दिन में ऊपर की
+    तिथि-आधारित पहचान न हो सके,
+    तभी पुराने 6° astronomical calculation
+    को fallback के रूप में रखें।
+  */
+
+  const sunrise =
+    rawExcelMinutes(row[10]);
+
+  const nextSunrise =
+    rawExcelMinutes(nextRow[10]);
 
   if(
     !Number.isFinite(sunrise) ||
@@ -3069,7 +3269,10 @@ function computedThirdKaranaEnd(rowIndex,row,selectedDate){
   }
 
   const startAbs =
-    gbToOrdinalMinutes(selectedDate,sunrise);
+    gbToOrdinalMinutes(
+      selectedDate,
+      sunrise
+    );
 
   const endAbs =
     gbToOrdinalMinutes(
@@ -3078,7 +3281,8 @@ function computedThirdKaranaEnd(rowIndex,row,selectedDate){
     );
 
   const boundaries =
-    festivalAstroIndex().karana
+    festivalAstroIndex()
+      .karana
       .map(x => x.end)
       .filter(t =>
         t > startAbs + 0.001 &&
@@ -3090,32 +3294,9 @@ function computedThirdKaranaEnd(rowIndex,row,selectedDate){
     return "";
   }
 
-  const thirdEnd = boundaries[2];
-
-  /*
-    selectedDate की मध्यरात्रि से extended clock:
-    जैसे 29:27:29
-  */
-  let totalSeconds = Math.round(
-    (thirdEnd - gbToOrdinalMinutes(selectedDate,0)) * 60
+  return makeResult(
+    boundaries[2]
   );
-
-  const h = Math.floor(totalSeconds / 3600);
-
-  totalSeconds -= h * 3600;
-
-  const m = Math.floor(totalSeconds / 60);
-  const s = totalSeconds % 60;
-
-  const raw =
-    `${String(h).padStart(2,"0")}:` +
-    `${String(m).padStart(2,"0")}:` +
-    `${String(s).padStart(2,"0")}`;
-
-  return {
-    raw,
-    display: excelTimeDev(raw,selectedDate)
-  };
 }
     
 function placeMeta(){
