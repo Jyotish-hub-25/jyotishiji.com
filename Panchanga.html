@@ -6446,14 +6446,21 @@ visheshRow.hidden = !visheshText;
   /* चार करण पर केवल स्रोत-सीमा की सूचना */
   const warning = document.getElementById("selectorWarning");
 
-  if(k.count === 4){
-    warning.hidden = false;
-    warning.textContent =
-      "इस दिन चार करण हैं। तीसरे करण का अन्त-समय मूल Excel में पृथक् स्तम्भ में उपलब्ध नहीं है; इसलिए उसे अनुमान से नहीं जोड़ा गया है।";
-  }else{
-    warning.hidden = true;
-    warning.textContent = "";
-  }
+  if(
+  k.count === 4 &&
+  !computedThirdKaranaEnd(
+    rowIndex,
+    row,
+    selectedDate
+  )
+){
+  warning.hidden = false;
+  warning.textContent =
+    "इस दिन तृतीय करण का अन्त-समय स्वचालित रूप से निर्धारित नहीं हो सका।";
+}else{
+  warning.hidden = true;
+  warning.textContent = "";
+}
 
   const dstNote = dstStatusText(selectedDate);
 
