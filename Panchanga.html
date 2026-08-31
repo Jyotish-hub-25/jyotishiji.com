@@ -3052,7 +3052,72 @@ function karanaCountForDay(rowIndex,row,tithiNumber){
 
   return {count:3,seq};
 }
+    
+function computedThirdKaranaEnd(rowIndex,row,selectedDate){
+  const nextRow = workbookData?.[rowIndex + 1];
 
+  if(!nextRow) return "";
+
+  const sunrise = rawExcelMinutes(row[10]);
+  const nextSunrise = rawExcelMinutes(nextRow[10]);
+
+  if(
+    !Number.isFinite(sunrise) ||
+    !Number.isFinite(nextSunrise)
+  ){
+    return "";
+  }
+
+  const startAbs =
+    gbToOrdinalMinutes(selectedDate,sunrise);
+
+  const endAbs =
+    gbToOrdinalMinutes(
+      addDaysGB(selectedDate,1),
+      nextSunrise
+    );
+
+  const boundaries =
+    festivalAstroIndex().karana
+      .map(x => x.end)
+      .filter(t =>
+        t > startAbs + 0.001 &&
+        t < endAbs + 0.001
+      )
+      .sort((a,b) => a-b);
+
+  if(boundaries.length < 3){
+    return "";
+  }
+
+  const thirdEnd = boundaries[2];
+
+  /*
+    selectedDate की मध्यरात्रि से extended clock:
+    जैसे 29:27:29
+  */
+  let totalSeconds = Math.round(
+    (thirdEnd - gbToOrdinalMinutes(selectedDate,0)) * 60
+  );
+
+  const h = Math.floor(totalSeconds / 3600);
+
+  totalSeconds -= h * 3600;
+
+  const m = Math.floor(totalSeconds / 60);
+  const s = totalSeconds % 60;
+
+  const raw =
+    `${String(h).padStart(2,"0")}:` +
+    `${String(m).padStart(2,"0")}:` +
+    `${String(s).padStart(2,"0")}`;
+
+  return {
+    raw,
+    display: excelTimeDev(raw,selectedDate)
+  };
+}
+    
 function placeMeta(){
   return PLACE_META[currentPlaceKey] || {
     heading:currentPlaceName + " पञ्चाङ्ग",
