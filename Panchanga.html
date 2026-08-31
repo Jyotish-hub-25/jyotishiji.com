@@ -3054,249 +3054,232 @@ function karanaCountForDay(rowIndex,row,tithiNumber){
 }
     
 function computedThirdKaranaEnd(rowIndex,row,selectedDate){
-  const nextRow = workbookData?.[rowIndex + 1];
-
-  if(!nextRow) return "";
-
   /*
-    तृतीय करण का अन्त स्वतंत्र अनुमान से नहीं निकालेंगे।
+    तृतीय करण = सूर्योदय के बाद आने वाली तीसरी 6°-सीमा।
 
-    यदि प्रथम करण का अन्त = वर्तमान तिथि का अन्त,
-    तो तृतीय करण का अन्त = अगली तिथि का अन्त।
+    साधारण समय-मध्य नहीं लिया जाता,
+    क्योंकि सूर्य-चन्द्र की सापेक्ष गति समान नहीं रहती।
 
-    यदि द्वितीय करण का अन्त = वर्तमान तिथि का अन्त,
-    तो तृतीय करण का अन्त = अगली तिथि का अर्द्धमान।
+    आसपास के औदयिक स्पष्टों से cubic interpolation करके
+    वास्तविक 6° boundary निकाली जाती है।
   */
 
-  const tithiEnd =
-    rawExcelMinutes(row[4]);
+  const index = festivalAstroIndex();
+  const samples = index?.samples || [];
 
-  const karan1End =
-    rawExcelMinutes(row[8]);
+  const currentPos =
+    samples.findIndex(s => s.i === rowIndex);
 
-  const karan2End =
-    rawExcelMinutes(row[9]);
-
-  const nextTithiEnd =
-    rawExcelMinutes(nextRow[4]);
-
-
-  function makeResult(thirdEndAbs){
-    if(!Number.isFinite(thirdEndAbs)){
-      return "";
-    }
-
-    const selectedDateStart =
-      gbToOrdinalMinutes(
-        selectedDate,
-        0
-      );
-
-    let totalSeconds =
-      Math.round(
-        (thirdEndAbs - selectedDateStart) * 60
-      );
-
-    if(totalSeconds < 0){
-      return "";
-    }
-
-    const h =
-      Math.floor(totalSeconds / 3600);
-
-    totalSeconds -=
-      h * 3600;
-
-    const m =
-      Math.floor(totalSeconds / 60);
-
-    const s =
-      totalSeconds % 60;
-
-    const raw =
-      `${String(h).padStart(2,"0")}:` +
-      `${String(m).padStart(2,"0")}:` +
-      `${String(s).padStart(2,"0")}`;
-
-    return {
-      raw,
-      display:
-        excelTimeDev(
-          raw,
-          selectedDate
-        )
-    };
+  if(currentPos < 0){
+    return "";
   }
 
-
-  /*
-    Excel में एक ही काल के दो मान
-    display-rounding के कारण कुछ seconds/minute
-    अलग हो सकते हैं।
-  */
-  function sameTime(a,b){
-    return (
-      Number.isFinite(a) &&
-      Number.isFinite(b) &&
-      Math.abs(a-b) <= 2
-    );
-  }
-
+  const current = samples[currentPos];
 
   if(
-    Number.isFinite(tithiEnd) &&
-    Number.isFinite(nextTithiEnd)
-  ){
-    const currentDateStart =
-      gbToOrdinalMinutes(
-        selectedDate,
-        0
-      );
-
-    const nextDate =
-      addDaysGB(
-        selectedDate,
-        1
-      );
-
-    const nextDateStart =
-      gbToOrdinalMinutes(
-        nextDate,
-        0
-      );
-
-    const currentTithiEndAbs =
-      currentDateStart +
-      tithiEnd;
-
-    let nextTithiEndAbs =
-      nextDateStart +
-      nextTithiEnd;
-
-
-    /*
-      सुरक्षा:
-      अगली तिथि का अन्त वर्तमान तिथि-अन्त
-      के बाद ही होना चाहिए।
-    */
-    while(
-      nextTithiEndAbs <=
-      currentTithiEndAbs
-    ){
-      nextTithiEndAbs += 1440;
-    }
-
-
-    /*
-      CASE 1
-
-      करण १ का अन्त ही वर्तमान तिथि का अन्त है।
-
-      उदाहरण:
-      01-09-2026
-
-      करण 1 = चतुर्थी-अन्त
-      करण 2 = पञ्चमी प्रथमार्ध
-      करण 3 = पञ्चमी द्वितीयार्ध
-
-      इसलिए करण 3 का अन्त =
-      पञ्चमी का अन्त।
-    */
-    if(
-      sameTime(
-        karan1End,
-        tithiEnd
-      )
-    ){
-      return makeResult(
-        nextTithiEndAbs
-      );
-    }
-
-
-    /*
-      CASE 2
-
-      करण २ का अन्त वर्तमान तिथि का अन्त है।
-
-      उदाहरण:
-      06-09-2026
-
-      करण 2 = दशमी-अन्त
-      करण 3 = एकादशी प्रथमार्ध
-
-      इसलिए करण 3 का अन्त =
-      एकादशी का अर्द्धमान।
-    */
-    if(
-      sameTime(
-        karan2End,
-        tithiEnd
-      )
-    ){
-      const halfTithiAbs =
-        currentTithiEndAbs +
-        (
-          nextTithiEndAbs -
-          currentTithiEndAbs
-        ) / 2;
-
-      return makeResult(
-        halfTithiAbs
-      );
-    }
-  }
-
-
-  /*
-    यदि किसी असामान्य दिन में ऊपर की
-    तिथि-आधारित पहचान न हो सके,
-    तभी पुराने 6° astronomical calculation
-    को fallback के रूप में रखें।
-  */
-
-  const sunrise =
-    rawExcelMinutes(row[10]);
-
-  const nextSunrise =
-    rawExcelMinutes(nextRow[10]);
-
-  if(
-    !Number.isFinite(sunrise) ||
-    !Number.isFinite(nextSunrise)
+    !Number.isFinite(current.t) ||
+    !Number.isFinite(current.elongU)
   ){
     return "";
   }
 
-  const startAbs =
+  /*
+    वर्तमान करण के बाद तीसरी 6° सीमा
+  */
+  const target =
+    (Math.floor(current.elongU / 6) + 3) * 6;
+
+
+  /*
+    target को घेरे हुए दो sunrise samples
+  */
+  let seg = currentPos;
+
+  while(
+    seg < samples.length - 1 &&
+    samples[seg + 1].elongU < target
+  ){
+    seg++;
+  }
+
+  if(seg >= samples.length - 1){
+    return "";
+  }
+
+  const p1 = samples[seg];
+  const p2 = samples[seg + 1];
+
+  if(
+    !Number.isFinite(p1.t) ||
+    !Number.isFinite(p2.t) ||
+    !Number.isFinite(p1.elongU) ||
+    !Number.isFinite(p2.elongU) ||
+    !(p2.t > p1.t) ||
+    target < p1.elongU - 1e-9 ||
+    target > p2.elongU + 1e-9
+  ){
+    return "";
+  }
+
+
+  /*
+    पड़ोसी samples से गति
+  */
+  const p0 =
+    samples[seg - 1] || p1;
+
+  const p3 =
+    samples[seg + 2] || p2;
+
+  const dt =
+    p2.t - p1.t;
+
+  const secant =
+    (p2.elongU - p1.elongU) / dt;
+
+  if(
+    !Number.isFinite(secant) ||
+    secant <= 0
+  ){
+    return "";
+  }
+
+  let m1 =
+    p0 !== p1 &&
+    Number.isFinite(p0.t) &&
+    Number.isFinite(p0.elongU) &&
+    p2.t > p0.t
+      ? (p2.elongU - p0.elongU) /
+        (p2.t - p0.t)
+      : secant;
+
+  let m2 =
+    p3 !== p2 &&
+    Number.isFinite(p3.t) &&
+    Number.isFinite(p3.elongU) &&
+    p3.t > p1.t
+      ? (p3.elongU - p1.elongU) /
+        (p3.t - p1.t)
+      : secant;
+
+
+  /*
+    curve को monotone रखने की सुरक्षा
+  */
+  if(!Number.isFinite(m1) || m1 <= 0){
+    m1 = secant;
+  }
+
+  if(!Number.isFinite(m2) || m2 <= 0){
+    m2 = secant;
+  }
+
+  const maxSlope =
+    3 * secant;
+
+  m1 =
+    Math.min(m1,maxSlope);
+
+  m2 =
+    Math.min(m2,maxSlope);
+
+
+  /*
+    Cubic Hermite interpolation
+  */
+  function elongationAt(u){
+    const u2 = u*u;
+    const u3 = u2*u;
+
+    const h00 =
+      2*u3 - 3*u2 + 1;
+
+    const h10 =
+      u3 - 2*u2 + u;
+
+    const h01 =
+      -2*u3 + 3*u2;
+
+    const h11 =
+      u3 - u2;
+
+    return (
+      h00 * p1.elongU +
+      h10 * dt * m1 +
+      h01 * p2.elongU +
+      h11 * dt * m2
+    );
+  }
+
+
+  /*
+    exact 6° target solve
+  */
+  let lo = 0;
+  let hi = 1;
+
+  for(let n=0;n<50;n++){
+    const mid =
+      (lo + hi) / 2;
+
+    if(elongationAt(mid) < target){
+      lo = mid;
+    }else{
+      hi = mid;
+    }
+  }
+
+  const u =
+    (lo + hi) / 2;
+
+  const thirdEndAbs =
+    p1.t + u * dt;
+
+
+  /*
+    selected date से extended clock:
+    जैसे 28:52:47
+  */
+  const selectedDateStart =
     gbToOrdinalMinutes(
       selectedDate,
-      sunrise
+      0
     );
 
-  const endAbs =
-    gbToOrdinalMinutes(
-      addDaysGB(selectedDate,1),
-      nextSunrise
+  let totalSeconds =
+    Math.round(
+      (thirdEndAbs - selectedDateStart) * 60
     );
 
-  const boundaries =
-    festivalAstroIndex()
-      .karana
-      .map(x => x.end)
-      .filter(t =>
-        t > startAbs + 0.001 &&
-        t < endAbs + 0.001
-      )
-      .sort((a,b) => a-b);
-
-  if(boundaries.length < 3){
+  if(totalSeconds < 0){
     return "";
   }
 
-  return makeResult(
-    boundaries[2]
-  );
+  const h =
+    Math.floor(totalSeconds / 3600);
+
+  totalSeconds -=
+    h * 3600;
+
+  const m =
+    Math.floor(totalSeconds / 60);
+
+  const s =
+    totalSeconds % 60;
+
+  const raw =
+    `${String(h).padStart(2,"0")}:` +
+    `${String(m).padStart(2,"0")}:` +
+    `${String(s).padStart(2,"0")}`;
+
+  return {
+    raw,
+    display:
+      excelTimeDev(
+        raw,
+        selectedDate
+      )
+  };
 }
     
 function placeMeta(){
