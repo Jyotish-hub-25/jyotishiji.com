@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<title>करण ३ — Exact Boundary Ledger Test v2</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root{--bg:#edf5f2;--card:#fffaf0;--green:#075b57;--blue:#173f55;--line:rgba(7,91,87,.22);--good:#0b6a4d;--bad:#8b0000;--warn:#9a5a00;--soft:#eef8f4}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:"Noto Serif Devanagari","Nirmala UI","Mangal",serif;color:#171717;line-height:1.6}
+.wrap{width:min(1050px,100%);margin:auto;padding:10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:13px;margin-bottom:11px;box-shadow:0 6px 18px rgba(20,65,60,.07)}
+.hero{border-top:5px solid var(--green);text-align:center}
+h1{font-size:clamp(1.25rem,4vw,1.9rem);margin:0;color:var(--blue)}
+h2{font-size:1.08rem;margin:0 0 8px;color:var(--blue)}
+.controls{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end}
+input,button{width:100%;min-height:42px;border:1px solid rgba(23,63,85,.28);border-radius:8px;padding:7px 9px;font:inherit;background:#fff}
+button{background:var(--green);color:#fff;font-weight:700;cursor:pointer}
+.quick{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.quick button{width:auto;background:#fff;color:var(--green);border-color:var(--green)}
+.status{text-align:center;color:#555;margin-top:8px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.mini{background:var(--soft);border:1px solid var(--line);border-radius:8px;padding:8px;text-align:center}.mini b{display:block;color:var(--blue);font-size:.77rem}
+.klist{display:grid;gap:7px}.krow{display:grid;grid-template-columns:90px 190px 1fr;gap:8px;border:1px solid var(--line);border-radius:8px;background:#fff;padding:8px}.krow b{color:var(--blue)}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:8px}table{width:100%;border-collapse:collapse;background:#fff}th,td{padding:8px;border-bottom:1px solid rgba(23,63,85,.13);text-align:left;vertical-align:top}th{background:#edf5f2;color:var(--blue)}
+.code{font-family:Consolas,ui-monospace,monospace}.good{color:var(--good);font-weight:700}.bad{color:var(--bad);font-weight:700}.warn{color:var(--warn);font-weight:700}
+.note{background:#fff3da;border-left:4px solid var(--warn);padding:9px 10px;border-radius:7px;font-size:.9rem}.small{font-size:.82rem;color:#555}
+[hidden]{display:none!important}
+@media(max-width:700px){.grid{grid-template-columns:1fr 1fr}.krow{grid-template-columns:82px 1fr}.krow .src{grid-column:1/-1}}
+@media(max-width:430px){.controls,.grid{grid-template-columns:1fr}.wrap{padding:5px}}
+</style>
+</head>
+<body>
+<main class="wrap">
+<section class="card hero">
+  <h1>॥ करण ३ — Exact Boundary Ledger Test v2 ॥</h1>
+  <p>यह मुख्य Panchanga.html से अलग है। इसमें <b>row[8] और row[9] की सभी exact 6°-सीमाओं</b> से ledger बनाकर बीच की missing boundary निकाली जाती है।</p>
+</section>
+
+<section class="card">
+  <div class="controls">
+    <label>काशी दिनाङ्क
+      <input id="date" type="date" value="2026-09-01">
+    </label>
+    <button id="run">जाँच करें</button>
+  </div>
+  <div class="quick">
+    <button data-date="2026-09-01">१ सितम्बर</button>
+    <button data-date="2026-09-06">६ सितम्बर</button>
+  </div>
+  <div id="status" class="status">काशी Excel load हो रहा है…</div>
+</section>
+
+<section class="card" id="sumCard" hidden>
+  <div class="grid">
+    <div class="mini"><b>दिनाङ्क</b><span id="vDate">—</span></div>
+    <div class="mini"><b>सूर्योदय</b><span id="vSunrise">—</span></div>
+    <div class="mini"><b>तिथि संख्या</b><span id="vTithi">—</span></div>
+    <div class="mini"><b>सूर्योदय करण</b><span id="vKarana">—</span></div>
+  </div>
+</section>
+
+<section class="card" id="karCard" hidden>
+  <h2>करण क्रम</h2>
+  <div id="klist" class="klist"></div>
+</section>
+
+<section class="card" id="calcCard" hidden>
+  <h2>करण ३ की गणना</h2>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>विधि</th><th>Extended time</th><th>Display</th><th>Reference अन्तर</th></tr></thead>
+      <tbody id="calcRows"></tbody>
+    </table>
+  </div>
+  <div id="decision" class="note" style="margin-top:9px"></div>
+</section>
+
+<section class="card" id="anchorCard" hidden>
+  <h2>Missing boundary के लिये प्रयुक्त exact anchors</h2>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>6° boundary index</th><th>Exact time</th><th>कहाँ से मिला</th><th>duplicate spread</th></tr></thead>
+      <tbody id="anchorRows"></tbody>
+    </table>
+  </div>
+  <p class="small">यदि target boundary स्वयं Excel row[8]/row[9] में उपलब्ध हो तो interpolation नहीं किया जाता। यदि missing हो, तो दोनों ओर की निकटतम exact boundaries से cubic interpolation किया जाता है।</p>
+</section>
+
+<section class="card">
+  <h2>Regression reference</h2>
+  <p class="small">आपके पहले दिये debug मान; calculation में hard-code नहीं हैं, केवल तुलना के लिये हैं।</p>
+  <div class="tablewrap">
+    <table><tbody>
+      <tr><td>०१/०९/२०२६</td><td class="code">29:27:29</td></tr>
+      <tr><td>०६/०९/२०२६</td><td class="code">28:52:47</td></tr>
+    </tbody></table>
+  </div>
+</section>
+</main>
+
+<script>
+const DEV=["०","१","२","३","४","५","६","७","८","९"];
+const toDev=x=>String(x??"").replace(/\d/g,d=>DEV[+d]);
+const FILE="panchang-data/kashi2026.xlsx";
+
+const KHI={
+  kimstughna:"किंस्तुघ्न",bava:"बव",balav:"बालव",kaulav:"कौलव",
+  taitil:"तैतिल",gara:"गर",vanij:"वणिज",visti:"विष्टि (भद्रा)",
+  sakuni:"शकुनि",catuspada:"चतुष्पद",naga:"नाग"
+};
+const MOV=["bava","balav","kaulav","taitil","gara","vanij","visti"];
+const REF={"01/09/2026":"29:27:29","06/09/2026":"28:52:47"};
+
+let rows=null,samples=null,ledger=null;
+
+function normalizeDate(v){
+  if(v===null||v===undefined||v==="")return "";
+  if(typeof v==="number"&&Number.isFinite(v)){
+    const d=new Date(Date.UTC(1899,11,30)+Math.round(v)*86400000);
+    return `${String(d.getUTCDate()).padStart(2,"0")}/${String(d.getUTCMonth()+1).padStart(2,"0")}/${d.getUTCFullYear()}`;
+  }
+  const s=String(v).trim(),m=s.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{4})$/);
+  if(m)return `${m[1].padStart(2,"0")}/${m[2].padStart(2,"0")}/${m[3]}`;
+  const d=new Date(v);if(isNaN(d))return "";
+  return `${String(d.getDate()).padStart(2,"0")}/${String(d.getMonth()+1).padStart(2,"0")}/${d.getFullYear()}`;
+}
+function pickerGB(v){const [y,m,d]=v.split("-");return `${d}/${m}/${y}`}
+function parts(gb){const m=String(gb).match(/^(\d{2})\/(\d{2})\/(\d{4})$/);return m?{d:+m[1],m:+m[2],y:+m[3]}:null}
+function day0(gb){const p=parts(gb);return p?Date.UTC(p.y,p.m-1,p.d)/60000:NaN}
+function rawMin(v){
+  if(v===""||v===null||v===undefined)return NaN;
+  if(typeof v==="number"&&Number.isFinite(v))return v*1440;
+  if(v instanceof Date&&!isNaN(v))return v.getUTCHours()*60+v.getUTCMinutes()+v.getUTCSeconds()/60;
+  const s=String(v).trim();
+  if(/^\d+(?:\.\d+)?$/.test(s))return Number(s)*1440;
+  const m=s.match(/^(?:(\d+)\s+day[s]?,\s*)?(\d{1,3}):(\d{2})(?::(\d{2}(?:\.\d+)?))?$/i);
+  return m?+(m[1]||0)*1440 + +m[2]*60 + +m[3] + +(m[4]||0)/60:NaN;
+}
+function absVal(row,v){const gb=normalizeDate(row?.[0]),x=rawMin(v);return gb&&Number.isFinite(x)?day0(gb)+x:NaN}
+function parseSp(v){
+  const m=String(v??"").trim().match(/^(\d{1,2})\s*:\s*(\d{1,2})\s*°\s*(\d{1,2})\s*['′]\s*(\d{1,2}(?:\.\d+)?)\s*["″]?/);
+  return m?((+m[1]%12)*30 + +m[2] + +m[3]/60 + +m[4]/3600):NaN;
+}
+function canonical(raw){
+  let s=String(raw??"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z]/g,"");
+  if(s.includes("kimst"))return "kimstughna";if(s.startsWith("bav"))return "bava";if(s.startsWith("bal"))return "balav";
+  if(s.startsWith("kaul"))return "kaulav";if(s.startsWith("tait"))return "taitil";if(s.startsWith("gar"))return "gara";
+  if(s.startsWith("vani"))return "vanij";if(s.startsWith("vis")||s.startsWith("vish"))return "visti";
+  if(s.startsWith("sak")||s.startsWith("shak"))return "sakuni";if(s.startsWith("cat")||s.startsWith("chat"))return "catuspada";
+  if(s.startsWith("nag"))return "naga";return s;
+}
+function karanaAtBoundaryIndex(absBoundaryIndex){
+  const i=((absBoundaryIndex-1)%60+60)%60+1;
+  if(i===1)return "kimstughna";
+  if(i>=2&&i<=57)return MOV[(i-2)%7];
+  if(i===58)return "sakuni";if(i===59)return "catuspada";return "naga";
+}
+function fmtExtended(abs,gb){
+  if(!Number.isFinite(abs))return "—";
+  let sec=Math.round((abs-day0(gb))*60),sign=sec<0?"-":"";
+  sec=Math.abs(sec);const h=Math.floor(sec/3600);sec-=h*3600;const m=Math.floor(sec/60),s=sec-m*60;
+  return toDev(`${sign}${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`);
+}
+function fmtClock(min){
+  if(!Number.isFinite(min))return "—";let x=Math.round(min),h=Math.floor(x/60),m=x-h*60;
+  return toDev(`${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}`);
+}
+function fmtCivil(abs,gb,nextSunrise){
+  if(!Number.isFinite(abs))return "—";
+  let min=Math.round(abs-day0(gb)),shift=Math.floor(min/1440);min=((min%1440)+1440)%1440;
+  const h=Math.floor(min/60),m=min-h*60,clock=toDev(`${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}`);
+  if(shift>=1&&Number.isFinite(nextSunrise)&&abs<=nextSunrise+.01)return `रात्रिशेष ${clock}`;
+  if(shift>=1)return `अगले दिन ${clock}`;
+  return clock;
+}
+function parseRef(raw,gb){
+  const m=String(raw||"").match(/^(\d+):(\d{2}):(\d{2})$/);
+  return m?day0(gb)+(+m[1]*60)+(+m[2])+(+m[3]/60):NaN;
+}
+function diff(abs,ref){
+  if(!Number.isFinite(abs)||!Number.isFinite(ref))return "—";
+  const s=Math.round((abs-ref)*60),v=Math.abs(s),cl=v<=60?"good":v<=300?"warn":"bad";
+  if(s===0)return `<span class="good">० सेकण्ड</span>`;
+  return `<span class="${cl}">${s>0?"+":"−"}${toDev(Math.floor(v/60))} मि० ${toDev(v%60)} से०</span>`;
+}
+function rowIndex(gb){return (rows||[]).findIndex((r,i)=>i>0&&normalizeDate(r[0])===gb)}
+
+function buildSamples(){
+  const a=[];let lastE=null;
+  for(let i=1;i<(rows||[]).length;i++){
+    const r=rows[i],gb=normalizeDate(r[0]),sr=rawMin(r[10]),sun=parseSp(r[12]),moon=parseSp(r[14]);
+    if(!gb||!Number.isFinite(sr)||!Number.isFinite(sun)||!Number.isFinite(moon))continue;
+    let e=(moon-sun+360)%360;
+    if(lastE!==null)while(e<=lastE)e+=360;
+    lastE=e;a.push({i,row:r,gb,t:day0(gb)+sr,e});
+  }
+  return a;
+}
+function buildLedger(){
+  const map=new Map();
+  const add=(idx,time,src)=>{
+    if(!Number.isFinite(idx)||!Number.isFinite(time))return;
+    if(!map.has(idx))map.set(idx,[]);
+    map.get(idx).push({time,src});
+  };
+  for(const s of samples){
+    const firstBoundary=Math.floor(s.e/6)+1;
+    add(firstBoundary,absVal(s.row,s.row[8]),`${s.gb} row[8]`);
+    add(firstBoundary+1,absVal(s.row,s.row[9]),`${s.gb} row[9]`);
+  }
+  const clean=new Map();
+  for(const [idx,list] of map){
+    const vals=list.map(x=>x.time).filter(Number.isFinite).sort((a,b)=>a-b);
+    if(!vals.length)continue;
+    const mean=vals.reduce((x,y)=>x+y,0)/vals.length;
+    const spreadSec=Math.round((vals[vals.length-1]-vals[0])*60);
+    clean.set(idx,{idx,time:mean,spreadSec,sources:list.map(x=>x.src)});
+  }
+  return clean;
+}
+function lagrange(points,x){
+  let y=0;
+  for(let i=0;i<points.length;i++){
+    let term=points[i].time;
+    for(let j=0;j<points.length;j++){
+      if(i===j)continue;
+      term*=(x-points[j].idx)/(points[i].idx-points[j].idx);
+    }
+    y+=term;
+  }
+  return y;
+}
+function solveBoundary(idx){
+  const exact=ledger.get(idx);
+  if(exact)return {time:exact.time,method:"EXACT",anchors:[exact]};
+  const all=[...ledger.values()].sort((a,b)=>a.idx-b.idx);
+  const left=all.filter(p=>p.idx<idx).slice(-2);
+  const right=all.filter(p=>p.idx>idx).slice(0,2);
+  let pts=[...left,...right];
+  if(pts.length<2)return {time:NaN,method:"NONE",anchors:pts};
+  if(pts.length<4){
+    pts=all.slice().sort((a,b)=>Math.abs(a.idx-idx)-Math.abs(b.idx-idx)).slice(0,Math.min(4,all.length)).sort((a,b)=>a.idx-b.idx);
+  }
+  return {time:lagrange(pts,idx),method:`LAGRANGE-${pts.length}`,anchors:pts};
+}
+
+/* पुराना औदयिक cubic केवल तुलना के लिये */
+function sunriseCubic(rowIdx){
+  const pos=samples.findIndex(s=>s.i===rowIdx);if(pos<0)return NaN;
+  const cur=samples[pos],target=(Math.floor(cur.e/6)+3)*6;
+  let seg=pos;while(seg<samples.length-1&&samples[seg+1].e<target)seg++;
+  if(seg>=samples.length-1)return NaN;
+  const p1=samples[seg],p2=samples[seg+1],p0=samples[seg-1]||p1,p3=samples[seg+2]||p2;
+  const dt=p2.t-p1.t,sec=(p2.e-p1.e)/dt;if(!(dt>0)||!(sec>0)||target<p1.e||target>p2.e)return NaN;
+  let m1=p0!==p1?(p2.e-p0.e)/(p2.t-p0.t):sec,m2=p3!==p2?(p3.e-p1.e)/(p3.t-p1.t):sec;
+  if(!(m1>0))m1=sec;if(!(m2>0))m2=sec;m1=Math.min(m1,3*sec);m2=Math.min(m2,3*sec);
+  function eAt(u){const u2=u*u,u3=u2*u;return (2*u3-3*u2+1)*p1.e+(u3-2*u2+u)*dt*m1+(-2*u3+3*u2)*p2.e+(u3-u2)*dt*m2}
+  let lo=0,hi=1;for(let n=0;n<60;n++){const mid=(lo+hi)/2;if(eAt(mid)<target)lo=mid;else hi=mid}
+  return p1.t+((lo+hi)/2)*dt;
+}
+
+function render(){
+  if(!rows)return;
+  const gb=pickerGB(document.getElementById("date").value),ri=rowIndex(gb);
+  if(ri<0){document.getElementById("status").textContent="दिनाङ्क नहीं मिला।";return}
+  const row=rows[ri],next=rows[ri+1];if(!next){document.getElementById("status").textContent="अगले दिन का data नहीं।";return}
+  const s=samples.find(x=>x.i===ri);if(!s){document.getElementById("status").textContent="औदयिक स्पष्ट उपलब्ध नहीं।";return}
+  const firstBoundary=Math.floor(s.e/6)+1;
+  const b1=absVal(row,row[8]),b2=absVal(row,row[9]);
+  const sol3=solveBoundary(firstBoundary+2),sol4=solveBoundary(firstBoundary+3);
+  const old=sunriseCubic(ri);
+  const nextSunrise=day0(normalizeDate(next[0]))+rawMin(next[10]);
+  const refRaw=REF[gb]||"",ref=parseRef(refRaw,gb);
+
+  document.getElementById("vDate").textContent=toDev(gb);
+  document.getElementById("vSunrise").textContent=fmtClock(rawMin(row[10]));
+  document.getElementById("vTithi").textContent=toDev(row[3]);
+  document.getElementById("vKarana").textContent=KHI[canonical(row[7])]||String(row[7]||"—");
+  document.getElementById("sumCard").hidden=false;
+
+  const ends=[b1,b2,sol3.time,sol4.time],list=document.getElementById("klist");list.innerHTML="";
+  for(let j=0;j<4;j++){
+    const boundaryIndex=firstBoundary+j,name=KHI[karanaAtBoundaryIndex(boundaryIndex)]||"—";
+    const end=ends[j],isBefore=Number.isFinite(end)&&end<=nextSunrise+.001;
+    const text=isBefore?`${fmtCivil(end,gb,nextSunrise)} बजे तक`:"सूर्योदयपर्यन्त";
+    const src=j===0?"Excel row[8] exact":j===1?"Excel row[9] exact":j===2?(sol3.method==="EXACT"?"ledger exact":`missing boundary → ${sol3.method}`):(sol4.method==="EXACT"?"ledger exact":`missing boundary → ${sol4.method}`);
+    const d=document.createElement("div");d.className="krow";
+    d.innerHTML=`<b>करण ${toDev(j+1)}</b><span>${name} — ${text}</span><span class="src small">${src}</span>`;
+    list.appendChild(d);
+  }
+  document.getElementById("karCard").hidden=false;
+
+  const calc=[
+    ["Exact-boundary ledger",sol3.time,sol3.method],
+    ["Sunrise-only cubic (तुलना)",old,"पुरानी औदयिक interpolation"]
+  ];
+  document.getElementById("calcRows").innerHTML=calc.map(x=>`<tr><td><b>${x[0]}</b><br><span class="small">${x[2]}</span></td><td class="code">${fmtExtended(x[1],gb)}</td><td>${fmtCivil(x[1],gb,nextSunrise)}</td><td>${refRaw?diff(x[1],ref):"—"}</td></tr>`).join("");
+  document.getElementById("calcCard").hidden=false;
+
+  const anch=sol3.anchors||[];
+  document.getElementById("anchorRows").innerHTML=anch.map(p=>`<tr>
+    <td class="code">${p.idx}</td>
+    <td class="code">${fmtExtended(p.time,gb)}</td>
+    <td>${(p.sources||[]).join("<br>")}</td>
+    <td class="${p.spreadSec>120?"bad":p.spreadSec>30?"warn":"good"}">${toDev(p.spreadSec||0)} sec</td>
+  </tr>`).join("");
+  document.getElementById("anchorCard").hidden=false;
+
+  const target=firstBoundary+2;
+  document.getElementById("decision").innerHTML=
+    `<b>Target 6° boundary index = ${toDev(target)}.</b> `+
+    (sol3.method==="EXACT"
+      ?`यह boundary Excel ledger में exact उपलब्ध है; interpolation नहीं हुआ।`
+      :`यह boundary Excel में missing है। दोनों ओर की exact row[8]/row[9] boundaries से ${sol3.method} interpolation किया गया।`)+
+    (refRaw?` Reference ${toDev(refRaw)} से अन्तर ऊपर दिख रहा है।`:"");
+  document.getElementById("status").textContent=`काशी · ${toDev(gb)} · गणना पूर्ण`;
+}
+
+async function load(){
+  try{
+    const r=await fetch(FILE,{cache:"no-store"});if(!r.ok)throw new Error("HTTP "+r.status);
+    const wb=XLSX.read(await r.arrayBuffer(),{type:"array"}),ws=wb.Sheets[wb.SheetNames[0]];
+    rows=XLSX.utils.sheet_to_json(ws,{header:1,raw:true,defval:""});
+    samples=buildSamples();ledger=buildLedger();render();
+  }catch(e){document.getElementById("status").textContent=`Excel load नहीं हुआ: ${e?.message||e}`;}
+}
+document.getElementById("run").addEventListener("click",render);
+document.querySelectorAll(".quick button").forEach(b=>b.addEventListener("click",()=>{document.getElementById("date").value=b.dataset.date;render()}));
+load();
+</script>
+</body>
+</html>
