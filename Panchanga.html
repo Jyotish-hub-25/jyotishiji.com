@@ -2276,7 +2276,41 @@ function loadKashiKaran3Sheet(wb){
   );
 }
 
+function karan3RoundedTime(raw){
+  const text = String(raw ?? "").trim();
 
+  const m = text.match(
+    /^(\d{1,3}):(\d{2})(?::(\d{2}))?$/
+  );
+
+  if(!m){
+    return text;
+  }
+
+  let hour = Number(m[1]);
+  let minute = Number(m[2]);
+  const second = Number(m[3] || 0);
+
+  /*
+    पञ्चाङ्ग में प्रयुक्त rounding:
+    ०–३० सेकण्ड = वही मिनट
+    ३१–५९ सेकण्ड = अगला मिनट
+  */
+  if(second > 30){
+    minute++;
+
+    if(minute >= 60){
+      minute = 0;
+      hour++;
+    }
+  }
+
+  return (
+    String(hour).padStart(2,"0") +
+    ":" +
+    String(minute).padStart(2,"0")
+  );
+}
 function exactKashiThirdKaranaEnd(selectedDate){
   if(currentPlaceKey !== "kashi"){
     return "";
