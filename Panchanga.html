@@ -2206,7 +2206,99 @@ function normalizeDate(value){
 
   return text;
 }
+/* =========================================================
+   काशी 2026 - Karan3 sheet lookup
+========================================================= */
 
+function loadKashiKaran3Sheet(wb){
+  karan3ByDate = new Map();
+
+  /* यह अतिरिक्त sheet अभी केवल काशी के लिये है */
+  if(currentPlaceKey !== "kashi"){
+    return;
+  }
+
+  const sheet = wb?.Sheets?.["Karan3"];
+
+  if(!sheet){
+    console.warn("Karan3 sheet नहीं मिली।");
+    return;
+  }
+
+  const rows = XLSX.utils.sheet_to_json(
+    sheet,
+    {
+      header:1,
+      raw:true,
+      defval:""
+    }
+  );
+
+  /*
+    Sheet में ऊपर title आदि हो सकते हैं,
+    इसलिए Date / EM-Karan3 header स्वतः खोजें।
+  */
+  const headerIndex = rows.findIndex(row =>
+    String(row?.[0] ?? "").trim().toLowerCase() === "date" &&
+    String(row?.[1] ?? "").trim().toLowerCase() === "em-karan3"
+  );
+
+  if(headerIndex < 0){
+    console.warn("Karan3 sheet में Date / EM-Karan3 header नहीं मिला।");
+    return;
+  }
+
+  for(let i = headerIndex + 1; i < rows.length; i++){
+    const row = rows[i];
+
+    const gbDate =
+      normalizeDate(row?.[0]);
+
+    const karan3Value =
+      row?.[1];
+
+    if(
+      gbDate &&
+      karan3Value !== "" &&
+      karan3Value !== null &&
+      karan3Value !== undefined
+    ){
+      karan3ByDate.set(
+        gbDate,
+        karan3Value
+      );
+    }
+  }
+
+  console.log(
+    "Kashi Karan3 values loaded:",
+    karan3ByDate.size
+  );
+}
+
+
+function exactKashiThirdKaranaEnd(selectedDate){
+  if(currentPlaceKey !== "kashi"){
+    return "";
+  }
+
+  if(!karan3ByDate.has(selectedDate)){
+    return "";
+  }
+
+  const raw =
+    karan3ByDate.get(selectedDate);
+
+  return {
+    raw,
+
+    display:
+      excelTimeDev(
+        raw,
+        selectedDate
+      )
+  };
+}
 function pickerToGB(value){
   const [y,m,d] = value.split("-");
   return `${d}/${m}/${y}`;
