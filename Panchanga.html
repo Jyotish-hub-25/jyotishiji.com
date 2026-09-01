@@ -7183,6 +7183,8 @@ if(festivalAuditToggle){
 
 document.getElementById("fileLink").addEventListener("change",function(){
   workbookData = null;
+  karan3ByDate = new Map();
+
   const festivalBox = document.getElementById("festivalDecisionBox");
   if(festivalBox) festivalBox.hidden = true;
   const festivalTodayRow = document.getElementById("festivalTodayRow");
