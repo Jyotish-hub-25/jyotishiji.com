@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<title>करण ३ — Exact Reverse Engineering v7</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root{--bg:#eef6f2;--card:#fffaf0;--green:#075b57;--blue:#173f55;--line:rgba(7,91,87,.22);--good:#0b6a4d;--warn:#9a5a00;--bad:#8b0000;--soft:#edf8f4}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:#171717;font-family:"Noto Serif Devanagari","Nirmala UI","Mangal",serif;line-height:1.55}
+.wrap{width:min(1450px,100%);margin:auto;padding:10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:13px;margin-bottom:11px;box-shadow:0 6px 18px rgba(20,65,60,.07)}
+.hero{border-top:5px solid var(--green);text-align:center}
+h1{margin:0;color:var(--blue);font-size:clamp(1.25rem,4vw,1.9rem)}h2{margin:0 0 8px;color:var(--blue);font-size:1.08rem}
+.status{text-align:center;color:#555}.summary{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
+.mini{background:var(--soft);border:1px solid var(--line);border-radius:8px;padding:8px;text-align:center}.mini b{display:block;color:var(--blue);font-size:.76rem}
+.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:8px}
+table{width:100%;border-collapse:collapse;background:#fff;font-size:.84rem}
+th,td{padding:7px 8px;border-bottom:1px solid rgba(23,63,85,.13);text-align:left;vertical-align:top;white-space:nowrap}
+th{background:#edf5f2;color:var(--blue);position:sticky;top:0;z-index:1}
+.code{font-family:Consolas,ui-monospace,monospace}.good{color:var(--good);font-weight:700}.warn{color:var(--warn);font-weight:700}.bad{color:var(--bad);font-weight:700}
+.note{background:#fff3da;border-left:4px solid var(--warn);padding:9px 10px;border-radius:7px;font-size:.9rem}
+.passbox{background:#ecfff5;border:2px solid var(--good);padding:11px;border-radius:9px;font-weight:700}
+.failbox{background:#fff0f0;border:2px solid var(--bad);padding:11px;border-radius:9px;font-weight:700}
+.best{outline:2px solid var(--green);outline-offset:-2px;background:#f3fff8}
+.small{font-size:.81rem;color:#555}
+@media(max-width:800px){.summary{grid-template-columns:1fr 1fr}}
+@media(max-width:430px){.summary{grid-template-columns:1fr}.wrap{padding:5px}}
+</style>
+</head>
+<body>
+<main class="wrap">
+
+<section class="card hero">
+<h1>॥ करण ३ — Exact Reverse Engineering v7 ॥</h1>
+<p>लक्ष्य: <b>19/19 प्रमाणित 2026 मानों में h:m:s स्तर पर 0-second error</b>। इससे कम पर कोई formula स्वीकार नहीं होगा। Excel के 25 columns में कोई परिवर्तन नहीं।</p>
+</section>
+
+<section class="card">
+<div id="status" class="status">काशी 2026 Excel load हो रहा है…</div>
+</section>
+
+<section class="card">
+<div class="note">
+<b>महत्त्वपूर्ण:</b> नीचे के 19 source-values केवल validation हैं। कोई candidate formula इन values को input, correction-table या date-specific adjustment के रूप में नहीं पढ़ता। Calculation केवल वर्तमान 25-column Excel से होती है। Source-values बाद में error निकालने के लिये पढ़े जाते हैं।
+</div>
+</section>
+
+<section class="card" id="acceptCard" hidden>
+<h2>Strict acceptance</h2>
+<div id="acceptBox"></div>
+</section>
+
+<section class="card" id="healthCard" hidden>
+<h2>Input / mapping health</h2>
+<div class="summary">
+<div class="mini"><b>Valid Excel rows</b><span id="validRows">—</span></div>
+<div class="mini"><b>Classified rows</b><span id="classifiedRows">—</span></div>
+<div class="mini"><b>Unclassified rows</b><span id="unclassifiedRows">—</span></div>
+<div class="mini"><b>Exact boundary events</b><span id="boundaryEvents">—</span></div>
+<div class="mini"><b>Validation dates</b><span>19</span></div>
+</div>
+</section>
+
+<section class="card" id="scoreCard" hidden>
+<h2>Candidate formula ranking</h2>
+<div class="tablewrap">
+<table>
+<thead><tr><th>Formula</th><th>Valid</th><th>Exact 0-sec</th><th>≤1 sec</th><th>≤5 sec</th><th>≤30 sec</th><th>MAE sec</th><th>Max sec</th></tr></thead>
+<tbody id="scores"></tbody>
+</table>
+</div>
+</section>
+
+<section class="card" id="detailsCard" hidden>
+<h2>19 प्रमाणित dates — exact comparison</h2>
+<div class="tablewrap">
+<table>
+<thead>
+<tr>
+<th>दिनाङ्क</th><th>Source</th><th>Case</th><th>Target elongation</th>
+<th>BoundaryPoly4</th><th>BoundaryPoly6</th><th>BoundaryPoly8</th><th>BoundaryPoly10</th>
+<th>InvElong4</th><th>InvElong6</th><th>InvElong8</th><th>InvElong10</th>
+</tr>
+</thead>
+<tbody id="details"></tbody>
+</table>
+</div>
+</section>
+
+<section class="card" id="outlierCard" hidden>
+<h2>Best candidate के outliers</h2>
+<div class="tablewrap">
+<table><thead><tr><th>दिनाङ्क</th><th>Source</th><th>Calculated</th><th>Error sec</th><th>Target</th><th>निकट exact boundary nodes</th></tr></thead><tbody id="outliers"></tbody></table>
+</div>
+</section>
+
+<section class="card" id="badCard" hidden>
+<h2>Unclassified Excel rows</h2>
+<div class="tablewrap">
+<table><thead><tr><th>दिनाङ्क</th><th>तिथि</th><th>row[4]</th><th>row[8]</th><th>row[9]</th><th>Δ8 min</th><th>Δ9 min</th></tr></thead><tbody id="badRows"></tbody></table>
+</div>
+</section>
+
+</main>
+
+<script>
+const FILE="panchang-data/kashi2026.xlsx";
+const REF={
+  "22/04/2026":"27:43:59",
+  "15/05/2026":"28:02:14",
+  "20/05/2026":"26:50:06",
+  "11/06/2026":"29:03:25",
+  "16/06/2026":"28:07:18",
+  "09/07/2026":"27:43:51",
+  "13/07/2026":"28:57:22",
+  "05/08/2026":"28:21:34",
+  "10/08/2026":"27:35:26",
+  "01/09/2026":"29:27:29",
+  "06/09/2026":"28:52:47",
+  "29/09/2026":"29:15:39",
+  "04/10/2026":"28:43:51",
+  "27/10/2026":"30:03:31",
+  "01/11/2026":"29:24:23",
+  "25/11/2026":"29:25:34",
+  "30/11/2026":"29:20:11",
+  "24/12/2026":"29:25:19",
+  "29/12/2026":"30:37:09"
+};
+const METHODS=["BoundaryPoly4","BoundaryPoly6","BoundaryPoly8","BoundaryPoly10","InvElong4","InvElong6","InvElong8","InvElong10"];
+let rows=null,daySamples=[],boundaryEvents=[],unclassified=[];
+
+function normalizeDate(v){
+ if(v===null||v===undefined||v==="")return "";
+ if(typeof v==="number"&&Number.isFinite(v)){
+  const d=new Date(Date.UTC(1899,11,30)+Math.round(v)*86400000);
+  return `${String(d.getUTCDate()).padStart(2,"0")}/${String(d.getUTCMonth()+1).padStart(2,"0")}/${d.getUTCFullYear()}`;
+ }
+ const s=String(v).trim(),m=s.match(/^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{4})$/);
+ if(m)return `${m[1].padStart(2,"0")}/${m[2].padStart(2,"0")}/${m[3]}`;
+ const d=new Date(v);if(isNaN(d))return "";
+ return `${String(d.getDate()).padStart(2,"0")}/${String(d.getMonth()+1).padStart(2,"0")}/${d.getFullYear()}`;
+}
+function parts(gb){const m=String(gb).match(/^(\d{2})\/(\d{2})\/(\d{4})$/);return m?{d:+m[1],m:+m[2],y:+m[3]}:null}
+function day0(gb){const p=parts(gb);return p?Date.UTC(p.y,p.m-1,p.d)/60000:NaN}
+function rawMin(v){
+ if(v===""||v===null||v===undefined)return NaN;
+ if(typeof v==="number"&&Number.isFinite(v))return v*1440;
+ if(v instanceof Date&&!isNaN(v))return v.getUTCHours()*60+v.getUTCMinutes()+v.getUTCSeconds()/60;
+ const s=String(v).trim();if(/^\d+(?:\.\d+)?$/.test(s))return Number(s)*1440;
+ const m=s.match(/^(?:(\d+)\s+day[s]?,\s*)?(\d{1,3}):(\d{2})(?::(\d{2}(?:\.\d+)?))?$/i);
+ return m?+(m[1]||0)*1440 + +m[2]*60 + +m[3] + +(m[4]||0)/60:NaN;
+}
+function parseSp(v){
+ const m=String(v??"").trim().match(/^(\d{1,2})\s*:\s*(\d{1,2})\s*°\s*(\d{1,2})\s*['′]\s*(\d{1,2}(?:\.\d+)?)\s*["″]?/);
+ return m?((+m[1]%12)*30 + +m[2] + +m[3]/60 + +m[4]/3600):NaN;
+}
+function absVal(row,v){const gb=normalizeDate(row?.[0]),x=rawMin(v);return gb&&Number.isFinite(x)?day0(gb)+x:NaN}
+function parseRef(raw,gb){const m=String(raw).match(/^(\d+):(\d{2}):(\d{2})$/);return m?day0(gb)+(+m[1]*60)+(+m[2])+(+m[3]/60):NaN}
+function rowIndex(gb){return (rows||[]).findIndex((r,i)=>i>0&&normalizeDate(r[0])===gb)}
+function fmt(abs,gb){
+ if(!Number.isFinite(abs))return "—";
+ let sec=Math.round((abs-day0(gb))*60),sgn=sec<0?"-":"";sec=Math.abs(sec);
+ const h=Math.floor(sec/3600);sec-=h*3600;const m=Math.floor(sec/60),s=sec-m*60;
+ return `${sgn}${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+}
+function errSec(a,b){return Number.isFinite(a)&&Number.isFinite(b)?Math.round((a-b)*60):NaN}
+function eclass(e){const v=Math.abs(e);return v===0?"good":v<=5?"warn":"bad"}
+function cell(v,ref,gb){if(!Number.isFinite(v))return "—";const e=errSec(v,ref);return `<span class="code">${fmt(v,gb)}</span><br><span class="${eclass(e)}">(${e>=0?"+":""}${e} sec)</span>`}
+
+function sameMinutes(a,b,tol=2){return Number.isFinite(a)&&Number.isFinite(b)&&Math.abs(a-b)<=tol}
+function classifyRow(row,i){
+ const gb=normalizeDate(row?.[0]),n=Number(row?.[3]),te=rawMin(row?.[4]),k1=rawMin(row?.[8]),k2=rawMin(row?.[9]);
+ if(!gb||!Number.isFinite(n)||n<1||n>30||![te,k1,k2].every(Number.isFinite))return null;
+ const d1=Math.abs(k1-te),d2=Math.abs(k2-te);
+ let type=null;
+ if(d1<=2&&d1<=d2)type="A"; // row8 = tithi end
+ else if(d2<=2&&d2<d1)type="B"; // row9 = tithi end
+ else{unclassified.push({gb,n,te,k1,k2,d1,d2});return null}
+ return {gb,i,n,type,te,k1,k2};
+}
+
+function buildDaySamples(){
+ const out=[];let lastSun=null,lastMoon=null,lastE=null;
+ for(let i=1;i<(rows||[]).length;i++){
+   const r=rows[i],gb=normalizeDate(r[0]),sr=rawMin(r[10]),sun0=parseSp(r[12]),moon0=parseSp(r[14]);
+   if(!gb||![sr,sun0,moon0].every(Number.isFinite))continue;
+   let sun=sun0,moon=moon0;
+   if(lastSun!==null)while(sun<=lastSun)sun+=360;
+   if(lastMoon!==null)while(moon<=lastMoon)moon+=360;
+   let e=moon-sun;
+   if(lastE!==null)while(e<=lastE)e+=360;
+   out.push({i,gb,t:day0(gb)+sr,sun,moon,e,row:r});
+   lastSun=sun;lastMoon=moon;lastE=e;
+ }
+ return out;
+}
+
+/*
+  Exact boundary events को तिथि-संख्या से angle दिया जाता है।
+  tithi n:
+    midpoint = (n-1)*12 + 6
+    end      = n*12
+  angle को day sample के unwrapped elongation के पास लाया जाता है।
+*/
+function unwrapAngleNear(modDeg,near){
+ let x=((modDeg%360)+360)%360;
+ while(x<near-180)x+=360;
+ while(x>near+180)x-=360;
+ return x;
+}
+function buildBoundaryEvents(){
+ const ev=[];
+ for(let i=1;i<(rows||[]).length;i++){
+   const c=classifyRow(rows[i],i);if(!c)continue;
+   const ds=daySamples.find(s=>s.i===i);if(!ds)continue;
+   if(c.type==="A"){
+     const a1=unwrapAngleNear(c.n*12,ds.e+6);
+     const a2=a1+6;
+     ev.push({angle:a1,time:absVal(rows[i],rows[i][8]),src:`${c.gb} row[8] tithi-end`,i});
+     ev.push({angle:a2,time:absVal(rows[i],rows[i][9]),src:`${c.gb} row[9] next-half`,i});
+   }else{
+     const a1=unwrapAngleNear((c.n-1)*12+6,ds.e+6);
+     const a2=a1+6;
+     ev.push({angle:a1,time:absVal(rows[i],rows[i][8]),src:`${c.gb} row[8] tithi-mid`,i});
+     ev.push({angle:a2,time:absVal(rows[i],rows[i][9]),src:`${c.gb} row[9] tithi-end`,i});
+   }
+ }
+ ev.sort((a,b)=>a.angle-b.angle||a.time-b.time);
+ // same angle duplicates: keep median time, retain sources
+ const groups=[];
+ for(const e of ev){
+   let g=groups.find(x=>Math.abs(x.angle-e.angle)<1e-7);
+   if(!g){g={angle:e.angle,vals:[],sources:[]};groups.push(g)}
+   g.vals.push(e.time);g.sources.push(e.src);
+ }
+ return groups.map(g=>{
+   const v=g.vals.slice().sort((a,b)=>a-b);
+   const med=v.length%2?v[(v.length-1)/2]:(v[v.length/2-1]+v[v.length/2])/2;
+   return {angle:g.angle,time:med,spreadSec:Math.round((v.at(-1)-v[0])*60),sources:g.sources};
+ }).sort((a,b)=>a.angle-b.angle);
+}
+
+function targetInfo(gb){
+ const ri=rowIndex(gb);if(ri<0)return null;
+ const c=classifyRow(rows[ri],ri);if(!c)return null;
+ const ds=daySamples.find(s=>s.i===ri);if(!ds)return null;
+ let mod;
+ if(c.type==="A") mod=(c.n+1)*12;        // K3 = next tithi end
+ else mod=c.n*12+6;                      // K3 = next tithi midpoint
+ const target=unwrapAngleNear(mod,ds.e+12);
+ while(target<=ds.e)mod+=360;
+ let T=unwrapAngleNear(mod,ds.e+12);while(T<=ds.e)T+=360;
+ return {ri,c,ds,target:T};
+}
+
+function nearestByAngle(target,n){
+ return boundaryEvents.slice().sort((a,b)=>Math.abs(a.angle-target)-Math.abs(b.angle-target)).slice(0,n).sort((a,b)=>a.angle-b.angle);
+}
+function nearestSamplesByE(target,n){
+ return daySamples.slice().sort((a,b)=>Math.abs(a.e-target)-Math.abs(b.e-target)).slice(0,n).sort((a,b)=>a.e-b.e);
+}
+function lagrangeXY(points,x,xkey,ykey){
+ let y=0;
+ for(let i=0;i<points.length;i++){
+   let term=points[i][ykey];
+   for(let j=0;j<points.length;j++)if(i!==j)term*=(x-points[j][xkey])/(points[i][xkey]-points[j][xkey]);
+   y+=term;
+ }
+ return y;
+}
+function boundaryPoly(target,n){
+ const p=nearestByAngle(target,n);if(p.length<n)return NaN;
+ // avoid duplicated x (should not exist after grouping)
+ return lagrangeXY(p,target,"angle","time");
+}
+function invElong(target,n){
+ const p=nearestSamplesByE(target,n);if(p.length<n)return NaN;
+ return lagrangeXY(p,target,"e","t");
+}
+
+function calc(gb){
+ const ti=targetInfo(gb);if(!ti)return null;
+ const ref=parseRef(REF[gb],gb),t=ti.target;
+ return {
+  gb,ref,caseType:ti.c.type,target:t,
+  BoundaryPoly4:boundaryPoly(t,4),
+  BoundaryPoly6:boundaryPoly(t,6),
+  BoundaryPoly8:boundaryPoly(t,8),
+  BoundaryPoly10:boundaryPoly(t,10),
+  InvElong4:invElong(t,4),
+  InvElong6:invElong(t,6),
+  InvElong8:invElong(t,8),
+  InvElong10:invElong(t,10)
+ };
+}
+function score(rs,m){
+ const e=rs.map(r=>errSec(r[m],r.ref)).filter(Number.isFinite),a=e.map(Math.abs);
+ if(!a.length)return null;
+ return {
+   m,n:a.length,exact:a.filter(x=>x===0).length,n1:a.filter(x=>x<=1).length,n5:a.filter(x=>x<=5).length,n30:a.filter(x=>x<=30).length,
+   mae:a.reduce((x,y)=>x+y,0)/a.length,max:Math.max(...a)
+ };
+}
+
+function render(){
+ const rs=Object.keys(REF).map(calc).filter(Boolean);
+ const sc=METHODS.map(m=>score(rs,m)).filter(Boolean).sort((a,b)=>b.exact-a.exact||a.max-b.max||a.mae-b.mae);
+ const best=sc[0];
+
+ const box=document.getElementById("acceptBox");
+ if(best && best.exact===19){
+   box.className="passbox";
+   box.innerHTML=`PASS — <b>${best.m}</b> ने 19/19 source-values को rounded h:m:s पर exactly match किया। यही production formula candidate है।`;
+ }else{
+   box.className="failbox";
+   box.innerHTML=`FAIL — अभी कोई formula 19/19 पर 0-second नहीं है। सर्वोत्तम candidate <b>${best?.m||"—"}</b> है, exact matches ${best?.exact||0}/19। इसे Panchanga.html में नहीं लगाना है।`;
+ }
+ document.getElementById("acceptCard").hidden=false;
+
+ const validRows=(rows||[]).slice(1).filter(r=>normalizeDate(r[0])).length;
+ const classCount=(rows||[]).slice(1).filter((r,j)=>{
+   const n=Number(r?.[3]),te=rawMin(r?.[4]),k1=rawMin(r?.[8]),k2=rawMin(r?.[9]);
+   return Number.isFinite(n)&&[te,k1,k2].every(Number.isFinite)&&(sameMinutes(k1,te)||sameMinutes(k2,te));
+ }).length;
+ document.getElementById("validRows").textContent=validRows;
+ document.getElementById("classifiedRows").textContent=classCount;
+ document.getElementById("unclassifiedRows").textContent=unclassified.length;
+ document.getElementById("boundaryEvents").textContent=boundaryEvents.length;
+ document.getElementById("healthCard").hidden=false;
+
+ document.getElementById("scores").innerHTML=sc.map((s,i)=>`<tr class="${i===0?"best":""}">
+ <td><b>${s.m}</b></td><td>${s.n}</td><td>${s.exact}</td><td>${s.n1}</td><td>${s.n5}</td><td>${s.n30}</td><td>${s.mae.toFixed(2)}</td><td>${s.max}</td></tr>`).join("");
+ document.getElementById("scoreCard").hidden=false;
+
+ document.getElementById("details").innerHTML=rs.map(r=>`<tr>
+ <td>${r.gb}</td><td class="code">${REF[r.gb]}</td><td>${r.caseType}</td><td class="code">${r.target.toFixed(6)}°</td>
+ <td>${cell(r.BoundaryPoly4,r.ref,r.gb)}</td><td>${cell(r.BoundaryPoly6,r.ref,r.gb)}</td><td>${cell(r.BoundaryPoly8,r.ref,r.gb)}</td><td>${cell(r.BoundaryPoly10,r.ref,r.gb)}</td>
+ <td>${cell(r.InvElong4,r.ref,r.gb)}</td><td>${cell(r.InvElong6,r.ref,r.gb)}</td><td>${cell(r.InvElong8,r.ref,r.gb)}</td><td>${cell(r.InvElong10,r.ref,r.gb)}</td></tr>`).join("");
+ document.getElementById("detailsCard").hidden=false;
+
+ if(best){
+   const outs=rs.map(r=>({gb:r.gb,ref:r.ref,calc:r[best.m],err:errSec(r[best.m],r.ref),target:r.target,nodes:nearestByAngle(r.target,4)}))
+     .sort((a,b)=>Math.abs(b.err)-Math.abs(a.err)).slice(0,10);
+   document.getElementById("outliers").innerHTML=outs.map(o=>`<tr>
+    <td>${o.gb}</td><td class="code">${REF[o.gb]}</td><td class="code">${fmt(o.calc,o.gb)}</td><td class="${eclass(o.err)}">${o.err>=0?"+":""}${o.err}</td>
+    <td class="code">${o.target.toFixed(3)}°</td><td class="small">${o.nodes.map(n=>`${n.angle.toFixed(1)}° @ ${fmt(n.time,o.gb)}`).join("<br>")}</td>
+   </tr>`).join("");
+ }
+ document.getElementById("outlierCard").hidden=false;
+
+ document.getElementById("badRows").innerHTML=unclassified.map(x=>`<tr><td>${x.gb}</td><td>${x.n}</td><td class="code">${x.te}</td><td class="code">${x.k1}</td><td class="code">${x.k2}</td><td>${x.d1.toFixed(3)}</td><td>${x.d2.toFixed(3)}</td></tr>`).join("");
+ document.getElementById("badCard").hidden=!unclassified.length;
+ document.getElementById("status").textContent=`${rs.length}/19 प्रमाणित dates पर exact reverse-engineering audit पूर्ण।`;
+}
+
+async function load(){
+ try{
+  const r=await fetch(FILE,{cache:"no-store"});if(!r.ok)throw new Error("HTTP "+r.status);
+  const wb=XLSX.read(await r.arrayBuffer(),{type:"array"}),ws=wb.Sheets[wb.SheetNames[0]];
+  rows=XLSX.utils.sheet_to_json(ws,{header:1,raw:true,defval:""});
+  unclassified=[];
+  daySamples=buildDaySamples();
+  boundaryEvents=buildBoundaryEvents();
+  render();
+ }catch(e){document.getElementById("status").textContent=`Excel load नहीं हुआ: ${e?.message||e}`;}
+}
+load();
+</script>
+</body>
+</html>
