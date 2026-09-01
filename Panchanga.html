@@ -6978,66 +6978,134 @@ renderMuhurtaBox(rowIndex,row,selectedDate);
     toDev(vsYear - 135)
   );
 
-  /* करण - प्रथम Excel से, अगले क्रम से */
-  const k = karanaCountForDay(rowIndex,row,tithiNumber);
-  const seq = k.seq;
+  /* करण - प्रथम दो मूल Sheet1 से, तृतीय exact Karan3 sheet से */
+const k =
+  karanaCountForDay(
+    rowIndex,
+    row,
+    tithiNumber
+  );
 
-  const k1 =
-    `${KARANA_NAMES[seq[0]] || seq[0] || ""} ` +
-    `(${excelTimeDev(row[8],selectedDate)} बजे तक)`;
+const seq = k.seq;
 
-  setText("karan1",k1);
+/*
+  यदि Karan3 sheet में इस दिन का exact मान है,
+  तो यह निश्चित रूप से चार-करण वाला दिन माना जाएगा।
+*/
+const kashiKaran3End =
+  exactKashiThirdKaranaEnd(
+    selectedDate
+  );
 
-  if(k.count === 2){
-    setText(
-      "karan2",
-      `${KARANA_NAMES[seq[1]] || seq[1] || ""} (सूर्योदयपर्यन्त)`
-    );
+const karanaCount =
+  kashiKaran3End
+    ? 4
+    : k.count;
 
-    showOptionalKarana("karan3Row","karan3","",false);
-    showOptionalKarana("karan4Row","karan4","",false);
-  }
+/*
+  warning में भी यही result पुनः उपयोग होगा।
+*/
+let activeKaran3End = "";
 
-  if(k.count === 3){
-    setText(
-      "karan2",
-      `${KARANA_NAMES[seq[1]] || seq[1] || ""} ` +
-      `(${excelTimeDev(row[9],selectedDate)} बजे तक)`
-    );
 
-    showOptionalKarana(
-      "karan3Row",
-      "karan3",
-      `${KARANA_NAMES[seq[2]] || seq[2] || ""} (सूर्योदयपर्यन्त)`,
-      true
-    );
+const k1 =
+  `${KARANA_NAMES[seq[0]] || seq[0] || ""} ` +
+  `(${excelTimeDev(row[8],selectedDate)} बजे तक)`;
 
-    showOptionalKarana("karan4Row","karan4","",false);
-  }
+setText(
+  "karan1",
+  k1
+);
 
-  if(k.count === 4){
+
+if(karanaCount === 2){
+
+  setText(
+    "karan2",
+    `${KARANA_NAMES[seq[1]] || seq[1] || ""} (सूर्योदयपर्यन्त)`
+  );
+
+  showOptionalKarana(
+    "karan3Row",
+    "karan3",
+    "",
+    false
+  );
+
+  showOptionalKarana(
+    "karan4Row",
+    "karan4",
+    "",
+    false
+  );
+}
+
+
+if(karanaCount === 3){
+
   setText(
     "karan2",
     `${KARANA_NAMES[seq[1]] || seq[1] || ""} ` +
     `(${excelTimeDev(row[9],selectedDate)} बजे तक)`
   );
 
-  const karan3End =
-    computedThirdKaranaEnd(
-      rowIndex,
-      row,
-      selectedDate
+  showOptionalKarana(
+    "karan3Row",
+    "karan3",
+    `${KARANA_NAMES[seq[2]] || seq[2] || ""} (सूर्योदयपर्यन्त)`,
+    true
+  );
+
+  showOptionalKarana(
+    "karan4Row",
+    "karan4",
+    "",
+    false
+  );
+}
+
+
+if(karanaCount === 4){
+
+  setText(
+    "karan2",
+    `${KARANA_NAMES[seq[1]] || seq[1] || ""} ` +
+    `(${excelTimeDev(row[9],selectedDate)} बजे तक)`
+  );
+
+
+  /*
+    काशी:
+    केवल Karan3 sheet का exact source-value।
+
+    अन्य स्थान:
+    अभी पुरानी calculation वैसी ही रहने दी गयी है।
+  */
+  activeKaran3End =
+    kashiKaran3End ||
+    (
+      currentPlaceKey !== "kashi"
+        ? computedThirdKaranaEnd(
+            rowIndex,
+            row,
+            selectedDate
+          )
+        : ""
     );
+
 
   showOptionalKarana(
     "karan3Row",
     "karan3",
-    karan3End
+
+    activeKaran3End
       ? `${KARANA_NAMES[seq[2]] || seq[2] || ""} ` +
-        `(${karan3End.display} बजे तक)`
+        `(${activeKaran3End.display} बजे तक)`
       : `${KARANA_NAMES[seq[2]] || seq[2] || ""}`,
+
     true
   );
+
 
   showOptionalKarana(
     "karan4Row",
