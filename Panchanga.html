@@ -7132,12 +7132,8 @@ visheshRow.hidden = !visheshText;
   const warning = document.getElementById("selectorWarning");
 
   if(
-  k.count === 4 &&
-  !computedThirdKaranaEnd(
-    rowIndex,
-    row,
-    selectedDate
-  )
+  karanaCount === 4 &&
+  !activeKaran3End
 ){
   warning.hidden = false;
   warning.textContent =
