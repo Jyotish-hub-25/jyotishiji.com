@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta name="description" content="श्रीसूर्यसिद्धान्तीय पञ्चाङ्ग-आँकड़ों से शास्त्र-स्रोत सहित वाहन-क्रय और प्रथम-प्रयोग मुहूर्त्त खोज।">
+<title>वाहन मुहूर्त्त-अन्वेषक v2 — ग्रन्थाधारित</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root{
+ --red:#8b0000;--cream:#fffaf0;--bg:#edf5f2;--green:#0b5555;--blue:#173f55;
+ --gold:#a96f19;--text:#191919;--line:rgba(11,85,85,.22);--good:#0d674c;
+ --bad:#8b0000;--warn:#8a5c13;--soft:#eef8f4;--shadow:0 8px 25px rgba(24,62,58,.11)
+}
+*{box-sizing:border-box} html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"Noto Serif Devanagari","Nirmala UI","Mangal",serif;font-size:16.7px;line-height:1.68}
+.site-header{background:var(--red);color:#fff;text-align:center;padding:15px 12px 11px}
+.site-header h1{margin:0 0 5px;font-size:clamp(1.35rem,3vw,1.9rem)}
+.site-nav{display:flex;justify-content:center;gap:7px 22px;flex-wrap:wrap}.site-nav a{color:#fff;text-decoration:none;font-weight:600}
+.page{width:min(1160px,100%);margin:auto;padding:17px}
+.card{background:var(--cream);border:1px solid var(--line);border-radius:13px;box-shadow:var(--shadow);padding:17px;margin-bottom:14px}
+.hero{text-align:center;border-top:5px solid var(--green)}.hero h2{margin:0;color:var(--blue);font-size:clamp(1.3rem,4vw,1.9rem)}.hero p{margin:6px 0 0;color:#555}
+.grid{display:grid;grid-template-columns:1.15fr 1fr 1fr;gap:10px;align-items:end}
+.field label{display:block;font-size:.83rem;font-weight:700;margin-bottom:4px;color:#333}
+select,input,button{width:100%;min-height:42px;border:1px solid rgba(23,63,85,.27);border-radius:8px;padding:7px 9px;background:#fff;color:#171717;font:inherit}
+.primary{background:var(--green);color:#fff;border-color:var(--green);font-weight:700;cursor:pointer}
+.segment{display:flex;gap:7px;flex-wrap:wrap;margin:0 0 12px}.segbtn{width:auto;min-width:135px;border-radius:999px;color:var(--green);font-weight:700;cursor:pointer}.segbtn.active{background:var(--green);color:#fff}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:11px;padding-top:11px;border-top:1px solid var(--line)}
+.options .field{min-width:0}
+.status{margin-top:11px;text-align:center;color:#555;font-size:.88rem}.status.error{color:var(--bad);font-weight:700}
+.notice{margin-top:11px;padding:9px 11px;background:var(--soft);border:1px solid var(--line);border-left:4px solid var(--green);border-radius:8px;font-size:.86rem}
+.summary{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-bottom:12px}
+.stat{background:var(--soft);border:1px solid var(--line);border-radius:9px;padding:9px;text-align:center}.stat b{display:block;color:var(--blue);font-size:.75rem}.stat span{display:block;margin-top:2px;font-weight:700}
+.results{display:grid;gap:10px}.result{background:#fff;border:1px solid var(--line);border-left:4px solid var(--good);border-radius:10px;padding:12px 13px}.result.expanded{border-left-color:var(--gold)}.result.no{border-left-color:var(--bad)}
+.result-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap}.result-date{font-weight:700;color:var(--blue);font-size:1.04rem}
+.badges{display:flex;gap:5px;flex-wrap:wrap}.badge{display:inline-block;border-radius:999px;padding:3px 8px;background:#e8f6ef;color:var(--good);font-size:.74rem;font-weight:700}.badge.gold{background:#fff2d9;color:#81510b}.badge.score{background:#e9eef7;color:#173f55}
+.window{margin-top:8px;padding:9px 10px;border:1px solid rgba(11,85,85,.15);border-radius:8px;background:#fbfdfc}.window-time{font-weight:700;color:var(--green);font-size:1.02rem}
+.evidence{margin-top:5px;font-size:.84rem;color:#454545}.evidence ul{margin:4px 0 0 20px;padding:0}.evidence li{margin:2px 0}
+.caution{color:var(--warn)}.reject{color:var(--bad)}
+.sourcebox{background:#fff5d8;border:1px solid rgba(169,111,25,.28);border-left:4px solid var(--gold)}
+.sourcebox h3{margin:0 0 8px;color:#5f3e08}.sourcebox table{width:100%;border-collapse:collapse;font-size:.84rem}.sourcebox th,.sourcebox td{padding:7px;border-bottom:1px solid rgba(169,111,25,.18);vertical-align:top;text-align:left}.sourcebox th{background:rgba(169,111,25,.07)}
+details{margin-top:9px}summary{cursor:pointer;color:var(--green);font-weight:700}.small{font-size:.8rem;color:#5c5c5c}
+.site-footer{background:var(--red);color:#fff;text-align:center;padding:11px;font-size:.82rem}
+[hidden]{display:none!important}
+@media(max-width:850px){.grid{grid-template-columns:1fr 1fr}.grid .action{grid-column:1/-1}.summary{grid-template-columns:repeat(2,1fr)}.options{grid-template-columns:1fr}}
+@media(max-width:520px){body{font-size:16px}.page{padding:8px}.card{padding:12px}.grid{grid-template-columns:1fr}.grid .action{grid-column:auto}.segment .segbtn{flex:1;min-width:0}.summary{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<header class="site-header">
+ <h1>॥ कालः कलयतामहम् ॥</h1>
+ <nav class="site-nav">
+  <a href="index.html">मुख्यपृष्ठ</a><a href="articles.html">लेख</a><a href="Panchanga.html">पञ्चाङ्ग</a><a href="Grahashanti.htm">ग्रहशान्ति</a><a href="contact.html">सम्पर्क</a>
+ </nav>
+</header>
+
+<main class="page">
+<section class="card hero">
+ <h2>॥ वाहन-मुहूर्त्त-अन्वेषक — v2 ॥</h2>
+ <p>क्रय · प्रथम प्रयोग · एक ही समय क्रय एवं प्रथम प्रयोग — पृथक् शास्त्रीय स्तरों के साथ</p>
+</section>
+
+<section class="card">
+ <div class="segment" aria-label="खोज प्रकार">
+  <button class="segbtn active" id="dayMode" type="button">किसी दिन में</button>
+  <button class="segbtn" id="monthMode" type="button">पूरे मास में</button>
+ </div>
+
+ <div class="grid">
+  <div class="field"><label for="place">स्थान</label><select id="place"><option>स्थान-सूची लोड हो रही है…</option></select></div>
+  <div class="field" id="dateField"><label for="date">दिनाङ्क</label><input id="date" type="date"></div>
+  <div class="field" id="monthField" hidden><label for="month">ख्रिष्टीय मास</label><input id="month" type="month"></div>
+  <div class="field"><label for="activity">कर्म</label>
+   <select id="activity">
+    <option value="purchase">वाहन-क्रय</option>
+    <option value="firstuse">प्रथम प्रयोग / वाहन लेकर प्रस्थान</option>
+    <option value="combined">क्रय और प्रथम प्रयोग एक ही मुहूर्त्त में</option>
+   </select>
+  </div>
+  <div class="field"><label for="scope">नक्षत्र-नियम</label>
+   <select id="scope">
+    <option value="strict">मुख्य प्रत्यक्ष प्रमाण (कठोर)</option>
+    <option value="expanded">नारदीय यान/शकट/हय-विधान सहित विस्तृत</option>
+   </select>
+  </div>
+  <div class="action"><button class="primary" id="search" type="button">मुहूर्त्त खोजें</button></div>
+ </div>
+
+ <div class="options">
+  <div class="field"><label for="purity">शुद्धि-स्तर</label>
+   <select id="purity">
+    <option value="full">सम्यक् शुद्धि — योग + करण + तिथि-दोष</option>
+    <option value="activity">केवल कर्म-विशिष्ट नियम (अध्ययन हेतु)</option>
+   </select>
+  </div>
+  <div class="field"><label for="minscore">परिणाम</label>
+   <select id="minscore">
+    <option value="0">सभी ग्राह्य परिणाम</option>
+    <option value="70">केवल 70+ अङ्क</option>
+    <option value="80">केवल 80+ प्रधान परिणाम</option>
+   </select>
+  </div>
+ </div>
+
+ <div class="status" id="status">स्थान और कर्म चुनकर खोजें।</div>
+ <div class="notice">
+  <b>गणना-पद्धति:</b> यह पृष्ठ ग्रहों की दृग्गणना नहीं करता। तिथि, नक्षत्र, योग, करण,
+  सूर्योदय-सूर्यास्त आपकी वेबसाइट की <code>panchang-data/*.xlsx</code> से ही लिये जाते हैं।
+  अतः आधार वही पञ्चाङ्ग-गणना है जिसे आपने अपनी वेबसाइट में स्वीकृत किया है।
+ </div>
+</section>
+
+<section class="card" id="resultCard" hidden>
+ <div class="summary">
+  <div class="stat"><b>स्थान</b><span id="sumPlace">—</span></div>
+  <div class="stat"><b>कर्म</b><span id="sumActivity">—</span></div>
+  <div class="stat"><b>खोज</b><span id="sumPeriod">—</span></div>
+  <div class="stat"><b>उपयुक्त दिन</b><span id="sumDays">—</span></div>
+  <div class="stat"><b>कालखण्ड</b><span id="sumWindows">—</span></div>
+ </div>
+ <div class="results" id="results"></div>
+</section>
+
+<section class="card sourcebox">
+ <h3>v2 में प्रयुक्त ग्रन्थ-स्तर</h3>
+ <table>
+  <thead><tr><th>स्तर</th><th>ग्रन्थ</th><th>सक्रिय नियम</th></tr></thead>
+  <tbody>
+   <tr><td>A</td><td>मुहूर्त्तचिन्तामणि 2.16</td><td>क्रय: रेवती, शतभिषा, अश्विनी, स्वाती, श्रवण, चित्रा।</td></tr>
+   <tr><td>B+</td><td>नारदसंहिता, तिथिलक्षण 4</td><td>पञ्चमी–यान; षष्ठी–क्रय/विक्रय; सप्तमी–यान/स्थापन/वाह।</td></tr>
+   <tr><td>B+</td><td>नारदसंहिता, नक्षत्रफल 6.28–30</td><td>तिर्यङ्मुख नक्षत्रों में गमन, गन्त्री/शकट, गजोष्ट्र, हयकर्म एवं ग्रहण।</td></tr>
+   <tr><td>A/B</td><td>आत्मज्योतिष, वार/करण</td><td>शुक्रवार क्रय-विक्रय; गर करण अनुकूल; वणिज में क्रेता-अननुकूल; विष्टि त्याज्य।</td></tr>
+   <tr><td>B+</td><td>नारदसंहिता, योग 7.3–4</td><td>व्यतीपात/वैधृति; परिघ पूर्वार्ध; विष्कम्भ-वज्र आदि के प्रारम्भिक त्याज्य अंश।</td></tr>
+  </tbody>
+ </table>
+ <details>
+  <summary>महत्त्वपूर्ण पाठ-सावधानी</summary>
+  <p class="small">
+   नारदसंहिता की उपलब्ध GitHub प्रति पुरानी भाषाटीका का OCR है। जहाँ संस्कृत पद और टीका दोनों पर्याप्त स्पष्ट हैं
+   वहीं नियम सक्रिय किये गये हैं। मुहूर्तमार्तण्ड तथा मुहूर्त्तमञ्जरी के अपठित OCR-अंश अभी निर्णय में सम्मिलित नहीं हैं।
+  </p>
+ </details>
+</section>
+</main>
+
+<footer class="site-footer">॥ तन्मे मनः शिवसङ्कल्पमस्तु ॥</footer>
+
+<script>
+"use strict";
+const DEV=["०","१","२","३","४","५","६","७","८","९"];
+const toDev=v=>String(v??"").replace(/\d/g,d=>DEV[+d]);
+
+const NAK={1:"अश्विनी",2:"भरणी",3:"कृत्तिका",4:"रोहिणी",5:"मृगशिरा",6:"आर्द्रा",7:"पुनर्वसु",8:"पुष्य",9:"अश्लेषा",10:"मघा",11:"पूर्वाफाल्गुनी",12:"उत्तराफाल्गुनी",13:"हस्त",14:"चित्रा",15:"स्वाती",16:"विशाखा",17:"अनुराधा",18:"ज्येष्ठा",19:"मूल",20:"पूर्वाषाढा",21:"उत्तराषाढा",22:"श्रवण",23:"धनिष्ठा",24:"शतभिषा",25:"पूर्वभाद्रपद",26:"उत्तरभाद्रपद",27:"रेवती"};
+const TITHI={1:"शुक्ल प्रतिपदा",2:"शुक्ल द्वितीया",3:"शुक्ल तृतीया",4:"शुक्ल चतुर्थी",5:"शुक्ल पञ्चमी",6:"शुक्ल षष्ठी",7:"शुक्ल सप्तमी",8:"शुक्ल अष्टमी",9:"शुक्ल नवमी",10:"शुक्ल दशमी",11:"शुक्ल एकादशी",12:"शुक्ल द्वादशी",13:"शुक्ल त्रयोदशी",14:"शुक्ल चतुर्दशी",15:"पूर्णिमा",16:"कृष्ण प्रतिपदा",17:"कृष्ण द्वितीया",18:"कृष्ण तृतीया",19:"कृष्ण चतुर्थी",20:"कृष्ण पञ्चमी",21:"कृष्ण षष्ठी",22:"कृष्ण सप्तमी",23:"कृष्ण अष्टमी",24:"कृष्ण नवमी",25:"कृष्ण दशमी",26:"कृष्ण एकादशी",27:"कृष्ण द्वादशी",28:"कृष्ण त्रयोदशी",29:"कृष्ण चतुर्दशी",30:"अमावस्या"};
+const YOGA={1:"विष्कम्भ",2:"प्रीति",3:"आयुष्मान्",4:"सौभाग्य",5:"शोभन",6:"अतिगण्ड",7:"सुकर्मा",8:"धृति",9:"शूल",10:"गण्ड",11:"वृद्धि",12:"ध्रुव",13:"व्याघात",14:"हर्षण",15:"वज्र",16:"सिद्धि",17:"व्यतीपात",18:"वरीयान्",19:"परिघ",20:"शिव",21:"सिद्ध",22:"साध्य",23:"शुभ",24:"शुक्ल",25:"ब्रह्म",26:"इन्द्र",27:"वैधृति"};
+const CORE_BUY=new Set([1,14,15,22,24,27]);
+const TIRYANG=new Set([17,5,14,13,18,7,27,1,15]);
+const DIRECT_YANA=new Set([1,7,13,22,24,27]);
+const COMBINED_CORE=new Set([...CORE_BUY].filter(x=>DIRECT_YANA.has(x)));
+
+const DAYKEY={"रविवार":"Sun","सोमवार":"Mon","मंगलवार":"Tue","मङ्गलवार":"Tue","बुधवार":"Wed","गुरुवार":"Thu","बृहस्पतिवार":"Thu","शुक्रवार":"Fri","शनिवार":"Sat"};
+const DAYNAME={Sun:"रविवार",Mon:"सोमवार",Tue:"मङ्गलवार",Wed:"बुधवार",Thu:"बृहस्पतिवार",Fri:"शुक्रवार",Sat:"शनिवार"};
+
+const FALLBACK_PLACES=[
+ {key:"kashi",name:"काशी",file:"panchang-data/kashi2026.xlsx",timeZone:"Asia/Kolkata",standardOffsetMinutes:330,timeBasis:"standard"},
+ {key:"mahakaleshwar",name:"महाकालेश्वर, उज्जैन",file:"panchang-data/Mahakaleshwar2026.xlsx",timeZone:"Asia/Kolkata",standardOffsetMinutes:330,timeBasis:"standard"},
+ {key:"ayodhya",name:"अयोध्या",file:"panchang-data/Ayodhya2026.xlsx",timeZone:"Asia/Kolkata",standardOffsetMinutes:330,timeBasis:"standard"},
+ {key:"delhi",name:"नई दिल्ली",file:"panchang-data/NewDelhi2026.xlsx",timeZone:"Asia/Kolkata",standardOffsetMinutes:330,timeBasis:"standard"},
+ {key:"mumbai",name:"मुम्बई",file:"panchang-data/Mumbai2026.xlsx",timeZone:"Asia/Kolkata",standardOffsetMinutes:330,timeBasis:"standard"},
+ {key:"london",name:"लन्दन",file:"panchang-data/London2026.xlsx",timeZone:"Europe/London",standardOffsetMinutes:0,timeBasis:"standard"},
+ {key:"doha",name:"दोहा",file:"panchang-data/Doha2026.xlsx",timeZone:"Asia/Qatar",standardOffsetMinutes:180,timeBasis:"standard"}
+];
+
+let PLACES=[], workbookData=null, workbookPlaceKey="", mode="day", contextDayMap=new Map(), intervalCache=new Map();
+
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function setStatus(t,e=false){const x=document.getElementById("status");x.textContent=t;x.classList.toggle("error",!!e)}
+function todayISO(){const d=new Date(),y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,"0"),q=String(d.getDate()).padStart(2,"0");return `${y}-${m}-${q}`}
+function pickerGB(v){if(!v)return"";const[y,m,d]=v.split("-");return`${d}/${m}/${y}`}
+function normalizeDate(v){
+ if(v===undefined||v===null||v==="")return"";
+ if(typeof v==="number"&&Number.isFinite(v)){const d=new Date(Date.UTC(1899,11,30)+Math.round(v)*86400000);return`${String(d.getUTCDate()).padStart(2,"0")}/${String(d.getUTCMonth()+1).padStart(2,"0")}/${d.getUTCFullYear()}`}
+ const s=String(v).trim();let m=s.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{4})$/);if(m)return`${m[1].padStart(2,"0")}/${m[2].padStart(2,"0")}/${m[3]}`;
+ const d=new Date(v);if(isNaN(d))return"";return`${String(d.getDate()).padStart(2,"0")}/${String(d.getMonth()+1).padStart(2,"0")}/${d.getFullYear()}`
+}
+function gbParts(g){const[d,m,y]=g.split("/").map(Number);return{d,m,y}}
+function gbDayIndex(g){const{d,m,y}=gbParts(g);return Math.floor(Date.UTC(y,m-1,d)/86400000)}
+function gbLabel(g){const{d,m,y}=gbParts(g);return toDev(`${String(d).padStart(2,"0")}-${String(m).padStart(2,"0")}-${y}`)}
+function monthMatches(g,ym){if(!g||!ym)return false;const{m,y}=gbParts(g),[yy,mm]=ym.split("-").map(Number);return y===yy&&m===mm}
+function leadingNumber(v,max){const s=String(v??"").replace(/[०-९]/g,d=>"०१२३४५६७८९".indexOf(d)),m=s.match(/\d{1,2}/);if(!m)return NaN;const n=+m[0];return n>=1&&n<=max?n:NaN}
+function nextCycle(n,max,step=1){return((n-1+step)%max)+1}
+function timeMin(v){
+ if(v===undefined||v===null||v==="")return NaN;
+ if(typeof v==="number"&&Number.isFinite(v))return v*1440;
+ let s=String(v).trim();if(!s||/वृद्धि|vriddhi/i.test(s)||s==="------"||s==="32")return NaN;
+ s=s.replace(/[०-९]/g,d=>"०१२३४५६७८९".indexOf(d));const m=s.match(/^([+-]?\d{1,3}):(\d{2})(?::(\d{2}))?$/);if(!m)return NaN;
+ const sign=+m[1]<0?-1:1,h=Math.abs(+m[1]),mi=+m[2],sec=+(m[3]||0);return sign*(h*60+mi+sec/60)
+}
+function word952HeaderText(v){return String(v??"").replace(/\s+/g,"").trim()}
+function isWord952Rows(rows){const h=rows?.[0]||[];return h.length>=28&&word952HeaderText(h[0])==="दिनाङ्क"&&word952HeaderText(h[12])==="करणान्त३"&&word952HeaderText(h[19])==="सूर्य"&&word952HeaderText(h[27])==="ग्रहोदयास्त"}
+function blankLike(v){const s=String(v??"").trim();return s===""||s==="32"||s==="------"}
+function normalizeWord952Rows(rows){
+ const out=[["Date","Month","Day","Tithi","TithiEnd","Yoga","YogaEnd","Karana","Karana1End","Karana2End","Sunrise","Sunset","Sun","MoonRashiEnd","Moon","NakshatraEnd","Nakshatra","Reserved17","Reserved18","Mars","Mercury","Jupiter","Venus","Saturn","Ketu","Karan3End","LostTithiEnd","LostYogaEnd","LostNakshatraEnd","GrahaState"]];
+ for(let i=1;i<rows.length;i++){const s=rows[i]||[];if(!normalizeDate(s[0]))continue;const r=Array(30).fill("");r[0]=s[0];r[1]=s[1];r[2]=DAYKEY[String(s[2]??"").trim()]||s[2];r[3]=s[3];r[4]=s[4];r[5]=s[6];r[6]=s[7];r[7]=s[9];r[8]=s[10];r[9]=s[11];r[10]=s[13];r[11]=s[14];r[12]=s[19];r[13]=blankLike(s[15])?0:s[15];r[14]=s[20];r[15]=s[17];r[16]=s[16];r[19]=s[21];r[20]=s[22];r[21]=s[23];r[22]=s[24];r[23]=s[25];r[24]=s[26];r[25]=blankLike(s[12])?"":s[12];r[26]=blankLike(s[5])?"":s[5];r[27]=blankLike(s[8])?"":s[8];r[28]=blankLike(s[18])?"":s[18];r[29]=s[27]??"";out.push(r)}
+ return out
+}
+function parsePlacesFromPanchanga(html){
+ const m=html.match(/const\s+PANCHANGA_PLACES\s*=\s*\[([\s\S]*?)\]\s*;/);if(!m)return[];
+ const out=[],obj=/\{key:"([^"]+)"([\s\S]*?)\}/g;let hit;
+ while((hit=obj.exec(m[1]))){const b=hit[2],get=n=>(b.match(new RegExp(n+'\\s*:\\s*"([^"]*)"'))||[])[1]||"",num=n=>{const q=b.match(new RegExp(n+'\\s*:\\s*(-?\\d+)'));return q?+q[1]:NaN};const p={key:hit[1],name:get("name"),file:get("file"),timeZone:get("timeZone"),standardOffsetMinutes:num("standardOffsetMinutes"),timeBasis:get("timeBasis")||"standard"};if(p.key&&p.name&&p.file)out.push(p)}
+ return out
+}
+async function loadPlaces(){
+ let p=[];try{const r=await fetch("Panchanga.html",{cache:"no-store"});if(r.ok)p=parsePlacesFromPanchanga(await r.text())}catch(_){}
+ PLACES=p.length?p:FALLBACK_PLACES;const s=document.getElementById("place");s.innerHTML="";PLACES.forEach(x=>{const o=document.createElement("option");o.value=x.key;o.textContent=x.name;s.appendChild(o)});if(PLACES.some(x=>x.key==="kashi"))s.value="kashi";
+ setStatus(p.length?"स्थान-सूची Panchanga.html से ली गयी है।":"Fallback स्थान-सूची प्रयुक्त है।")
+}
+function placeMeta(){return PLACES.find(x=>x.key===document.getElementById("place").value)||PLACES[0]}
+async function ensureWorkbook(){
+ const p=placeMeta();if(!p)throw Error("स्थान उपलब्ध नहीं।");if(workbookData&&workbookPlaceKey===p.key)return;
+ setStatus(`${p.name} का पञ्चाङ्ग पढ़ा जा रहा है…`);
+ const r=await fetch(p.file,{cache:"no-store"});if(!r.ok)throw Error(`${p.file} नहीं मिला (HTTP ${r.status})`);
+ const wb=XLSX.read(new Uint8Array(await r.arrayBuffer()),{type:"array"}),sh=wb.Sheets[wb.SheetNames[0]];let rows=XLSX.utils.sheet_to_json(sh,{header:1,raw:true,defval:""});if(isWord952Rows(rows))rows=normalizeWord952Rows(rows);if(!rows||rows.length<2)throw Error("दैनिक पञ्चाङ्ग-पंक्तियाँ नहीं मिलीं।");
+ workbookData=rows;workbookPlaceKey=p.key;contextDayMap=new Map();intervalCache=new Map();
+ for(let i=1;i<rows.length;i++){const c=rowContext(i);if(c)contextDayMap.set(Math.floor(c.base/1440),c)}
+}
+function rowGB(i){return normalizeDate(workbookData?.[i]?.[0])}
+function rowContext(i){const row=workbookData?.[i],gb=rowGB(i);if(!row||!gb)return null;const base=gbDayIndex(gb)*1440,sr=timeMin(row[10]),ss=timeMin(row[11]);if(!Number.isFinite(sr)||!Number.isFinite(ss))return null;return{i,row,gb,base,sunrise:base+sr,sunset:base+ss}}
+function nakAt(c,a){const n=leadingNumber(c.row[16],27);if(!Number.isFinite(n))return NaN;const e1=timeMin(c.row[15]),e2=timeMin(c.row[28]);if(!Number.isFinite(e1))return n;if(a<c.base+e1)return n;if(Number.isFinite(e2)&&a>=c.base+e2)return nextCycle(n,27,2);return nextCycle(n,27)}
+function tithiAt(c,a){const n=leadingNumber(c.row[3],30);if(!Number.isFinite(n))return NaN;const e1=timeMin(c.row[4]),e2=timeMin(c.row[26]);if(!Number.isFinite(e1))return n;if(a<c.base+e1)return n;if(Number.isFinite(e2)&&a>=c.base+e2)return nextCycle(n,30,2);return nextCycle(n,30)}
+function yogaAt(c,a){const n=leadingNumber(c.row[5],27);if(!Number.isFinite(n))return NaN;const e1=timeMin(c.row[6]),e2=timeMin(c.row[27]);if(!Number.isFinite(e1))return n;if(a<c.base+e1)return n;if(Number.isFinite(e2)&&a>=c.base+e2)return nextCycle(n,27,2);return nextCycle(n,27)}
+const K_NEXT={"किंस्तुघ्न":"बव","किन्स्तुघ्न":"बव","बव":"बालव","बालव":"कौलव","कौलव":"तैतिल","तैतिल":"गर","गर":"वणिज","वणिज":"विष्टि","विष्टि":"बव","विष्टि (भद्रा)":"बव","शकुनि":"चतुष्पद","चतुष्पद":"नाग","नाग":"किंस्तुघ्न","Bava":"Bälav","Bälav":"Kaulav","Kaulav":"Taitil","Taitil":"Gara","Gara":"Vanij","Vanij":"Višti","Višti":"Bava"};
+function karNext(k){return K_NEXT[String(k??"").trim()]||k}
+function karanaAt(c,a){let k=String(c.row[7]??"").trim();const es=[timeMin(c.row[8]),timeMin(c.row[9]),timeMin(c.row[25])].filter(Number.isFinite).map(x=>c.base+x).sort((x,y)=>x-y);for(const e of es){if(a<e)return k;k=karNext(k)}return k}
+function karKey(k){const s=String(k??"").trim().toLowerCase();if(s.includes("विष्टि")||s.includes("vishti")||s.includes("višti")||s.includes("visti"))return"VISHTI";if(s.includes("वणिज")||s.includes("vanij"))return"VANIJA";if(s==="गर"||s.includes("gara"))return"GARA";return s}
+function ctxAtAbs(a){return contextDayMap.get(Math.floor(a/1440))||null}
+function valueAt(kind,a){const c=ctxAtAbs(a);if(!c)return NaN;return kind==="tithi"?tithiAt(c,a):kind==="yoga"?yogaAt(c,a):nakAt(c,a)}
+function intervalBounds(kind,a){
+ const v=valueAt(kind,a);if(!Number.isFinite(v))return{start:a,end:a+1,value:v};
+ const key=`${kind}:${Math.floor(a/1440)}:${v}`;if(intervalCache.has(key)){const q=intervalCache.get(key);if(a>=q.start&&a<q.end)return q}
+ let s=a,e=a+1,lim=3000;while(lim--&&Number.isFinite(valueAt(kind,s-1))&&valueAt(kind,s-1)===v)s--;lim=3000;while(lim--&&Number.isFinite(valueAt(kind,e))&&valueAt(kind,e)===v)e++;
+ const q={start:s,end:e,value:v};intervalCache.set(key,q);return q
+}
+function weekdayForRow(row,gb){const raw=String(row?.[2]??"").trim();if(DAYNAME[raw])return raw;if(DAYKEY[raw])return DAYKEY[raw];const{d,m,y}=gbParts(gb);return["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][new Date(Date.UTC(y,m-1,d)).getUTCDay()]}
+function pTithi(n){return Number.isFinite(n)?((n-1)%15)+1:NaN}
+function yogaHardReason(a,yn){
+ if(yn===17)return"व्यतीपात — पूर्ण त्याज्य (नारदसंहिता 7.3)";
+ if(yn===27)return"वैधृति — पूर्ण त्याज्य (नारदसंहिता 7.3)";
+ const b=intervalBounds("yoga",a),elapsed=a-b.start,dur=b.end-b.start;
+ if(yn===19&&elapsed<dur/2)return"परिघ का पूर्वार्ध त्याज्य";
+ const mins={1:72,15:72,6:144,10:144,13:216,9:120}[yn];
+ if(mins&&elapsed<mins)return`${YOGA[yn]} का प्रारम्भिक ${toDev(mins/24)} घटी अंश त्याज्य`;
+ return""
+}
+function tithiHeadReason(a,tn){
+ const p=pTithi(tn),gh={8:4,12:14,6:7,4:9,14:5}[p];if(!gh)return"";
+ const b=intervalBounds("tithi",a);if(a-b.start<gh*24)return`पक्षरन्ध्र ${TITHI[tn]||""}: प्रारम्भिक ${toDev(gh)} घटी त्याज्य`;
+ return""
+}
+function candidateNak(activity,scope,n){
+ if(activity==="purchase")return CORE_BUY.has(n)||(scope==="expanded"&&TIRYANG.has(n));
+ if(activity==="firstuse")return DIRECT_YANA.has(n)||(scope==="expanded"&&TIRYANG.has(n));
+ return COMBINED_CORE.has(n)||(scope==="expanded"&&CORE_BUY.has(n)&&TIRYANG.has(n))
+}
+function evaluate(c,a,activity,scope,purity){
+ const n=nakAt(c,a),tn=tithiAt(c,a),yn=yogaAt(c,a),kar=karanaAt(c,a),kk=karKey(kar),wd=weekdayForRow(c.row,c.gb);
+ if(!candidateNak(activity,scope,n))return{ok:false};
+ let score=scope==="strict"?65:52,evidence=[],cautions=[],hard=[];
+ if(CORE_BUY.has(n)&&(activity==="purchase"||activity==="combined")){score+=12;evidence.push(`${NAK[n]} — मुहूर्त्तचिन्तामणि 2.16 का प्रत्यक्ष क्रय-नक्षत्र`)}
+ else if(activity==="purchase"&&TIRYANG.has(n)){score+=5;evidence.push(`${NAK[n]} — नारदीय तिर्यङ्मुख; शकट/हय/ग्रहण-विधान`)}
+ if(DIRECT_YANA.has(n)&&(activity==="firstuse"||activity==="combined")){score+=8;evidence.push(`${NAK[n]} — नारदसंहिता में यान/अश्वरोहण/प्रथम-प्रयोग-सापेक्ष`)}
+ else if((activity==="firstuse"||activity==="combined")&&TIRYANG.has(n)){score+=4;evidence.push(`${NAK[n]} — तिर्यङ्मुख गमन/शकट-विधान`)}
+ const pt=pTithi(tn);
+ if(activity==="purchase"||activity==="combined"){if(pt===6){score+=8;evidence.push("षष्ठी — नारदसंहिता में पण्य/क्रय-विक्रय-विधान")}}
+ if(activity==="firstuse"||activity==="combined"){if(pt===5){score+=7;evidence.push("पञ्चमी — यान-विधान")};if(pt===7){score+=7;evidence.push("सप्तमी — यान/स्थापन/वाह-विधान")}}
+ if(wd==="Fri"&&(activity==="purchase"||activity==="combined")){score+=8;evidence.push("शुक्रवार — आत्मज्योतिष में क्रय-विक्रय प्रशस्त")}
+ if(wd==="Fri"&&(activity==="firstuse"||activity==="combined")){score+=5;evidence.push("शुक्रवार — आत्मज्योतिष में प्रथम अश्वप्रवाह्य प्रशस्त")}
+ if(wd==="Sun"){score+=3;evidence.push("रविवार — नारदीय यान/अश्वकर्म में सहायक वार")}
+ if(wd==="Thu"){score+=2;evidence.push("बृहस्पतिवार — नारदीय यानकर्म-विधान")}
+ if(kk==="GARA"&&(activity==="purchase"||activity==="combined")){score+=6;evidence.push("गर करण — आत्मज्योतिष में क्रय-विक्रय प्रयोज्य")}
+ if(purity==="full"){
+   if(tn===30)hard.push("अमावस्या — नारदसंहिता में मंगलकर्म निषिद्ध");
+   if(kk==="VISHTI")hard.push("विष्टि/भद्रा — आत्मज्योतिष व नारदसंहिता में शुभकर्म त्याज्य");
+   if(kk==="VANIJA"&&(activity==="purchase"||activity==="combined"))hard.push("वणिज करण — आत्मज्योतिष: विक्रेता समृद्ध, क्रेता नहीं");
+   const yr=yogaHardReason(a,yn);if(yr)hard.push(yr);
+   const tr=tithiHeadReason(a,tn);if(tr)hard.push(tr);
+ }
+ // पशु-गमागम का नियम आधुनिक वाहन पर direct veto नहीं
+ if((activity==="firstuse"||activity==="combined")&&([4,12,14,21,22,26].includes(n)||[8,14].includes(pt)||tn===30))
+   cautions.push("पशु-गमागम के नारदीय नियम में यह नक्षत्र/तिथि निषिद्ध आती है; motor-vehicle पर प्रत्यक्ष विधान न होने से केवल सावधानी-सूचना।");
+ return{ok:hard.length===0,n,tn,yn,kar,wd,score:Math.min(100,score),evidence,cautions,hard,expanded:!CORE_BUY.has(n)&&scope==="expanded"}
+}
+function windowsForRow(i,activity,scope,purity,minScore){
+ const c=rowContext(i);if(!c)return[];const out=[];let open=null;
+ for(let a=Math.ceil(c.sunrise);a<=Math.floor(c.sunset);a++){
+  const v=evaluate(c,a,activity,scope,purity),good=v.ok&&v.score>=minScore;
+  const signature=good?`${v.n}|${v.tn}|${v.yn}|${karKey(v.kar)}|${v.score}|${v.expanded}`:"";
+  if(good&&!open)open={start:a,end:a+1,v,signature};
+  else if(good&&open&&open.signature===signature)open.end=a+1;
+  else{if(open){out.push(open);open=null}if(good)open={start:a,end:a+1,v,signature}}
+ }
+ if(open)out.push(open);
+ return out.filter(x=>x.end-x.start>=2)
+}
+function absToCivil(a,p){const ms=a*60000-(Number(p.standardOffsetMinutes)||0)*60000,dtf=new Intl.DateTimeFormat("en-GB",{timeZone:p.timeZone||"Asia/Kolkata",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",hourCycle:"h23"}),z={};for(const q of dtf.formatToParts(new Date(ms)))if(q.type!=="literal")z[q.type]=q.value;return{gb:`${z.day}/${z.month}/${z.year}`,clock:`${z.hour}:${z.minute}`}}
+function rangeDisplay(w,p,gb){const a=absToCivil(w.start,p),b=absToCivil(w.end,p),pa=a.gb===gb?"":gbLabel(a.gb)+" ",pb=b.gb===gb?"":gbLabel(b.gb)+" ";return`${pa}${toDev(a.clock)} – ${pb}${toDev(b.clock)}`}
+function rowIndexByGB(g){for(let i=1;i<workbookData.length;i++)if(rowGB(i)===g)return i;return-1}
+function monthIndexes(ym){const a=[];for(let i=1;i<workbookData.length;i++)if(monthMatches(rowGB(i),ym))a.push(i);return a}
+function activityName(a){return a==="purchase"?"वाहन-क्रय":a==="firstuse"?"प्रथम प्रयोग":"क्रय + प्रथम प्रयोग"}
+function render(days,p,period,activity){
+ const res=document.getElementById("results"),goodDays=days.filter(d=>d.windows.length),total=goodDays.reduce((s,d)=>s+d.windows.length,0);
+ document.getElementById("sumPlace").textContent=p.name;document.getElementById("sumActivity").textContent=activityName(activity);document.getElementById("sumPeriod").textContent=period;document.getElementById("sumDays").textContent=toDev(goodDays.length);document.getElementById("sumWindows").textContent=toDev(total);document.getElementById("resultCard").hidden=false;
+ if(!total){res.innerHTML=`<div class="result no"><div class="result-date">इस चयन में कोई ग्राह्य कालखण्ड नहीं मिला।</div><div class="evidence">नियम-क्षेत्र अथवा शुद्धि-स्तर ढीला करके केवल अध्ययन के लिये तुलना की जा सकती है।</div></div>`;return}
+ res.innerHTML=goodDays.map(d=>{
+  const c=rowContext(d.i),wd=DAYNAME[weekdayForRow(c.row,d.gb)]||weekdayForRow(c.row,d.gb);
+  const wins=d.windows.map(w=>{
+    const v=w.v,cls=v.expanded?"window expanded":"window",ev=v.evidence.map(x=>`<li>${esc(x)}</li>`).join(""),ca=v.cautions.map(x=>`<li class="caution">${esc(x)}</li>`).join("");
+    return`<div class="${cls}"><div class="window-time">${rangeDisplay(w,p,d.gb)}</div><div class="badges"><span class="badge score">${toDev(v.score)}/१००</span><span class="badge ${v.expanded?"gold":""}">${v.expanded?"विस्तृत वाहन-नियम":"मुख्य प्रमाण"}</span><span class="badge">${esc(NAK[v.n]||v.n)}</span></div><div class="evidence"><ul>${ev}${ca}</ul></div></div>`
+  }).join("");
+  return`<article class="result ${d.windows.some(w=>w.v.expanded)?"expanded":""}"><div class="result-head"><div class="result-date">${gbLabel(d.gb)} · ${esc(wd)}</div><span class="badge">${toDev(d.windows.length)} कालखण्ड</span></div>${wins}</article>`
+ }).join("")
+}
+async function runSearch(){
+ try{
+  await ensureWorkbook();const p=placeMeta(),activity=document.getElementById("activity").value,scope=document.getElementById("scope").value,purity=document.getElementById("purity").value,minScore=+document.getElementById("minscore").value;let ids=[],period="";
+  if(mode==="day"){const g=pickerGB(document.getElementById("date").value);if(!g)throw Error("दिनाङ्क चुनें।");const i=rowIndexByGB(g);if(i<0)throw Error(`${g} का पञ्चाङ्ग उपलब्ध नहीं।`);ids=[i];period=gbLabel(g)}
+  else{const ym=document.getElementById("month").value;if(!ym)throw Error("मास चुनें।");ids=monthIndexes(ym);if(!ids.length)throw Error("इस मास का पञ्चाङ्ग उपलब्ध नहीं।");const[y,m]=ym.split("-");period=toDev(`${m}/${y}`)}
+  setStatus("ग्रन्थ-नियमों से कालखण्ड छाँटे जा रहे हैं…");const days=ids.map(i=>({i,gb:rowGB(i),windows:windowsForRow(i,activity,scope,purity,minScore)}));render(days,p,period,activity);setStatus(`${p.name}: ${toDev(days.reduce((s,d)=>s+d.windows.length,0))} ग्राह्य कालखण्ड।`)
+ }catch(e){document.getElementById("resultCard").hidden=true;setStatus(e?.message||String(e),true)}
+}
+function setMode(m){mode=m;document.getElementById("dayMode").classList.toggle("active",m==="day");document.getElementById("monthMode").classList.toggle("active",m==="month");document.getElementById("dateField").hidden=m!=="day";document.getElementById("monthField").hidden=m!=="month";document.getElementById("resultCard").hidden=true}
+document.getElementById("dayMode").onclick=()=>setMode("day");document.getElementById("monthMode").onclick=()=>setMode("month");document.getElementById("search").onclick=runSearch;document.getElementById("place").onchange=()=>{workbookData=null;workbookPlaceKey="";document.getElementById("resultCard").hidden=true};
+document.getElementById("date").value=todayISO();document.getElementById("month").value=todayISO().slice(0,7);loadPlaces();
+</script>
+</body>
+</html>
