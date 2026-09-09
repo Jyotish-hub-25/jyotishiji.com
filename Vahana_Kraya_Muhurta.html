@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta name="description" content="श्रीसूर्यसिद्धान्तीय पञ्चाङ्ग-आँकड़ों से वाहन-क्रय के शास्त्राधारित मुहूर्त्त खोजें।">
+<title>वाहन-क्रय मुहूर्त्त — पञ्चाङ्गाधारित खोज</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root{
+  --red:#8b0000;--red2:#760000;--cream:#fffaf0;--bg:#edf5f2;
+  --green:#0b5555;--blue:#173f55;--gold:#a96f19;--text:#191919;
+  --line:rgba(11,85,85,.22);--good:#0d674c;--bad:#8b0000;--warn:#8b5a16;
+  --soft:#eef8f4;--shadow:0 8px 25px rgba(24,62,58,.11);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:"Noto Serif Devanagari","Nirmala UI","Mangal",serif;
+  font-size:17px;line-height:1.72
+}
+.site-header{background:var(--red);color:#fff;text-align:center;padding:16px 12px 12px}
+.site-header h1{margin:0 0 6px;font-size:clamp(1.45rem,3vw,1.95rem)}
+.site-nav{display:flex;justify-content:center;gap:8px 24px;flex-wrap:wrap}
+.site-nav a{color:#fff;text-decoration:none;font-weight:600}
+.site-nav a:hover{text-decoration:underline;text-underline-offset:4px}
+.page{width:min(1120px,100%);margin:auto;padding:18px}
+.card{
+  background:var(--cream);border:1px solid var(--line);border-radius:13px;
+  box-shadow:var(--shadow);padding:18px;margin-bottom:15px
+}
+.hero{border-top:5px solid var(--green);text-align:center}
+.hero h2{margin:0;color:var(--blue);font-size:clamp(1.35rem,4vw,2rem)}
+.hero p{margin:7px 0 0;color:#555}
+.modebar{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.modebtn{
+  width:auto;min-width:140px;padding:8px 18px;border:1px solid rgba(11,85,85,.35);
+  border-radius:999px;background:#fff;color:var(--green);font:inherit;font-weight:700;cursor:pointer
+}
+.modebtn.active{background:var(--green);color:#fff}
+.controls{display:grid;grid-template-columns:1.25fr 1fr 1fr;gap:10px;align-items:end}
+.field label{display:block;font-size:.86rem;font-weight:700;color:#333;margin-bottom:4px}
+select,input,button{
+  width:100%;min-height:43px;border:1px solid rgba(23,63,85,.27);border-radius:8px;
+  padding:7px 9px;background:#fff;color:#171717;font:inherit
+}
+.primary{background:var(--green);color:#fff;border-color:var(--green);font-weight:700;cursor:pointer}
+.primary:hover{filter:brightness(.94)}
+.subcontrols{
+  display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;
+  margin-top:12px;padding-top:11px;border-top:1px solid var(--line)
+}
+.subcontrols label{display:flex;align-items:center;gap:6px;font-size:.88rem;font-weight:600}
+.subcontrols input{width:auto;min-height:auto;margin:0}
+.status{margin-top:12px;text-align:center;color:#555;font-size:.9rem}
+.status.error{color:var(--bad);font-weight:700}
+.info{
+  padding:10px 12px;background:var(--soft);border:1px solid var(--line);
+  border-left:4px solid var(--green);border-radius:8px;margin-top:12px;font-size:.9rem
+}
+.summary{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-bottom:13px
+}
+.stat{background:var(--soft);border:1px solid var(--line);border-radius:9px;padding:10px;text-align:center}
+.stat b{display:block;color:var(--blue);font-size:.8rem}
+.stat span{display:block;margin-top:3px;font-size:1.03rem;font-weight:700}
+.results{display:grid;gap:10px}
+.result{
+  background:#fff;border:1px solid var(--line);border-left:4px solid var(--good);
+  border-radius:10px;padding:12px 14px
+}
+.result.no{border-left-color:var(--bad)}
+.result-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.result-date{color:var(--blue);font-weight:700;font-size:1.08rem}
+.badge{
+  display:inline-block;border-radius:999px;padding:3px 9px;background:#e8f6ef;
+  color:var(--good);font-size:.78rem;font-weight:700
+}
+.window{margin-top:8px;padding:8px 10px;border:1px solid rgba(11,85,85,.16);border-radius:8px;background:#f9fcfb}
+.window-time{font-weight:700;color:var(--green)}
+.window-detail{font-size:.88rem;color:#4b4b4b;margin-top:3px}
+.reason{margin-top:7px;font-size:.87rem;color:#444}
+.source{
+  background:#fff5d8;border:1px solid rgba(169,111,25,.28);border-left:4px solid var(--gold);
+  border-radius:9px;padding:13px 15px
+}
+.source blockquote{margin:7px 0;text-align:center;font-weight:700;line-height:1.95;color:#432f11}
+.source p{margin:7px 0}
+.small{font-size:.82rem;color:#5b5b5b}
+details{margin-top:10px}
+summary{cursor:pointer;color:var(--green);font-weight:700}
+table{width:100%;border-collapse:collapse;margin-top:9px;font-size:.88rem}
+th,td{padding:8px;border-bottom:1px solid rgba(23,63,85,.13);text-align:left;vertical-align:top}
+th{color:var(--blue);background:rgba(23,63,85,.05)}
+.site-footer{background:var(--red);color:#fff;text-align:center;padding:12px;font-size:.85rem}
+[hidden]{display:none!important}
+@media(max-width:800px){
+  .controls{grid-template-columns:1fr 1fr}.controls .action{grid-column:1/-1}
+  .summary{grid-template-columns:1fr 1fr}
+}
+@media(max-width:520px){
+  body{font-size:16.5px}.page{padding:8px}.card{padding:13px;border-radius:9px}
+  .controls{grid-template-columns:1fr}.controls .action{grid-column:auto}
+  .summary{grid-template-columns:1fr 1fr}
+  .modebtn{min-width:0;flex:1}
+}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <h1>॥ कालः कलयतामहम् ॥</h1>
+  <nav class="site-nav" aria-label="मुख्य नेविगेशन">
+    <a href="index.html">मुख्यपृष्ठ</a>
+    <a href="articles.html">लेख</a>
+    <a href="Panchanga.html">पञ्चाङ्ग</a>
+    <a href="Grahashanti.htm">ग्रहशान्ति</a>
+    <a href="contact.html">सम्पर्क</a>
+  </nav>
+</header>
+
+<main class="page">
+<section class="card hero">
+  <h2>॥ वाहन-क्रय मुहूर्त्त-अन्वेषण ॥</h2>
+  <p>वेबसाइट के उसी स्थानीय श्रीसूर्यसिद्धान्तीय पञ्चाङ्ग-आँकड़े से</p>
+</section>
+
+<section class="card">
+  <div class="modebar">
+    <button class="modebtn active" id="dayMode" type="button">किसी दिन का मुहूर्त्त</button>
+    <button class="modebtn" id="monthMode" type="button">इस मास के मुहूर्त्त</button>
+  </div>
+
+  <div class="controls">
+    <div class="field">
+      <label for="place">स्थान</label>
+      <select id="place"><option value="">स्थान-सूची लोड हो रही है…</option></select>
+    </div>
+
+    <div class="field" id="dateField">
+      <label for="date">दिनाङ्क</label>
+      <input id="date" type="date">
+    </div>
+
+    <div class="field" id="monthField" hidden>
+      <label for="month">ख्रिष्टीय मास</label>
+      <input id="month" type="month">
+    </div>
+
+    <div class="action">
+      <button class="primary" id="search" type="button">मुहूर्त्त खोजें</button>
+    </div>
+  </div>
+
+  <div class="subcontrols">
+    <label>
+      <input type="radio" name="purity" value="direct" checked>
+      केवल प्रत्यक्ष ग्रन्थोक्त क्रय-नक्षत्र
+    </label>
+    <label>
+      <input type="radio" name="purity" value="general">
+      सामान्य शुभकर्म-शुद्धि भी लगाएँ
+    </label>
+  </div>
+
+  <div class="status" id="status">स्थान चुनकर मुहूर्त्त खोजें।</div>
+  <div class="info">
+    <b>गणना-पद्धति:</b> यह पृष्ठ स्वयं ग्रहगणना नहीं करता। यह आपकी वेबसाइट पर रखी
+    <code>panchang-data/*.xlsx</code> फ़ाइलों के तिथि, नक्षत्र, नक्षत्रान्त,
+    नक्षत्रक्षय, तिथि, योग, करण, सूर्योदय और सूर्यास्त को पढ़ता है।
+  </div>
+</section>
+
+<section class="card" id="resultCard" hidden>
+  <div class="summary">
+    <div class="stat"><b>स्थान</b><span id="sumPlace">—</span></div>
+    <div class="stat"><b>खोज</b><span id="sumPeriod">—</span></div>
+    <div class="stat"><b>उपयुक्त दिन</b><span id="sumDays">—</span></div>
+    <div class="stat"><b>प्राप्त कालखण्ड</b><span id="sumWindows">—</span></div>
+  </div>
+  <div class="results" id="results"></div>
+</section>
+
+<section class="card source">
+  <b>प्रमुख ग्रन्थाधार — मुहूर्त्तचिन्तामणि, नक्षत्रप्रकरण २, श्लोक १६</b>
+  <blockquote>
+    क्रयर्क्षे विक्रयो नेष्टो विक्रयर्क्षे क्रयोऽपि न ।<br>
+    पौष्णाम्बुपाश्विनीवातश्रवश्चित्राः क्रये शुभाः ॥ १६ ॥
+  </blockquote>
+  <p>
+    अतः इस प्रथम प्रमाणित नियम-समूह में <b>रेवती, शतभिषा, अश्विनी, स्वाती,
+    श्रवण और चित्रा</b> को क्रय के लिये ग्राह्य माना गया है।
+  </p>
+  <p class="small">
+    “सामान्य शुभकर्म-शुद्धि” चुनने पर प्रत्यक्ष क्रय-नक्षत्र के भीतर रिक्ता तिथि,
+    विष्टि (भद्रा), व्यतीपात और वैधृति को भी हटाया जाता है। यह अतिरिक्त छँटाई
+    वाहन-विशिष्ट श्लोक १६ का भाग नहीं, सामान्य शुभकर्म-दोष परीक्षण है।
+  </p>
+  <details>
+    <summary>यान और क्रय को अलग क्यों रखा गया है?</summary>
+    <p>
+      उसी प्रकरण में “यानं स्थितिवेशनं” वाला पृथक् पाठ मिलता है। उसका प्रसङ्ग
+      पशु/यान-गमन से सम्बद्ध है। इसलिए आधुनिक वाहन <b>खरीदना</b> और वाहन का
+      <b>प्रथम प्रयोग/आरोहण</b> इस पृष्ठ में एक ही कर्म मानकर नियम मिश्रित नहीं किये गये हैं।
+    </p>
+  </details>
+</section>
+</main>
+
+<footer class="site-footer">॥ तन्मे मनः शिवसङ्कल्पमस्तु ॥</footer>
+
+<script>
+"use strict";
+
+const DEV=["०","१","२","३","४","५","६","७","८","९"];
+const toDev=v=>String(v??"").replace(/\d/g,d=>DEV[Number(d)]);
+
+const NAK={
+  1:"अश्विनी",2:"भरणी",3:"कृत्तिका",4:"रोहिणी",5:"मृगशिरा",6:"आर्द्रा",
+  7:"पुनर्वसु",8:"पुष्य",9:"अश्लेषा",10:"मघा",11:"पूर्वाफाल्गुनी",
+  12:"उत्तराफाल्गुनी",13:"हस्त",14:"चित्रा",15:"स्वाती",16:"विशाखा",
+  17:"अनुराधा",18:"ज्येष्ठा",19:"मूल",20:"पूर्वाषाढा",21:"उत्तराषाढा",
+  22:"श्रवण",23:"धनिष्ठा",24:"शतभिषा",25:"पूर्वभाद्रपद",
+  26:"उत्तरभाद्रपद",27:"रेवती"
+};
+const BUY_NAK=new Set([27,24,1,15,22,14]);
+
+const TITHI={
+  1:"शुक्ल प्रतिपदा",2:"शुक्ल द्वितीया",3:"शुक्ल तृतीया",4:"शुक्ल चतुर्थी",
+  5:"शुक्ल पञ्चमी",6:"शुक्ल षष्ठी",7:"शुक्ल सप्तमी",8:"शुक्ल अष्टमी",
+  9:"शुक्ल नवमी",10:"शुक्ल दशमी",11:"शुक्ल एकादशी",12:"शुक्ल द्वादशी",
+  13:"शुक्ल त्रयोदशी",14:"शुक्ल चतुर्दशी",15:"पूर्णिमा",
+  16:"कृष्ण प्रतिपदा",17:"कृष्ण द्वितीया",18:"कृष्ण तृतीया",19:"कृष्ण चतुर्थी",
+  20:"कृष्ण पञ्चमी",21:"कृष्ण षष्ठी",22:"कृष्ण सप्तमी",23:"कृष्ण अष्टमी",
+  24:"कृष्ण नवमी",25:"कृष्ण दशमी",26:"कृष्ण एकादशी",27:"कृष्ण द्वादशी",
+  28:"कृष्ण त्रयोदशी",29:"कृष्ण चतुर्दशी",30:"अमावस्या"
+};
+
+const DAYKEY={
+  "रविवार":"Sun","सोमवार":"Mon","मंगलवार":"Tue","मङ्गलवार":"Tue",
+  "बुधवार":"Wed","गुरुवार":"Thu","बृहस्पतिवार":"Thu","शुक्रवार":"Fri","शनिवार":"Sat"
+};
+const DAYNAME={Sun:"रविवार",Mon:"सोमवार",Tue:"मङ्गलवार",Wed:"बुधवार",Thu:"बृहस्पतिवार",Fri:"शुक्रवार",Sat:"शनिवार"};
+
+const FALLBACK_PLACES=[
+  {key:"kashi",name:"काशी",file:"panchang-data/kashi2026.xlsx",timeZone:"Asia/Kolkata",standardOffsetMinutes:330,timeBasis:"standard"},
+  {key:"mahakaleshwar",name:"महाकालेश्वर, उज्जैन",file:"panchang-data/Mahakaleshwar2026.xlsx",timeZone:"Asia/Kolkata",standardOffsetMinutes:330,timeBasis:"standard"},
+  {key:"ayodhya",name:"अयोध्या",file:"panchang-data/Ayodhya2026.xlsx",timeZone:"Asia/Kolkata",standardOffsetMinutes:330,timeBasis:"standard"},
+  {key:"gorakhpur",name:"गोरखपुर",file:"panchang-data/Gorakhpur2026.xlsx",timeZone:"Asia/Kolkata",standardOffsetMinutes:330,timeBasis:"standard"},
+  {key:"jagannathpuri",name:"जगन्नाथपुरी",file:"panchang-data/JagannathPuri2026.xlsx",timeZone:"Asia/Kolkata",standardOffsetMinutes:330,timeBasis:"standard"},
+  {key:"delhi",name:"नई दिल्ली",file:"panchang-data/NewDelhi2026.xlsx",timeZone:"Asia/Kolkata",standardOffsetMinutes:330,timeBasis:"standard"},
+  {key:"prayagraj",name:"प्रयागराज",file:"panchang-data/Prayagraj2026.xlsx",timeZone:"Asia/Kolkata",standardOffsetMinutes:330,timeBasis:"standard"},
+  {key:"mumbai",name:"मुम्बई",file:"panchang-data/Mumbai2026.xlsx",timeZone:"Asia/Kolkata",standardOffsetMinutes:330,timeBasis:"standard"},
+  {key:"jammu",name:"जम्मू",file:"panchang-data/Jammu2026.xlsx",timeZone:"Asia/Kolkata",standardOffsetMinutes:330,timeBasis:"standard"},
+  {key:"jaipur",name:"जयपुर",file:"panchang-data/Jaipur2026.xlsx",timeZone:"Asia/Kolkata",standardOffsetMinutes:330,timeBasis:"standard"},
+  {key:"darbhanga",name:"दरभङ्गा",file:"panchang-data/Darbhanga2026.xlsx",timeZone:"Asia/Kolkata",standardOffsetMinutes:330,timeBasis:"standard"},
+  {key:"ludhiana",name:"लुधियाना",file:"panchang-data/Ludhiana2026.xlsx",timeZone:"Asia/Kolkata",standardOffsetMinutes:330,timeBasis:"standard"},
+  {key:"vidisha",name:"विदिशा",file:"panchang-data/Vidisha2026.xlsx",timeZone:"Asia/Kolkata",standardOffsetMinutes:330,timeBasis:"standard"},
+  {key:"shrimeru",name:"श्रीमेरू",file:"panchang-data/Mahameru2026.xlsx",timeZone:"Africa/Nairobi",standardOffsetMinutes:180,timeBasis:"standard"},
+  {key:"fremont",name:"फ्रीमॉन्ट, कैलिफ़ोर्निया",file:"panchang-data/Fremont2026.xlsx",timeZone:"America/Los_Angeles",standardOffsetMinutes:-480,timeBasis:"standard"},
+  {key:"los-angeles",name:"लॉस एंजेलिस, कैलिफ़ोर्निया",file:"panchang-data/Los Angeles2026.xlsx",timeZone:"America/Los_Angeles",standardOffsetMinutes:-480,timeBasis:"standard"},
+  {key:"irvine",name:"इरवाइन, कैलिफ़ोर्निया",file:"panchang-data/Irvine2026.xlsx",timeZone:"America/Los_Angeles",standardOffsetMinutes:-480,timeBasis:"standard"},
+  {key:"san-diego",name:"सैन डिएगो, कैलिफ़ोर्निया",file:"panchang-data/San Diego2026.xlsx",timeZone:"America/Los_Angeles",standardOffsetMinutes:-480,timeBasis:"standard"},
+  {key:"artesia-ca",name:"आर्टीज़िया, कैलिफ़ोर्निया",file:"panchang-data/Artesia_CA_2026.xlsx",timeZone:"America/Los_Angeles",standardOffsetMinutes:-480,timeBasis:"standard"},
+  {key:"san-jose-ca",name:"सैन होज़े, कैलिफ़ोर्निया",file:"panchang-data/San Jose_CA_2026.xlsx",timeZone:"America/Los_Angeles",standardOffsetMinutes:-480,timeBasis:"standard"},
+  {key:"concord-ca",name:"कॉनकॉर्ड, कैलिफ़ोर्निया",file:"panchang-data/Concord_CA_2026.xlsx",timeZone:"America/Los_Angeles",standardOffsetMinutes:-480,timeBasis:"standard"},
+  {key:"london",name:"लन्दन",file:"panchang-data/London2026.xlsx",timeZone:"Europe/London",standardOffsetMinutes:0,timeBasis:"standard"},
+  {key:"doha",name:"दोहा",file:"panchang-data/Doha2026.xlsx",timeZone:"Asia/Qatar",standardOffsetMinutes:180,timeBasis:"standard"}
+];
+
+let PLACES=[];
+let workbookData=null;
+let workbookPlaceKey="";
+let mode="day";
+
+function esc(s){
+  return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function setStatus(text,error=false){
+  const el=document.getElementById("status");
+  el.textContent=text;
+  el.classList.toggle("error",!!error);
+}
+function todayInput(){
+  const d=new Date(), y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,"0"), day=String(d.getDate()).padStart(2,"0");
+  return `${y}-${m}-${day}`;
+}
+function monthInput(){
+  return todayInput().slice(0,7);
+}
+
+function normalizeDate(v){
+  if(v===undefined||v===null||v==="")return "";
+  if(typeof v==="number" && Number.isFinite(v)){
+    const ms=Date.UTC(1899,11,30)+Math.round(v)*86400000;
+    const d=new Date(ms);
+    return `${String(d.getUTCDate()).padStart(2,"0")}/${String(d.getUTCMonth()+1).padStart(2,"0")}/${d.getUTCFullYear()}`;
+  }
+  const s=String(v).trim();
+  let m=s.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{4})$/);
+  if(m)return `${m[1].padStart(2,"0")}/${m[2].padStart(2,"0")}/${m[3]}`;
+  const d=new Date(v);
+  if(isNaN(d))return "";
+  return `${String(d.getDate()).padStart(2,"0")}/${String(d.getMonth()+1).padStart(2,"0")}/${d.getFullYear()}`;
+}
+function pickerGB(v){
+  if(!v)return "";
+  const [y,m,d]=v.split("-");
+  return `${d}/${m}/${y}`;
+}
+function gbParts(gb){
+  const [d,m,y]=gb.split("/").map(Number);
+  return {d,m,y};
+}
+function gbDayIndex(gb){
+  const {d,m,y}=gbParts(gb);
+  return Math.floor(Date.UTC(y,m-1,d)/86400000);
+}
+function gbLabel(gb){
+  const {d,m,y}=gbParts(gb);
+  return toDev(`${String(d).padStart(2,"0")}-${String(m).padStart(2,"0")}-${y}`);
+}
+function monthMatches(gb,ym){
+  if(!gb||!ym)return false;
+  const {m,y}=gbParts(gb);
+  const [yy,mm]=ym.split("-").map(Number);
+  return y===yy && m===mm;
+}
+
+function timeMin(v){
+  if(v===undefined||v===null||v==="")return NaN;
+  if(typeof v==="number" && Number.isFinite(v))return Number(v)*1440;
+  let s=String(v).trim();
+  if(!s || /वृद्धि|vriddhi/i.test(s) || s==="------" || s==="32")return NaN;
+  s=s.replace(/[०-९]/g,d=>"०१२३४५६७८९".indexOf(d));
+  const m=s.match(/^([+-]?\d{1,3}):(\d{2})(?::(\d{2}))?$/);
+  if(!m)return NaN;
+  const sign=Number(m[1])<0?-1:1;
+  const h=Math.abs(Number(m[1])), mi=Number(m[2]), sec=Number(m[3]||0);
+  return sign*(h*60+mi+sec/60);
+}
+function leadingNumber(v,max){
+  const s=String(v??"").replace(/[०-९]/g,d=>"०१२३४५६७८९".indexOf(d));
+  const m=s.match(/\d{1,2}/);
+  if(!m)return NaN;
+  const n=Number(m[0]);
+  return n>=1&&n<=max?n:NaN;
+}
+function nextCycle(n,max,step=1){
+  return ((n-1+step)%max)+1;
+}
+
+function word952HeaderText(v){return String(v??"").replace(/\s+/g,"").trim()}
+function isWord952Rows(rows){
+  const h=rows?.[0]||[];
+  return h.length>=28 &&
+    word952HeaderText(h[0])==="दिनाङ्क" &&
+    word952HeaderText(h[12])==="करणान्त३" &&
+    word952HeaderText(h[19])==="सूर्य" &&
+    word952HeaderText(h[27])==="ग्रहोदयास्त";
+}
+function blankLike(v){
+  const s=String(v??"").trim();
+  return s===""||s==="32"||s==="------";
+}
+function normalizeWord952Rows(rows){
+  const out=[["Date","Month","Day","Tithi","TithiEnd","Yoga","YogaEnd","Karana","Karana1End","Karana2End","Sunrise","Sunset","Sun","MoonRashiEnd","Moon","NakshatraEnd","Nakshatra","Reserved17","Reserved18","Mars","Mercury","Jupiter","Venus","Saturn","Ketu","Karan3End","LostTithiEnd","LostYogaEnd","LostNakshatraEnd","GrahaState"]];
+  for(let i=1;i<rows.length;i++){
+    const s=rows[i]||[];
+    if(!normalizeDate(s[0]))continue;
+    const r=Array(30).fill("");
+    r[0]=s[0]; r[1]=s[1]; r[2]=DAYKEY[String(s[2]??"").trim()]||s[2];
+    r[3]=s[3]; r[4]=s[4]; r[5]=s[6]; r[6]=s[7]; r[7]=s[9];
+    r[8]=s[10]; r[9]=s[11]; r[10]=s[13]; r[11]=s[14]; r[12]=s[19];
+    r[13]=blankLike(s[15])?0:s[15]; r[14]=s[20]; r[15]=s[17]; r[16]=s[16];
+    r[19]=s[21]; r[20]=s[22]; r[21]=s[23]; r[22]=s[24]; r[23]=s[25]; r[24]=s[26];
+    r[25]=blankLike(s[12])?"":s[12];
+    r[26]=blankLike(s[5])?"":s[5];
+    r[27]=blankLike(s[8])?"":s[8];
+    r[28]=blankLike(s[18])?"":s[18];
+    r[29]=s[27]??"";
+    out.push(r);
+  }
+  return out;
+}
+
+function parsePlacesFromPanchanga(html){
+  const m=html.match(/const\s+PANCHANGA_PLACES\s*=\s*\[([\s\S]*?)\]\s*;/);
+  if(!m)return [];
+  const block=m[1], out=[];
+  const obj=/\{key:"([^"]+)"([\s\S]*?)\}/g;
+  let hit;
+  while((hit=obj.exec(block))){
+    const body=hit[2];
+    const get=(name)=>{
+      const q=body.match(new RegExp(name+'\\s*:\\s*"([^"]*)"'));
+      return q?q[1]:"";
+    };
+    const no=(name)=>{
+      const q=body.match(new RegExp(name+'\\s*:\\s*(-?\\d+)'));
+      return q?Number(q[1]):NaN;
+    };
+    const p={
+      key:hit[1],name:get("name"),file:get("file"),timeZone:get("timeZone"),
+      standardOffsetMinutes:no("standardOffsetMinutes"),timeBasis:get("timeBasis")||"standard"
+    };
+    if(p.key&&p.name&&p.file)out.push(p);
+  }
+  return out;
+}
+async function loadPlaces(){
+  let places=[];
+  try{
+    const r=await fetch("Panchanga.html",{cache:"no-store"});
+    if(r.ok)places=parsePlacesFromPanchanga(await r.text());
+  }catch(_){}
+  PLACES=places.length?places:FALLBACK_PLACES;
+  const sel=document.getElementById("place");
+  sel.innerHTML="";
+  for(const p of PLACES){
+    const o=document.createElement("option");
+    o.value=p.key;o.textContent=p.name;sel.appendChild(o);
+  }
+  const kashi=PLACES.find(p=>p.key==="kashi");
+  if(kashi)sel.value="kashi";
+  setStatus(places.length
+    ? "स्थान-सूची वर्तमान Panchanga.html से ली गयी है।"
+    : "स्थान-सूची fallback configuration से ली गयी है।");
+}
+
+function placeMeta(){
+  return PLACES.find(p=>p.key===document.getElementById("place").value)||PLACES[0];
+}
+
+async function ensureWorkbook(){
+  const p=placeMeta();
+  if(!p)throw new Error("स्थान उपलब्ध नहीं है।");
+  if(workbookData && workbookPlaceKey===p.key)return;
+  setStatus(`${p.name} का पञ्चाङ्ग-आँकड़ा पढ़ा जा रहा है…`);
+  const r=await fetch(p.file,{cache:"no-store"});
+  if(!r.ok)throw new Error(`${p.file} नहीं मिला (HTTP ${r.status})`);
+  const buf=await r.arrayBuffer();
+  const wb=XLSX.read(new Uint8Array(buf),{type:"array"});
+  const sh=wb.Sheets[wb.SheetNames[0]];
+  let rows=XLSX.utils.sheet_to_json(sh,{header:1,raw:true,defval:""});
+  if(isWord952Rows(rows))rows=normalizeWord952Rows(rows);
+  if(!rows || rows.length<2)throw new Error("पञ्चाङ्ग-फ़ाइल में दैनिक पंक्तियाँ नहीं मिलीं।");
+  workbookData=rows;
+  workbookPlaceKey=p.key;
+}
+
+function rowGB(i){return normalizeDate(workbookData?.[i]?.[0])}
+function rowContext(i){
+  const row=workbookData[i];
+  const gb=rowGB(i);
+  if(!row||!gb)return null;
+  const base=gbDayIndex(gb)*1440;
+  const sr=timeMin(row[10]), ss=timeMin(row[11]);
+  if(!Number.isFinite(sr)||!Number.isFinite(ss))return null;
+  return {i,row,gb,base,sunrise:base+sr,sunset:base+ss};
+}
+
+function nakAt(c,abs){
+  const n=leadingNumber(c.row[16],27);
+  if(!Number.isFinite(n))return NaN;
+  const e1=timeMin(c.row[15]), e2=timeMin(c.row[28]);
+  if(!Number.isFinite(e1))return n;
+  if(abs<c.base+e1)return n;
+  if(Number.isFinite(e2) && abs>=c.base+e2)return nextCycle(n,27,2);
+  return nextCycle(n,27,1);
+}
+function tithiAt(c,abs){
+  const n=leadingNumber(c.row[3],30);
+  if(!Number.isFinite(n))return NaN;
+  const e1=timeMin(c.row[4]),e2=timeMin(c.row[26]);
+  if(!Number.isFinite(e1))return n;
+  if(abs<c.base+e1)return n;
+  if(Number.isFinite(e2)&&abs>=c.base+e2)return nextCycle(n,30,2);
+  return nextCycle(n,30,1);
+}
+function yogaAt(c,abs){
+  const n=leadingNumber(c.row[5],27);
+  if(!Number.isFinite(n))return NaN;
+  const e1=timeMin(c.row[6]),e2=timeMin(c.row[27]);
+  if(!Number.isFinite(e1))return n;
+  if(abs<c.base+e1)return n;
+  if(Number.isFinite(e2)&&abs>=c.base+e2)return nextCycle(n,27,2);
+  return nextCycle(n,27,1);
+}
+const KAR_NEXT={
+  "किंस्तुघ्न":"बव","किन्स्तुघ्न":"बव","Kimstu":"Bava",
+  "बव":"बालव","Bava":"Bälav","Bälav":"Kaulav","बालव":"कौलव",
+  "कौलव":"तैतिल","Kaulav":"Taitil","तैतिल":"गर","Taitil":"Gara",
+  "गर":"वणिज","Gara":"Vanij","वणिज":"विष्टि","Vanij":"Višti",
+  "विष्टि":"बव","विष्टि (भद्रा)":"बव","Višti":"Bava",
+  "शकुनि":"चतुष्पद","Shakun":"Chatuš","चतुष्पद":"नाग","Chatuš":"Näga",
+  "नाग":"किंस्तुघ्न","Näga":"Kimstu"
+};
+function karNorm(k){
+  const s=String(k??"").trim().toLowerCase();
+  if(s.includes("विष्टि")||s.includes("višti")||s.includes("visti")||s.includes("vishti"))return "VISHTI";
+  return s;
+}
+function karNext(k){return KAR_NEXT[k]||KAR_NEXT[String(k??"").trim()]||k}
+function karanaAt(c,abs){
+  let k=String(c.row[7]??"").trim();
+  const ends=[timeMin(c.row[8]),timeMin(c.row[9]),timeMin(c.row[25])].filter(Number.isFinite).map(x=>c.base+x).sort((a,b)=>a-b);
+  for(const e of ends){
+    if(abs<e)return k;
+    k=karNext(k);
+  }
+  return k;
+}
+
+function isRikta(tn){
+  if(!Number.isFinite(tn))return false;
+  const p=((tn-1)%15)+1;
+  return p===4||p===9||p===14;
+}
+function minuteVerdict(c,abs,general){
+  const nak=nakAt(c,abs);
+  if(!BUY_NAK.has(nak))return {ok:false,nak};
+  const tn=tithiAt(c,abs), yn=yogaAt(c,abs), kar=karanaAt(c,abs);
+  const blocks=[];
+  if(general){
+    if(isRikta(tn))blocks.push("रिक्ता तिथि");
+    if(yn===17)blocks.push("व्यतीपात");
+    if(yn===27)blocks.push("वैधृति");
+    if(karNorm(kar)==="VISHTI")blocks.push("विष्टि (भद्रा)");
+  }
+  return {ok:blocks.length===0,nak,tn,yn,kar,blocks};
+}
+function windowsForRow(i,general){
+  const c=rowContext(i);
+  if(!c)return [];
+  const start=Math.ceil(c.sunrise), end=Math.floor(c.sunset);
+  const out=[];
+  let open=null;
+  for(let m=start;m<=end;m++){
+    const v=minuteVerdict(c,m,general);
+    if(v.ok && !open){
+      open={start:m,last:m,nak:v.nak,tn:v.tn,yn:v.yn,kar:v.kar};
+    }else if(v.ok && open){
+      if(v.nak!==open.nak){
+        out.push({...open,end:m});
+        open={start:m,last:m,nak:v.nak,tn:v.tn,yn:v.yn,kar:v.kar};
+      }else{
+        open.last=m;
+      }
+    }else if(!v.ok && open){
+      out.push({...open,end:m});
+      open=null;
+    }
+  }
+  if(open)out.push({...open,end:end+1});
+  return out.filter(w=>w.end-w.start>=1);
+}
+
+function absToCivil(abs,p){
+  const ms=abs*60000-(Number(p.standardOffsetMinutes)||0)*60000;
+  const dtf=new Intl.DateTimeFormat("en-GB",{
+    timeZone:p.timeZone||"Asia/Kolkata",year:"numeric",month:"2-digit",day:"2-digit",
+    hour:"2-digit",minute:"2-digit",hourCycle:"h23"
+  });
+  const z={};
+  for(const part of dtf.formatToParts(new Date(ms))){
+    if(part.type!=="literal")z[part.type]=part.value;
+  }
+  return {gb:`${z.day}/${z.month}/${z.year}`,clock:`${z.hour}:${z.minute}`};
+}
+function rangeDisplay(w,p,baseGB){
+  const a=absToCivil(w.start,p),b=absToCivil(w.end,p);
+  const prefixA=a.gb===baseGB?"":`${gbLabel(a.gb)} `;
+  const prefixB=b.gb===baseGB?"":`${gbLabel(b.gb)} `;
+  return `${prefixA}${toDev(a.clock)} – ${prefixB}${toDev(b.clock)}`;
+}
+function weekdayForRow(row,gb){
+  const raw=String(row?.[2]??"").trim();
+  if(DAYNAME[raw])return DAYNAME[raw];
+  if(DAYKEY[raw])return DAYNAME[DAYKEY[raw]];
+  const {d,m,y}=gbParts(gb);
+  return DAYNAME[["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][new Date(Date.UTC(y,m-1,d)).getUTCDay()]];
+}
+function rowIndexByGB(gb){
+  for(let i=1;i<workbookData.length;i++)if(rowGB(i)===gb)return i;
+  return -1;
+}
+function allIndexesInMonth(ym){
+  const a=[];
+  for(let i=1;i<workbookData.length;i++)if(monthMatches(rowGB(i),ym))a.push(i);
+  return a;
+}
+function purityGeneral(){
+  return document.querySelector('input[name="purity"]:checked')?.value==="general";
+}
+function render(days,p,periodText){
+  const results=document.getElementById("results");
+  const totalWins=days.reduce((s,d)=>s+d.windows.length,0);
+  document.getElementById("sumPlace").textContent=p.name;
+  document.getElementById("sumPeriod").textContent=periodText;
+  document.getElementById("sumDays").textContent=toDev(days.filter(d=>d.windows.length).length);
+  document.getElementById("sumWindows").textContent=toDev(totalWins);
+  document.getElementById("resultCard").hidden=false;
+
+  if(!days.length || totalWins===0){
+    results.innerHTML=`<div class="result no"><div class="result-date">इस चयन में प्रत्यक्ष ग्रन्थोक्त वाहन-क्रय कालखण्ड नहीं मिला।</div>
+      <div class="reason">चयनित शुद्धि-पद्धति के अनुसार कोई कालखण्ड शेष नहीं रहा।</div></div>`;
+    return;
+  }
+
+  results.innerHTML=days.filter(d=>d.windows.length).map(d=>{
+    const c=rowContext(d.i);
+    const sr=absToCivil(c.sunrise,p),ss=absToCivil(c.sunset,p);
+    const tn=leadingNumber(c.row[3],30), nn=leadingNumber(c.row[16],27);
+    const wins=d.windows.map(w=>`
+      <div class="window">
+        <div class="window-time">${rangeDisplay(w,p,d.gb)}</div>
+        <div class="window-detail"><b>${esc(NAK[w.nak]||w.nak)}</b> — क्रय के लिये ग्रन्थोक्त शुभ नक्षत्र</div>
+      </div>`).join("");
+    return `<article class="result">
+      <div class="result-head">
+        <div class="result-date">${gbLabel(d.gb)} · ${esc(weekdayForRow(c.row,d.gb))}</div>
+        <span class="badge">${toDev(d.windows.length)} कालखण्ड</span>
+      </div>
+      ${wins}
+      <div class="reason">
+        सूर्योदय ${toDev(sr.clock)} · सूर्यास्त ${toDev(ss.clock)} ·
+        औदयिक तिथि ${esc(TITHI[tn]||tn||"—")} · औदयिक नक्षत्र ${esc(NAK[nn]||nn||"—")}
+      </div>
+    </article>`;
+  }).join("");
+}
+
+async function runSearch(){
+  try{
+    await ensureWorkbook();
+    const p=placeMeta(), general=purityGeneral();
+    let indexes=[],period="";
+    if(mode==="day"){
+      const gb=pickerGB(document.getElementById("date").value);
+      if(!gb)throw new Error("दिनाङ्क चुनें।");
+      const i=rowIndexByGB(gb);
+      if(i<0)throw new Error(`${gb} का पञ्चाङ्ग इस फ़ाइल में उपलब्ध नहीं है।`);
+      indexes=[i]; period=gbLabel(gb);
+    }else{
+      const ym=document.getElementById("month").value;
+      if(!ym)throw new Error("मास चुनें।");
+      indexes=allIndexesInMonth(ym);
+      if(!indexes.length)throw new Error("इस मास का पञ्चाङ्ग इस फ़ाइल में उपलब्ध नहीं है।");
+      const [y,m]=ym.split("-");
+      period=toDev(`${m}/${y}`);
+    }
+    setStatus("मुहूर्त्त-कालखण्डों की गणना हो रही है…");
+    const days=indexes.map(i=>({i,gb:rowGB(i),windows:windowsForRow(i,general)}));
+    render(days,p,period);
+    const found=days.reduce((s,d)=>s+d.windows.length,0);
+    setStatus(`${p.name}: ${toDev(found)} उपयुक्त कालखण्ड प्राप्त।`+
+      (general?" सामान्य शुभकर्म-शुद्धि लागू है।":" केवल प्रत्यक्ष क्रय-नक्षत्र लागू हैं।"));
+  }catch(e){
+    document.getElementById("resultCard").hidden=true;
+    setStatus(e?.message||String(e),true);
+  }
+}
+
+function setMode(m){
+  mode=m;
+  document.getElementById("dayMode").classList.toggle("active",m==="day");
+  document.getElementById("monthMode").classList.toggle("active",m==="month");
+  document.getElementById("dateField").hidden=m!=="day";
+  document.getElementById("monthField").hidden=m!=="month";
+  document.getElementById("resultCard").hidden=true;
+}
+
+document.getElementById("dayMode").addEventListener("click",()=>setMode("day"));
+document.getElementById("monthMode").addEventListener("click",()=>setMode("month"));
+document.getElementById("search").addEventListener("click",runSearch);
+document.getElementById("place").addEventListener("change",()=>{
+  workbookData=null;workbookPlaceKey="";document.getElementById("resultCard").hidden=true;
+});
+document.getElementById("date").value=todayInput();
+document.getElementById("month").value=monthInput();
+
+loadPlaces();
+</script>
+</body>
+</html>
