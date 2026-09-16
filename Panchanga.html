@@ -4017,29 +4017,49 @@ function isVriddhi(value){
 }
 
 /*
-  WORD_954 में वृद्धि हमेशा "वृद्धि" शब्द से नहीं आती।
-  यदि वही तिथि/योग/नक्षत्र पिछले और वर्तमान — दोनों सूर्योदयों पर हो,
-  तो वर्तमान दिन उस अङ्ग की वृद्धि-द्वितीयावृत्ति है।
-  मुख्य पञ्चाङ्ग में ऐसे दिन अन्त-समय के स्थान पर पुराना/निर्धारित
-  "अहोरात्र, ...वृद्धि से" पाठ ही दिखाया जाएगा।
+  वृद्धि का सही औदयिक निर्णय:
+  - यदि वर्तमान सूर्योदय का वही अङ्ग अगले सूर्योदय पर भी विद्यमान है,
+    तो वर्तमान दिन उस अङ्ग का "अहोरात्र, ...वृद्धि से" दिन है।
+  - यदि वही अङ्ग पिछले और वर्तमान सूर्योदय पर था, पर अगले सूर्योदय पर नहीं,
+    तो वर्तमान दिन वृद्धि का समाप्ति-दिन है; यहाँ वास्तविक अन्तकाल दिखेगा
+    और उसके साथ "...वृद्धि से" जोड़ा जाएगा।
+
+  इस प्रकार वृद्धि का अहोरात्र-लेबल पिछले→वर्तमान समानता से नहीं,
+  वर्तमान→अगले सूर्योदय की समानता से निश्चित होता है।
 */
-function isAngaVriddhiAtSunrise(rowIndex,valueColumn){
-  if(!workbookData || rowIndex <= 1) return false;
+function angaSunriseKey(value){
+  const raw = String(value ?? "").trim();
+  if(!raw) return "";
+  const m = raw.match(/^\s*(\d{1,2})/);
+  return m ? String(Number(m[1])) : raw;
+}
 
-  const current = workbookData[rowIndex];
-  const previous = workbookData[rowIndex - 1];
-  if(!current || !previous) return false;
-
-  const key = value => {
-    const raw = String(value ?? "").trim();
-    if(!raw) return "";
-    const m = raw.match(/^\s*(\d{1,2})/);
-    return m ? String(Number(m[1])) : raw;
-  };
-
-  const a = key(current[valueColumn]);
-  const b = key(previous[valueColumn]);
+function sameAngaAtSunrise(rowA,rowB,valueColumn){
+  if(!rowA || !rowB) return false;
+  const a = angaSunriseKey(rowA[valueColumn]);
+  const b = angaSunriseKey(rowB[valueColumn]);
   return !!a && a === b;
+}
+
+function isAngaVriddhiFullDay(rowIndex,valueColumn){
+  if(!workbookData) return false;
+  return sameAngaAtSunrise(
+    workbookData[rowIndex],
+    workbookData[rowIndex + 1],
+    valueColumn
+  );
+}
+
+function isAngaVriddhiEndingDay(rowIndex,valueColumn){
+  if(!workbookData || rowIndex <= 1) return false;
+  const previous = workbookData[rowIndex - 1];
+  const current = workbookData[rowIndex];
+  const next = workbookData[rowIndex + 1];
+
+  return (
+    sameAngaAtSunrise(previous,current,valueColumn) &&
+    !sameAngaAtSunrise(current,next,valueColumn)
+  );
 }
 
 
@@ -4100,7 +4120,11 @@ function panchangaKaalLabelForRawTime(rawTime,rowIndex,row){
 
 function panchangaKaalTimeText(rawTime,rowIndex,row,selectedDate){
   const kaal=panchangaKaalLabelForRawTime(rawTime,rowIndex,row);
-  const time=excelTimeDev(rawTime,selectedDate);
+  /* excelTimeDev() 24+ घण्टे के समय में स्वयं “रात्रि/रात्रिशेष” जोड़ता है।
+     यहाँ काल-संज्ञा अलग से लग रही है, इसलिए केवल घड़ी का समय रखें;
+     अन्यथा “प्रातःकाल रात्रिशेष ०६:२२” जैसा द्विरुक्त/विरोधी पाठ बनता है। */
+  const time=excelTimeDev(rawTime,selectedDate)
+    .replace(/^(?:रात्रिशेष|रात्रि)\s+/,"");
   return `${kaal ? kaal + " " : ""}${time} बजे तक`;
 }
 
@@ -8883,18 +8907,24 @@ function showSelectedDate(){
       ? TITHI_MAP[tithiNumber]
       : (row[3] || "");
   
-    const tithiEndText = (isVriddhi(row[4]) || isAngaVriddhiAtSunrise(rowIndex,3))
-  ? "अहोरात्र, तिथिवृद्धि से"
-  : panchangaKaalTimeText(row[4],rowIndex,row,selectedDate);    
+    const tithiVriddhiFull = isVriddhi(row[4]) || isAngaVriddhiFullDay(rowIndex,3);
+    const tithiVriddhiEnding = !tithiVriddhiFull && isAngaVriddhiEndingDay(rowIndex,3);
+    const tithiEndText = tithiVriddhiFull
+      ? "अहोरात्र, तिथिवृद्धि से"
+      : panchangaKaalTimeText(row[4],rowIndex,row,selectedDate) +
+        (tithiVriddhiEnding ? ", तिथिवृद्धि से" : "");
 
 setText(
   "tithi",
   `${tithiName} (${tithiEndText})`
 );
   /* नक्षत्र */
-const nakshatraEndText = (isVriddhi(row[15]) || isAngaVriddhiAtSunrise(rowIndex,16))
+const nakshatraVriddhiFull = isVriddhi(row[15]) || isAngaVriddhiFullDay(rowIndex,16);
+const nakshatraVriddhiEnding = !nakshatraVriddhiFull && isAngaVriddhiEndingDay(rowIndex,16);
+const nakshatraEndText = nakshatraVriddhiFull
   ? "अहोरात्र, नक्षत्रवृद्धि से"
-  : panchangaKaalTimeText(row[15],rowIndex,row,selectedDate);
+  : panchangaKaalTimeText(row[15],rowIndex,row,selectedDate) +
+    (nakshatraVriddhiEnding ? ", नक्षत्रवृद्धि से" : "");
 
 setText(
   "nakshatra",
@@ -8902,9 +8932,12 @@ setText(
 );
 
   /* योग */
-  const yogaEndText = (isVriddhi(row[6]) || isAngaVriddhiAtSunrise(rowIndex,5))
+  const yogaVriddhiFull = isVriddhi(row[6]) || isAngaVriddhiFullDay(rowIndex,5);
+  const yogaVriddhiEnding = !yogaVriddhiFull && isAngaVriddhiEndingDay(rowIndex,5);
+  const yogaEndText = yogaVriddhiFull
     ? "अहोरात्र, योगवृद्धि से"
-    : panchangaKaalTimeText(row[6],rowIndex,row,selectedDate);
+    : panchangaKaalTimeText(row[6],rowIndex,row,selectedDate) +
+      (yogaVriddhiEnding ? ", योगवृद्धि से" : "");
 
   setText(
     "yoga",
