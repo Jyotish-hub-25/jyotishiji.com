@@ -9,7 +9,7 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta content="श्रीसूर्यसिद्धान्तीय स्थानीय दैनिक पञ्चाङ्ग तथा भारतीय काल गणना के आधार।" name="description"/>
 <title>श्रीसूर्यसिद्धान्तीय स्थानीय पञ्चाङ्ग एवं भारतीय काल गणना</title>
-<meta name="panchanga-build" content="odayika-v22-all-added-foreign-files-enabled"/>
+<meta name="panchanga-build" content="odayika-v23-added-10-places"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
@@ -3297,6 +3297,26 @@ const PANCHANGA_PLACES = [
    name:"कामरूप-कामाख्या", heading:"कामरूप-कामाख्यास्थ पञ्चाङ्ग",
    file:"panchang-data/Kamrup_Kamakhya2026.xlsx", timeZone:"Asia/Kolkata", standardOffsetMinutes:330, timeBasis:"standard"},
 
+  {key:"bengaluru", region:"india", countryKey:"india", countryName:"भारत",
+   name:"बेंगलुरु", heading:"बेंगलुरुस्थ पञ्चाङ्ग",
+   file:"panchang-data/Bangalore2026.xlsx", timeZone:"Asia/Kolkata", standardOffsetMinutes:330, timeBasis:"standard"},
+
+  {key:"dumka", region:"india", countryKey:"india", countryName:"भारत",
+   name:"दुमका", heading:"दुमकास्थ पञ्चाङ्ग",
+   file:"panchang-data/Dumka2026.xlsx", timeZone:"Asia/Kolkata", standardOffsetMinutes:330, timeBasis:"standard"},
+
+  {key:"nellore", region:"india", countryKey:"india", countryName:"भारत",
+   name:"नेल्लोर", heading:"नेल्लोरस्थ पञ्चाङ्ग",
+   file:"panchang-data/Nellore2026.xlsx", timeZone:"Asia/Kolkata", standardOffsetMinutes:330, timeBasis:"standard"},
+
+  {key:"patna", region:"india", countryKey:"india", countryName:"भारत",
+   name:"पटना", heading:"पटनास्थ पञ्चाङ्ग",
+   file:"panchang-data/Patna2026.xlsx", timeZone:"Asia/Kolkata", standardOffsetMinutes:330, timeBasis:"standard"},
+
+  {key:"ranchi", region:"india", countryKey:"india", countryName:"भारत",
+   name:"राँची", heading:"राँचीस्थ पञ्चाङ्ग",
+   file:"panchang-data/Ranchi2026.xlsx", timeZone:"Asia/Kolkata", standardOffsetMinutes:330, timeBasis:"standard"},
+
   /* श्रीमेरू (Mount Kenya क्षेत्र): Kenya में DST नहीं; standard local time UTC+03:00. */
   {key:"shrimeru", region:"foreign", countryKey:"kenya", countryName:"केन्या",
    name:"श्रीमेरू", heading:"श्रीमेरुस्थ पञ्चाङ्ग",
@@ -3367,7 +3387,29 @@ const PANCHANGA_PLACES = [
 
   {key:"doha", region:"foreign", countryKey:"qatar", countryName:"क़तर",
    name:"दोहा", heading:"दोहास्थ पञ्चाङ्ग",
-   file:"panchang-data/Doha2026.xlsx", timeZone:"Asia/Qatar", standardOffsetMinutes:180, timeBasis:"standard"}
+   file:"panchang-data/Doha2026.xlsx", timeZone:"Asia/Qatar", standardOffsetMinutes:180, timeBasis:"standard"},
+
+  /* Italy: Excel standard/CET basis; website Europe/Rome DST/seasonal offset लगाएगी। */
+  {key:"rome", region:"foreign", countryKey:"italy", countryName:"इटली",
+   name:"रोम, लात्सियो", heading:"रोमस्थ पञ्चाङ्ग",
+   file:"panchang-data/Roma2026.xlsx", timeZone:"Europe/Rome", standardOffsetMinutes:60, timeBasis:"standard"},
+
+  {key:"venice-veneto", region:"foreign", countryKey:"italy", countryName:"इटली",
+   name:"वेनिस, वेनेतो", heading:"वेनिसस्थ पञ्चाङ्ग",
+   file:"panchang-data/Venice_Veneto2026.xlsx", timeZone:"Europe/Rome", standardOffsetMinutes:60, timeBasis:"standard"},
+
+  {key:"verona", region:"foreign", countryKey:"italy", countryName:"इटली",
+   name:"वेरोना, वेनेतो", heading:"वेरोनास्थ पञ्चाङ्ग",
+   file:"panchang-data/Verona2026.xlsx", timeZone:"Europe/Rome", standardOffsetMinutes:60, timeBasis:"standard"},
+
+  {key:"vicenza-veneto", region:"foreign", countryKey:"italy", countryName:"इटली",
+   name:"विचेन्ज़ा, वेनेतो", heading:"विचेन्ज़ास्थ पञ्चाङ्ग",
+   file:"panchang-data/Vicenza_Veneto2026.xlsx", timeZone:"Europe/Rome", standardOffsetMinutes:60, timeBasis:"standard"},
+
+  /* Connecticut: Excel EST/standard-time basis; website America/New_York DST लगाएगी। */
+  {key:"wilton-ct", region:"foreign", countryKey:"united-states", countryName:"संयुक्त राज्य अमेरिका",
+   name:"विल्टन, कनेक्टिकट", heading:"विल्टनस्थ पञ्चाङ्ग",
+   file:"panchang-data/Wilton_Connecticut2026.xlsx", timeZone:"America/New_York", standardOffsetMinutes:-300, timeBasis:"standard"}
 ];
 
 const PLACE_META = Object.fromEntries(
