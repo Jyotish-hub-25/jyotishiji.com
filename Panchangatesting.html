@@ -4696,6 +4696,73 @@ Object.assign(PANCHANGA_UI_TRANSLATIONS.mai || (PANCHANGA_UI_TRANSLATIONS.mai={}
   "विशेष संज्ञा":"विशेष संज्ञा"
 });
 
+
+/* =========================================================
+   v9 repository-backed UI vocabulary
+   Sources used for UI wording:
+   - Wikimedia/MediaWiki localisation: mai, mr, gom-deva, ks-deva
+   - Unicode CLDR: doi, brx, sd-Deva
+   Only interface vocabulary is overridden here. Panchanga technical
+   terms remain in the curated Panchanga dictionary.
+========================================================= */
+(function applyRepositoryBackedUiVocabulary(){
+  const repoUI = {
+    mai:{
+      "पञ्चाङ्ग-भाषा":"पञ्चाङ्गक भाषा",
+      "भाषा, स्थान एवं दिनाङ्कानुसार पञ्चाङ्ग":"भाषा, ठाम आ दिनाङ्कक अनुसार पञ्चाङ्ग",
+      "स्थान एवं दिनाङ्कानुसार पञ्चाङ्ग":"ठाम आ दिनाङ्कक अनुसार पञ्चाङ्ग",
+      "देश / क्षेत्र चुनें":"देश / क्षेत्र चुनी",
+      "स्थान":"ठाम","स्थान चुनें":"ठाम चुनी",
+      "पञ्चाङ्ग देखें":"पञ्चाङ्ग देखी",
+      "निर्णय का आधार देखें ▼":"निर्णयक आधार देखी ▼",
+      "३० मुहूर्त्त देखें ▼":"३० मुहूर्त्त देखी ▼",
+      "कृपया दिनाङ्क चुनें।":"कृपया दिनाङ्क चुनी।",
+      "कृपया स्थान चुनें।":"कृपया ठाम चुनी।",
+      "अन्य भाषाएँ":"अन्य भाषासभमे"
+    },
+    mr:{
+      "पञ्चाङ्ग देखें":"पंचांग दाखवा",
+      "निर्णय का आधार देखें ▼":"निर्णयाचा आधार दाखवा ▼",
+      "३० मुहूर्त्त देखें ▼":"३० मुहूर्त दाखवा ▼",
+      "अन्य भाषाएँ":"इतर भाषांत"
+    },
+    kok:{
+      "पञ्चाङ्ग-भाषा":"पञ्चाङ्गाची भास",
+      "भाषा, स्थान एवं दिनाङ्कानुसार पञ्चाङ्ग":"भास, थळ आनी तारखेप्रमाणें पञ्चाङ्ग",
+      "स्थान एवं दिनाङ्कानुसार पञ्चाङ्ग":"थळ आनी तारखेप्रमाणें पञ्चाङ्ग",
+      "स्थान":"थळ","स्थान चुनें":"थळ निवडात",
+      "पञ्चाङ्ग देखें":"पञ्चाङ्ग पळयात",
+      "निर्णय का आधार देखें ▼":"निर्णयाचो आदार पळयात ▼",
+      "३० मुहूर्त्त देखें ▼":"३० मुहूर्त्त पळयात ▼",
+      "अन्य भाषाएँ":"हेर भासांनी"
+    },
+    ks:{
+      "पञ्चाङ्ग देखें":"पञ्चाङ्ग वुछिव",
+      "निर्णय का आधार देखें ▼":"निर्णयुक आधार वुछिव ▼",
+      "३० मुहूर्त्त देखें ▼":"३० मुहूर्त वुछिव ▼"
+    },
+    doi:{
+      "पञ्चाङ्ग-भाषा":"पञ्चाङ्ग दी भाशा",
+      "देश / क्षेत्र":"देश / खेत्तर",
+      "देश / क्षेत्र चुनें":"देश / खेत्तर चुनो",
+      "पञ्चाङ्ग देखें":"पञ्चाङ्ग दिक्खो"
+    },
+    sd:{
+      "पञ्चाङ्ग-भाषा":"पञ्चाङ्ग जी भाषा",
+      "देश / क्षेत्र":"देश / इलाइको",
+      "देश / क्षेत्र चुनें":"देश / इलाइको चुनो"
+    },
+    brx:{
+      "पञ्चाङ्ग-भाषा":"पञ्चाङ्ग राव",
+      "विदेश":"गुबुन हादोर",
+      "देश / क्षेत्र":"हादोर / ओनसोल"
+    }
+  };
+  for(const [lang,map] of Object.entries(repoUI)){
+    PANCHANGA_UI_TRANSLATIONS[lang]=Object.assign({},PANCHANGA_UI_TRANSLATIONS[lang]||{},map);
+  }
+})();
+
 const PANCHANGA_DEVANAGARI_LANGUAGE_LEXICON = {
   sa:{
     "रौद्र संवत्सर":"रौद्रः संवत्सरः",
@@ -4818,6 +4885,21 @@ Object.assign(PANCHANGA_DEVANAGARI_LANGUAGE_LEXICON.mai,{
   "आज":"आइ","अगला":"अगिला","के लिए":"लेल",
   "प्रदर्शित है।":"प्रदर्शित अछि।","उपलब्ध नहीं है।":"उपलब्ध नहि अछि।"
 });
+
+
+/* v9 final repository-backed generic UI verbs/labels. */
+Object.assign(PANCHANGA_DEVANAGARI_LANGUAGE_LEXICON.mai||{}, {
+  "देखें":"देखी","चुनें":"चुनी","स्थान":"ठाम","अन्य भाषाएँ":"अन्य भाषासभमे"
+});
+Object.assign(PANCHANGA_DEVANAGARI_LANGUAGE_LEXICON.mr||{}, {
+  "देखें":"दाखवा","पढ़ें":"वाचा","अन्य भाषाएँ":"इतर भाषांत"
+});
+Object.assign(PANCHANGA_DEVANAGARI_LANGUAGE_LEXICON.kok||{}, {
+  "देखें":"पळयात","पढ़ें":"वाचचें","स्थान":"थळ","अन्य भाषाएँ":"हेर भासांनी"
+});
+Object.assign(PANCHANGA_DEVANAGARI_LANGUAGE_LEXICON.ks||{}, {"देखें":"वुछिव"});
+Object.assign(PANCHANGA_DEVANAGARI_LANGUAGE_LEXICON.doi||{}, {"भाषा":"भाशा","क्षेत्र":"खेत्तर","देखें":"दिक्खो","चुनें":"चुनो"});
+Object.assign(PANCHANGA_DEVANAGARI_LANGUAGE_LEXICON.sd||{}, {"क्षेत्र":"इलाइको","भाषा":"भाषा"});
 
 function panchangaApplyDevanagariLexicon(text){
   const lex=PANCHANGA_DEVANAGARI_LANGUAGE_LEXICON[currentPanchangaLanguage];
@@ -8998,90 +9080,199 @@ function monthMatches(raw,names){
 }
 
 
-const PURNIMANTA_MONTH_FROM_KRISHNA_START_SOLAR_SIGN = [
-  "वैशाख",      // मेष
-  "ज्येष्ठ",    // वृष
-  "आषाढ",       // मिथुन
-  "श्रावण",     // कर्क
-  "भाद्रपद",    // सिंह
-  "आश्विन",     // कन्या
-  "कार्तिक",    // तुला
-  "मार्गशीर्ष", // वृश्चिक
-  "पौष",        // धनु
-  "माघ",        // मकर
-  "फाल्गुन",    // कुम्भ
-  "चैत्र"       // मीन
-];
 
+/* =========================================================
+   v9 पूर्णिमान्त मास-गणना
+   कारण: WORD_952/954 (28-column) Excel के raw मास-स्तम्भ में 2026 में
+   एक-मास खिसकाव पाया गया; केवल raw नाम या पुरानी solar-sign mapping
+   पर निर्भर रहना सुरक्षित नहीं है।
+
+   गणना:
+   1. सूर्य-चन्द्र दीर्घांश से अमावास्या-सीमाएँ (तिथि 30 का अन्त) लें।
+   2. दो अमावास्याओं के बीच सूर्य की संक्रान्ति गिनें।
+      - 1 संक्रान्ति: सामान्य अमान्त मास; प्रविष्ट राशि से मास-नाम।
+      - 0 संक्रान्ति: अधिकमास; अगली सामान्य संक्रान्ति वाले मास का नाम + " अधिक"।
+   3. औदयिक तिथि से पूर्णिमान्त नाम बनाएँ:
+      - शुक्लपक्ष: वर्तमान अमान्त मास।
+      - कृष्णपक्ष: सामान्यतः अगला अमान्त मास; पर अधिकमास के कृष्णपक्ष में
+        वर्तमान "अधिक" नाम ही बना रहता है।
+========================================================= */
 const PURNIMANTA_MONTH_SEQUENCE = [
   "चैत्र","वैशाख","ज्येष्ठ","आषाढ","श्रावण","भाद्रपद",
   "आश्विन","कार्तिक","मार्गशीर्ष","पौष","माघ","फाल्गुन"
 ];
+
+// जिस सौरराशि में संक्रान्ति हुई, उससे अमान्त मास का सामान्य नाम।
+// मेष→चैत्र, वृष→वैशाख ... मीन→फाल्गुन।
+const AMANTA_MONTH_FROM_ENTERED_SOLAR_SIGN = [
+  "चैत्र","वैशाख","ज्येष्ठ","आषाढ","श्रावण","भाद्रपद",
+  "आश्विन","कार्तिक","मार्गशीर्ष","पौष","माघ","फाल्गुन"
+];
+
+let PURNIMANTA_MONTH_MODEL_CACHE = null;
 
 function rowTithiNumberForMonth(index){
   const n = Number(workbookData?.[index]?.[3]);
   return Number.isFinite(n) ? n : NaN;
 }
 
-function isKrishnaPakshaBoundaryRow(index){
-  if(!workbookData || index<=1 || index>=workbookData.length) return false;
-  const curr = rowTithiNumberForMonth(index);
-  const prev = rowTithiNumberForMonth(index-1);
-
-  /*
-    पूर्णिमा के बाद प्रथम उपलब्ध औदयिक कृष्णतिथि।
-    तिथिक्षय होने पर १६ का अंक अनिवार्य नहीं; इसलिए
-    prev <= 15 और curr >= 16 ही सीमा की पहचान है।
-  */
-  return Number.isFinite(curr) && Number.isFinite(prev) &&
-         prev>=1 && prev<=15 && curr>=16 && curr<=30;
-}
-
-function purnimantaMonthFromBoundaryRow(boundaryIndex){
-  const sun = odayikaParseRashiSpashta(workbookData?.[boundaryIndex]?.[12]);
-  if(!sun || !Number.isFinite(sun.longitude)) return "";
-  const rashi0 = Math.floor(odayikaNormalize360(sun.longitude)/30);
-  return PURNIMANTA_MONTH_FROM_KRISHNA_START_SOLAR_SIGN[rashi0] || "";
+function nextPurnimantaMonth(name){
+  const base=String(name||"").replace(/\s+अधिक\s*$/,'').trim();
+  const i=PURNIMANTA_MONTH_SEQUENCE.indexOf(base);
+  return i<0 ? "" : PURNIMANTA_MONTH_SEQUENCE[(i+1)%12];
 }
 
 function previousPurnimantaMonth(name){
-  const i = PURNIMANTA_MONTH_SEQUENCE.indexOf(name);
-  if(i<0) return "";
-  return PURNIMANTA_MONTH_SEQUENCE[(i+11)%12];
+  const base=String(name||"").replace(/\s+अधिक\s*$/,'').trim();
+  const i=PURNIMANTA_MONTH_SEQUENCE.indexOf(base);
+  return i<0 ? "" : PURNIMANTA_MONTH_SEQUENCE[(i+11)%12];
+}
+
+function purnimantaBuildSunUnwrappedSamples(){
+  const astro=festivalAstroIndex();
+  const out=[];
+  let last=null;
+  for(const s of astro.samples){
+    let u=Number(s.sun);
+    if(!Number.isFinite(u)) continue;
+    if(last!==null){
+      while(u < last-180) u+=360;
+      while(u > last+180) u-=360;
+      if(u<last) u+=360; // सूर्य की वार्षिक गति यहाँ क्रमशः बढ़ती है।
+    }
+    out.push({t:s.t,u,i:s.i});
+    last=u;
+  }
+  return out;
+}
+
+function purnimantaSunUAt(t,sunSamples){
+  if(!sunSamples?.length || !Number.isFinite(t)) return NaN;
+  if(t<=sunSamples[0].t) return sunSamples[0].u;
+  const last=sunSamples[sunSamples.length-1];
+  if(t>=last.t) return last.u;
+  let lo=0,hi=sunSamples.length-1;
+  while(hi-lo>1){
+    const mid=(lo+hi)>>1;
+    if(sunSamples[mid].t<=t) lo=mid; else hi=mid;
+  }
+  const a=sunSamples[lo],b=sunSamples[hi];
+  const f=(t-a.t)/(b.t-a.t);
+  return a.u+f*(b.u-a.u);
+}
+
+function purnimantaSolarIngressesBetween(start,end,sunSamples){
+  if(!(end>start)) return [];
+  const a=purnimantaSunUAt(start+0.001,sunSamples);
+  const b=purnimantaSunUAt(end-0.001,sunSamples);
+  if(!Number.isFinite(a)||!Number.isFinite(b)||b<a) return [];
+  const out=[];
+  for(let k=Math.floor(a/30)+1;k<=Math.floor(b/30);k++){
+    const sign=((k%12)+12)%12;
+    out.push({k,sign,name:AMANTA_MONTH_FROM_ENTERED_SOLAR_SIGN[sign]});
+  }
+  return out;
+}
+
+function purnimantaMonthModel(){
+  if(PURNIMANTA_MONTH_MODEL_CACHE &&
+     PURNIMANTA_MONTH_MODEL_CACHE.workbook===workbookData &&
+     PURNIMANTA_MONTH_MODEL_CACHE.place===currentPlaceKey){
+    return PURNIMANTA_MONTH_MODEL_CACHE;
+  }
+  const astro=festivalAstroIndex();
+  const sunSamples=purnimantaBuildSunUnwrappedSamples();
+  if(!astro.samples.length || !sunSamples.length){
+    return (PURNIMANTA_MONTH_MODEL_CACHE={workbook:workbookData,place:currentPlaceKey,cycles:[],samples:astro.samples||[]});
+  }
+
+  const firstT=astro.samples[0].t;
+  const lastT=astro.samples[astro.samples.length-1].t;
+  const newMoons=astro.tithi
+    .filter(iv=>iv.number===30 && iv.end>firstT+0.001 && iv.end<lastT-0.001)
+    .map(iv=>iv.end)
+    .filter((x,i,a)=>i===0 || Math.abs(x-a[i-1])>0.01);
+
+  const edges=[firstT,...newMoons,lastT+0.001];
+  const cycles=[];
+  for(let i=0;i<edges.length-1;i++){
+    const start=edges[i],end=edges[i+1];
+    const ingresses=purnimantaSolarIngressesBetween(start,end,sunSamples);
+    cycles.push({start,end,ingresses,base:"",adhika:false,label:"",incomplete:(i===0||i===edges.length-2)});
+  }
+
+  // सामान्य चक्र पहले भरें। दो संक्रान्ति दुर्लभ क्षयमास-स्थिति है;
+  // वर्तमान 2026 dataset में यह अपेक्षित नहीं, फिर भी अन्तिम प्रविष्ट राशि को आधार बनाते हैं।
+  for(const c of cycles){
+    if(c.ingresses.length>=1){
+      c.base=c.ingresses[c.ingresses.length-1].name||"";
+      c.label=c.base;
+    }
+  }
+
+  // संक्रान्तिरहित पूर्ण चन्द्रमास = अधिकमास; अगली सामान्य संक्रान्ति वाला मास नाम ग्रहण करता है।
+  for(let i=0;i<cycles.length;i++){
+    const c=cycles[i];
+    if(c.ingresses.length!==0) continue;
+    let nextBase="";
+    for(let j=i+1;j<cycles.length;j++){
+      if(cycles[j].base){nextBase=cycles[j].base;break;}
+    }
+    if(!nextBase && i>0 && cycles[i-1].base) nextBase=nextPurnimantaMonth(cycles[i-1].base);
+    if(nextBase){
+      c.base=nextBase;
+      // Dataset-edge का अपूर्ण खण्ड 0-संक्रान्ति होने पर अधिकमास घोषित न करें।
+      c.adhika=!c.incomplete;
+      c.label=c.adhika ? `${c.base} अधिक` : c.base;
+    }
+  }
+
+  // यदि edge-cycle अभी भी अनिर्णीत हो तो पड़ोसी सामान्य क्रम से भरें।
+  for(let i=0;i<cycles.length;i++){
+    if(cycles[i].base) continue;
+    if(i>0 && cycles[i-1].base){
+      cycles[i].base=nextPurnimantaMonth(cycles[i-1].base);
+      cycles[i].label=cycles[i].base;
+    }
+  }
+  for(let i=cycles.length-1;i>=0;i--){
+    if(cycles[i].base) continue;
+    if(i+1<cycles.length && cycles[i+1].base){
+      cycles[i].base=previousPurnimantaMonth(cycles[i+1].base);
+      cycles[i].label=cycles[i].base;
+    }
+  }
+
+  PURNIMANTA_MONTH_MODEL_CACHE={workbook:workbookData,place:currentPlaceKey,cycles,samples:astro.samples,sunSamples};
+  return PURNIMANTA_MONTH_MODEL_CACHE;
 }
 
 function computedPurnimantaMonthForRowIndex(rowIndex){
   if(!workbookData || !Number.isInteger(rowIndex) || rowIndex<1) return "";
+  const model=purnimantaMonthModel();
+  const sample=model.samples.find(s=>s.i===rowIndex);
+  if(!sample) return "";
+  let ci=model.cycles.findIndex((c,i)=>sample.t>=c.start-0.001 && (sample.t<c.end-0.001 || i===model.cycles.length-1));
+  if(ci<0) return "";
+  const current=model.cycles[ci];
+  const tithi=rowTithiNumberForMonth(rowIndex);
+  if(!Number.isFinite(tithi)) return current.label||current.base||"";
 
-  // सामान्यतः एक मास-सीमा 30 दिनों के भीतर मिल जाएगी; 45 दिन safety margin है।
-  const backLimit = Math.max(2,rowIndex-45);
-  for(let i=rowIndex;i>=backLimit;i--){
-    if(isKrishnaPakshaBoundaryRow(i)){
-      const m = purnimantaMonthFromBoundaryRow(i);
-      if(m) return m;
-    }
-  }
+  // शुक्लपक्ष = वर्तमान अमान्त चक्र।
+  if(tithi>=1 && tithi<=15) return current.label||current.base||"";
 
-  /*
-    वर्षारम्भ जैसे edge case में यदि पिछली सीमा workbook में नहीं है,
-    अगली कृष्णपक्ष-सीमा से वर्तमान मास एक मास पीछे लिया जाता है।
-  */
-  const fwdLimit = Math.min(workbookData.length-1,rowIndex+45);
-  for(let i=rowIndex+1;i<=fwdLimit;i++){
-    if(isKrishnaPakshaBoundaryRow(i)){
-      const nextMonth = purnimantaMonthFromBoundaryRow(i);
-      const currentMonth = previousPurnimantaMonth(nextMonth);
-      if(currentMonth) return currentMonth;
-    }
-  }
+  // अधिकमास की पूर्णिमा के बाद का कृष्णपक्ष भी उसी अधिकमास में रहता है।
+  if(current.adhika) return current.label||`${current.base} अधिक`;
 
-  // raw Excel मास-स्तम्भ row[1] पर fallback नहीं किया जाता।
-  // सीमा उपलब्ध न हो तो गलत मास दिखाने की अपेक्षा अनिर्णीत लौटाना सुरक्षित है।
-  return "";
+  // सामान्य कृष्णपक्ष = अगले अमान्त मास का मूल नाम। अगला चक्र अधिक हो तो
+  // अधिक शब्द अभी नहीं जोड़ा जाता; वह अमावास्या के बाद शुक्लपक्ष से लगेगा।
+  const next=model.cycles[ci+1];
+  if(next?.base) return next.base;
+  return nextPurnimantaMonth(current.base)||current.base||"";
 }
 
 function computedPurnimantaMonthForGB(gb){
-  const hit = workbookRowByGBDate(gb);
+  const hit=workbookRowByGBDate(gb);
   return hit ? computedPurnimantaMonthForRowIndex(hit.index) : "";
 }
 
@@ -11248,6 +11439,7 @@ async function loadSelectedFile(){
     workbookData = prepareWorkbookData(wb);
 
     FESTIVAL_ASTRO_CACHE = null;
+    PURNIMANTA_MONTH_MODEL_CACHE = null;
     FESTIVAL_DECISION_CACHE = null;
     WORKBOOK_DATE_INDEX = null;
     ANNUAL_DECISION_CACHE = null;
