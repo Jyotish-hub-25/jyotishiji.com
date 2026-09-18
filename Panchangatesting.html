@@ -13,6 +13,7 @@
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@indic-transliteration/sanscript@1.3.3/sanscript.js"></script>
 <style>
@@ -3170,6 +3171,24 @@ html[lang="en"] .panchanga-column{
     padding-left:4px !important;
     padding-right:4px !important;
   }
+}
+</style>
+
+
+<style id="sanskrit-visarga-font-fix-20260918">
+/* Sanskrit text: Noto Serif Devanagari में विसर्ग (ः) के ऊपर दिखने वाले
+   अनचाहे stroke से बचने के लिए मुख्य content में Sans Devanagari glyphs।
+   header का मौजूदा रूप जानबूझकर यथावत् रखा गया है। */
+html[lang="sa"] .page-shell,
+html[lang="sa"] .panchanga-selector,
+html[lang="sa"] .panchanga-card,
+html[lang="sa"] .article-card,
+html[lang="sa"] .festival-decision-box,
+html[lang="sa"] .festival-audit-box,
+html[lang="sa"] .odayika-box,
+html[lang="sa"] .sandhya-full-box,
+html[lang="sa"] .muhurta-box{
+  font-family:"Noto Sans Devanagari","Nirmala UI","Mangal",sans-serif !important;
 }
 </style>
 
