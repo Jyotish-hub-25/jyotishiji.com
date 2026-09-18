@@ -2756,6 +2756,194 @@ html[lang="en"] .panchanga-column{
 }
 </style>
 
+
+<style id="selector-layout-fix-v3-20260918">
+/* =========================================================
+   2026-09-18 v3 — selector alignment + fixed preference row
+   गणना/पञ्चाङ्ग-data में कोई परिवर्तन नहीं।
+========================================================= */
+
+/* भाषा-स्मृति पंक्ति bilingual स्थिर UI है; किसी लिपि में बदलनी नहीं है। */
+.panchanga-language-preferences{
+  min-width:0;
+  overflow:hidden;
+}
+.remember-language-choice{
+  flex:1 1 auto;
+  min-width:0;
+  font-size:.91rem !important;
+  line-height:1.46 !important;
+}
+.remember-language-choice span{
+  display:block;
+  min-width:0;
+  overflow-wrap:normal;
+  word-break:normal;
+}
+.return-hindi-button{
+  width:auto !important;           /* पुराने mobile width:100% override को रोकता है */
+  max-width:118px !important;
+  flex:0 0 auto !important;
+  font-size:.82rem !important;
+  line-height:1.25 !important;
+  padding:5px 10px !important;
+}
+
+/* Desktop/tablet: स्थान + दिनाङ्क + पञ्चाङ्ग देखें एक ही पंक्ति में */
+@media (min-width:601px){
+  .panchanga-selector-grid.india-mode,
+  .panchanga-selector-grid.foreign-mode{
+    grid-template-columns:minmax(0,1.08fr) minmax(0,1fr) minmax(0,.88fr) !important;
+    gap:7px !important;
+    align-items:end !important;
+  }
+  .panchanga-selector-grid #countryField{
+    grid-column:1 / -1 !important;
+  }
+  .panchanga-selector-grid .panchanga-selector-field{
+    min-width:0 !important;
+  }
+  .panchanga-selector-grid.india-mode #selectorButton,
+  .panchanga-selector-grid.foreign-mode #selectorButton{
+    grid-column:3 !important;
+    width:100% !important;
+    min-width:0 !important;
+    align-self:end !important;
+  }
+  .panchanga-selector-grid #fileLink,
+  .panchanga-selector-grid #datePicker,
+  .panchanga-selector-grid #selectorButton{
+    width:100% !important;
+    min-width:0 !important;
+    min-height:42px !important;
+    height:42px !important;
+    padding:5px 7px !important;
+    font-size:.96rem !important;
+    line-height:1.22 !important;
+  }
+  .panchanga-selector-grid #selectorButton{
+    white-space:normal !important;
+    overflow-wrap:normal;
+    word-break:normal;
+  }
+  .panchanga-selector-field label{
+    font-size:.91rem !important;
+    line-height:1.3 !important;
+    white-space:nowrap;
+  }
+}
+
+/* Mobile header: चित्र/ऊँचाई वही; अक्षर अधिक अनुपाती, पर viewport से बाहर नहीं। */
+@media (max-width:700px){
+  .site-header h1{
+    font-size:clamp(2.04rem,8.7vw,2.34rem) !important;
+    line-height:1.24 !important;
+    margin-left:auto !important;
+    margin-right:auto !important;
+    max-width:100% !important;
+    white-space:nowrap;
+  }
+  .site-nav{
+    gap:5px 11px !important;
+    max-width:100% !important;
+  }
+  .site-nav a{
+    font-size:clamp(1.08rem,4.65vw,1.18rem) !important;
+    line-height:1.42 !important;
+    white-space:nowrap;
+  }
+
+  /* स्मृति-वाक्य को Hindi button द्वारा संकुचित/ढका न जाने दें। */
+  .panchanga-language-preferences{
+    display:flex !important;
+    align-items:center !important;
+    gap:7px !important;
+    padding:7px 8px !important;
+  }
+  .remember-language-choice{
+    font-size:.92rem !important;
+    line-height:1.48 !important;
+  }
+  .remember-language-choice input{
+    width:18px !important;
+    height:18px !important;
+  }
+  .return-hindi-button{
+    width:auto !important;
+    max-width:105px !important;
+    min-height:34px !important;
+    font-size:.82rem !important;
+    padding:4px 8px !important;
+  }
+
+  /* तीनों controls एक row में; text बढ़े पर card से बाहर न निकले। */
+  .panchanga-selector-grid.india-mode,
+  .panchanga-selector-grid.foreign-mode{
+    grid-template-columns:minmax(0,.96fr) minmax(0,1.04fr) minmax(0,.92fr) !important;
+    gap:5px !important;
+    align-items:end !important;
+  }
+  .panchanga-selector-grid #countryField{grid-column:1 / -1 !important}
+  .panchanga-selector-grid .panchanga-selector-field{min-width:0 !important}
+  .panchanga-selector-grid .panchanga-selector-field label{
+    font-size:.82rem !important;
+    line-height:1.25 !important;
+    white-space:nowrap;
+  }
+  .panchanga-selector-grid #fileLink,
+  .panchanga-selector-grid #datePicker,
+  .panchanga-selector-grid #selectorButton{
+    width:100% !important;
+    min-width:0 !important;
+    min-height:43px !important;
+    height:43px !important;
+    padding:4px 5px !important;
+    font-size:clamp(.82rem,3.35vw,.94rem) !important;
+    line-height:1.16 !important;
+  }
+  .panchanga-selector-grid #selectorButton{
+    grid-column:3 !important;
+    white-space:normal !important;
+    overflow-wrap:normal !important;
+    word-break:normal !important;
+  }
+}
+
+@media (max-width:390px){
+  .site-header h1{
+    font-size:clamp(1.92rem,8.45vw,2.08rem) !important;
+  }
+  .site-nav{gap:4px 9px !important}
+  .site-nav a{
+    font-size:clamp(1.01rem,4.35vw,1.10rem) !important;
+  }
+  .panchanga-language-preferences{
+    align-items:flex-start !important;
+  }
+  .remember-language-choice{
+    font-size:.86rem !important;
+    line-height:1.45 !important;
+  }
+  .return-hindi-button{
+    max-width:92px !important;
+    font-size:.76rem !important;
+    padding:4px 6px !important;
+  }
+  .panchanga-selector-grid.india-mode,
+  .panchanga-selector-grid.foreign-mode{
+    grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr) minmax(0,.92fr) !important;
+    gap:4px !important;
+  }
+  .panchanga-selector-grid #fileLink,
+  .panchanga-selector-grid #datePicker,
+  .panchanga-selector-grid #selectorButton{
+    font-size:clamp(.76rem,3.25vw,.88rem) !important;
+    padding-left:4px !important;
+    padding-right:4px !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <header class="site-header">
@@ -2775,7 +2963,7 @@ html[lang="en"] .panchanga-column{
   <p class="panchanga-selector-title">भाषा, स्थान एवं दिनाङ्कानुसार पञ्चाङ्ग</p>
 
   <div class="panchanga-language-bar">
-    <label class="panchanga-language-fixed" for="panchangaLanguage">भाषा / Language</label>
+    <label class="panchanga-language-fixed" for="panchangaLanguage" translate="no">भाषा / Language</label>
     <select id="panchangaLanguage" aria-label="भाषा / Language">
       <optgroup label="प्रमुख / Primary">
         <option value="hi">हिन्दी — Hindi</option>
@@ -2811,7 +2999,7 @@ html[lang="en"] .panchanga-column{
     </div>
   </div>
 
-  <div class="panchanga-language-preferences panchanga-language-fixed">
+  <div class="panchanga-language-preferences panchanga-language-fixed" translate="no">
     <label class="remember-language-choice">
       <input id="rememberPanchangaLanguage" type="checkbox"/>
       <span>इस भाषा को अगली बार भी खोलें / Remember this language</span>
