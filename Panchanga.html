@@ -9,7 +9,7 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta content="श्रीसूर्यसिद्धान्तीय स्थानीय दैनिक पञ्चाङ्ग तथा भारतीय काल गणना के आधार।" name="description"/>
 <title>श्रीसूर्यसिद्धान्तीय स्थानीय पञ्चाङ्ग एवं भारतीय काल गणना</title>
-<meta name="panchanga-build" content="odayika-v23-added-10-places"/>
+<meta name="panchanga-build" content="odayika-v23-maas-dualverify-20260918"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
@@ -6304,11 +6304,13 @@ function renderOdayikaGrahaBox(rowIndex,row,selectedDate){
   const weekday =
     DAY_MAP[row[2]] || row[2] || "";
 
-  const calculatedMaas = computedPurnimantaMonthForRowIndex(rowIndex);
-  const maasForDateLine = calculatedMaas || "मास-अनिर्णीत";
+  const verifiedMaas = verifiedPurnimantaMonthForRowIndex(rowIndex,"odayika-date-line");
+  const maasPakshaForDateLine = verifiedMaas
+    ? `${verifiedMaas}${paksha}`
+    : `मास-अनिर्णीत${paksha ? ` · ${paksha}` : ""}`;
 
   const dateLine =
-    `${maasForDateLine}${paksha} ${tithiName} ${weekday}` +
+    `${maasPakshaForDateLine} ${tithiName} ${weekday}` +
     ` · आंग्लदात् ${odayikaAnglaDate(selectedDate)}`;
 
   setText("odayikaDateLine",dateLine);
@@ -6835,6 +6837,180 @@ function computedPurnimantaMonthForRowIndex(rowIndex){
   return "";
 }
 
+/* =========================================================
+   मास का द्वि-सत्यापन (Excel B बनाम स्वतंत्र गणना)
+   ---------------------------------------------------------
+   1) Excel का B-column = workbookData[row][1]
+   2) स्वतंत्र गणना = computedPurnimantaMonthForRowIndex(rowIndex)
+   3) दोनों समान हों तभी मास प्रकाशित किया जाता है।
+   4) असमानता पर सार्वजनिक पृष्ठ पर गलत मास न दिखाकर "मास-अनिर्णीत"
+      रखा जाता है और admin diagnostic दर्ज होता है।
+   5) ?admin=1 एक बार खोलने पर इसी browser में admin diagnostic panel
+      सक्रिय रहता है; ?admin=0 से बन्द किया जा सकता है।
+========================================================= */
+const MAAS_ADMIN_STORAGE_KEY = "jyotishiji.maasAdminMode";
+let MAAS_VERIFICATION_CACHE = new Map();
+let MAAS_VERIFICATION_STATE = null;
+const MAAS_MISMATCH_NOTIFIED = new Set();
+
+function maasAdminModeEnabled(){
+  let requested = "";
+  try{
+    requested = new URLSearchParams(window.location.search).get("admin") || "";
+    if(requested === "1") localStorage.setItem(MAAS_ADMIN_STORAGE_KEY,"1");
+    if(requested === "0") localStorage.removeItem(MAAS_ADMIN_STORAGE_KEY);
+    return requested === "1" || localStorage.getItem(MAAS_ADMIN_STORAGE_KEY) === "1";
+  }catch(_){
+    return requested === "1";
+  }
+}
+
+function normalizeMaasForVerification(raw){
+  return String(raw ?? "")
+    .normalize("NFC")
+    .replace(/[\u200B-\u200D\uFEFF]/g,"")
+    .replace(/\s+/g,"")
+    .trim();
+}
+
+function maasVerificationAtRow(rowIndex){
+  if(!workbookData || !Number.isInteger(rowIndex) || rowIndex < 1){
+    return {ok:false,excel:"",calculated:"",date:"",reason:"invalid-row"};
+  }
+
+  if(MAAS_VERIFICATION_CACHE.has(rowIndex)){
+    return MAAS_VERIFICATION_CACHE.get(rowIndex);
+  }
+
+  const row = workbookData[rowIndex] || [];
+  const excel = String(row[1] ?? "").trim();
+  const calculated = String(computedPurnimantaMonthForRowIndex(rowIndex) || "").trim();
+  const excelKey = normalizeMaasForVerification(excel);
+  const calculatedKey = normalizeMaasForVerification(calculated);
+  const date = normalizeDate(row[0]) || String(row[0] ?? "");
+
+  const ok = !!excelKey && !!calculatedKey && excelKey === calculatedKey;
+  const result = {
+    ok,
+    excel,
+    calculated,
+    date,
+    rowIndex,
+    reason: ok ? "match" : (!excelKey ? "excel-empty" : (!calculatedKey ? "calculation-empty" : "mismatch"))
+  };
+
+  MAAS_VERIFICATION_CACHE.set(rowIndex,result);
+  return result;
+}
+
+function ensureMaasAdminWarningBox(){
+  let box = document.getElementById("maasAdminWarning");
+  if(box) return box;
+
+  const selectorWarning = document.getElementById("selectorWarning");
+  if(!selectorWarning) return null;
+
+  box = document.createElement("div");
+  box.id = "maasAdminWarning";
+  box.className = "panchanga-selector-warning";
+  box.hidden = true;
+  box.style.color = "#8b0000";
+  box.style.background = "#fff0f0";
+  box.style.borderColor = "#d7a3a3";
+  box.style.fontWeight = "600";
+  selectorWarning.insertAdjacentElement("afterend",box);
+  return box;
+}
+
+function renderMaasAdminWarning(){
+  const box = ensureMaasAdminWarningBox();
+  if(!box) return;
+
+  if(!maasAdminModeEnabled() || !MAAS_VERIFICATION_STATE || !MAAS_VERIFICATION_STATE.mismatches.length){
+    box.hidden = true;
+    box.textContent = "";
+    return;
+  }
+
+  const state = MAAS_VERIFICATION_STATE;
+  const preview = state.mismatches.slice(0,8).map(x =>
+    `${x.date}: B=${x.excel || "∅"}, गणना=${x.calculated || "∅"}`
+  ).join(" | ");
+  const more = state.mismatches.length > 8 ? ` | +${state.mismatches.length-8} अन्य` : "";
+
+  box.textContent =
+    `ADMIN — मास-सत्यापन असमानता: ${state.placeName || state.placeKey || "स्थान"} में ` +
+    `${state.mismatches.length} row असमान। ${preview}${more}`;
+  box.hidden = false;
+}
+
+function notifyMaasMismatch(result,context="display"){
+  if(!result || result.ok) return;
+  const key = `${currentPlaceKey}|${result.rowIndex}|${context}`;
+  if(MAAS_MISMATCH_NOTIFIED.has(key)) return;
+  MAAS_MISMATCH_NOTIFIED.add(key);
+
+  console.error("[मास-सत्यापन असमानता]",{
+    place: currentPlaceKey,
+    date: result.date,
+    excelB: result.excel,
+    calculated: result.calculated,
+    reason: result.reason,
+    context
+  });
+  renderMaasAdminWarning();
+}
+
+function verifiedPurnimantaMonthForRowIndex(rowIndex,context="display"){
+  const result = maasVerificationAtRow(rowIndex);
+  if(result.ok) return result.excel;
+  notifyMaasMismatch(result,context);
+  return "";
+}
+
+function runMaasWorkbookAudit(){
+  MAAS_VERIFICATION_CACHE = new Map();
+  MAAS_MISMATCH_NOTIFIED.clear();
+
+  const mismatches = [];
+  let checked = 0;
+
+  for(let i=1;i<(workbookData || []).length;i++){
+    const row = workbookData[i] || [];
+    if(!normalizeDate(row[0])) continue;
+    checked++;
+    const result = maasVerificationAtRow(i);
+    if(!result.ok) mismatches.push(result);
+  }
+
+  const meta = placeMeta();
+  MAAS_VERIFICATION_STATE = {
+    placeKey: currentPlaceKey,
+    placeName: meta?.name || currentPlaceName || "",
+    checked,
+    mismatches
+  };
+
+  // Browser console में सम्पूर्ण audit admin diagnostic के रूप में उपलब्ध रहे।
+  window.__PANCHANGA_MAAS_VERIFICATION__ = MAAS_VERIFICATION_STATE;
+
+  if(mismatches.length){
+    console.error(
+      `[मास-सत्यापन] ${MAAS_VERIFICATION_STATE.placeName || currentPlaceKey}: ` +
+      `${mismatches.length}/${checked} rows में Excel B और स्वतंत्र गणना असमान हैं।`,
+      mismatches
+    );
+  }else{
+    console.info(
+      `[मास-सत्यापन] ${MAAS_VERIFICATION_STATE.placeName || currentPlaceKey}: ` +
+      `${checked}/${checked} rows सत्यापित।`
+    );
+  }
+
+  renderMaasAdminWarning();
+  return MAAS_VERIFICATION_STATE;
+}
+
 function computedPurnimantaMonthForGB(gb){
   const hit = workbookRowByGBDate(gb);
   return hit ? computedPurnimantaMonthForRowIndex(hit.index) : "";
@@ -7001,7 +7177,7 @@ function intervalMonthMatch(iv,monthNames){
 
   if(inside.length){
     return inside.some(s=>
-      monthMatches(computedPurnimantaMonthForRowIndex(s.i),monthNames)
+      monthMatches(verifiedPurnimantaMonthForRowIndex(s.i,"festival"),monthNames)
     );
   }
 
@@ -7013,7 +7189,7 @@ function intervalMonthMatch(iv,monthNames){
   }
 
   return !!nearest &&
-    monthMatches(computedPurnimantaMonthForRowIndex(nearest.i),monthNames);
+    monthMatches(verifiedPurnimantaMonthForRowIndex(nearest.i,"festival"),monthNames);
 }
 
 function intervalYearMatch(iv,year){
@@ -8971,6 +9147,10 @@ async function loadSelectedFile(){
     ANNUAL_DECISION_CACHE = null;
     ANNUAL_DECISION_RUNNING = false;
     ANNUAL_DECISION_JOB_TOKEN++;
+
+    // Excel B और स्वतंत्र मास-गणना का पूरे workbook पर तत्काल द्वि-सत्यापन।
+    runMaasWorkbookAudit();
+
     const auditTrigger=document.getElementById("festivalAuditTriggerWrap");
     if(auditTrigger) auditTrigger.hidden=true;
     const auditBox=document.getElementById("festivalAuditBox");
@@ -9026,8 +9206,11 @@ function showSelectedDate(){
       ? (tithiNumber <= 15 ? "शुक्लपक्ष" : "कृष्णपक्ष")
       : "";
 
-  const calculatedMaas = computedPurnimantaMonthForRowIndex(rowIndex);
-  setText("maasPaksha",(calculatedMaas || "मास-अनिर्णीत") + paksha);
+  const verifiedMaas = verifiedPurnimantaMonthForRowIndex(rowIndex,"main-display");
+  setText(
+    "maasPaksha",
+    verifiedMaas ? (verifiedMaas + paksha) : (`मास-अनिर्णीत${paksha ? ` · ${paksha}` : ""}`)
+  );
 
   /* वार */
   setText("vaar",DAY_MAP[row[2]] || row[2] || "");
