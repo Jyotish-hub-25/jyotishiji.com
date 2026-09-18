@@ -2944,6 +2944,235 @@ html[lang="en"] .panchanga-column{
 }
 </style>
 
+
+<style id="selector-balanced-v4-20260918">
+/* =========================================================
+   v4 — balanced selector, no horizontal escape
+   भाषा-label को select के ऊपर रखकर horizontal space बचायी गयी है।
+========================================================= */
+.panchanga-selector,
+.panchanga-selector *{box-sizing:border-box}
+.panchanga-selector{overflow:hidden}
+
+/* भाषा: पहली column में label ऊपर, select नीचे; भारत/विदेश दाहिनी compact column */
+.panchanga-language-bar{
+  width:100% !important;
+  max-width:100% !important;
+  min-width:0 !important;
+  display:grid !important;
+  grid-template-columns:minmax(0,1fr) minmax(148px,34%) !important;
+  grid-template-rows:auto auto !important;
+  column-gap:9px !important;
+  row-gap:3px !important;
+  align-items:end !important;
+}
+.panchanga-language-bar > label{
+  grid-column:1 !important;
+  grid-row:1 !important;
+  min-width:0 !important;
+  margin:0 !important;
+  font-size:.88rem !important;
+  line-height:1.22 !important;
+  white-space:normal !important;
+}
+.panchanga-language-bar > #panchangaLanguage{
+  grid-column:1 !important;
+  grid-row:2 !important;
+  width:100% !important;
+  max-width:100% !important;
+  min-width:0 !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis;
+}
+.panchanga-language-mode-inline{
+  grid-column:2 !important;
+  grid-row:1 / 3 !important;
+  width:100% !important;
+  max-width:100% !important;
+  min-width:0 !important;
+  display:grid !important;
+  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  gap:5px !important;
+  align-self:stretch !important;
+}
+.panchanga-language-mode-inline .panchanga-mode-button{
+  width:100% !important;
+  min-width:0 !important;
+  max-width:100% !important;
+  min-height:42px !important;
+  padding:4px 5px !important;
+  font-size:clamp(.78rem,1.55vw,.91rem) !important;
+  line-height:1.18 !important;
+  white-space:normal !important;
+  overflow:hidden !important;
+  overflow-wrap:anywhere !important;
+  word-break:normal !important;
+}
+
+/* स्मृति-पंक्ति: किसी भाषा के कारण width collapse नहीं होगी */
+.panchanga-language-preferences{
+  width:100% !important;
+  max-width:100% !important;
+  min-width:0 !important;
+  display:grid !important;
+  grid-template-columns:minmax(0,1fr) auto !important;
+  align-items:center !important;
+  gap:7px !important;
+  overflow:hidden !important;
+}
+.remember-language-choice{
+  width:100% !important;
+  max-width:100% !important;
+  min-width:0 !important;
+  display:grid !important;
+  grid-template-columns:20px minmax(0,1fr) !important;
+  align-items:center !important;
+  gap:7px !important;
+}
+.remember-language-choice span{
+  width:100% !important;
+  min-width:0 !important;
+  white-space:normal !important;
+  overflow-wrap:normal !important;
+  word-break:normal !important;
+}
+.return-hindi-button{
+  width:auto !important;
+  max-width:118px !important;
+  min-width:0 !important;
+  white-space:normal !important;
+}
+
+/* स्थान + दिनाङ्क + देखें — desktop/mobile दोनों में एक संतुलित row */
+.panchanga-selector-grid.india-mode,
+.panchanga-selector-grid.foreign-mode{
+  width:100% !important;
+  max-width:100% !important;
+  min-width:0 !important;
+  display:grid !important;
+  grid-template-columns:minmax(0,1.18fr) minmax(0,.96fr) minmax(110px,.88fr) !important;
+  gap:7px !important;
+  align-items:end !important;
+}
+.panchanga-selector-grid #countryField{grid-column:1 / -1 !important}
+.panchanga-selector-grid .panchanga-selector-field,
+.panchanga-selector-grid #fileLink,
+.panchanga-selector-grid #datePicker,
+.panchanga-selector-grid #selectorButton{
+  min-width:0 !important;
+  max-width:100% !important;
+}
+.panchanga-selector-grid #fileLink,
+.panchanga-selector-grid #datePicker,
+.panchanga-selector-grid #selectorButton{
+  width:100% !important;
+  height:43px !important;
+  min-height:43px !important;
+  padding:4px 6px !important;
+  font-size:clamp(.86rem,1.65vw,.98rem) !important;
+  line-height:1.17 !important;
+}
+.panchanga-selector-grid #selectorButton{
+  grid-column:3 !important;
+  overflow:hidden !important;
+  white-space:normal !important;
+  overflow-wrap:anywhere !important;
+  word-break:normal !important;
+}
+.panchanga-selector-field label{
+  min-width:0 !important;
+  font-size:.88rem !important;
+  line-height:1.24 !important;
+  white-space:nowrap !important;
+}
+
+@media(max-width:600px){
+  .panchanga-selector{padding:10px 9px 11px !important}
+  .panchanga-selector-title{
+    font-size:clamp(.98rem,4vw,1.08rem) !important;
+    line-height:1.38 !important;
+    overflow-wrap:anywhere;
+  }
+  .panchanga-language-bar{
+    grid-template-columns:minmax(0,1fr) minmax(142px,39%) !important;
+    column-gap:6px !important;
+  }
+  .panchanga-language-bar > label{
+    font-size:.82rem !important;
+  }
+  .panchanga-language-bar > #panchangaLanguage{
+    min-height:42px !important;
+    height:42px !important;
+    font-size:clamp(.86rem,3.4vw,.98rem) !important;
+    padding:4px 6px !important;
+  }
+  .panchanga-language-mode-inline{gap:4px !important}
+  .panchanga-language-mode-inline .panchanga-mode-button{
+    min-height:42px !important;
+    font-size:clamp(.76rem,3vw,.91rem) !important;
+    padding:3px 4px !important;
+  }
+  .panchanga-language-preferences{
+    grid-template-columns:1fr !important;
+    gap:5px !important;
+    padding:7px 8px !important;
+  }
+  .remember-language-choice{
+    font-size:clamp(.88rem,3.55vw,1rem) !important;
+    line-height:1.45 !important;
+  }
+  .return-hindi-button{
+    justify-self:stretch !important;
+    width:100% !important;
+    max-width:none !important;
+    min-height:34px !important;
+    font-size:.87rem !important;
+  }
+  .panchanga-language-preferences.remembered-language{
+    grid-template-columns:1fr !important;
+  }
+
+  .panchanga-selector-grid.india-mode,
+  .panchanga-selector-grid.foreign-mode{
+    grid-template-columns:minmax(0,1.20fr) minmax(0,.98fr) minmax(102px,.92fr) !important;
+    gap:5px !important;
+  }
+  .panchanga-selector-grid #fileLink,
+  .panchanga-selector-grid #datePicker,
+  .panchanga-selector-grid #selectorButton{
+    height:44px !important;
+    min-height:44px !important;
+    padding:4px 5px !important;
+    font-size:clamp(.80rem,3.25vw,.94rem) !important;
+  }
+  .panchanga-selector-field label{
+    font-size:.80rem !important;
+    white-space:nowrap !important;
+  }
+}
+
+@media(max-width:390px){
+  .panchanga-language-bar{
+    grid-template-columns:minmax(0,1fr) minmax(132px,40%) !important;
+  }
+  .panchanga-language-mode-inline .panchanga-mode-button{
+    font-size:clamp(.71rem,2.9vw,.82rem) !important;
+  }
+  .panchanga-selector-grid.india-mode,
+  .panchanga-selector-grid.foreign-mode{
+    grid-template-columns:minmax(0,1.20fr) minmax(0,.98fr) minmax(96px,.90fr) !important;
+    gap:4px !important;
+  }
+  .panchanga-selector-grid #fileLink,
+  .panchanga-selector-grid #datePicker,
+  .panchanga-selector-grid #selectorButton{
+    font-size:clamp(.74rem,3.18vw,.88rem) !important;
+    padding-left:4px !important;
+    padding-right:4px !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <header class="site-header">
@@ -4079,6 +4308,48 @@ Object.assign(PANCHANGA_UI_TRANSLATIONS,{
   }
 });
 
+
+/* v4: selector-title translations so same-script languages visibly apply. */
+Object.assign(PANCHANGA_UI_TRANSLATIONS.mai,{
+  "भाषा, स्थान एवं दिनाङ्कानुसार पञ्चाङ्ग":"भाषा, स्थान आ दिनाङ्कक अनुसार पञ्चाङ्ग",
+  "स्थान एवं दिनाङ्कानुसार पञ्चाङ्ग":"स्थान आ दिनाङ्कक अनुसार पञ्चाङ्ग"
+});
+Object.assign(PANCHANGA_UI_TRANSLATIONS.mr,{
+  "भाषा, स्थान एवं दिनाङ्कानुसार पञ्चाङ्ग":"भाषा, स्थान व दिनांकानुसार पंचांग",
+  "स्थान एवं दिनाङ्कानुसार पञ्चाङ्ग":"स्थान व दिनांकानुसार पंचांग"
+});
+Object.assign(PANCHANGA_UI_TRANSLATIONS.ne,{
+  "भाषा, स्थान एवं दिनाङ्कानुसार पञ्चाङ्ग":"भाषा, स्थान र मितिअनुसार पञ्चाङ्ग",
+  "स्थान एवं दिनाङ्कानुसार पञ्चाङ्ग":"स्थान र मितिअनुसार पञ्चाङ्ग"
+});
+Object.assign(PANCHANGA_UI_TRANSLATIONS.kok,{
+  "भाषा, स्थान एवं दिनाङ्कानुसार पञ्चाङ्ग":"भास, थळ आनी तारखेप्रमाणें पञ्चाङ्ग",
+  "स्थान एवं दिनाङ्कानुसार पञ्चाङ्ग":"थळ आनी तारखेप्रमाणें पञ्चाङ्ग"
+});
+Object.assign(PANCHANGA_UI_TRANSLATIONS.doi,{
+  "भाषा, स्थान एवं दिनाङ्कानुसार पञ्चाङ्ग":"भाशा, थां ते तरीक मताबक पञ्चाङ्ग",
+  "स्थान एवं दिनाङ्कानुसार पञ्चाङ्ग":"थां ते तरीक मताबक पञ्चाङ्ग"
+});
+Object.assign(PANCHANGA_UI_TRANSLATIONS.ks,{
+  "भाषा, स्थान एवं दिनाङ्कानुसार पञ्चाङ्ग":"ज़बान, जाय त तारीख मुताबिक पञ्चाङ्ग",
+  "स्थान एवं दिनाङ्कानुसार पञ्चाङ्ग":"जाय त तारीख मुताबिक पञ्चाङ्ग"
+});
+Object.assign(PANCHANGA_UI_TRANSLATIONS.sd,{
+  "भाषा, स्थान एवं दिनाङ्कानुसार पञ्चाङ्ग":"भाषा, जगह ऐं तारीख मुताबिक पञ्चाङ्ग",
+  "स्थान एवं दिनाङ्कानुसार पञ्चाङ्ग":"जगह ऐं तारीख मुताबिक पञ्चाङ्ग"
+});
+
+
+Object.assign(PANCHANGA_UI_TRANSLATIONS.as,{"भाषा, स्थान एवं दिनाङ्कानुसार पञ्चाङ्ग":"ভাষা, স্থান আৰু তাৰিখ অনুসৰি পঞ্চাংগ"});
+Object.assign(PANCHANGA_UI_TRANSLATIONS.bn,{"भाषा, स्थान एवं दिनाङ्कानुसार पञ्चाङ्ग":"ভাষা, স্থান ও তারিখ অনুযায়ী পঞ্জিকা"});
+Object.assign(PANCHANGA_UI_TRANSLATIONS.gu,{"भाषा, स्थान एवं दिनाङ्कानुसार पञ्चाङ्ग":"ભાષા, સ્થળ અને તારીખ અનુસાર પંચાંગ"});
+Object.assign(PANCHANGA_UI_TRANSLATIONS.kn,{"भाषा, स्थान एवं दिनाङ्कानुसार पञ्चाङ्ग":"ಭಾಷೆ, ಸ್ಥಳ ಮತ್ತು ದಿನಾಂಕದ ಪ್ರಕಾರ ಪಂಚಾಂಗ"});
+Object.assign(PANCHANGA_UI_TRANSLATIONS.ml,{"भाषा, स्थान एवं दिनाङ्कानुसार पञ्चाङ्ग":"ഭാഷ, സ്ഥലം, തീയതി അനുസരിച്ചുള്ള പഞ്ചാംഗം"});
+Object.assign(PANCHANGA_UI_TRANSLATIONS.or,{"भाषा, स्थान एवं दिनाङ्कानुसार पञ्चाङ्ग":"ଭାଷା, ସ୍ଥାନ ଓ ତାରିଖ ଅନୁସାରେ ପଞ୍ଚାଙ୍ଗ"});
+Object.assign(PANCHANGA_UI_TRANSLATIONS.pa,{"भाषा, स्थान एवं दिनाङ्कानुसार पञ्चाङ्ग":"ਭਾਸ਼ਾ, ਸਥਾਨ ਅਤੇ ਮਿਤੀ ਅਨੁਸਾਰ ਪੰਚਾਂਗ"});
+Object.assign(PANCHANGA_UI_TRANSLATIONS.ta,{"भाषा, स्थान एवं दिनाङ्कानुसार पञ्चाङ्ग":"மொழி, இடம் மற்றும் தேதியின்படி பஞ்சாங்கம்"});
+Object.assign(PANCHANGA_UI_TRANSLATIONS.te,{"भाषा, स्थान एवं दिनाङ्कानुसार पञ्चाङ्ग":"భాష, స్థలం మరియు తేదీ ప్రకారం పంచాంగం"});
+
 /* Sanskrit is a separate language, not Hindi in Devanagari. */
 Object.assign(PANCHANGA_UI_TRANSLATIONS.sa,{
   "(समय — २४-घण्टा प्रारूप)":"(समयः २४-घण्टापद्धत्या पठनीयः)",
@@ -4401,6 +4672,25 @@ const PANCHANGA_GREGORIAN_MONTHS = {
 };
 const PANCHANGA_MNI_MONTHS_DEV = ["जनवरी","फरवरी","मार्च","अप्रैल","मई","जून","जुलाई","अगस्त","सितम्बर","अक्टूबर","नवम्बर","दिसम्बर"];
 
+
+const PANCHANGA_RICH_BLOCK_SOURCE = new WeakMap();
+const PANCHANGA_RICH_HTML_TRANSLATIONS = {sa:{},en:{}};
+function panchangaRichKey(text){ return String(text ?? "").replace(/\s+/g," ").trim(); }
+(function(){
+  const k1=panchangaRichKey("टिप्पणी — प्रस्तुत काल सन्ध्योपासन के मुख्य काल हैं, जिन्हें शास्त्रोक्त उत्तम, मध्यम और अधम भेद के अनुसार दिया गया है। यज्ञोपवीत धारण करने वाले सन्ध्योपासनाधिकारी को सन्ध्याकाल आरम्भ होने से कुछ मिनट पूर्व ही नित्यकर्मादि आवश्यक दैनिक क्रियाएँ सम्पन्न करके सन्ध्योपासन हेतु आसन पर बैठ जाना चाहिये।");
+  const k2=panchangaRichKey("यदि किसी कारण सन्ध्योपासन का मुख्यकाल व्यतीत हो जाए तो केवल कालातिक्रम के कारण उसका परित्याग नहीं करना चाहिये। शास्त्र में कालातिक्रम होने पर प्रायश्चित्तपूर्वक पश्चात् भी सन्ध्या करने का विधान है; अतः सर्वथा अकरण की अपेक्षा विलम्ब से किया गया अनुष्ठान श्रेयस्कर है। कालातिक्रम की मात्रा के अनुसार प्राणायामरूप प्रायश्चित्त का विधान भी प्राप्त होता है; अतः जितना विलम्ब हुआ हो, उसकी मात्रा के अनुसार प्रायश्चित्तस्वरूप प्राणायाम करके सन्ध्योपासन करनी चाहिये।");
+  const k3=panchangaRichKey("उत्तम काल में सन्ध्योपासन आरम्भ करने के पश्चात् जपादि को उसी काल-सीमा के भीतर ही समाप्त करना आवश्यक है — ऐसा कोई पृथक् निर्णय प्राप्त नहीं होता। अतः उत्तम काल में आरम्भ करने के बाद जपादि एक मुहूर्त्त से आगे भी चल सकते हैं; प्रातः सूर्योदय के पश्चात् इच्छानुसार तथा सायंकाल सूर्यास्त के पश्चात् अधिकतम डेढ़ घण्टे तक जपादि किये जा सकते हैं।");
+  const k4=panchangaRichKey("अनुपनीत, अर्थात् जिनका यज्ञोपवीत-संस्कार नहीं हुआ है, तथा स्त्रियों को सन्ध्याकाल में वैदिक मन्त्रों के स्थान पर अपनी योग्यता अथवा अभिरुचि के अनुसार पौराणिक मन्त्रों से इष्टदेव अथवा देवपूजन करना चाहिये।");
+  PANCHANGA_RICH_HTML_TRANSLATIONS.sa[k1]='<strong>टिप्पणी —</strong> एते सन्ध्योपासनायाः मुख्यकालाः सन्ति, ये शास्त्रोक्त-<strong>उत्तम-मध्यम-अधम</strong>-भेदेन प्रदत्ताः। यज्ञोपवीतधारी सन्ध्योपासनाधिकारी सन्ध्याकालारम्भात् कतिपयनिमेषपूर्वमेव नित्यकर्माद्यावश्यकदैनिकक्रियाः समाप्य सन्ध्योपासनार्थम् आसने उपविशेत्।';
+  PANCHANGA_RICH_HTML_TRANSLATIONS.sa[k2]='यदि केनचित् कारणेन सन्ध्योपासनायाः मुख्यकालः अतीतः स्यात्, तर्हि केवलं कालातिक्रमात् तस्याः परित्यागो न कर्तव्यः। शास्त्रे कालातिक्रमे प्रायश्चित्तपूर्वकं पश्चादपि सन्ध्योपासनाविधानं प्राप्तम्; अतः सर्वथाऽकरणात् विलम्बितमनुष्ठानं श्रेयस्करम्। कालातिक्रमस्य परिमाणानुसारं प्राणायामरूपस्य प्रायश्चित्तस्यापि विधानं प्राप्तम्; अतः यावान् विलम्बः जातः, तदनुसारं प्रायश्चित्तरूपं प्राणायामं कृत्वा सन्ध्योपासना कर्तव्या।';
+  PANCHANGA_RICH_HTML_TRANSLATIONS.sa[k3]='उत्तमकाले सन्ध्योपासनाम् आरभ्य जपादिकं तस्यैव कालसीमायामेव समापनीयमिति पृथग्निर्णयो न प्राप्यते। अतः उत्तमकाले आरम्भानन्तरं जपादिकम् एकस्मात् मुहूर्त्तादपि परं प्रवर्तयितुं शक्यते; <strong>प्रातः सूर्योदयात् पश्चात् यथेष्टम्</strong>, सायं सूर्यास्तात् पश्चाच्च अधिकतमं <strong>सार्धघण्टापर्यन्तम्</strong> जपादिकं कर्तुं शक्यते।';
+  PANCHANGA_RICH_HTML_TRANSLATIONS.sa[k4]='<strong>अनुपनीताः</strong>, अर्थात् येषां यज्ञोपवीतसंस्कारो न जातः, तथा <strong>स्त्रियश्च</strong> सन्ध्याकाले वैदिकमन्त्राणां स्थाने स्वयोग्यतानुसारम् अथवा अभिरुच्यानुसारं <strong>पौराणिकमन्त्रैः इष्टदेवपूजनं देवपूजनं वा</strong> कुर्युः।';
+  PANCHANGA_RICH_HTML_TRANSLATIONS.en[k1]='<strong>Note —</strong> These are the principal times for Sandhyopāsanā, shown according to the śāstric divisions <strong>Uttama, Madhyama and Adhama</strong>. A qualified practitioner wearing the yajñopavīta should complete the necessary daily duties a few minutes before the Sandhyā period begins and be seated for Sandhyopāsanā.';
+  PANCHANGA_RICH_HTML_TRANSLATIONS.en[k2]='If the principal period of Sandhyopāsanā has passed for some reason, the observance should not be abandoned merely because of the lapse of time. The texts prescribe performing Sandhyā even later, preceded by the prescribed prāyaścitta; delayed performance is therefore preferable to complete omission. A prāṇāyāma-based prāyaścitta proportionate to the delay is also prescribed; accordingly, the prescribed prāṇāyāma should be performed as prāyaścitta before Sandhyopāsanā.';
+  PANCHANGA_RICH_HTML_TRANSLATIONS.en[k3]='After Sandhyopāsanā has been begun within the Uttama period, no separate rule has been found requiring japa and related acts to finish within that same time-limit. Thus, after beginning in the Uttama period, japa may continue beyond one Muhūrta; in the morning it may continue <strong>after sunrise as desired</strong>, and in the evening for at most <strong>one and a half hours after sunset</strong>.';
+  PANCHANGA_RICH_HTML_TRANSLATIONS.en[k4]='Those who are <strong>anupanīta</strong> (whose yajñopavīta-saṃskāra has not taken place), and <strong>women</strong>, should at Sandhyā time worship their chosen deity or perform devapūjana with <strong>Purāṇic mantras</strong> suited to their eligibility or inclination, in place of Vedic mantras.';
+})();
+
 const PANCHANGA_TEXT_SOURCE = new WeakMap();
 const PANCHANGA_TEXT_LAST_RENDER = new WeakMap();
 
@@ -4442,6 +4732,32 @@ function panchangaTransliterateDev(text){
   return text;
 }
 
+
+function panchangaLocalizeDynamicPatterns(source){
+  const s=String(source ?? "");
+  if(!s) return null;
+
+  if(currentPanchangaLanguage === "en"){
+    let m=s.match(/^उपलब्ध पञ्चाङ्ग:\s*(.+?)\s+से\s+(.+?)\s+तक$/);
+    if(m) return `Available Pañcāṅga: ${m[1]} to ${m[2]}`;
+    m=s.match(/^(.+?)\s+-\s+(.+?)\s+का पञ्चाङ्ग प्रदर्शित है।$/);
+    if(m) return `${m[1]} — Pañcāṅga for ${m[2]} is displayed.`;
+  }
+  if(currentPanchangaLanguage === "sa"){
+    let m=s.match(/^उपलब्ध पञ्चाङ्ग:\s*(.+?)\s+से\s+(.+?)\s+तक$/);
+    if(m) return `उपलब्धं पञ्चाङ्गम्: ${m[1]} तः ${m[2]} पर्यन्तम्`;
+    m=s.match(/^(.+?)\s+-\s+(.+?)\s+का पञ्चाङ्ग प्रदर्शित है।$/);
+    if(m) return `${m[1]} — ${m[2]} दिनाङ्कस्य पञ्चाङ्गं प्रदर्श्यते।`;
+  }
+  if(currentPanchangaLanguage === "mai"){
+    let m=s.match(/^उपलब्ध पञ्चाङ्ग:\s*(.+?)\s+से\s+(.+?)\s+तक$/);
+    if(m) return `उपलब्ध पञ्चाङ्ग: ${m[1]} सँ ${m[2]} धरि`;
+    m=s.match(/^(.+?)\s+-\s+(.+?)\s+का पञ्चाङ्ग प्रदर्शित है।$/);
+    if(m) return `${m[1]} — ${m[2]} क पञ्चाङ्ग देखाओल जा रहल अछि।`;
+  }
+  return null;
+}
+
 function localizePanchangaString(source){
   const raw = String(source ?? "");
   if(!raw) return raw;
@@ -4452,6 +4768,11 @@ function localizePanchangaString(source){
   const trailing = match ? match[3] : "";
 
   if(!core) return raw;
+
+  const dynamicLocalized = panchangaLocalizeDynamicPatterns(core);
+  if(dynamicLocalized !== null){
+    return leading + panchangaLocalizeDigits(dynamicLocalized) + trailing;
+  }
 
   const dictionary = PANCHANGA_UI_TRANSLATIONS[currentPanchangaLanguage] || {};
   const normalizedCore = core.replace(/\s+/g," ").trim();
@@ -4472,27 +4793,63 @@ function localizePanchangaString(source){
   return leading + localizedCore + trailing;
 }
 
+
+function localizePanchangaRichBlocks(root){
+  if(!root || root.nodeType !== Node.ELEMENT_NODE) return;
+  const selector = [
+    ".sandhya-sources",
+    ".sandhya-note-block p",
+    ".article-card .article-invocation",
+    ".article-card .article-title",
+    ".article-card .article-subtitle",
+    ".article-card .article-section h2",
+    ".article-card .article-section p",
+    ".article-card .shloka-box"
+  ].join(",");
+  root.querySelectorAll(selector).forEach(el=>{
+    if(el.closest(".panchanga-language-fixed")) return;
+    if(!PANCHANGA_RICH_BLOCK_SOURCE.has(el)){
+      PANCHANGA_RICH_BLOCK_SOURCE.set(el,{html:el.innerHTML,text:panchangaRichKey(el.textContent)});
+    }
+    const src=PANCHANGA_RICH_BLOCK_SOURCE.get(el);
+    if(!src) return;
+    const key=src.text;
+    if(currentPanchangaLanguage === "hi"){
+      el.innerHTML=src.html;
+    }else{
+      const richHtml=PANCHANGA_RICH_HTML_TRANSLATIONS[currentPanchangaLanguage]?.[key];
+      if(richHtml){
+        el.innerHTML=richHtml;
+      }else{
+        const dict=PANCHANGA_UI_TRANSLATIONS[currentPanchangaLanguage] || {};
+        const translated=Object.prototype.hasOwnProperty.call(dict,key)
+          ? dict[key]
+          : localizePanchangaString(key);
+        el.textContent=translated;
+      }
+    }
+    el.dataset.panchangaRichLocalized="1";
+  });
+}
+
 function localizePanchangaTextNode(node,forceSource=false){
   if(!node || node.nodeType !== Node.TEXT_NODE) return;
 
   const parent = node.parentElement;
   if(parent && parent.closest("script,style,noscript,textarea,template")) return;
   if(parent && (parent.closest("#panchangaLanguage") || parent.closest(".panchanga-language-fixed"))) return;
+  /* स्थान/देश के विकल्प जानबूझकर हिन्दी + English में स्थिर रहते हैं। */
+  if(parent && parent.closest("#fileLink, #countryLink")) return;
+  if(parent && parent.closest('[data-panchanga-rich-localized="1"]')) return;
 
   if(forceSource || !PANCHANGA_TEXT_SOURCE.has(node)){
     PANCHANGA_TEXT_SOURCE.set(node,node.nodeValue || "");
   }
 
   const source = PANCHANGA_TEXT_SOURCE.get(node) || "";
-  const inLongArticle = !!(parent && parent.closest(".article-card"));
-  /*
-    Long-form prose is published only where a curated language translation exists.
-    For the remaining Indian languages, keep the Hindi source rather than presenting
-    Hindi prose merely transliterated into another script as though it were a translation.
-  */
-  const rendered = (inLongArticle && !["hi","en","sa"].includes(currentPanchangaLanguage))
-    ? source
-    : localizePanchangaString(source);
+  /* v4: किसी भाषा को article पर रोकना नहीं है। Curated translation उपलब्ध हो तो वही,
+     अन्यथा उस भाषा की lexicon/script policy लागू होगी। */
+  const rendered = localizePanchangaString(source);
   PANCHANGA_TEXT_LAST_RENDER.set(node,rendered);
 
   if(node.nodeValue !== rendered){
@@ -4519,6 +4876,7 @@ function observePanchangaLanguageLayer(){
   const root = document.querySelector(".page-shell");
   if(!root || PANCHANGA_TEXT_OBSERVER) return;
 
+  localizePanchangaRichBlocks(root);
   localizePanchangaSubtree(root);
 
   PANCHANGA_TEXT_OBSERVER = new MutationObserver(mutations=>{
@@ -4571,6 +4929,7 @@ function applyPanchangaLanguage(lang,{save=true,rerender=true}={}){
   }
 
   const root = document.querySelector(".page-shell");
+  localizePanchangaRichBlocks(root);
 
   /*
     IMPORTANT: switching language must also relocalize the STATIC labels.
@@ -4590,6 +4949,7 @@ function applyPanchangaLanguage(lang,{save=true,rerender=true}={}){
   }
 
   /* innerHTML renderers (moon, muhurta, festival etc.) are finalized here. */
+  localizePanchangaRichBlocks(root);
   localizePanchangaSubtree(root);
 
   /* guard against any browser/select repaint resetting the visible choice */
@@ -10080,6 +10440,39 @@ let currentSelectorMode = "india";
   13-09-2026: Irvine, Edmonton और Calgary की अद्यतन Excel files भी जोड़ दी गयी हैं।
   वर्तमान उपलब्ध foreign data files के लिए कोई स्थान अस्थायी रूप से blocked नहीं है।
 */
+
+
+/* ===== स्थान-नाम: selector में हिन्दी + English ===== */
+const PANCHANGA_PLACE_ENGLISH_NAMES = {
+  kashi:"Kashi", mahakaleshwar:"Mahakaleshwar–Ujjain", ayodhya:"Ayodhya",
+  gorakhpur:"Gorakhpur", jagannathpuri:"Jagannath Puri", delhi:"New Delhi",
+  prayagraj:"Prayagraj", mumbai:"Mumbai", jammu:"Jammu", jaipur:"Jaipur",
+  darbhanga:"Darbhanga", ludhiana:"Ludhiana", vidisha:"Vidisha", kedarnath:"Kedarnath",
+  kolkata:"Kolkata", "nageshwar-saurashtra":"Nageshwar–Saurashtra", rameshwaram:"Rameshwaram",
+  "shardapitha-kashmir":"Sharada Pitha–Kashmir", shringeri:"Sringeri", devghar:"Deoghar",
+  haridwar:"Haridwar", vrindavan:"Vrindavan", badrinath:"Badrinath", somnath:"Somnath",
+  mallikarjuna:"Mallikarjuna", omkareshwar:"Omkareshwar", "bhimashankar-asam":"Bhimashankar–Assam",
+  chennai:"Chennai", dwaraka:"Dwarka", jyoshimath:"Jyotirmath (Joshimath)",
+  "kamrup-kamakhya":"Kamrup–Kamakhya", bengaluru:"Bengaluru", dumka:"Dumka",
+  nellore:"Nellore", patna:"Patna", ranchi:"Ranchi", shrimeru:"Shrimeru",
+  fremont:"Fremont, California", "los-angeles":"Los Angeles, California",
+  irvine:"Irvine, California", "san-diego":"San Diego, California",
+  "artesia-ca":"Artesia, California", "san-jose-ca":"San Jose, California",
+  "concord-ca":"Concord, California", edmonton:"Edmonton, Alberta", calgary:"Calgary, Alberta",
+  "vancouver-bc":"Vancouver, British Columbia", toronto:"Toronto, Ontario",
+  montreal:"Montreal, Quebec", winnipeg:"Winnipeg, Manitoba", london:"London", doha:"Doha",
+  rome:"Rome, Lazio", "venice-veneto":"Venice, Veneto", verona:"Verona, Veneto",
+  "vicenza-veneto":"Vicenza, Veneto", "wilton-ct":"Wilton, Connecticut"
+};
+const PANCHANGA_COUNTRY_ENGLISH_NAMES = {
+  india:"India", "united-states":"United States", canada:"Canada",
+  "united-kingdom":"United Kingdom", qatar:"Qatar", italy:"Italy", kenya:"Kenya"
+};
+function panchangaBilingualPlaceName(place){
+  const en=PANCHANGA_PLACE_ENGLISH_NAMES[place?.key] || "";
+  return en ? `${place.name} — ${en}` : (place?.name || "");
+}
+
 const TEMP_BLOCKED_PLACE_KEYS = new Set([]);
 
 function isTemporarilyBlockedPlaceKey(placeKey){
@@ -10146,13 +10539,16 @@ function selectorPlaceOption(place){
   const option = document.createElement("option");
   option.value = place.file;
   option.dataset.place = place.key;
+  option.dataset.hiName = place.name || "";
+  option.dataset.enName = PANCHANGA_PLACE_ENGLISH_NAMES[place.key] || "";
 
+  const bilingualName = panchangaBilingualPlaceName(place);
   const blocked = isTemporarilyBlockedPlaceKey(place.key);
   if(blocked){
     option.dataset.verificationBlocked = "true";
-    option.textContent = `${place.name} — पुनः सत्यापनाधीन`;
+    option.textContent = `${bilingualName} — पुनः सत्यापनाधीन`;
   }else{
-    option.textContent = place.name;
+    option.textContent = bilingualName;
   }
 
   return option;
@@ -10166,7 +10562,7 @@ function selectorResetPlaceList(){
 
   const placeholder = document.createElement("option");
   placeholder.value = "";
-  placeholder.textContent = "स्थान चुनें";
+  placeholder.textContent = "स्थान चुनें — Choose place";
   placeholder.disabled = true;
   placeholder.selected = true;
   placeholder.hidden = true;
@@ -10229,7 +10625,7 @@ function populateForeignCountries(){
 
   const placeholder = document.createElement("option");
   placeholder.value = "";
-  placeholder.textContent = "देश / क्षेत्र चुनें";
+  placeholder.textContent = "देश / क्षेत्र चुनें — Choose country / region";
   countrySelect.appendChild(placeholder);
 
   const countries = new Map();
@@ -10247,7 +10643,8 @@ function populateForeignCountries(){
     .forEach(([countryKey, countryName]) => {
       const option = document.createElement("option");
       option.value = countryKey;
-      option.textContent = countryName;
+      const enCountry = PANCHANGA_COUNTRY_ENGLISH_NAMES[countryKey] || "";
+      option.textContent = enCountry ? `${countryName} — ${enCountry}` : countryName;
       countrySelect.appendChild(option);
     });
 }
@@ -10466,7 +10863,7 @@ async function loadSelectedFile(){
   restorePanchangaAfterVerificationBlock();
 
   currentPlaceKey = selectedPlaceKey;
-  currentPlaceName = option.textContent.trim();
+  currentPlaceName = (option.dataset.hiName || option.textContent).trim();
 
   status.textContent = "पञ्चाङ्ग-आँकड़े प्राप्त किए जा रहे हैं...";
 
