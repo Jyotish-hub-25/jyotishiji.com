@@ -9,7 +9,7 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta content="श्रीसूर्यसिद्धान्तीय स्थानीय दैनिक पञ्चाङ्ग तथा भारतीय काल गणना के आधार।" name="description"/>
 <title>श्रीसूर्यसिद्धान्तीय स्थानीय पञ्चाङ्ग एवं भारतीय काल गणना</title>
-<meta name="panchanga-build" content="odayika-v23-maas-dualverify-20260918"/>
+<meta name="panchanga-build" content="odayika-v24-maas-dualverify-localboundary-20260918"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
@@ -6293,10 +6293,7 @@ function renderOdayikaGrahaBox(rowIndex,row,selectedDate){
 
   const tithiNumber = Number(row[3]);
 
-  const paksha =
-    Number.isFinite(tithiNumber)
-      ? (tithiNumber <= 15 ? "शुक्लपक्ष" : "कृष्णपक्ष")
-      : "";
+  const paksha = verifiedPakshaForRowIndex(rowIndex,"odayika-date-line");
 
   const tithiName =
     TITHI_MAP[tithiNumber] || row[3] || "";
@@ -6307,7 +6304,7 @@ function renderOdayikaGrahaBox(rowIndex,row,selectedDate){
   const verifiedMaas = verifiedPurnimantaMonthForRowIndex(rowIndex,"odayika-date-line");
   const maasPakshaForDateLine = verifiedMaas
     ? `${verifiedMaas}${paksha}`
-    : `मास-अनिर्णीत${paksha ? ` · ${paksha}` : ""}`;
+    : paksha;
 
   const dateLine =
     `${maasPakshaForDateLine} ${tithiName} ${weekday}` +
@@ -6807,34 +6804,144 @@ function previousPurnimantaMonth(name){
   return PURNIMANTA_MONTH_SEQUENCE[(i+11)%12];
 }
 
+/* =========================================================
+   २०२६ पूर्णिमान्त मास की स्वतंत्र स्थानीय गणना
+   ---------------------------------------------------------
+   यह गणना Excel B-column को input नहीं मानती।
+   आधार वही verified rule है जिससे ५७ location-files सुधारी गयीं:
+   - काशी २०२६ का प्रमाणित मास-क्रम (master sequence)
+   - प्रत्येक वर्तमान location की अपनी D-column औदयिक तिथि
+   - पूर्णिमा-सीमा: १..१५ -> १६..३०
+   - अमावस्या-सीमा: १६..३० -> १..१५
+   - प्रत्येक काशी event को उसी प्रकार की निकटतम local boundary (+/-2 दिन)
+     पर map किया जाता है।
+   इस कारण timezone/sunrise से local civil date बदलने पर भी गणना location-specific है।
+========================================================= */
+const MAAS_2026_INITIAL = "पौष";
+const MAAS_2026_MASTER_EVENTS = Object.freeze([
+  {date:"04/01/2026", month:"माघ",         type:"PURNIMA"},
+  {date:"02/02/2026", month:"फाल्गुन",     type:"PURNIMA"},
+  {date:"04/03/2026", month:"चैत्र",       type:"PURNIMA"},
+  {date:"03/04/2026", month:"वैशाख",       type:"PURNIMA"},
+  {date:"02/05/2026", month:"ज्येष्ठ",     type:"PURNIMA"},
+  {date:"17/05/2026", month:"ज्येष्ठ अधिक",type:"AMAVASYA"},
+  {date:"16/06/2026", month:"ज्येष्ठ",     type:"AMAVASYA"},
+  {date:"30/06/2026", month:"आषाढ",        type:"PURNIMA"},
+  {date:"30/07/2026", month:"श्रावण",      type:"PURNIMA"},
+  {date:"29/08/2026", month:"भाद्रपद",     type:"PURNIMA"},
+  {date:"27/09/2026", month:"आश्विन",      type:"PURNIMA"},
+  {date:"27/10/2026", month:"कार्तिक",     type:"PURNIMA"},
+  {date:"25/11/2026", month:"मार्गशीर्ष",  type:"PURNIMA"},
+  {date:"25/12/2026", month:"पौष",         type:"PURNIMA"}
+]);
+const MAAS_LOCAL_BOUNDARY_MAX_SHIFT_DAYS = 2;
+let MAAS_CALCULATION_CACHE = null;
+
+function maasBoundaryType(prevTithi,currTithi){
+  if(Number.isFinite(prevTithi) && Number.isFinite(currTithi)){
+    if(prevTithi>=1 && prevTithi<=15 && currTithi>=16 && currTithi<=30) return "PURNIMA";
+    if(prevTithi>=16 && prevTithi<=30 && currTithi>=1 && currTithi<=15) return "AMAVASYA";
+  }
+  return "";
+}
+
+function maasGBOrdinal(gb){
+  const p=parseGBDate(gb);
+  return p ? Math.floor(Date.UTC(p.getFullYear(),p.getMonth(),p.getDate())/86400000) : NaN;
+}
+
+function buildIndependentMaasCalculation(){
+  if(
+    MAAS_CALCULATION_CACHE &&
+    MAAS_CALCULATION_CACHE.workbook===workbookData &&
+    MAAS_CALCULATION_CACHE.place===currentPlaceKey
+  ) return MAAS_CALCULATION_CACHE;
+
+  const state={
+    workbook:workbookData,
+    place:currentPlaceKey,
+    ok:false,
+    monthByRow:new Map(),
+    matchedEvents:[],
+    error:""
+  };
+
+  if(!workbookData || workbookData.length<2){
+    state.error="workbook-empty";
+    MAAS_CALCULATION_CACHE=state;
+    return state;
+  }
+
+  const boundaries=[];
+  for(let i=2;i<workbookData.length;i++){
+    const prev=Number(workbookData[i-1]?.[3]);
+    const curr=Number(workbookData[i]?.[3]);
+    const type=maasBoundaryType(prev,curr);
+    if(!type) continue;
+    const date=normalizeDate(workbookData[i]?.[0]);
+    const ordinal=maasGBOrdinal(date);
+    if(!date || !Number.isFinite(ordinal)) continue;
+    boundaries.push({rowIndex:i,date,ordinal,type,prevTithi:prev,tithi:curr});
+  }
+
+  const used=new Set();
+  let lastOrdinal=-Infinity;
+
+  for(const ev of MAAS_2026_MASTER_EVENTS){
+    const masterOrdinal=maasGBOrdinal(ev.date);
+    const candidates=[];
+
+    boundaries.forEach((b,j)=>{
+      if(used.has(j) || b.type!==ev.type) return;
+      const delta=b.ordinal-masterOrdinal;
+      if(Math.abs(delta)<=MAAS_LOCAL_BOUNDARY_MAX_SHIFT_DAYS){
+        candidates.push({j,b,delta,abs:Math.abs(delta)});
+      }
+    });
+
+    candidates.sort((a,b)=>a.abs-b.abs || a.b.ordinal-b.b.ordinal);
+    const best=candidates[0];
+    if(!best){
+      state.error=`${ev.type} boundary not found near ${ev.date} (${ev.month})`;
+      MAAS_CALCULATION_CACHE=state;
+      return state;
+    }
+    if(best.b.ordinal<=lastOrdinal){
+      state.error=`boundary order invalid near ${ev.date} (${ev.month})`;
+      MAAS_CALCULATION_CACHE=state;
+      return state;
+    }
+
+    used.add(best.j);
+    lastOrdinal=best.b.ordinal;
+    state.matchedEvents.push({
+      masterDate:ev.date,
+      localDate:best.b.date,
+      localRowIndex:best.b.rowIndex,
+      dayShift:best.delta,
+      type:ev.type,
+      month:ev.month,
+      prevTithi:best.b.prevTithi,
+      tithi:best.b.tithi
+    });
+  }
+
+  const changeAtRow=new Map(state.matchedEvents.map(e=>[e.localRowIndex,e.month]));
+  let current=MAAS_2026_INITIAL;
+  for(let i=1;i<workbookData.length;i++){
+    if(changeAtRow.has(i)) current=changeAtRow.get(i);
+    if(normalizeDate(workbookData[i]?.[0])) state.monthByRow.set(i,current);
+  }
+
+  state.ok=true;
+  MAAS_CALCULATION_CACHE=state;
+  return state;
+}
+
 function computedPurnimantaMonthForRowIndex(rowIndex){
   if(!workbookData || !Number.isInteger(rowIndex) || rowIndex<1) return "";
-
-  // सामान्यतः एक मास-सीमा 30 दिनों के भीतर मिल जाएगी; 45 दिन safety margin है।
-  const backLimit = Math.max(2,rowIndex-45);
-  for(let i=rowIndex;i>=backLimit;i--){
-    if(isKrishnaPakshaBoundaryRow(i)){
-      const m = purnimantaMonthFromBoundaryRow(i);
-      if(m) return m;
-    }
-  }
-
-  /*
-    वर्षारम्भ जैसे edge case में यदि पिछली सीमा workbook में नहीं है,
-    अगली कृष्णपक्ष-सीमा से वर्तमान मास एक मास पीछे लिया जाता है।
-  */
-  const fwdLimit = Math.min(workbookData.length-1,rowIndex+45);
-  for(let i=rowIndex+1;i<=fwdLimit;i++){
-    if(isKrishnaPakshaBoundaryRow(i)){
-      const nextMonth = purnimantaMonthFromBoundaryRow(i);
-      const currentMonth = previousPurnimantaMonth(nextMonth);
-      if(currentMonth) return currentMonth;
-    }
-  }
-
-  // raw Excel मास-स्तम्भ row[1] पर fallback नहीं किया जाता।
-  // सीमा उपलब्ध न हो तो गलत मास दिखाने की अपेक्षा अनिर्णीत लौटाना सुरक्षित है।
-  return "";
+  const state=buildIndependentMaasCalculation();
+  return state.ok ? (state.monthByRow.get(rowIndex) || "") : "";
 }
 
 /* =========================================================
@@ -6843,15 +6950,143 @@ function computedPurnimantaMonthForRowIndex(rowIndex){
    1) Excel का B-column = workbookData[row][1]
    2) स्वतंत्र गणना = computedPurnimantaMonthForRowIndex(rowIndex)
    3) दोनों समान हों तभी मास प्रकाशित किया जाता है।
-   4) असमानता पर सार्वजनिक पृष्ठ पर गलत मास न दिखाकर "मास-अनिर्णीत"
-      रखा जाता है और admin diagnostic दर्ज होता है।
-   5) ?admin=1 एक बार खोलने पर इसी browser में admin diagnostic panel
+   4) मास-असमानता पर visitor को कोई technical message नहीं दिखता; पक्ष स्वतंत्र सूर्य-चन्द्र गणना से दिखता है।
+      पूरा mismatch-विवरण केवल admin diagnostic में जाता है।
+   5) स्वतंत्र गणना वर्तमान location की D-column boundary से होती है; B-column उसका input नहीं है।
+   6) ?admin=1 एक बार खोलने पर इसी browser में admin diagnostic panel
       सक्रिय रहता है; ?admin=0 से बन्द किया जा सकता है।
 ========================================================= */
 const MAAS_ADMIN_STORAGE_KEY = "jyotishiji.maasAdminMode";
 let MAAS_VERIFICATION_CACHE = new Map();
 let MAAS_VERIFICATION_STATE = null;
 const MAAS_MISMATCH_NOTIFIED = new Set();
+
+
+/* =========================================================
+   पक्ष का खगोलीय निर्धारण एवं द्वि-सत्यापन
+   ---------------------------------------------------------
+   सूर्य से चन्द्र की निरपेक्ष दीर्घांश-दूरी (0..360):
+   0° <= दूरी < 180°   => शुक्लपक्ष
+   180° <= दूरी < 360° => कृष्णपक्ष
+
+   D-column की तिथि से मिलने वाला पक्ष केवल cross-check है।
+   visitor को पक्ष कभी technical "अनिर्णीत" रूप में नहीं दिखाया जाता।
+   किसी असमानता की सूचना केवल admin diagnostic में जाती है।
+========================================================= */
+let PAKSHA_VERIFICATION_STATE = null;
+const PAKSHA_MISMATCH_NOTIFIED = new Set();
+
+function pakshaFromTithiNumber(value){
+  const n = Number(value);
+  if(!Number.isFinite(n)) return "";
+  if(n>=1 && n<=15) return "शुक्लपक्ष";
+  if(n>=16 && n<=30) return "कृष्णपक्ष";
+  return "";
+}
+
+function astronomicalPakshaFromRow(row){
+  if(!row) return "";
+  const sun = odayikaParseRashiSpashta(row[12]);
+  const moon = odayikaParseRashiSpashta(row[14]);
+  if(!sun || !moon || !Number.isFinite(sun.longitude) || !Number.isFinite(moon.longitude)) return "";
+
+  const elongation = odayikaNormalize360(moon.longitude - sun.longitude);
+  return elongation < 180 ? "शुक्लपक्ष" : "कृष्णपक्ष";
+}
+
+function pakshaVerificationAtRow(rowIndex){
+  if(!workbookData || !Number.isInteger(rowIndex) || rowIndex<1){
+    return {ok:false,astronomical:"",tithiBased:"",date:"",rowIndex,reason:"invalid-row"};
+  }
+
+  const row = workbookData[rowIndex] || [];
+  const astronomical = astronomicalPakshaFromRow(row);
+  const tithiBased = pakshaFromTithiNumber(row[3]);
+  const date = normalizeDate(row[0]) || String(row[0] ?? "");
+  const ok = !!astronomical && !!tithiBased && astronomical===tithiBased;
+
+  return {
+    ok,
+    astronomical,
+    tithiBased,
+    date,
+    rowIndex,
+    reason: ok ? "match" : (!astronomical ? "astronomical-empty" : (!tithiBased ? "tithi-empty" : "mismatch"))
+  };
+}
+
+function notifyPakshaMismatch(result,context="display"){
+  if(!result || result.ok) return;
+  const key = `${currentPlaceKey}|${result.rowIndex}|${context}`;
+  if(PAKSHA_MISMATCH_NOTIFIED.has(key)) return;
+  PAKSHA_MISMATCH_NOTIFIED.add(key);
+
+  if(maasAdminModeEnabled()){
+    console.error("[ADMIN पक्ष-सत्यापन असमानता]",{
+      place: currentPlaceKey,
+      date: result.date,
+      astronomical: result.astronomical,
+      tithiBased: result.tithiBased,
+      reason: result.reason,
+      context
+    });
+  }
+  renderMaasAdminWarning();
+}
+
+function verifiedPakshaForRowIndex(rowIndex,context="display"){
+  const result = pakshaVerificationAtRow(rowIndex);
+  if(!result.ok) notifyPakshaMismatch(result,context);
+
+  // पक्ष का प्रधान आधार सूर्य-चन्द्र दीर्घांश है।
+  // यदि किसी कारण वह उपलब्ध न हो तो D-column की तिथि fallback है।
+  return result.astronomical || result.tithiBased || "";
+}
+
+function runPakshaWorkbookAudit(){
+  PAKSHA_MISMATCH_NOTIFIED.clear();
+  const mismatches=[];
+  let checked=0;
+
+  for(let i=1;i<(workbookData || []).length;i++){
+    const row=workbookData[i] || [];
+    if(!normalizeDate(row[0])) continue;
+    const result=pakshaVerificationAtRow(i);
+    checked++;
+    if(!result.ok) mismatches.push(result);
+  }
+
+  const meta=placeMeta();
+  PAKSHA_VERIFICATION_STATE={
+    placeKey:currentPlaceKey,
+    placeName:meta?.name || currentPlaceName || "",
+    checked,
+    mismatches
+  };
+
+  if(maasAdminModeEnabled()){
+    window.__PANCHANGA_PAKSHA_VERIFICATION__={...PAKSHA_VERIFICATION_STATE};
+    if(mismatches.length){
+      console.error(
+        `[ADMIN पक्ष-सत्यापन] ${PAKSHA_VERIFICATION_STATE.placeName || currentPlaceKey}: ` +
+        `${mismatches.length}/${checked} rows में सूर्य-चन्द्र आधारित पक्ष और D-तिथि आधारित पक्ष असमान हैं।`,
+        window.__PANCHANGA_PAKSHA_VERIFICATION__
+      );
+    }else{
+      console.info(
+        `[ADMIN पक्ष-सत्यापन] ${PAKSHA_VERIFICATION_STATE.placeName || currentPlaceKey}: ` +
+        `${checked}/${checked} rows सत्यापित।`,
+        window.__PANCHANGA_PAKSHA_VERIFICATION__
+      );
+    }
+  }else{
+    try{ delete window.__PANCHANGA_PAKSHA_VERIFICATION__; }
+    catch(_){ window.__PANCHANGA_PAKSHA_VERIFICATION__=undefined; }
+  }
+
+  renderMaasAdminWarning();
+  return PAKSHA_VERIFICATION_STATE;
+}
 
 function maasAdminModeEnabled(){
   let requested = "";
@@ -6926,21 +7161,46 @@ function renderMaasAdminWarning(){
   const box = ensureMaasAdminWarningBox();
   if(!box) return;
 
-  if(!maasAdminModeEnabled() || !MAAS_VERIFICATION_STATE || !MAAS_VERIFICATION_STATE.mismatches.length){
+  const maasMismatches = MAAS_VERIFICATION_STATE?.mismatches || [];
+  const pakshaMismatches = PAKSHA_VERIFICATION_STATE?.mismatches || [];
+
+  if(!maasAdminModeEnabled() || (!maasMismatches.length && !pakshaMismatches.length)){
     box.hidden = true;
     box.textContent = "";
     return;
   }
 
-  const state = MAAS_VERIFICATION_STATE;
-  const preview = state.mismatches.slice(0,8).map(x =>
-    `${x.date}: B=${x.excel || "∅"}, गणना=${x.calculated || "∅"}`
-  ).join(" | ");
-  const more = state.mismatches.length > 8 ? ` | +${state.mismatches.length-8} अन्य` : "";
+  const parts=[];
 
-  box.textContent =
-    `ADMIN — मास-सत्यापन असमानता: ${state.placeName || state.placeKey || "स्थान"} में ` +
-    `${state.mismatches.length} row असमान। ${preview}${more}`;
+  if(maasMismatches.length){
+    const state=MAAS_VERIFICATION_STATE;
+    const preview=maasMismatches.slice(0,6).map(x =>
+      `${x.date}: B=${x.excel || "∅"}, गणना=${x.calculated || "∅"}`
+    ).join(" | ");
+    const more=maasMismatches.length>6 ? ` | +${maasMismatches.length-6} अन्य` : "";
+    const calcState=buildIndependentMaasCalculation();
+    const calcError=calcState && !calcState.ok && calcState.error
+      ? ` | गणना-त्रुटि: ${calcState.error}`
+      : "";
+    parts.push(
+      `मास: ${state?.placeName || state?.placeKey || "स्थान"} में ${maasMismatches.length} row असमान। ` +
+      `${preview}${more}${calcError}`
+    );
+  }
+
+  if(pakshaMismatches.length){
+    const state=PAKSHA_VERIFICATION_STATE;
+    const preview=pakshaMismatches.slice(0,6).map(x =>
+      `${x.date}: खगोलीय=${x.astronomical || "∅"}, D-तिथि=${x.tithiBased || "∅"}`
+    ).join(" | ");
+    const more=pakshaMismatches.length>6 ? ` | +${pakshaMismatches.length-6} अन्य` : "";
+    parts.push(
+      `पक्ष: ${state?.placeName || state?.placeKey || "स्थान"} में ${pakshaMismatches.length} row असमान। ` +
+      `${preview}${more}`
+    );
+  }
+
+  box.textContent = `ADMIN — सत्यापन असमानता: ${parts.join(" || ")}`;
   box.hidden = false;
 }
 
@@ -6950,14 +7210,17 @@ function notifyMaasMismatch(result,context="display"){
   if(MAAS_MISMATCH_NOTIFIED.has(key)) return;
   MAAS_MISMATCH_NOTIFIED.add(key);
 
-  console.error("[मास-सत्यापन असमानता]",{
-    place: currentPlaceKey,
-    date: result.date,
-    excelB: result.excel,
-    calculated: result.calculated,
-    reason: result.reason,
-    context
-  });
+  if(maasAdminModeEnabled()){
+    console.error("[ADMIN मास-सत्यापन असमानता]",{
+      place: currentPlaceKey,
+      date: result.date,
+      excelB: result.excel,
+      calculated: result.calculated,
+      reason: result.reason,
+      context,
+      independentCalculation: buildIndependentMaasCalculation()
+    });
+  }
   renderMaasAdminWarning();
 }
 
@@ -6991,20 +7254,27 @@ function runMaasWorkbookAudit(){
     mismatches
   };
 
-  // Browser console में सम्पूर्ण audit admin diagnostic के रूप में उपलब्ध रहे।
-  window.__PANCHANGA_MAAS_VERIFICATION__ = MAAS_VERIFICATION_STATE;
-
-  if(mismatches.length){
-    console.error(
-      `[मास-सत्यापन] ${MAAS_VERIFICATION_STATE.placeName || currentPlaceKey}: ` +
-      `${mismatches.length}/${checked} rows में Excel B और स्वतंत्र गणना असमान हैं।`,
-      mismatches
-    );
+  // विस्तृत diagnostic केवल admin-mode में browser console में प्रकाशित हो।
+  if(maasAdminModeEnabled()){
+    window.__PANCHANGA_MAAS_VERIFICATION__ = {
+      ...MAAS_VERIFICATION_STATE,
+      independentCalculation: buildIndependentMaasCalculation()
+    };
+    if(mismatches.length){
+      console.error(
+        `[ADMIN मास-सत्यापन] ${MAAS_VERIFICATION_STATE.placeName || currentPlaceKey}: ` +
+        `${mismatches.length}/${checked} rows में Excel B और स्वतंत्र गणना असमान हैं।`,
+        window.__PANCHANGA_MAAS_VERIFICATION__
+      );
+    }else{
+      console.info(
+        `[ADMIN मास-सत्यापन] ${MAAS_VERIFICATION_STATE.placeName || currentPlaceKey}: ` +
+        `${checked}/${checked} rows सत्यापित।`,
+        window.__PANCHANGA_MAAS_VERIFICATION__
+      );
+    }
   }else{
-    console.info(
-      `[मास-सत्यापन] ${MAAS_VERIFICATION_STATE.placeName || currentPlaceKey}: ` +
-      `${checked}/${checked} rows सत्यापित।`
-    );
+    try{ delete window.__PANCHANGA_MAAS_VERIFICATION__; }catch(_){ window.__PANCHANGA_MAAS_VERIFICATION__=undefined; }
   }
 
   renderMaasAdminWarning();
@@ -9147,9 +9417,11 @@ async function loadSelectedFile(){
     ANNUAL_DECISION_CACHE = null;
     ANNUAL_DECISION_RUNNING = false;
     ANNUAL_DECISION_JOB_TOKEN++;
+    MAAS_CALCULATION_CACHE = null;
 
-    // Excel B और स्वतंत्र मास-गणना का पूरे workbook पर तत्काल द्वि-सत्यापन।
+    // Excel B बनाम स्वतंत्र स्थानीय मास-गणना तथा सूर्य-चन्द्र बनाम D-तिथि पक्ष का पूरे workbook पर सत्यापन।
     runMaasWorkbookAudit();
+    runPakshaWorkbookAudit();
 
     const auditTrigger=document.getElementById("festivalAuditTriggerWrap");
     if(auditTrigger) auditTrigger.hidden=true;
@@ -9201,15 +9473,12 @@ function showSelectedDate(){
   setText("placeHeading",meta.heading);
 
   /* मास-पक्ष */
-  const paksha =
-    !isNaN(tithiNumber)
-      ? (tithiNumber <= 15 ? "शुक्लपक्ष" : "कृष्णपक्ष")
-      : "";
+  const paksha = verifiedPakshaForRowIndex(rowIndex,"main-display");
 
   const verifiedMaas = verifiedPurnimantaMonthForRowIndex(rowIndex,"main-display");
   setText(
     "maasPaksha",
-    verifiedMaas ? (verifiedMaas + paksha) : (`मास-अनिर्णीत${paksha ? ` · ${paksha}` : ""}`)
+    verifiedMaas ? (verifiedMaas + paksha) : paksha
   );
 
   /* वार */
