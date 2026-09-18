@@ -2652,6 +2652,110 @@ html[lang="en"] .panchanga-column{
 }
 </style>
 
+
+<style id="language-accessibility-v2-20260918">
+/* Mobile header: वर्तमान चित्र/ऊँचाई यथावत्, केवल अक्षरानुपात थोड़ा बड़ा */
+@media (max-width:700px){
+  .site-header h1{
+    font-size:clamp(1.92rem,7.9vw,2.20rem) !important;
+    line-height:1.28 !important;
+    margin-bottom:10px !important;
+  }
+  .site-nav{gap:5px 13px !important}
+  .site-nav a{
+    font-size:1.08rem !important;
+    line-height:1.46 !important;
+    font-weight:700 !important;
+  }
+}
+@media (max-width:390px){
+  .site-header h1{font-size:1.96rem !important}
+  .site-nav{gap:4px 10px !important}
+  .site-nav a{font-size:1.03rem !important}
+}
+
+/* भाषा-स्मृति पंक्ति अधिक पठनीय */
+.remember-language-choice{
+  font-size:.86rem !important;
+  line-height:1.42 !important;
+}
+.remember-language-choice input{
+  width:17px !important;
+  height:17px !important;
+}
+@media(max-width:600px){
+  .remember-language-choice{
+    font-size:.86rem !important;
+    line-height:1.42 !important;
+  }
+}
+
+/* remembered होने पर checkbox-पंक्ति छिप सकती है; हिन्दी recovery अकेली compact रहे */
+.panchanga-language-preferences.remembered-language{
+  justify-content:flex-end;
+  background:transparent;
+  border-color:transparent;
+  padding-top:0;
+  padding-bottom:0;
+}
+
+/* Mobile: स्थान + दिनाङ्क + पञ्चाङ्ग देखें एक ही पंक्ति में */
+@media(max-width:600px){
+  .panchanga-selector-grid.india-mode,
+  .panchanga-selector-grid.foreign-mode{
+    grid-template-columns:minmax(88px,1fr) minmax(118px,1.12fr) minmax(88px,.86fr) !important;
+    gap:5px !important;
+    align-items:end !important;
+  }
+  .panchanga-selector-grid #countryField{
+    grid-column:1 / -1 !important;
+  }
+  .panchanga-selector-grid .panchanga-selector-field{
+    min-width:0 !important;
+  }
+  .panchanga-selector-grid .panchanga-selector-field label{
+    margin:0 0 2px !important;
+    font-size:.76rem !important;
+    line-height:1.25 !important;
+    white-space:nowrap;
+  }
+  .panchanga-selector-grid #fileLink,
+  .panchanga-selector-grid #datePicker,
+  .panchanga-selector-grid #selectorButton{
+    width:100% !important;
+    min-width:0 !important;
+    min-height:39px !important;
+    height:39px !important;
+    padding:4px 5px !important;
+    font-size:.84rem !important;
+    line-height:1.2 !important;
+  }
+  .panchanga-selector-grid #selectorButton{
+    grid-column:3 !important;
+    align-self:end !important;
+    white-space:nowrap;
+  }
+  .panchanga-selector-title{
+    font-size:1.02rem !important;
+    line-height:1.42 !important;
+  }
+}
+@media(max-width:370px){
+  .panchanga-selector-grid.india-mode,
+  .panchanga-selector-grid.foreign-mode{
+    grid-template-columns:minmax(82px,.95fr) minmax(112px,1.10fr) minmax(82px,.82fr) !important;
+    gap:4px !important;
+  }
+  .panchanga-selector-grid #fileLink,
+  .panchanga-selector-grid #datePicker,
+  .panchanga-selector-grid #selectorButton{
+    font-size:.79rem !important;
+    padding-left:4px !important;
+    padding-right:4px !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <header class="site-header">
@@ -2668,7 +2772,7 @@ html[lang="en"] .panchanga-column{
 <aside class="panchanga-column">
 
 <section class="panchanga-selector" aria-label="पञ्चाङ्ग चयन">
-  <p class="panchanga-selector-title">स्थान एवं दिनाङ्कानुसार पञ्चाङ्ग</p>
+  <p class="panchanga-selector-title">भाषा, स्थान एवं दिनाङ्कानुसार पञ्चाङ्ग</p>
 
   <div class="panchanga-language-bar">
     <label class="panchanga-language-fixed" for="panchangaLanguage">भाषा / Language</label>
@@ -3533,7 +3637,7 @@ const PANCHANGA_UI_TRANSLATIONS = {
 
   en:{
     "पञ्चाङ्ग-भाषा":"Pañcāṅga language",
-    "स्थान एवं दिनाङ्कानुसार पञ्चाङ्ग":"Pañcāṅga by place and date",
+    "स्थान एवं दिनाङ्कानुसार पञ्चाङ्ग":"Pañcāṅga by place and date","भाषा, स्थान एवं दिनाङ्कानुसार पञ्चाङ्ग":"Pañcāṅga by language, place and date",
     "भारत":"India","विदेश":"Outside India",
     "देश / क्षेत्र":"Country / Region","देश / क्षेत्र चुनें":"Choose country / region",
     "स्थान":"Place","स्थान चुनें":"Choose place","दिनाङ्क":"Date","पञ्चाङ्ग देखें":"View Pañcāṅga",
@@ -3580,7 +3684,7 @@ const PANCHANGA_UI_TRANSLATIONS = {
   hi:{"पर्व / व्रत / विशेष विचार":"पर्व / व्रत / विशेष विचार","निर्णय का आधार देखें ▼":"निर्णय का आधार देखें ▼","वार्षिक पर्व एवं व्रत-निर्णय":"वार्षिक पर्व एवं व्रत-निर्णय"},
   sa:{
     "पञ्चाङ्ग-भाषा":"पञ्चाङ्गभाषा",
-    "स्थान एवं दिनाङ्कानुसार पञ्चाङ्ग":"स्थानदिनाङ्कानुसारं पञ्चाङ्गम्",
+    "स्थान एवं दिनाङ्कानुसार पञ्चाङ्ग":"स्थानदिनाङ्कानुसारं पञ्चाङ्गम्","भाषा, स्थान एवं दिनाङ्कानुसार पञ्चाङ्ग":"भाषा-स्थान-दिनाङ्कानुसारं पञ्चाङ्गम्",
     "भारत":"भारतम्","विदेश":"विदेशः","देश / क्षेत्र":"देशः / प्रदेशः",
     "देश / क्षेत्र चुनें":"देशं / प्रदेशं चिनुत","स्थान":"स्थानम्","स्थान चुनें":"स्थानं चिनुत",
     "दिनाङ्क":"दिनाङ्कः","पञ्चाङ्ग देखें":"पञ्चाङ्गं पश्यन्तु",
@@ -3827,6 +3931,127 @@ Object.assign(PANCHANGA_UI_TRANSLATIONS.sa,{
   "काशीस्थ पञ्चाङ्ग":"काशीस्थं पञ्चाङ्गम्"
 });
 
+
+/* Full-page curated prose translations: English and Sanskrit. */
+Object.assign(PANCHANGA_UI_TRANSLATIONS.en,{
+  "आगामी पर्व / विशेष विचार":"Upcoming Parva / special considerations",
+  "पूरा पढ़ें ▼":"Read fully ▼",
+  "संक्षिप्त करें ▲":"Collapse ▲",
+  "पञ्चाङ्ग के आधार":"Basis of the Pañcāṅga",
+  "(संक्षिप्त सूचना)":"(brief note)",
+  "पञ्चाङ्ग दो शब्दों-“पञ्च” व “अङ्ग” से मिलकर बना है। अतः इसमें मुख्यतः पाँच अङ्गों-वार, तिथि, नक्षत्र, करण व योग का समावेश होता है।":"Pañcāṅga is formed from the two words “pañca” and “aṅga”. Its five principal limbs are Vāra, Tithi, Nakṣatra, Karaṇa and Yoga.",
+  "पञ्चाङ्ग-निर्माण का आधार स्थानीय सूर्योदय होता है, जो स्थानानुसार भिन्न होता है; इसलिये पूरे भारत के लिये कोई एक पञ्चाङ्ग लागू नहीं किया जा सकता। यहाँ प्रदर्शित श्रीसूर्यसिद्धान्तीय पञ्चाङ्ग भी स्थानीय सूर्योदय-आधारित है। अतः शुद्ध पञ्चाङ्ग देखने के लिये उपयोगकर्ता को अपने निकटतम स्थान का चयन करना चाहिये।":"The basis for constructing a Pañcāṅga is the local sunrise, which varies by place; therefore one single Pañcāṅga cannot be applied uniformly to all of India. The Śrī-Sūryasiddhānta Pañcāṅga shown here is likewise based on local sunrise. For the appropriate local Pañcāṅga, the user should select the nearest available place.",
+  "श्रीसूर्यसिद्धान्तीय व दृक्पक्षीय पञ्चाङ्ग में अन्तर":"Difference between the Śrī-Sūryasiddhānta and Dṛkpākṣa Pañcāṅgas",
+  "जिस प्रकार प्लेनेटोरियम में ब्रह्माण्ड, सौरमण्डल, आकाशगंगा आदि के कृत्रिम प्रतिरूप दिखाये जाते हैं, जबकि उनका वास्तविक अस्तित्व अन्यत्र होता है; उसी प्रकार भूलोक के पाञ्चभौतिक ग्रहपिण्ड ज्योतिषीय ग्रहदेवताओं के प्रतिनिधि हैं। ग्रहदेवता भुवर्लोक में रहते हैं और जीवों के कर्मफल देने की शक्ति उन्हीं में होती है, भौतिक ग्रहपिण्डों में नहीं।":"Just as a planetarium displays artificial representations of the universe, solar system and galaxy while the actual objects exist elsewhere, this exposition regards the physical planetary bodies in Bhūloka as representatives of the astrological Graha-devatās. It places the Graha-devatās in Bhuvarloka and attributes the dispensation of karmic results to them rather than to the physical planetary bodies.",
+  "आधुनिक दूरबीनों से भौतिक ग्रहपिण्ड देखे जा सकते हैं, ज्योतिषीय नवग्रह नहीं। खगोलीय कार्यों के लिये Astronomical गणना तथा ज्योतिषीय फल-विचार के लिये Astrological गणना का अपना पृथक् प्रयोजन है।":"Modern telescopes can observe physical planetary bodies, not the astrological Navagrahas. Astronomical computation and astrological computation therefore serve distinct purposes in this exposition.",
+  "आजकल के अधिकांश सॉफ्टवेयर भौतिक ग्रहपिण्डों की गणना पर आधारित होते हैं, इसलिये उनके मान श्रीसूर्यसिद्धान्तीय गणना से भिन्न होते हैं।":"Most modern software is based on computations of physical planetary bodies, so its values can differ from Śrī-Sūryasiddhānta computation.",
+  "जहाँ रॉकेट आदि के लिये ग्रहों की भौतिक स्थिति जाननी हो, वहाँ खगोलीय (Astronomical) गणना आवश्यक है; परन्तु जहाँ ज्योतिष के माध्यम से अदृष्ट फल का विचार करना हो, वहाँ ज्योतिषीय (Astrological) गणना की आवश्यकता होती है।":"Where the physical positions of planets are required, for example for rockets and related purposes, astronomical computation is required; where unseen results are considered through Jyotiṣa, astrological computation is used.",
+  "ग्रहण आदि प्रत्यक्ष खगोलीय घटनाओं के लिये दृग्पक्षीय गणना ग्रहण की जा सकती है, परन्तु जन्मकुण्डली-निर्माण आदि ज्योतिषीय कार्यों में दृग्पक्षीय गणना का ग्रहण नहीं करना चाहिये।":"For directly observable astronomical events such as eclipses, Dṛkpākṣa computation may be used; this exposition does not adopt it for astrological work such as the construction of a birth horoscope.",
+  "ज्योतिष का प्रमाण ग्रहों का दिखाई देना नहीं, बल्कि फलित की सत्यता है। अतः ज्योतिषीय प्रयोजनों के लिये श्रीसूर्यसिद्धान्तीय गणना ही प्रयुक्त होनी चाहिये।":"In this view, the test of Jyotiṣa is not merely the visibility of the planets but the correctness of its results; accordingly, Śrī-Sūryasiddhānta computation is prescribed here for astrological purposes.",
+  "भारतीय काल गणना के आधार":"Foundations of Indian time reckoning",
+  "और संवत् २०८३ का वासन्तीय नवरात्र":"and the Vāsantīya Navarātra of Saṃvat 2083",
+  "१. भारतीय नववर्ष और वासन्तीय नवरात्र":"1. Indian New Year and Vāsantīya Navarātra",
+  "भारतीय नववर्ष चैत्र शुक्लपक्ष प्रतिपदा से प्रारम्भ होता है, परन्तु इस वर्ष प्रतिपदा का क्षय होने के कारण नववर्ष चैत्र शुक्लपक्ष द्वितीया तदनुसार अंग्रेज़ी कैलेण्डर के अनुसार २० मार्च २०२६, शुक्रवार को इस नववर्ष का आरम्भ हो रहा है।":"The Indian New Year begins with Caitra Śukla Pratipadā. In this year, because Pratipadā is kṣaya, the New Year begins on Caitra Śukla Dvitīyā, corresponding here to Friday, 20 March 2026 in the Gregorian calendar.",
+  "२. भारतीय कालमान के नौ प्रकार":"2. Nine kinds of Indian kālamāna",
+  "समय की गणना के लिए ज्योतिष में ९ प्रकार के कालमान (गणना की विधियों) की चर्चा है।":"Jyotiṣa discusses nine kinds of kālamāna, or methods of reckoning time.",
+  "ब्राह्मकाल (ब्राह्मवर्ष), दिव्यवर्ष (देवताओं का वर्ष), पैत्र्य (पितरों का) वर्ष, प्राजापत्य (मन्वादि) वर्ष, गौरव (बार्हस्पत्य) वर्ष, सौरवर्ष, सावन वर्ष, चान्द्र और नाक्षत्र वर्ष - ये नौ प्रकार के कालमान कहे गए हैं।":"These nine are Brāhma, Divya, Paitrya, Prājāpatya, Gaurava (Bārhaspatya), Saura, Sāvana, Cāndra and Nākṣatra reckoning.",
+  "इन नौ प्रकार के कालमान में मनुष्यों के प्रयोग में आने वाले केवल चार - सौरमान, सावनमान, चान्द्रमान और नाक्षत्रमान - ही होते हैं। बार्हस्पत्य काल दैनिक उपयोग में नहीं आता बल्कि इसका उपयोग षष्ट्यब्द ज्ञान के लिए होता है। इसी प्रकार ब्राह्म मान ब्रह्मा जी की आयु की गणना करने के काम आता है, दिव्यवर्ष से देवताओं के वर्षों की गणना होती है और प्राजापत्य वर्ष भी मानवेतर गणना में उपयोगी होता है।":"Of these nine, four are used in ordinary human reckoning: Saura, Sāvana, Cāndra and Nākṣatra. Bārhaspatya reckoning is used for the sixty-year cycle rather than daily use. Brāhma reckoning is used for the lifespan of Brahmā, Divya years for the years of the devas, and Prājāpatya reckoning for other non-human scales.",
+  "३. मनुष्यों के व्यवहार में प्रयुक्त चार कालमान":"3. Four kālamānas used in human practice",
+  "कालमान":"Kālamāna",
+  "मुख्य उपयोग":"Principal use",
+  "सौरमान":"Sauramāna",
+  "वर्ष, अयन और ऋतु आदि की गणना":"Reckoning of year, ayana, ṛtu, etc.",
+  "चान्द्रमान":"Cāndramāna",
+  "मास और तिथि की गणना":"Reckoning of Māsa and Tithi",
+  "सावनमान":"Sāvanamāna",
+  "व्रत, उपवास, संस्कार आदि कर्मों की गणना":"Reckoning for Vrata, Upavāsa, Saṃskāra and related rites",
+  "नाक्षत्रमान":"Nākṣatramāna",
+  "घटी-पल आदि का विचार":"Reckoning of Ghaṭī, Pala, etc.",
+  "४. सौर, चान्द्र, नाक्षत्र और सावन दिन":"4. Saura, Cāndra, Nākṣatra and Sāvana days",
+  "जितने समय में सूर्य एक अंश चलते हैं वह एक सौर दिन कहा जाता है, सूर्य और चन्द्रमा के बीच १२ अंश की कोणीय दूरी को एक तिथि कहते हैं और इस मान को एक चान्द्र दिन कहते हैं।":"The time in which the Sun advances by one degree is described here as a Saura day. An angular separation of 12 degrees between the Sun and Moon constitutes one Tithi, taken as a Cāndra day.",
+  "एक नक्षत्र के आरम्भ से उसकी समाप्ति तक का समय एक नाक्षत्र दिन कहा जाता है और एक सूर्योदय से दूसरे सूर्योदय के मान को एक सावन दिन कहते हैं। रविवार, सोमवार आदि की गणना सावन मान के अन्तर्गत आती है।":"The interval from the beginning to the end of a Nakṣatra is described as a Nākṣatra day, while the interval from one sunrise to the next is a Sāvana day. Vāras such as Sunday and Monday are reckoned within the Sāvana system.",
+  "५. वारप्रवृत्ति का शास्त्रीय नियम":"5. Śāstric rule for Vāra-pravṛtti",
+  "वारप्रवृत्ति (रविवार, सोमवार, भौमवार आदि) सूर्योदय से आरम्भ होकर अगले सूर्योदय के पूर्व तक होती है, अतः वार को इसी प्रकार समझना चाहिए। आजकल व्रतादि में प्रायः लोग रात्रि के १२ बजे के बाद दिन का परिवर्तन मानकर व्रत का पारण करने के उद्देश्य से आहार ग्रहण कर लेते हैं, यह सर्वथा अनुचित है। अंग्रेजी दिनाङ्क अंग्रेजी पद्धति के अनुसार मानना चाहिए जबकि दिन (वार) सूर्योदय से अगले सूर्योदय तक; इसका ध्यान रखें।":"Vāra-pravṛtti (Sunday, Monday, Bhaumavāra, etc.) begins at sunrise and continues until before the next sunrise; Vāra should therefore be understood in that manner. For Vrata and related observances, this text does not treat midnight as the change of Vāra for ritual purposes. The Gregorian date follows the Gregorian convention, whereas Vāra runs from one sunrise to the next.",
+  "६. विभिन्न कालमानों का प्रयोग":"6. Use of the different kālamānas",
+  "वर्ष, अयन, ऋतु आदि की गणना सौरमान से, मास और तिथि की गणना चान्द्रमान से, व्रत, उपवास, संस्कार आदि कर्मों के लिए गणना सावन मान से और घटी-पल आदि का विचार नाक्षत्र मान से करना चाहिये।":"Year, ayana and ṛtu are reckoned by Sauramāna; Māsa and Tithi by Cāndramāna; Vrata, Upavāsa, Saṃskāra and related rites by Sāvanamāna; and Ghaṭī, Pala and related measures by Nākṣatramāna.",
+  "७. देवताओं और असुरों का दिन-रात्रि":"7. Day and night of the Devas and Asuras",
+  "मकर राशि से लेकर मिथुन राशि तक सूर्य के रहने को देवताओं का दिन कहते हैं, और इसे ही सौम्यायन भी कहते हैं। इसी प्रकार कर्क से लेकर धनु राशि तक सूर्य के रहने पर असुरों का दिन होता है, जो याम्यायन कहा जाता है।":"The Sun’s passage from Makara Rāśi through Mithuna Rāśi is called the day of the Devas and is also termed Saumyāyana. Its passage from Karka through Dhanu is called the day of the Asuras, termed Yāmyāyana.",
+  "देवताओं का दिन असुरों की रात्रि होती है, इसी प्रकार असुरों का दिन देवताओं की रात्रि कही जाती है और ये छह-छह महीनों के होते हैं। देवताओं और असुरों के इस दिन-रात्रि को मिलाकर एक दिव्य दिन होता है, जिससे दिव्य वर्ष की गणना होती है। इस प्रकार मानवों के ३६० वर्ष देवताओं (और असुरों का भी) एक वर्ष होता है।":"The day of the Devas is the night of the Asuras, and the day of the Asuras is the night of the Devas; each lasts six months. Together these form one divine day-night, from which the divine year is reckoned. Thus 360 human years constitute one year of the Devas (and likewise of the Asuras).",
+  "मेषसंक्रान्ति (जो आजकल सामान्यतः १३ से १५ अप्रैल के मध्य पड़ती है) देवताओं का मध्यदिवस होती है। मकर संक्रान्ति आजकल १४-१५ जनवरी को होती है और कर्क संक्रान्ति १५-१६ जुलाई के आसपास होती है।":"Meṣa Saṅkrānti (currently generally falling between 13 and 15 April) is the midday point of the Devas. Makara Saṅkrānti currently occurs around 14–15 January and Karka Saṅkrānti around 15–16 July.",
+  "८. षष्ट्यब्द संवत्सर और “रौद्र” संवत्सर":"8. The sixty-year cycle and the “Raudra” Saṃvatsara",
+  "प्रभावादि कुल ६० संवत्सर होते हैं, जिनकी गणना बृहस्पति से की जाती है। इस वर्ष श्रीसूर्यसिद्धान्तीय गणना से स्पष्ट बार्हस्पत्य मान के अनुसार वर्षपर्यन्त संकल्प आदि में “रौद्र” नामक संवत्सर का प्रयोग होगा।":"There are sixty Saṃvatsaras beginning with Prabhava, reckoned in relation to Bṛhaspati. According to the Bārhaspatya measure obtained here from Śrī-Sūryasiddhānta computation, the Saṃvatsara-name “Raudra” is to be used in Saṅkalpa and related contexts throughout this year.",
+  "त्रिकाल-सन्ध्योपासन आरम्भकाल":"Starting times for Trikāla-sandhyopāsanā",
+  "प्रमाणग्रन्थ":"Source texts",
+  "टिप्पणी":"Note",
+  "प्रमाणग्रन्थ — विश्वामित्रस्मृति · श्रीमद्देवीभागवत · संस्काररत्नमाला · सत्सङ्गिजीवन":"Source texts — Viśvāmitrasmṛti · Śrīmaddevībhāgavata · Saṃskāraratnamālā · Satsaṅgijīvana",
+  "टिप्पणी — प्रस्तुत काल सन्ध्योपासन के मुख्य काल हैं, जिन्हें शास्त्रोक्त उत्तम, मध्यम और अधम भेद के अनुसार दिया गया है। यज्ञोपवीत धारण करने वाले सन्ध्योपासनाधिकारी को सन्ध्याकाल आरम्भ होने से कुछ मिनट पूर्व ही नित्यकर्मादि आवश्यक दैनिक क्रियाएँ सम्पन्न करके सन्ध्योपासन हेतु आसन पर बैठ जाना चाहिये।":"Note — These are the principal times for Sandhyopāsanā, shown according to the śāstric divisions Uttama, Madhyama and Adhama. A qualified practitioner who wears the yajñopavīta should complete the necessary daily duties a few minutes before the Sandhyā period begins and be seated for Sandhyopāsanā.",
+  "यदि किसी कारण सन्ध्योपासन का मुख्यकाल व्यतीत हो जाए तो केवल कालातिक्रम के कारण उसका परित्याग नहीं करना चाहिये। शास्त्र में कालातिक्रम होने पर प्रायश्चित्तपूर्वक पश्चात् भी सन्ध्या करने का विधान है; अतः सर्वथा अकरण की अपेक्षा विलम्ब से किया गया अनुष्ठान श्रेयस्कर है। कालातिक्रम की मात्रा के अनुसार प्राणायामरूप प्रायश्चित्त का विधान भी प्राप्त होता है; अतः जितना विलम्ब हुआ हो, उसकी मात्रा के अनुसार प्रायश्चित्तस्वरूप प्राणायाम करके सन्ध्योपासन करनी चाहिये।":"If the principal period of Sandhyopāsanā has passed for some reason, the observance should not be abandoned merely because of the lapse of time. The texts prescribe performing Sandhyā even later, preceded by the prescribed prāyaścitta; delayed performance is therefore preferable to complete omission. A prāṇāyāma-based prāyaścitta proportionate to the delay is also prescribed; accordingly, the prescribed prāṇāyāma should be performed as prāyaścitta before Sandhyopāsanā.",
+  "उत्तम काल में सन्ध्योपासन आरम्भ करने के पश्चात् जपादि को उसी काल-सीमा के भीतर ही समाप्त करना आवश्यक है — ऐसा कोई पृथक् निर्णय प्राप्त नहीं होता। अतः उत्तम काल में आरम्भ करने के बाद जपादि एक मुहूर्त्त से आगे भी चल सकते हैं; प्रातः सूर्योदय के पश्चात् इच्छानुसार तथा सायंकाल सूर्यास्त के पश्चात् अधिकतम डेढ़ घण्टे तक जपादि किये जा सकते हैं।":"No separate rule has been found requiring Japa and related acts, once Sandhyopāsanā has begun in the Uttama period, to be completed within that same period. Thus after beginning in the Uttama period, Japa may continue beyond one Muhūrta; in the morning it may continue after sunrise as desired, and in the evening it may continue for at most one and a half hours after sunset.",
+  "अनुपनीत, अर्थात् जिनका यज्ञोपवीत-संस्कार नहीं हुआ है, तथा स्त्रियों को सन्ध्याकाल में वैदिक मन्त्रों के स्थान पर अपनी योग्यता अथवा अभिरुचि के अनुसार पौराणिक मन्त्रों से इष्टदेव अथवा देवपूजन करना चाहिये।":"Those who are Anupanīta, i.e. who have not undergone the yajñopavīta-saṃskāra, and women should, at Sandhyā time, worship their Iṣṭadevatā or perform Devapūjana with Purāṇic mantras according to eligibility or inclination, instead of Vedic mantras.",
+  "दिनमान + रात्रिमान = सावन-अहोरात्र":"Dinamāna + Rātrimāna = Sāvana-ahorātra",
+  "क्रम १–१५ दिवामुहूर्त्त तथा १६–३० रात्रिमुहूर्त्त हैं। जहाँ पृथक् विशेष संज्ञा उपलब्ध है, उसे नाम के साथ कोष्ठक में दिया गया है।":"Numbers 1–15 are Divā-muhūrtas and 16–30 are Rātri-muhūrtas. Where a separate special designation is available, it is shown in parentheses with the name.",
+  "उपरोक्त कालमान में दिन के पाँचों भागों की शास्त्रीय संज्ञाएँ प्राप्त हैं परन्तु बहुत प्रयास के बाद भी अभीतक रात्रि के पाँचों भागों के पृथक् सार्वभौम नाम प्राप्त नहीं हो पाए हैं, अतः जहाँ निश्चित नाम उपलब्ध नहीं है वहाँ तृतीय, चतुर्थ और पञ्चम भाग लिखा गया है।":"For the five divisions of the day, śāstric designations are available. Despite extensive searching, separate universally attested names for all five divisions of the night have not yet been established; therefore, where a definite name is unavailable, the labels third, fourth and fifth division are used."
+});
+Object.assign(PANCHANGA_UI_TRANSLATIONS.sa,{
+  "आगामी पर्व / विशेष विचार":"आगामिपर्वाणि / विशेषविचारः",
+  "पूरा पढ़ें ▼":"सम्पूर्णं पठन्तु ▼",
+  "संक्षिप्त करें ▲":"संक्षेपयन्तु ▲",
+  "पञ्चाङ्ग के आधार":"पञ्चाङ्गस्य आधाराः",
+  "(संक्षिप्त सूचना)":"(संक्षिप्तसूचना)",
+  "पञ्चाङ्ग दो शब्दों-“पञ्च” व “अङ्ग” से मिलकर बना है। अतः इसमें मुख्यतः पाँच अङ्गों-वार, तिथि, नक्षत्र, करण व योग का समावेश होता है।":"पञ्चाङ्गम् “पञ्च” तथा “अङ्ग” इति पदद्वयेन निर्मितम्। अतः अस्मिन् मुख्यतया वारः, तिथिः, नक्षत्रम्, करणम्, योगश्च—एतानि पञ्च अङ्गानि समाविष्टानि भवन्ति।",
+  "पञ्चाङ्ग-निर्माण का आधार स्थानीय सूर्योदय होता है, जो स्थानानुसार भिन्न होता है; इसलिये पूरे भारत के लिये कोई एक पञ्चाङ्ग लागू नहीं किया जा सकता। यहाँ प्रदर्शित श्रीसूर्यसिद्धान्तीय पञ्चाङ्ग भी स्थानीय सूर्योदय-आधारित है। अतः शुद्ध पञ्चाङ्ग देखने के लिये उपयोगकर्ता को अपने निकटतम स्थान का चयन करना चाहिये।":"पञ्चाङ्गनिर्माणस्य आधारः स्थानीयसूर्योदयः भवति, स च स्थानभेदेन भिन्नः। अतः समग्रभारताय एकमेव पञ्चाङ्गं सर्वत्र प्रवर्तयितुं न शक्यते। अत्र प्रदर्शितं श्रीसूर्यसिद्धान्तीयपञ्चाङ्गमपि स्थानीयसूर्योदयाधारितम् अस्ति। अतः यथास्थानं शुद्धं पञ्चाङ्गं द्रष्टुं प्रयोक्त्रा स्वस्य समीपतमं उपलब्धस्थानं चयनीयम्।",
+  "श्रीसूर्यसिद्धान्तीय व दृक्पक्षीय पञ्चाङ्ग में अन्तर":"श्रीसूर्यसिद्धान्तीय-दृक्पक्षीयपञ्चाङ्गयोः अन्तरम्",
+  "जिस प्रकार प्लेनेटोरियम में ब्रह्माण्ड, सौरमण्डल, आकाशगंगा आदि के कृत्रिम प्रतिरूप दिखाये जाते हैं, जबकि उनका वास्तविक अस्तित्व अन्यत्र होता है; उसी प्रकार भूलोक के पाञ्चभौतिक ग्रहपिण्ड ज्योतिषीय ग्रहदेवताओं के प्रतिनिधि हैं। ग्रहदेवता भुवर्लोक में रहते हैं और जीवों के कर्मफल देने की शक्ति उन्हीं में होती है, भौतिक ग्रहपिण्डों में नहीं।":"यथा तारामण्डलगृहे ब्रह्माण्ड-सौरमण्डल-आकाशगङ्गादीनां कृत्रिमप्रतिरूपाणि प्रदर्श्यन्ते, यद्यपि तेषां वास्तविकं स्वरूपम् अन्यत्र विद्यते; तथैव अयं लेखः भूलोकस्थितान् पाञ्चभौतिकग्रहपिण्डान् ज्योतिषीयग्रहदेवतानां प्रतिनिधिरूपेण विवृणोति। अस्य मतानुसारं ग्रहदेवताः भुवर्लोके वर्तन्ते, जीवकर्मफलप्रदानशक्तिश्च तास्वेव निहिता, न तु भौतिकग्रहपिण्डेषु।",
+  "आधुनिक दूरबीनों से भौतिक ग्रहपिण्ड देखे जा सकते हैं, ज्योतिषीय नवग्रह नहीं। खगोलीय कार्यों के लिये Astronomical गणना तथा ज्योतिषीय फल-विचार के लिये Astrological गणना का अपना पृथक् प्रयोजन है।":"आधुनिकदूरदर्शकैः भौतिकग्रहपिण्डाः द्रष्टुं शक्यन्ते, न तु ज्योतिषीयनवग्रहाः। खगोलीयकार्येषु खगोलगणनायाः, ज्योतिषीयफलविचारे च ज्योतिषगणनायाः पृथक् पृथक् प्रयोजनम् अस्ति।",
+  "आजकल के अधिकांश सॉफ्टवेयर भौतिक ग्रहपिण्डों की गणना पर आधारित होते हैं, इसलिये उनके मान श्रीसूर्यसिद्धान्तीय गणना से भिन्न होते हैं।":"अधुना अधिकांशाः सङ्गणककार्यक्रमाः भौतिकग्रहपिण्डगणनाधारिताः सन्ति; अतः तेषां मानानि श्रीसूर्यसिद्धान्तीयगणनातः भिन्नानि भवन्ति।",
+  "जहाँ रॉकेट आदि के लिये ग्रहों की भौतिक स्थिति जाननी हो, वहाँ खगोलीय (Astronomical) गणना आवश्यक है; परन्तु जहाँ ज्योतिष के माध्यम से अदृष्ट फल का विचार करना हो, वहाँ ज्योतिषीय (Astrological) गणना की आवश्यकता होती है।":"यत्र रॉकेटादीनां प्रयोजनाय ग्रहाणां भौतिकस्थितिः ज्ञातव्या, तत्र खगोलीयगणना आवश्यकी; यत्र तु ज्योतिषशास्त्रेण अदृष्टफलस्य विचारः क्रियते, तत्र ज्योतिषीयगणना अपेक्षिता।",
+  "ग्रहण आदि प्रत्यक्ष खगोलीय घटनाओं के लिये दृग्पक्षीय गणना ग्रहण की जा सकती है, परन्तु जन्मकुण्डली-निर्माण आदि ज्योतिषीय कार्यों में दृग्पक्षीय गणना का ग्रहण नहीं करना चाहिये।":"ग्रहणादीनां प्रत्यक्षखगोलीयघटनानां कृते दृक्पक्षीयगणना ग्राह्या भवितुम् अर्हति; किन्तु जन्मकुण्डलीनिर्माणादिषु ज्योतिषीयकार्येषु अयं लेखः दृक्पक्षीयगणनां न स्वीकरोति।",
+  "ज्योतिष का प्रमाण ग्रहों का दिखाई देना नहीं, बल्कि फलित की सत्यता है। अतः ज्योतिषीय प्रयोजनों के लिये श्रीसूर्यसिद्धान्तीय गणना ही प्रयुक्त होनी चाहिये।":"अस्य मतानुसारं ज्योतिषस्य प्रमाणं ग्रहाणां दृश्यता न, अपि तु फलितस्य सत्यता। अतः ज्योतिषीयप्रयोजनेषु श्रीसूर्यसिद्धान्तीयगणनैव प्रयोज्या।",
+  "भारतीय काल गणना के आधार":"भारतीयकालगणनायाः आधाराः",
+  "और संवत् २०८३ का वासन्तीय नवरात्र":"तथा संवत्सरस्य २०८३ वासन्तीयनवरात्रम्",
+  "१. भारतीय नववर्ष और वासन्तीय नवरात्र":"१. भारतीयनववर्षं वासन्तीयनवरात्रं च",
+  "भारतीय नववर्ष चैत्र शुक्लपक्ष प्रतिपदा से प्रारम्भ होता है, परन्तु इस वर्ष प्रतिपदा का क्षय होने के कारण नववर्ष चैत्र शुक्लपक्ष द्वितीया तदनुसार अंग्रेज़ी कैलेण्डर के अनुसार २० मार्च २०२६, शुक्रवार को इस नववर्ष का आरम्भ हो रहा है।":"भारतीयनववर्षस्य आरम्भः चैत्रशुक्लपक्षप्रतिपदायां भवति। किन्तु अस्मिन् वर्षे प्रतिपदः क्षयात् नववर्षः चैत्रशुक्लपक्षद्वितीयायाम्, तदनुसारं ख्रिस्तीयपञ्चाङ्गे २० मार्च २०२६ शुक्रवासरे, आरभ्यते।",
+  "२. भारतीय कालमान के नौ प्रकार":"२. भारतीयकालमानानां नव प्रकाराः",
+  "समय की गणना के लिए ज्योतिष में ९ प्रकार के कालमान (गणना की विधियों) की चर्चा है।":"समयगणनार्थं ज्योतिषशास्त्रे कालमानस्य अर्थात् गणनापद्धतेः नव प्रकाराः निरूपिताः सन्ति।",
+  "ब्राह्मकाल (ब्राह्मवर्ष), दिव्यवर्ष (देवताओं का वर्ष), पैत्र्य (पितरों का) वर्ष, प्राजापत्य (मन्वादि) वर्ष, गौरव (बार्हस्पत्य) वर्ष, सौरवर्ष, सावन वर्ष, चान्द्र और नाक्षत्र वर्ष - ये नौ प्रकार के कालमान कहे गए हैं।":"ब्राह्मम् (ब्राह्मवर्षम्), दिव्यम् (देववर्षम्), पैत्र्यम् (पितृवर्षम्), प्राजापत्यम् (मन्वादिवर्षम्), गौरवम् अर्थात् बार्हस्पत्यम्, सौरम्, सावनम्, चान्द्रम् तथा नाक्षत्रम्—एतानि नव कालमानानि उक्तानि।",
+  "इन नौ प्रकार के कालमान में मनुष्यों के प्रयोग में आने वाले केवल चार - सौरमान, सावनमान, चान्द्रमान और नाक्षत्रमान - ही होते हैं। बार्हस्पत्य काल दैनिक उपयोग में नहीं आता बल्कि इसका उपयोग षष्ट्यब्द ज्ञान के लिए होता है। इसी प्रकार ब्राह्म मान ब्रह्मा जी की आयु की गणना करने के काम आता है, दिव्यवर्ष से देवताओं के वर्षों की गणना होती है और प्राजापत्य वर्ष भी मानवेतर गणना में उपयोगी होता है।":"एतेषु नवसु कालमानेषु मानवव्यवहारे मुख्यतया चत्वारि—सौरमानम्, सावनमानम्, चान्द्रमानम्, नाक्षत्रमानं च—प्रयुज्यन्ते। बार्हस्पत्यमानं दैनिकव्यवहारे न, किन्तु षष्ट्यब्दचक्रज्ञानार्थं प्रयुज्यते। ब्राह्ममानं ब्रह्मण आयुर्गणनायै, दिव्यवर्षं देवानां वर्षगणनायै, प्राजापत्यमानं च मानवेतरकालगणनायै उपयुज्यते।",
+  "३. मनुष्यों के व्यवहार में प्रयुक्त चार कालमान":"३. मानवव्यवहारे प्रयुज्यमानानि चत्वारि कालमानानि",
+  "कालमान":"कालमानम्",
+  "मुख्य उपयोग":"मुख्यप्रयोगः",
+  "सौरमान":"सौरमानम्",
+  "वर्ष, अयन और ऋतु आदि की गणना":"वर्ष-अयन-ऋत्वादीनां गणना",
+  "चान्द्रमान":"चान्द्रमानम्",
+  "मास और तिथि की गणना":"मास-तिथ्योः गणना",
+  "सावनमान":"सावनमानम्",
+  "व्रत, उपवास, संस्कार आदि कर्मों की गणना":"व्रतोपवाससंस्कारादिकर्मणां गणना",
+  "नाक्षत्रमान":"नाक्षत्रमानम्",
+  "घटी-पल आदि का विचार":"घटी-पलादीनां विचारः",
+  "४. सौर, चान्द्र, नाक्षत्र और सावन दिन":"४. सौर-चान्द्र-नाक्षत्र-सावनदिनानि",
+  "जितने समय में सूर्य एक अंश चलते हैं वह एक सौर दिन कहा जाता है, सूर्य और चन्द्रमा के बीच १२ अंश की कोणीय दूरी को एक तिथि कहते हैं और इस मान को एक चान्द्र दिन कहते हैं।":"यावता कालेन सूर्यः एकमंशं गच्छति, तत् सौरदिनम् उच्यते। सूर्यचन्द्रयोः द्वादशांशात्मकं कोणान्तरं तिथिः कथ्यते, स एव चान्द्रदिनमानः।",
+  "एक नक्षत्र के आरम्भ से उसकी समाप्ति तक का समय एक नाक्षत्र दिन कहा जाता है और एक सूर्योदय से दूसरे सूर्योदय के मान को एक सावन दिन कहते हैं। रविवार, सोमवार आदि की गणना सावन मान के अन्तर्गत आती है।":"एकस्य नक्षत्रस्य आरम्भात् तस्य समाप्तिपर्यन्तः कालः नाक्षत्रदिनम् उच्यते; एकस्मात् सूर्योदयात् परसूर्योदयपर्यन्तः कालः सावनदिनम्। रविवासर-सोमवासरादीनां गणना सावनमानान्तर्गता।",
+  "५. वारप्रवृत्ति का शास्त्रीय नियम":"५. वारप्रवृत्तेः शास्त्रीयः नियमः",
+  "वारप्रवृत्ति (रविवार, सोमवार, भौमवार आदि) सूर्योदय से आरम्भ होकर अगले सूर्योदय के पूर्व तक होती है, अतः वार को इसी प्रकार समझना चाहिए। आजकल व्रतादि में प्रायः लोग रात्रि के १२ बजे के बाद दिन का परिवर्तन मानकर व्रत का पारण करने के उद्देश्य से आहार ग्रहण कर लेते हैं, यह सर्वथा अनुचित है। अंग्रेजी दिनाङ्क अंग्रेजी पद्धति के अनुसार मानना चाहिए जबकि दिन (वार) सूर्योदय से अगले सूर्योदय तक; इसका ध्यान रखें।":"वारप्रवृत्तिः (रविवासरः, सोमवासरः, भौमवासरः इत्यादिः) सूर्योदयात् आरभ्य परसूर्योदयात् पूर्वं यावत् भवति; अतः वारः एवं ज्ञेयः। अधुना व्रतादिषु केचन रात्रेः द्वादशवादनानन्तरं दिनपरिवर्तनं मत्वा पारणार्थम् आहारं गृह्णन्ति; एतत् सर्वथा अनुचितम्। ख्रिस्तीयदिनाङ्कः ख्रिस्तीयपद्धत्या ग्राह्यः, किन्तु वारः एकस्मात् सूर्योदयात् परसूर्योदयपर्यन्तम् इति स्मर्तव्यम्।",
+  "६. विभिन्न कालमानों का प्रयोग":"६. विभिन्नकालमानानां प्रयोगः",
+  "वर्ष, अयन, ऋतु आदि की गणना सौरमान से, मास और तिथि की गणना चान्द्रमान से, व्रत, उपवास, संस्कार आदि कर्मों के लिए गणना सावन मान से और घटी-पल आदि का विचार नाक्षत्र मान से करना चाहिये।":"वर्ष-अयन-ऋत्वादीनां गणना सौरमानेन, मास-तिथ्योर्गणना चान्द्रमानेन, व्रतोपवाससंस्कारादिकर्मणां गणना सावनमानेन, घटी-पलादीनां विचारश्च नाक्षत्रमानेन कर्तव्यः।",
+  "७. देवताओं और असुरों का दिन-रात्रि":"७. देवासुराणां दिनरात्रिः",
+  "मकर राशि से लेकर मिथुन राशि तक सूर्य के रहने को देवताओं का दिन कहते हैं, और इसे ही सौम्यायन भी कहते हैं। इसी प्रकार कर्क से लेकर धनु राशि तक सूर्य के रहने पर असुरों का दिन होता है, जो याम्यायन कहा जाता है।":"मकरराशेः मिथुनराशिपर्यन्तं सूर्यस्य स्थितिकालः देवानां दिनम् उच्यते, स एव सौम्यायनम्। कर्कराशेः धनुराशिपर्यन्तं सूर्यस्थितिकालः असुराणां दिनम्, याम्यायनं च कथ्यते।",
+  "देवताओं का दिन असुरों की रात्रि होती है, इसी प्रकार असुरों का दिन देवताओं की रात्रि कही जाती है और ये छह-छह महीनों के होते हैं। देवताओं और असुरों के इस दिन-रात्रि को मिलाकर एक दिव्य दिन होता है, जिससे दिव्य वर्ष की गणना होती है। इस प्रकार मानवों के ३६० वर्ष देवताओं (और असुरों का भी) एक वर्ष होता है।":"देवानां दिनम् असुराणां रात्रिः, असुराणां दिनं च देवानां रात्रिः; उभौ षण्मासात्मकौ। देवासुरयोः एतयोः दिनरात्र्योः योगेन एकं दिव्यदिनम् भवति, तेन दिव्यवर्षस्य गणना क्रियते। एवं मानवानां ३६० वर्षाणि देवानाम्, असुराणां च, एकं वर्षं भवति।",
+  "मेषसंक्रान्ति (जो आजकल सामान्यतः १३ से १५ अप्रैल के मध्य पड़ती है) देवताओं का मध्यदिवस होती है। मकर संक्रान्ति आजकल १४-१५ जनवरी को होती है और कर्क संक्रान्ति १५-१६ जुलाई के आसपास होती है।":"मेषसंक्रान्तिः (या अधुना सामान्यतः १३-१५ अप्रैलमध्यभागे भवति) देवानां मध्यदिवसः। मकरसंक्रान्तिः अधुना प्रायः १४-१५ जनवरीदिने, कर्कसंक्रान्तिश्च प्रायः १५-१६ जुलाईदिने भवति।",
+  "८. षष्ट्यब्द संवत्सर और “रौद्र” संवत्सर":"८. षष्ट्यब्दसंवत्सरः “रौद्र”संवत्सरश्च",
+  "प्रभावादि कुल ६० संवत्सर होते हैं, जिनकी गणना बृहस्पति से की जाती है। इस वर्ष श्रीसूर्यसिद्धान्तीय गणना से स्पष्ट बार्हस्पत्य मान के अनुसार वर्षपर्यन्त संकल्प आदि में “रौद्र” नामक संवत्सर का प्रयोग होगा।":"प्रभावादयः षष्टिः संवत्सराः सन्ति, येषां गणना बृहस्पतेः आधारेण क्रियते। अस्मिन् वर्षे श्रीसूर्यसिद्धान्तीयगणनया स्पष्टे बार्हस्पत्यमाने वर्षपर्यन्तं सङ्कल्पादिषु “रौद्र”नामकः संवत्सरः प्रयोज्यः।",
+  "त्रिकाल-सन्ध्योपासन आरम्भकाल":"त्रिकालसन्ध्योपासनायाः आरम्भकालाः",
+  "प्रमाणग्रन्थ":"प्रमाणग्रन्थाः",
+  "टिप्पणी":"टिप्पणी",
+  "प्रमाणग्रन्थ — विश्वामित्रस्मृति · श्रीमद्देवीभागवत · संस्काररत्नमाला · सत्सङ्गिजीवन":"प्रमाणग्रन्थाः — विश्वामित्रस्मृतिः · श्रीमद्देवीभागवतम् · संस्काररत्नमाला · सत्सङ्गिजीवनम्",
+  "टिप्पणी — प्रस्तुत काल सन्ध्योपासन के मुख्य काल हैं, जिन्हें शास्त्रोक्त उत्तम, मध्यम और अधम भेद के अनुसार दिया गया है। यज्ञोपवीत धारण करने वाले सन्ध्योपासनाधिकारी को सन्ध्याकाल आरम्भ होने से कुछ मिनट पूर्व ही नित्यकर्मादि आवश्यक दैनिक क्रियाएँ सम्पन्न करके सन्ध्योपासन हेतु आसन पर बैठ जाना चाहिये।":"टिप्पणी — एते सन्ध्योपासनायाः मुख्यकालाः सन्ति, ये शास्त्रोक्तोत्तम-मध्यम-अधमभेदेन प्रदत्ताः। यज्ञोपवीतधारी सन्ध्योपासनाधिकारी सन्ध्याकालारम्भात् कतिपयनिमेषपूर्वमेव नित्यकर्माद्यावश्यकदैनिकक्रियाः समाप्य सन्ध्योपासनार्थम् आसने उपविशतु।",
+  "यदि किसी कारण सन्ध्योपासन का मुख्यकाल व्यतीत हो जाए तो केवल कालातिक्रम के कारण उसका परित्याग नहीं करना चाहिये। शास्त्र में कालातिक्रम होने पर प्रायश्चित्तपूर्वक पश्चात् भी सन्ध्या करने का विधान है; अतः सर्वथा अकरण की अपेक्षा विलम्ब से किया गया अनुष्ठान श्रेयस्कर है। कालातिक्रम की मात्रा के अनुसार प्राणायामरूप प्रायश्चित्त का विधान भी प्राप्त होता है; अतः जितना विलम्ब हुआ हो, उसकी मात्रा के अनुसार प्रायश्चित्तस्वरूप प्राणायाम करके सन्ध्योपासन करनी चाहिये।":"यदि केनचित् कारणेन सन्ध्योपासनायाः मुख्यकालः अतीतः स्यात्, तर्हि केवलं कालातिक्रमात् तस्याः परित्यागो न कर्तव्यः। शास्त्रे कालातिक्रमे प्रायश्चित्तपूर्वकं पश्चादपि सन्ध्योपासनाविधानं प्राप्तम्; अतः सर्वथाऽकरणात् विलम्बितमनुष्ठानं श्रेयस्करम्। कालातिक्रमस्य परिमाणानुसारं प्राणायामरूपस्य प्रायश्चित्तस्यापि विधानं प्राप्तम्; अतः यावान् विलम्बः जातः, तदनुसारं प्रायश्चित्तरूपं प्राणायामं कृत्वा सन्ध्योपासना कर्तव्या।",
+  "उत्तम काल में सन्ध्योपासन आरम्भ करने के पश्चात् जपादि को उसी काल-सीमा के भीतर ही समाप्त करना आवश्यक है — ऐसा कोई पृथक् निर्णय प्राप्त नहीं होता। अतः उत्तम काल में आरम्भ करने के बाद जपादि एक मुहूर्त्त से आगे भी चल सकते हैं; प्रातः सूर्योदय के पश्चात् इच्छानुसार तथा सायंकाल सूर्यास्त के पश्चात् अधिकतम डेढ़ घण्टे तक जपादि किये जा सकते हैं।":"उत्तमकाले सन्ध्योपासनाम् आरभ्य जपादिकं तस्यैव कालसीमायामेव समापनीयमिति पृथग्निर्णयो न प्राप्यते। अतः उत्तमकाले आरम्भानन्तरं जपादिकम् एकस्मात् मुहूर्त्तादपि परं प्रवर्तयितुं शक्यते; प्रातः सूर्योदयात् पश्चात् यथेष्टं, सायं सूर्यास्तात् पश्चाच्च अधिकतमं सार्धघण्टापर्यन्तं जपादिकं कर्तुं शक्यते।",
+  "अनुपनीत, अर्थात् जिनका यज्ञोपवीत-संस्कार नहीं हुआ है, तथा स्त्रियों को सन्ध्याकाल में वैदिक मन्त्रों के स्थान पर अपनी योग्यता अथवा अभिरुचि के अनुसार पौराणिक मन्त्रों से इष्टदेव अथवा देवपूजन करना चाहिये।":"अनुपनीताः, अर्थात् येषां यज्ञोपवीतसंस्कारो न जातः, तथा स्त्रियश्च सन्ध्याकाले वैदिकमन्त्राणां स्थाने स्वयोग्यतानुसारम् अथवा अभिरुच्यानुसारं पौराणिकमन्त्रैः इष्टदेवपूजनं देवपूजनं वा कुर्युः।",
+  "दिनमान + रात्रिमान = सावन-अहोरात्र":"दिनमानम् + रात्रिमानम् = सावनाहोरात्रम्",
+  "क्रम १–१५ दिवामुहूर्त्त तथा १६–३० रात्रिमुहूर्त्त हैं। जहाँ पृथक् विशेष संज्ञा उपलब्ध है, उसे नाम के साथ कोष्ठक में दिया गया है।":"क्रमाङ्काः १–१५ दिवामुहूर्त्ताः, १६–३० रात्रिमुहूर्त्ताश्च। यत्र पृथक् विशेषसंज्ञा उपलब्धा, तत्र सा नाम्ना सह कोष्ठके प्रदत्ता।",
+  "उपरोक्त कालमान में दिन के पाँचों भागों की शास्त्रीय संज्ञाएँ प्राप्त हैं परन्तु बहुत प्रयास के बाद भी अभीतक रात्रि के पाँचों भागों के पृथक् सार्वभौम नाम प्राप्त नहीं हो पाए हैं, अतः जहाँ निश्चित नाम उपलब्ध नहीं है वहाँ तृतीय, चतुर्थ और पञ्चम भाग लिखा गया है।":"उपर्युक्तकालमाने दिवसस्य पञ्चानां भागानां शास्त्रीयसंज्ञाः प्राप्ताः; किन्तु बहुप्रयत्नानन्तरमपि रात्रेः पञ्चानां भागानां पृथक् सार्वभौमसंज्ञाः अद्यापि न प्राप्ताः। अतः यत्र निश्चितं नाम नोपलब्धम्, तत्र तृतीयभागः, चतुर्थभागः, पञ्चमभागश्च इति लिखितम्।"
+});
+
 /* Same-script languages must not fall back to Hindi prose. */
 Object.assign(PANCHANGA_UI_TRANSLATIONS.doi,{
   "ख्रिष्टीय वर्षानुसार दिनाङ्क":"ईसवी ब'रे मताबक तरीक",
@@ -3860,7 +4085,7 @@ Object.assign(PANCHANGA_UI_TRANSLATIONS.sd,{
 const PANCHANGA_DEVANAGARI_LANGUAGE_LEXICON = {
   sa:{
     "रौद्र संवत्सर":"रौद्रः संवत्सरः",
-    "रविवार":"रविवासरः","सोमवार":"सोमवासरः","मङ्गलवार":"मङ्गलवासरः",
+    "रविवार":"रविवासरः","सोमवार":"सोमवासरः","मङ्गलवार":"मङ्गलवासरः","भौमवार":"भौमवासरः",
     "बुधवार":"बुधवासरः","बृहस्पतिवार":"गुरुवासरः","शुक्रवार":"शुक्रवासरः","शनिवार":"शनिवासरः",
     "शुक्लपक्ष":"शुक्लपक्षः","कृष्णपक्ष":"कृष्णपक्षः",
     "अहोरात्र · तिथिवृद्धि":"अहोरात्रम् · तिथिवृद्धिः","अहोरात्र · नक्षत्रवृद्धि":"अहोरात्रम् · नक्षत्रवृद्धिः","अहोरात्र · योगवृद्धि":"अहोरात्रम् · योगवृद्धिः",
@@ -4041,9 +4266,10 @@ function localizePanchangaString(source){
   if(!core) return raw;
 
   const dictionary = PANCHANGA_UI_TRANSLATIONS[currentPanchangaLanguage] || {};
+  const normalizedCore = core.replace(/\s+/g," ").trim();
   const exact = Object.prototype.hasOwnProperty.call(dictionary,core)
     ? dictionary[core]
-    : null;
+    : (Object.prototype.hasOwnProperty.call(dictionary,normalizedCore) ? dictionary[normalizedCore] : null);
 
   let localizedCore = exact !== null
     ? exact
@@ -4062,6 +4288,7 @@ function localizePanchangaTextNode(node,forceSource=false){
   if(!node || node.nodeType !== Node.TEXT_NODE) return;
 
   const parent = node.parentElement;
+  if(parent && parent.closest("script,style,noscript,textarea,template")) return;
   if(parent && (parent.closest("#panchangaLanguage") || parent.closest(".panchanga-language-fixed"))) return;
 
   if(forceSource || !PANCHANGA_TEXT_SOURCE.has(node)){
@@ -4069,7 +4296,15 @@ function localizePanchangaTextNode(node,forceSource=false){
   }
 
   const source = PANCHANGA_TEXT_SOURCE.get(node) || "";
-  const rendered = localizePanchangaString(source);
+  const inLongArticle = !!(parent && parent.closest(".article-card"));
+  /*
+    Long-form prose is published only where a curated language translation exists.
+    For the remaining Indian languages, keep the Hindi source rather than presenting
+    Hindi prose merely transliterated into another script as though it were a translation.
+  */
+  const rendered = (inLongArticle && !["hi","en","sa"].includes(currentPanchangaLanguage))
+    ? source
+    : localizePanchangaString(source);
   PANCHANGA_TEXT_LAST_RENDER.set(node,rendered);
 
   if(node.nodeValue !== rendered){
@@ -4093,7 +4328,7 @@ function localizePanchangaSubtree(root){
 }
 
 function observePanchangaLanguageLayer(){
-  const root = document.querySelector(".panchanga-column");
+  const root = document.querySelector(".page-shell");
   if(!root || PANCHANGA_TEXT_OBSERVER) return;
 
   localizePanchangaSubtree(root);
@@ -4147,7 +4382,7 @@ function applyPanchangaLanguage(lang,{save=true,rerender=true}={}){
     }catch(_){ }
   }
 
-  const root = document.querySelector(".panchanga-column");
+  const root = document.querySelector(".page-shell");
 
   /*
     IMPORTANT: switching language must also relocalize the STATIC labels.
@@ -4171,6 +4406,23 @@ function applyPanchangaLanguage(lang,{save=true,rerender=true}={}){
 
   /* guard against any browser/select repaint resetting the visible choice */
   if(select && select.value !== lang) select.value = lang;
+  updatePanchangaLanguagePreferenceUI();
+}
+
+
+function updatePanchangaLanguagePreferenceUI(){
+  const prefs = document.querySelector(".panchanga-language-preferences");
+  const rememberChoice = document.querySelector(".remember-language-choice");
+  const hindiButton = document.getElementById("returnHindiButton");
+  let remembered = false;
+  try{ remembered = localStorage.getItem(PANCHANGA_LANGUAGE_REMEMBER_KEY) === "1"; }catch(_){ }
+
+  if(rememberChoice) rememberChoice.hidden = remembered;
+  if(hindiButton) hindiButton.hidden = currentPanchangaLanguage === "hi";
+  if(prefs){
+    prefs.classList.toggle("remembered-language",remembered);
+    prefs.hidden = remembered && currentPanchangaLanguage === "hi";
+  }
 }
 
 function initializePanchangaLanguage(){
@@ -4194,12 +4446,13 @@ function initializePanchangaLanguage(){
   const hindiButton = document.getElementById("returnHindiButton");
 
   if(rememberBox) rememberBox.checked = remember;
+  updatePanchangaLanguagePreferenceUI();
 
   if(select){
     select.value = saved;
     select.addEventListener("change",()=>{
       applyPanchangaLanguage(select.value,{save:true});
-      if(hindiButton) hindiButton.hidden = select.value === "hi";
+      updatePanchangaLanguagePreferenceUI();
     });
   }
 
@@ -4214,6 +4467,7 @@ function initializePanchangaLanguage(){
           localStorage.removeItem(PANCHANGA_LANGUAGE_STORAGE_KEY);
         }
       }catch(_){ }
+      updatePanchangaLanguagePreferenceUI();
     });
   }
 
@@ -4222,7 +4476,7 @@ function initializePanchangaLanguage(){
     hindiButton.addEventListener("click",()=>{
       applyPanchangaLanguage("hi",{save:true});
       if(select) select.value = "hi";
-      hindiButton.hidden = true;
+      updatePanchangaLanguagePreferenceUI();
     });
   }
 }
