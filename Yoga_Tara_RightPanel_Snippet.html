@@ -1,0 +1,233 @@
+<!--
+योग–मुहूर्त्त दाहिनी-पट्टी परीक्षण snippet
+1) PANEL भाग को <article class="article-card"> के तुरन्त बाद रखें।
+2) ENGINE भाग को Panchanga के मूल scripts के बाद, </body> से पहले रखें।
+3) यह Panchangatesting1 के मौजूदा workbookData/showSelectedDate को बदलता नहीं; केवल पढ़ता है।
+-->
+
+<!-- ===== परीक्षण: दैनिक योग-मुहूर्त्त निर्णय एवं वैयक्तिक ताराबल ===== -->
+<style id="daily-yoga-decision-style-20260919">
+.daily-yoga-decision{
+  margin:0 0 28px;
+  padding:18px 18px 17px;
+  background:linear-gradient(180deg,#fffdf8,#fff8e9);
+  border:1px solid rgba(139,90,22,.24);
+  border-top:4px solid #8b5a16;
+  border-radius:12px;
+  box-shadow:0 4px 15px rgba(70,52,25,.08);
+  color:#25211c;
+}
+.daily-yoga-decision[hidden]{display:none!important}
+.yd-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px 16px;flex-wrap:wrap;margin-bottom:10px}
+.yd-head h2{margin:0!important;padding:0!important;border:0!important;color:var(--heading);font-size:1.32rem!important;line-height:1.42}
+.yd-test-badge{display:inline-flex;align-items:center;white-space:nowrap;padding:3px 9px;border-radius:999px;background:#fff3cd;border:1px solid #d9bd72;color:#725100;font-size:.76rem;font-weight:700}
+.yd-context{margin:0 0 12px;padding:7px 9px;background:rgba(255,255,255,.58);border:1px solid rgba(23,63,85,.12);border-radius:8px;color:#4d473f;font-size:.88rem;line-height:1.52}
+.yd-context strong{color:var(--heading)}
+.yd-section{margin-top:14px}
+.yd-section:first-of-type{margin-top:0}
+.yd-section-title{display:flex;align-items:center;gap:8px;margin:0 0 7px;color:var(--heading);font-size:1.02rem;font-weight:700;line-height:1.45}
+.yd-count{display:inline-flex;min-width:23px;height:23px;align-items:center;justify-content:center;border-radius:999px;background:#eef8f4;border:1px solid rgba(11,85,85,.20);color:var(--primary);font-size:.76rem}
+.yd-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.yd-item{min-width:0;padding:9px 10px;background:rgba(255,255,255,.72);border:1px solid rgba(23,63,85,.13);border-radius:8px;line-height:1.48}
+.yd-item.good{border-left:4px solid #337a55;background:#f4fbf7}
+.yd-item.bad{border-left:4px solid #9b3f34;background:#fff7f5}
+.yd-item.caution{border-left:4px solid #b7791f;background:#fffaf0}
+.yd-item-head{display:flex;align-items:baseline;justify-content:space-between;gap:5px 10px;flex-wrap:wrap;margin-bottom:3px}
+.yd-name{color:#173f55;font-weight:700;font-size:.98rem}
+.yd-time{color:#4f3d27;font-weight:600;font-size:.88rem;white-space:nowrap}
+.yd-effect{margin:2px 0 0;font-size:.86rem;line-height:1.50}
+.yd-avoid{margin:4px 0 0;color:#7a2f26;font-size:.82rem;line-height:1.45;font-weight:600}
+.yd-compact-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.yd-compact{padding:7px 8px;background:rgba(255,255,255,.64);border:1px solid rgba(23,63,85,.12);border-radius:7px;font-size:.84rem;line-height:1.42}
+.yd-compact b{color:#173f55}.yd-compact span{display:block;margin-top:1px;color:#5e5143}
+.yd-travel{padding:10px 11px;background:#f6f8fb;border:1px solid rgba(23,63,85,.15);border-radius:8px;font-size:.88rem;line-height:1.58}
+.yd-travel p{margin:0 0 5px!important;text-align:left!important;line-height:1.58!important}.yd-travel p:last-child{margin-bottom:0!important}
+.yd-personal{margin-top:15px;padding:12px;background:#eef8f4;border:1px solid rgba(11,85,85,.20);border-radius:10px}
+.yd-personal h3{margin:0 0 8px;color:var(--heading);font-size:1.08rem;line-height:1.45}
+.yd-form{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) minmax(0,.9fr);gap:8px;align-items:end}
+.yd-field label{display:block;margin-bottom:3px;color:#3b3b3b;font-size:.79rem;font-weight:700;line-height:1.3}
+.yd-field select{width:100%;min-height:36px;padding:5px 7px;border:1px solid #aebfbd;border-radius:6px;background:#fff;font:inherit;font-size:.88rem;color:#222}
+.yd-field[hidden]{display:none!important}
+.yd-tara-result{margin-top:9px}
+.yd-tara-summary{padding:8px 9px;background:#fff;border:1px solid rgba(11,85,85,.14);border-radius:7px;font-size:.88rem;line-height:1.55}
+.yd-tara-intervals{display:grid;gap:5px;margin-top:7px}
+.yd-tara-row{display:grid;grid-template-columns:minmax(105px,.72fr) minmax(0,1.28fr);gap:8px;padding:6px 8px;border:1px solid rgba(23,63,85,.11);border-radius:7px;background:rgba(255,255,255,.7);font-size:.83rem;line-height:1.45}
+.yd-tara-row strong{color:#173f55}.yd-tara-row.bad strong{color:#8b1e1e}.yd-tara-row.good strong{color:#196c3a}
+.yd-window-title{margin:9px 0 4px;color:#173f55;font-size:.88rem;font-weight:700}
+.yd-window-list{display:flex;flex-wrap:wrap;gap:5px}
+.yd-window{display:inline-flex;padding:4px 7px;border-radius:999px;background:#fff;border:1px solid rgba(11,85,85,.22);color:#0b5555;font-size:.80rem;font-weight:600}
+.yd-note{margin:9px 0 0!important;color:#575149;font-size:.77rem!important;line-height:1.52!important;text-align:left!important}
+.yd-birth-details{margin-top:8px;padding-top:7px;border-top:1px solid rgba(11,85,85,.13)}
+.yd-birth-details summary{cursor:pointer;color:#0b5555;font-size:.81rem;font-weight:700}.yd-birth-details p{margin:6px 0 0!important;font-size:.78rem!important;line-height:1.52!important;text-align:left!important}
+.yd-sources{margin-top:12px;padding-top:8px;border-top:1px solid rgba(139,90,22,.16)}
+.yd-sources summary{cursor:pointer;color:#6f4a16;font-size:.80rem;font-weight:700}.yd-sources p{margin:6px 0 0!important;color:#5c554d;font-size:.75rem!important;line-height:1.55!important;text-align:left!important}
+.yd-empty{padding:9px 10px;background:rgba(255,255,255,.58);border:1px dashed rgba(23,63,85,.18);border-radius:8px;color:#665f57;font-size:.84rem;line-height:1.5}
+@media(max-width:700px){
+  .daily-yoga-decision{margin-bottom:22px;padding:14px 12px 14px;border-top-width:3px}
+  .yd-head h2{font-size:1.20rem!important}.yd-list,.yd-compact-grid{grid-template-columns:1fr}
+  .yd-item{padding:9px}.yd-name{font-size:1rem}.yd-effect{font-size:.91rem}.yd-avoid{font-size:.88rem}
+  .yd-form{grid-template-columns:1fr}.yd-field select{font-size:.94rem;min-height:39px}
+  .yd-context,.yd-travel,.yd-tara-summary{font-size:.93rem}
+  .yd-tara-row{grid-template-columns:1fr;gap:2px;font-size:.89rem}
+  .yd-note{font-size:.85rem!important}.yd-sources p{font-size:.82rem!important}
+}
+</style>
+
+<section class="daily-yoga-decision" id="dailyYogaDecisionPanel" hidden>
+  <div class="yd-head">
+    <h2>दैनिक योग–मुहूर्त्त निर्णय</h2>
+    <span class="yd-test-badge">परीक्षणाधीन</span>
+  </div>
+  <div class="yd-context" id="ydContext">चयनित पञ्चाङ्ग के अनुसार गणना की जा रही है…</div>
+
+  <div class="yd-section" id="ydGoodSection" hidden>
+    <div class="yd-section-title">अनुकूल योग <span class="yd-count" id="ydGoodCount"></span></div>
+    <div class="yd-list" id="ydGoodList"></div>
+  </div>
+
+  <div class="yd-section" id="ydBadSection" hidden>
+    <div class="yd-section-title">त्याज्य / सावधानी <span class="yd-count" id="ydBadCount"></span></div>
+    <div class="yd-list" id="ydBadList"></div>
+  </div>
+
+  <div class="yd-section">
+    <div class="yd-section-title">नित्य दुष्टक्षण</div>
+    <div class="yd-compact-grid" id="ydDailyAvoid"></div>
+  </div>
+
+  <div class="yd-section">
+    <div class="yd-section-title">यात्रा-विचार</div>
+    <div class="yd-travel" id="ydTravel"></div>
+  </div>
+
+  <div class="yd-personal">
+    <h3>ताराबल एवं वैयक्तिक समय-छँटाई</h3>
+    <div class="yd-form">
+      <div class="yd-field">
+        <label for="ydBirthNak">जन्म नक्षत्र</label>
+        <select id="ydBirthNak"><option value="">— जन्म नक्षत्र चुनें —</option></select>
+      </div>
+      <div class="yd-field">
+        <label for="ydPurpose">प्रयोग</label>
+        <select id="ydPurpose">
+          <option value="general">सामान्य शुभकार्य</option>
+          <option value="travel">यात्रा</option>
+        </select>
+      </div>
+      <div class="yd-field" id="ydDirectionField" hidden>
+        <label for="ydDirection">यात्रा-दिशा</label>
+        <select id="ydDirection">
+          <option value="पूर्व">पूर्व</option><option value="दक्षिण">दक्षिण</option>
+          <option value="पश्चिम">पश्चिम</option><option value="उत्तर">उत्तर</option>
+        </select>
+      </div>
+    </div>
+    <div class="yd-tara-result" id="ydTaraResult"><div class="yd-empty">जन्म नक्षत्र चुनने पर चयनित दिन के नक्षत्रों से ताराबल और दिन में प्राथमिक उपलब्ध समय-खण्ड दिखेंगे।</div></div>
+    <details class="yd-birth-details">
+      <summary>जन्मविवरण से नक्षत्र क्यों नहीं निकाला गया?</summary>
+      <p>जन्म-तिथि, समय और स्थान से नक्षत्र निकालने के लिये उस जन्मकाल का सर्वकालिक चन्द्रस्पष्ट आवश्यक है। वर्तमान परीक्षण-पृष्ठ के स्थानिक Excel आँकड़े २०२६ के दैनिक पञ्चाङ्ग के लिये हैं; उनसे पुराने जन्मकाल का अनुमान लगाना उचित नहीं। अतः इस चरण में प्रत्यक्ष जन्म-नक्षत्र प्रविष्टि ही कार्यशील रखी गयी है।</p>
+    </details>
+  </div>
+
+  <details class="yd-sources">
+    <summary>गणना-आधार / परीक्षण-सूचना</summary>
+    <p>वार–तिथि, वार–नक्षत्र, सर्वार्थसिद्धि, रवियोग, आनन्दादि, पुष्कर, भद्रा, पञ्चक तथा दिनमान-आधारित कुलिक–कालवेला–यमघण्ट–कण्टक–अर्धयाम की गणना पृथक् परीक्षण-तन्त्र में प्रयुक्त नियमों पर आधारित है। नित्ययोग-वर्ज्यांश में नारद-उद्धृत मान रखे गये हैं। ताराबल में जन्म नक्षत्र से दिन-नक्षत्र तक गणना कर ९ से चक्रीय विभाग किया गया है; २, ४, ६, ८, ९ अनुकूल, १ मध्यम तथा ३, ५, ७ त्याज्य माने गये हैं। पञ्चक में दक्षिण-यात्रा, शय्या, गृहच्छादन/गृहसम्बन्धी आरम्भ, तृण-काष्ठ-संग्रह और मृतकर्म सम्बन्धी निषेध का संकेत दिया गया है। यह भाग अभी परीक्षणाधीन है; इसे पूर्ण संस्कार/यात्रा-मुहूर्त्त का विकल्प न माना जाए।</p>
+  </details>
+</section>
+<!-- ===== /परीक्षण: दैनिक योग-मुहूर्त्त निर्णय ===== -->
+
+<!-- ===== ENGINE: मूल Panchanga scripts के बाद रखें ===== -->
+<script id="daily-yoga-decision-engine-20260919">
+(()=>{
+  "use strict";
+  const NAK=["अश्विनी","भरणी","कृत्तिका","रोहिणी","मृगशिरा","आर्द्रा","पुनर्वसु","पुष्य","आश्लेषा","मघा","पूर्वाफाल्गुनी","उत्तराफाल्गुनी","हस्त","चित्रा","स्वाती","विशाखा","अनुराधा","ज्येष्ठा","मूल","पूर्वाषाढा","उत्तराषाढा","श्रवण","धनिष्ठा","शतभिषा","पूर्वभाद्रपद","उत्तरभाद्रपद","रेवती"];
+  const YOGA=["विष्कम्भ","प्रीति","आयुष्मान्","सौभाग्य","शोभन","अतिगण्ड","सुकर्मा","धृति","शूल","गण्ड","वृद्धि","ध्रुव","व्याघात","हर्षण","वज्र","सिद्धि","व्यतीपात","वरीयान्","परिघ","शिव","सिद्ध","साध्य","शुभ","शुक्ल","ब्रह्म","ऐन्द्र","वैधृति"];
+  const ANANDA=["आनन्द","कालदण्ड","धूम्र","धाता","सौम्य","ध्वांक्ष","केतु","श्रीवत्स","वज्र","मुद्गर","छत्र","मित्र","मानस","पद्म","लुम्ब","उत्पात","मृत्यु","काण","सिद्धि","शुभ","अमृत","मुसल","गद","मातङ्ग","राक्षस","चर","सुस्थिर","प्रवर्धमान"];
+  const WKEY={Sun:0,Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6,"रविवार":0,"सोमवार":1,"मंगलवार":2,"मङ्गलवार":2,"बुधवार":3,"गुरुवार":4,"बृहस्पतिवार":4,"शुक्रवार":5,"शनिवार":6};
+  const WNAME=["रविवार","सोमवार","मंगलवार","बुधवार","गुरुवार","शुक्रवार","शनिवार"];
+  const SARVARTHA=[[13,19,12,21,26,8,1],[22,4,5,8,17],[1,26,3,9],[4,17,13,3,5],[27,17,1,7,8],[27,17,1,7,22],[22,4,15]];
+  const YAMA_NAK=[10,16,6,19,3,4,13], DAGDHA=[12,11,5,3,6,8,9], VISHA=[4,6,7,2,8,9,7], HUTASHANA=[12,6,7,8,9,10,11];
+  const SIDDHA_GROUP={5:1,3:2,2:3,6:4,4:5};
+  const DWI_NAK=new Set([5,14,23]), TRI_NAK=new Set([3,7,12,16,21,25]), PUSHKAR_WEEK=new Set([0,2,6]), PUSHKAR_TITHI=new Set([2,7,12]), RAVI_COUNTS=new Set([4,6,9,10,13,20]);
+  const ANANDA_BASE=[1,5,9,13,17,21,24];
+  const YOGA_VARJYA={1:{kind:"ghati",n:3,label:"प्रथम ३ घटिका"},6:{kind:"ghati",n:6,label:"प्रथम ६ घटिका"},9:{kind:"ghati",n:5,label:"प्रथम ५ घटिका"},10:{kind:"ghati",n:6,label:"प्रथम ६ घटिका"},13:{kind:"ghati",n:9,label:"प्रथम ९ घटिका"},15:{kind:"ghati",n:9,label:"प्रथम ९ घटिका"},17:{kind:"whole",label:"सम्पूर्ण योग"},19:{kind:"half",label:"पूर्वार्ध"},27:{kind:"whole",label:"सम्पूर्ण योग"}};
+  const ANANDA_VARJYA={"कालदण्ड":{whole:true,label:"सम्पूर्ण"},"धूम्र":{g:1,label:"प्रथम १ घटिका"},"ध्वांक्ष":{g:5,label:"प्रथम ५ घटिका"},"वज्र":{g:5,label:"प्रथम ५ घटिका"},"मुद्गर":{g:5,label:"प्रथम ५ घटिका"},"पद्म":{g:4,label:"प्रथम ४ घटिका"},"लुम्ब":{g:4,label:"प्रथम ४ घटिका"},"उत्पात":{whole:true,label:"सम्पूर्ण"},"मृत्यु":{whole:true,label:"सम्पूर्ण"},"काण":{g:2,label:"प्रथम २ घटिका"},"मुसल":{g:2,label:"प्रथम २ घटिका"},"गद":{g:7,label:"प्रथम ७ घटिका"},"राक्षस":{whole:true,label:"सम्पूर्ण"}};
+  const ANANDA_GOOD=new Set(["आनन्द","धाता","सौम्य","श्रीवत्स","छत्र","मित्र","मानस","पद्म","सिद्धि","शुभ","अमृत","मातङ्ग","चर","सुस्थिर","प्रवर्धमान"]);
+  const ANANDA_BAD=new Set(["कालदण्ड","धूम्र","ध्वांक्ष","वज्र","मुद्गर","लुम्ब","उत्पात","मृत्यु","काण","मुसल","गद","राक्षस"]);
+  const NAK_NATURE={"ध्रुव/स्थिर":new Set([4,12,21,26]),"चर":new Set([7,15,22,23,24]),"उग्र":new Set([2,10,11,20,25]),"मिश्र":new Set([3,16]),"क्षिप्र":new Set([1,8,13]),"मृदु":new Set([5,14,17,27]),"तीक्ष्ण":new Set([6,9,18,19])};
+  const NATURE_EFFECT={"ध्रुव/स्थिर":"स्थायी स्थापना, दीर्घकालिक आरम्भ और स्थिर कार्यों के लिये अनुकूल।","चर":"यात्रा, गमनागमन और परिवर्तनशील कार्यों के लिये अनुकूल।","क्षिप्र":"शीघ्र निष्पादन, व्यापारिक/लघु आरम्भ और त्वरित कार्यों के लिये उपयोगी।","मृदु":"मैत्री, अलंकार, कला, सौम्य व्यवहार और मङ्गल कार्यों में उपयोगी।","उग्र":"कठोर, साहसिक अथवा दमनात्मक कार्यों का स्वभाव; सामान्य मङ्गलारम्भ में सावधानी।","तीक्ष्ण":"भेदन, शमन, उच्छेदन जैसे कठोर कार्यों का स्वभाव; सौम्य मङ्गलकार्य में वर्जनीय।","मिश्र":"मिश्र फल; कार्य-स्वरूप और अन्य अङ्गों के साथ विचार अपेक्षित।"};
+  const TARA_NAMES=["जन्म","सम्पत्","विपत्","क्षेम","प्रत्यरि","साधक","नैधन/वध","मित्र","परममित्र"];
+  const TARA_GRADE={1:"medium",2:"good",3:"bad",4:"good",5:"bad",6:"good",7:"bad",8:"good",9:"good"};
+  const TARA_EFFECT={1:"मध्यम — सामान्य कार्य में अन्य बलों का विचार करें।",2:"अनुकूल — लाभ, सम्पत्ति और वृद्धि-सम्बन्धी कार्य।",3:"त्याज्य — विघ्न/हानि की आशंका; शुभारम्भ व यात्रा टालें।",4:"अनुकूल — क्षेम, सुरक्षा, स्वास्थ्य और स्थिर प्रगति।",5:"त्याज्य — विरोध/प्रतिबन्ध का संकेत; महत्त्वपूर्ण आरम्भ टालें।",6:"अनुकूल — साधना, सिद्धि, लक्ष्य-पूर्ति और कार्यसाधन।",7:"त्याज्य — नैधन/वध तारा; शुभकार्य और यात्रा से बचें।",8:"अनुकूल — मैत्री, संधि, सम्पर्क और सहयोग।",9:"विशेष अनुकूल — परममैत्री, सौहार्द और सामान्य शुभकार्य।"};
+  let lastModel=null;
+  const $=id=>document.getElementById(id);
+  const mod=(n,m)=>((n%m)+m)%m;
+  const numPrefix=v=>{const m=String(v??"").match(/^\s*(\d+)/);return m?Number(m[1]):null};
+  const tithiPakshaNo=n=>((Number(n)-1)%15)+1;
+  const tithiGroup=n=>((tithiPakshaNo(n)-1)%5)+1;
+  const nakIndex=v=>numPrefix(v);
+  const yogaIndex=v=>numPrefix(v);
+  const dev=v=>typeof toDev==="function"?toDev(v):String(v);
+
+  function gbOrdinal(gb){const m=String(gb||"").match(/^(\d{2})\/(\d{2})\/(\d{4})$/);return m?Date.UTC(+m[3],+m[2]-1,+m[1])/86400000:NaN}
+  function rowDate(row){return typeof normalizeDate==="function"?normalizeDate(row?.[0]):""}
+  function rawSec(v){if(typeof rawExcelMinutes!=="function")return NaN;const m=rawExcelMinutes(v);return Number.isFinite(m)?m*60:NaN}
+  function sentinel(v){const s=String(v??"").trim();return s===""||s==="31"||s==="32"||s==="------"}
+  function absEvent(v,minStart,offsetSec=0,{allowSentinel=false}={}){if(!allowSentinel&&sentinel(v))return NaN;let x=rawSec(v);if(!Number.isFinite(x))return NaN;x+=offsetSec;while(x<minStart-1)x+=86400;return x}
+  function fmt(sec,gb){if(!Number.isFinite(sec))return "—";if(typeof muhurtaNightClockMinuteLocal==="function")return muhurtaNightClockMinuteLocal(sec,gb);return dev(Math.floor(mod(sec,86400)/3600).toString().padStart(2,"0")+":"+Math.floor(mod(sec,3600)/60).toString().padStart(2,"0"))}
+  function dur(seconds){if(!Number.isFinite(seconds)||seconds<=0)return "—";const mins=Math.round(seconds/60),h=Math.floor(mins/60),m=mins%60;if(h&&m)return `${dev(h)} घं ${dev(m)} मि`;if(h)return `${dev(h)} घं`;return `${dev(m)} मि`}
+  function timeRange(a,b,gb){return `${fmt(a,gb)} – ${fmt(b,gb)}`}
+  function clip(x,S,E){const a=Math.max(x.a,S),b=Math.min(x.b,E);return b>a?{...x,a,b}:null}
+  function merge(list){const a=list.filter(x=>x&&x.b>x.a).sort((x,y)=>x.a-y.a),out=[];for(const x of a){const p=out[out.length-1];if(p&&x.a<=p.b+1)p.b=Math.max(p.b,x.b);else out.push({a:x.a,b:x.b})}return out}
+  function subtract(base,blocks){let parts=[{a:base.a,b:base.b}];for(const z of merge(blocks)){const next=[];for(const p of parts){if(z.b<=p.a||z.a>=p.b){next.push(p);continue}if(z.a>p.a)next.push({a:p.a,b:Math.min(z.a,p.b)});if(z.b<p.b)next.push({a:Math.max(z.b,p.a),b:p.b})}parts=next}return parts.filter(x=>x.b-x.a>=10*60)}
+  function intersect(a,b){const out=[];for(const x of a)for(const y of b){const s=Math.max(x.a,y.a),e=Math.min(x.b,y.b);if(e>s)out.push({a:s,b:e,x,y})}return out}
+
+  function buildSeq(row,next,S,E,kind){let idx,max,end1,ksh;if(kind==="t"){idx=Number(row[3]);max=30;end1=row[4];ksh=row[26]}else if(kind==="n"){idx=nakIndex(row[16]);max=27;end1=row[15];ksh=row[28]}else{idx=yogaIndex(row[5]);max=27;end1=row[6];ksh=row[27]}if(!idx)return[];const out=[];let start=S,cur=idx;const e1=absEvent(end1,S,0,{allowSentinel:true});if(!Number.isFinite(e1)||e1>=E){out.push({a:S,b:E,i:cur});return out}out.push({a:S,b:e1,i:cur});cur=mod(cur,max)+1;start=e1;const e2=absEvent(ksh,e1,0,{allowSentinel:false});if(Number.isFinite(e2)){if(e2>=E){out.push({a:start,b:E,i:cur});return out}out.push({a:start,b:e2,i:cur});cur=mod(cur,max)+1;start=e2}out.push({a:start,b:E,i:cur});return out}
+
+  function longitude(v){if(typeof odayikaParseRashiSpashta==="function"){const p=odayikaParseRashiSpashta(v);if(p&&Number.isFinite(p.longitude))return p.longitude}const s=String(v??"").trim();const m=s.match(/^(\d{1,2}):(\d{1,2})°(\d{1,2})['′](\d{1,2}(?:\.\d+)?)/);return m?Number(m[1])*30+Number(m[2])+Number(m[3])/60+Number(m[4])/3600:NaN}
+  function unwrap(a,b){if(!Number.isFinite(a)||!Number.isFinite(b))return b;while(b<a-180)b+=360;while(b>a+180)b-=360;if(b<a)b+=360;return b}
+  function lonAt(row,next,S,E,t,col){const a=longitude(row[col]),b0=next?longitude(next[col]):NaN;if(!Number.isFinite(a))return NaN;if(!Number.isFinite(b0)||E<=S)return a;const b=unwrap(a,b0);return a+(b-a)*((t-S)/(E-S))}
+  function sunNakIntervals(row,next,S,E){const a=longitude(row[12]),b0=next?longitude(next[12]):NaN;if(!Number.isFinite(a))return[];const span=40/3;if(!Number.isFinite(b0))return[{a:S,b:E,i:Math.floor(mod(a,360)/span)+1}];const b=unwrap(a,b0),out=[];let start=S,idx=Math.floor(mod(a,360)/span)+1,boundary=(Math.floor(a/span)+1)*span;while(boundary<b-1e-9){const t=S+(boundary-a)/(b-a)*(E-S);out.push({a:start,b:t,i:idx});start=t;idx=mod(idx,27)+1;boundary+=span}out.push({a:start,b:E,i:idx});return out}
+  function panchakIntervals(row,next,S,E){const a=longitude(row[14]),b0=next?longitude(next[14]):NaN;if(!Number.isFinite(a)||!Number.isFinite(b0))return[];const b=unwrap(a,b0),cuts=[];for(let k=Math.floor(a/360)-1;k<=Math.floor(b/360)+1;k++)for(const x of[300+360*k,360+360*k])if(x>a&&x<b)cuts.push(x);cuts.sort((x,y)=>x-y);const pts=[a,...cuts,b],out=[];for(let i=0;i<pts.length-1;i++){const da=pts[i],db=pts[i+1];if(mod((da+db)/2,360)>=300)out.push({a:S+(da-a)/(b-a)*(E-S),b:S+(db-a)/(b-a)*(E-S)})}return out}
+
+  function yogaTransitions(rowIndex,baseGB){const out=[];const baseOrd=gbOrdinal(baseGB);for(let j=Math.max(1,rowIndex-4);j<=Math.min(workbookData.length-1,rowIndex+4);j++){const r=workbookData[j],gb=rowDate(r),ord=gbOrdinal(gb);if(!Number.isFinite(ord))continue;const off=(ord-baseOrd)*86400,rs=rawSec(r[10])+off;let cur=yogaIndex(r[5]);if(!Number.isFinite(rs)||!cur)continue;const e1=absEvent(r[6],rs,off,{allowSentinel:true});if(Number.isFinite(e1)){const n1=mod(cur,27)+1;out.push({t:e1,from:cur,to:n1});cur=n1;const e2=absEvent(r[27],e1,off,{allowSentinel:false});if(Number.isFinite(e2)){const n2=mod(cur,27)+1;out.push({t:e2,from:cur,to:n2})}}}out.sort((a,b)=>a.t-b.t);return out.filter((x,i,a)=>i===0||Math.abs(x.t-a[i-1].t)>2||x.from!==a[i-1].from||x.to!==a[i-1].to)}
+  function trueYogaBounds(interval,trs){let start=NaN,end=NaN;for(const tr of trs){if(tr.to===interval.i&&tr.t<=interval.a+2)start=tr.t;if(tr.from===interval.i&&tr.t>interval.a+2){end=tr.t;break}}if(!Number.isFinite(start))start=interval.a;if(!Number.isFinite(end))end=interval.b;return{start,end}}
+  function varjyaYoga(i,start,end){const r=YOGA_VARJYA[i];if(!r||end<=start)return null;let b=r.kind==="ghati"?Math.min(end,start+r.n*24*60):r.kind==="half"?start+(end-start)/2:end;return{a:start,b,rule:r}}
+
+  function anandadiIntervals(row,next,S,E,nInts,w){if(!next)return[];const ma=longitude(row[14]),mb0=longitude(next[14]);let abhStart=NaN,abhEnd=NaN;if(Number.isFinite(ma)&&Number.isFinite(mb0)){const mb=unwrap(ma,mb0);const cross=deg=>{let target=deg;while(target<=ma)target+=360;return target<mb?S+(target-ma)/(mb-ma)*(E-S):NaN};abhStart=cross(276.6666666667);abhEnd=cross(280.8888888889)}const n28=[];for(const x of nInts){if(x.i===21){if(Number.isFinite(abhStart)&&abhStart>x.a&&abhStart<x.b){n28.push({a:x.a,b:abhStart,i28:21,nak:"उत्तराषाढा"},{a:abhStart,b:x.b,i28:22,nak:"अभिजित्"})}else{const d=lonAt(row,next,S,E,(x.a+x.b)/2,14);n28.push(Number.isFinite(d)&&mod(d,360)>=276.6666666667?{a:x.a,b:x.b,i28:22,nak:"अभिजित्"}:{a:x.a,b:x.b,i28:21,nak:"उत्तराषाढा"})}}else if(x.i===22){if(Number.isFinite(abhEnd)&&abhEnd>x.a&&abhEnd<x.b){n28.push({a:x.a,b:abhEnd,i28:22,nak:"अभिजित्"},{a:abhEnd,b:x.b,i28:23,nak:"श्रवण"})}else{const d=lonAt(row,next,S,E,(x.a+x.b)/2,14);n28.push(Number.isFinite(d)&&mod(d,360)>=276.6666666667&&mod(d,360)<280.8888888889?{a:x.a,b:x.b,i28:22,nak:"अभिजित्"}:{a:x.a,b:x.b,i28:23,nak:"श्रवण"})}}else n28.push({a:x.a,b:x.b,i28:x.i<=21?x.i:x.i+1,nak:NAK[x.i-1]})}const base=ANANDA_BASE[w]-1;return n28.map(x=>({...x,name:ANANDA[mod((x.i28-1)-base,28)]}))}
+
+  function karanaIntervals(rowIndex,row,S,E,selectedGB){if(typeof karanaCountForDay!=="function"||typeof karanaSequence!=="function")return[];const t=Number(row[3]),kc=karanaCountForDay(rowIndex,row,t),seq=kc.seq||karanaSequence(row[7],t),count=kc.count;let ends=[];if(count===2)ends=[row[8],null];else if(count===3)ends=[row[8],row[9],null];else{let k3=row[25];if((k3===""||k3==null)&&typeof exactThirdKaranaEnd==="function")k3=exactThirdKaranaEnd(selectedGB)?.raw||"";ends=[row[8],row[9],k3,null]}const out=[];let start=S;for(let i=0;i<count;i++){let end=i===count-1?E:absEvent(ends[i],start,0,{allowSentinel:false});if(!Number.isFinite(end)||end>E)end=E;const key=seq[i]||"",name=(typeof KARANA_NAMES==="object"&&KARANA_NAMES[key])?KARANA_NAMES[key]:String(key);out.push({a:start,b:end,key,name});start=end;if(start>=E)break}return out}
+
+  function natureFor(i){for(const [name,set] of Object.entries(NAK_NATURE))if(set.has(i))return name;return""}
+  function anandaEffect(name){if(name==="चर")return"यात्रा, गमनागमन और चल कार्यों के लिये अनुकूल संकेत।";if(name==="सुस्थिर")return"स्थायी और दीर्घकालिक कार्यों के लिये अनुकूल संकेत।";if(name==="प्रवर्धमान")return"वृद्धि, विस्तार और उन्नति-सम्बन्धी कार्यों के लिये अनुकूल संकेत।";if(name==="मित्र")return"मैत्री, समझौता, सम्पर्क और सहयोग के लिये अनुकूल।";if(name==="अमृत")return"सामान्य मङ्गल और शुभकार्य के लिये अत्यन्त अनुकूल नामफल।";if(ANANDA_GOOD.has(name))return"नामफलानुसार अनुकूल; अन्य पञ्चाङ्ग-दोषों के साथ संयुक्त विचार करें।";if(ANANDA_BAD.has(name))return"दोषप्रधान नामफल; नीचे दिये वर्ज्यांश में शुभारम्भ न करें।";return"मिश्र/कार्यविशेष संकेत; अन्य अङ्गों के साथ विचार अपेक्षित।"}
+  function eventCard(name,a,b,kind,effect,avoid=""){return{name,a,b,kind,effect,avoid}}
+
+  function buildModel(rowIndex,row,next,gb){const S=rawSec(row[10]);let A=rawSec(row[11]);if(!Number.isFinite(S)||!Number.isFinite(A))return null;while(A<S)A+=86400;let E=next?rawSec(next[10]):NaN;if(Number.isFinite(E))while(E<=A)E+=86400;else E=A;const w=WKEY[row[2]]??0,tInts=buildSeq(row,next,S,E,"t"),nInts=buildSeq(row,next,S,E,"n"),yInts=buildSeq(row,next,S,E,"y");const good=[],bad=[],avoid=[];
+    const sg=SIDDHA_GROUP[w];if(sg)for(const x of tInts.filter(z=>tithiGroup(z.i)===sg))good.push(eventCard("सिद्धतिथि योग",x.a,x.b,"good","सामान्य शुभारम्भ और कार्यसिद्धि हेतु अनुकूल वार–तिथि संयोग।"));
+    for(const x of tInts){const p=tithiPakshaNo(x.i);const defects=[];if(p===DAGDHA[w])defects.push(["दग्धतिथि","माङ्गलिक आरम्भ और सामान्य शुभकार्य टालना श्रेयस्कर।"]);if(p===VISHA[w])defects.push(["विषतिथि","शुभकार्य तथा महत्त्वपूर्ण यात्रा/आरम्भ में त्याग श्रेयस्कर।"]);if(p===HUTASHANA[w])defects.push(["हुताशनतिथि","माङ्गलिक और स्थायी आरम्भ में त्याग/सावधानी श्रेयस्कर।"]);for(const [n,e] of defects){bad.push(eventCard(n,x.a,x.b,"bad",e,`सम्पूर्ण सक्रिय अंश — ${dur(x.b-x.a)}`));avoid.push({a:x.a,b:x.b})}}
+    for(const x of nInts.filter(z=>SARVARTHA[w].includes(z.i)))good.push(eventCard("सर्वार्थसिद्धि योग",x.a,x.b,"good",`${NAK[x.i-1]} नक्षत्र में सामान्य शुभकार्य, आरम्भ और सिद्धि-साध्य कार्यों हेतु अनुकूल संयोग।`));
+    for(const x of nInts.filter(z=>z.i===YAMA_NAK[w])){bad.push(eventCard("यमघण्ट-नक्षत्रयोग",x.a,x.b,"bad","शुभारम्भ और यात्रा में त्याग श्रेयस्कर।",`सम्पूर्ण सक्रिय अंश — ${dur(x.b-x.a)}`));avoid.push({a:x.a,b:x.b})}
+    if(next){for(const z of intersect(sunNakIntervals(row,next,S,E),nInts)){const c=mod(z.y.i-z.x.i,27)+1;if(RAVI_COUNTS.has(c))good.push(eventCard("रवियोग",z.a,z.b,"good","सामान्य शुभकार्य में दोषशमनकारी अनुकूल संयोग; कार्यविशेष के अन्य अङ्ग भी देखें।"))}}
+    if(PUSHKAR_WEEK.has(w)){const ti=tInts.filter(x=>PUSHKAR_TITHI.has(tithiPakshaNo(x.i))),dn=nInts.filter(x=>DWI_NAK.has(x.i)),tn=nInts.filter(x=>TRI_NAK.has(x.i));for(const z of intersect(ti,dn))good.push(eventCard("द्विपुष्कर योग",z.a,z.b,"good","आरम्भ किये कार्य की पुनरावृत्ति का संकेत; इच्छित वृद्धि वाले शुभ कार्यों में उपयोगी, अप्रिय/हानिकर कार्य न करें।"));for(const z of intersect(ti,tn))good.push(eventCard("त्रिपुष्कर योग",z.a,z.b,"good","कार्यफल की पुनरावृत्ति/वृद्धि का प्रबल संकेत; शुभ वृद्धि वाले कार्य चुनें, हानिकर कार्य टालें।"))}
+    const trs=yogaTransitions(rowIndex,gb);for(const x of yInts){const rule=YOGA_VARJYA[x.i];if(!rule)continue;const bd=trueYogaBounds(x,trs),v=varjyaYoga(x.i,bd.start,bd.end);if(!v)continue;const q=clip(v,S,E);if(!q)continue;bad.push(eventCard(`${YOGA[x.i-1]} योग-वर्ज्यांश`,q.a,q.b,"bad","नित्ययोग का शास्त्रोक्त दोषांश; इस अंश में माङ्गलिक/शुभारम्भ टालें।",`${rule.label} · इस दिन त्याग ${dur(q.b-q.a)}`));avoid.push({a:q.a,b:q.b})}
+    const an=anandadiIntervals(row,next,S,E,nInts,w);for(const x of an){const r=ANANDA_VARJYA[x.name];if(r){const vb=r.whole?x.b:Math.min(x.b,x.a+r.g*24*60);if(vb>x.a){bad.push(eventCard(`आनन्दादि — ${x.name}`,x.a,vb,"bad",anandaEffect(x.name),`${r.label} · ${dur(vb-x.a)} त्याग`));avoid.push({a:x.a,b:vb});if(vb<x.b&&ANANDA_GOOD.has(x.name))good.push(eventCard(`आनन्दादि — ${x.name}`,vb,x.b,"good",anandaEffect(x.name)))}}else{const kind=ANANDA_GOOD.has(x.name)?"good":ANANDA_BAD.has(x.name)?"bad":"caution";(kind==="good"?good:bad).push(eventCard(`आनन्दादि — ${x.name}`,x.a,x.b,kind,anandaEffect(x.name),kind==="bad"?`सम्पूर्ण सक्रिय अंश — ${dur(x.b-x.a)}`:""));if(kind==="bad")avoid.push({a:x.a,b:x.b})}}
+    const kInts=karanaIntervals(rowIndex,row,S,E,gb),bhadra=kInts.filter(x=>x.key==="Višti"||String(x.name).includes("विष्टि"));for(const x of bhadra){bad.push(eventCard("भद्रा (विष्टि करण)",x.a,x.b,"bad","सामान्य माङ्गलिक आरम्भ, विवाहादि सौम्य शुभकार्य और महत्त्वपूर्ण यात्रा में त्याग श्रेयस्कर; क्रूर/दमनात्मक कार्यों के पृथक् विधान हैं।",`सम्पूर्ण विष्टि-अंश — ${dur(x.b-x.a)}`));avoid.push({a:x.a,b:x.b})}
+    const panchak=next?panchakIntervals(row,next,S,E):[];for(const x of panchak)bad.push(eventCard("पञ्चक",x.a,x.b,"caution","विशेषतः दक्षिण-यात्रा, शय्या-निर्माण/बिछाना, गृहच्छादन/गृहसम्बन्धी आरम्भ, तृण-काष्ठ-संग्रह और मृतकर्म में वर्जन का विचार।","इन निर्दिष्ट कार्यों में सक्रिय पञ्चक-अंश का त्याग"));
+    const target={kulika:6,kala:3,yama:4,kantaka:2};const D=A-S;const kalansh=tw=>{const count=mod(tw-w,7)+1,k=2*count,u=D/16;return{a:S+(k-1)*u,b:S+k*u}};const daily=[{name:"कुलिक",...kalansh(target.kulika)},{name:"कालवेला",...kalansh(target.kala)},{name:"यमघण्ट",...kalansh(target.yama)},{name:"कण्टक",...kalansh(target.kantaka)}];const W=w+1,ai=((3*W)%8)+1,h=D/8;daily.push({name:"अर्धयाम",a:S+(ai-1)*h,b:S+ai*h});for(const x of daily)avoid.push({a:x.a,b:x.b});
+    const nature=nInts.map(x=>({a:x.a,b:x.b,i:x.i,name:natureFor(x.i)}));return{rowIndex,row,next,gb,S,A,E,w,tInts,nInts,yInts,good,bad,avoid,daily,panchak,nature,bhadra,an}}
+
+  function cardHtml(x,gb){return `<div class="yd-item ${x.kind}"><div class="yd-item-head"><span class="yd-name">${x.name}</span><span class="yd-time">${timeRange(x.a,x.b,gb)}</span></div><p class="yd-effect">${x.effect}</p>${x.avoid?`<div class="yd-avoid">त्याग: ${x.avoid}</div>`:""}</div>`}
+  function renderLists(m){const gs=$("ydGoodSection"),bs=$("ydBadSection");gs.hidden=!m.good.length;bs.hidden=!m.bad.length;if(m.good.length){$("ydGoodCount").textContent=dev(m.good.length);$("ydGoodList").innerHTML=m.good.sort((a,b)=>a.a-b.a).map(x=>cardHtml(x,m.gb)).join("")}if(m.bad.length){$("ydBadCount").textContent=dev(m.bad.length);$("ydBadList").innerHTML=m.bad.sort((a,b)=>a.a-b.a).map(x=>cardHtml(x,m.gb)).join("")}}
+  function renderDaily(m){$("ydDailyAvoid").innerHTML=m.daily.map(x=>`<div class="yd-compact"><b>${x.name}</b> — ${timeRange(x.a,x.b,m.gb)}<span>शुभारम्भ/यात्रा में ${dur(x.b-x.a)} त्याग।</span></div>`).join("")}
+  function renderTravel(m){const d=typeof DIKSHOOL_MAP==="object"?(DIKSHOOL_MAP[m.row[2]]||"—"):"—";const pc=m.panchak.length?m.panchak.map(x=>timeRange(x.a,x.b,m.gb)).join("; "):"नहीं";const nakParts=m.nature.map(x=>{const n=NAK[x.i-1],nature=x.name||"—";return `${n} (${nature}) ${timeRange(x.a,x.b,m.gb)}`}).join("; ");$("ydTravel").innerHTML=`<p><strong>दिशाशूल:</strong> ${d} दिशा। यात्रा-दिशा चुनने पर नीचे वैयक्तिक भाग में इसकी बाधा अलग दिखाई जाएगी।</p><p><strong>पञ्चक:</strong> ${pc}${m.panchak.length?" — इस अवधि में दक्षिण-दिशा की यात्रा विशेषतः टालें।":""}</p><p><strong>आज का नक्षत्र-स्वभाव:</strong> ${nakParts}।</p>`}
+
+  function populateNak(){const s=$("ydBirthNak");if(!s||s.options.length>1)return;NAK.forEach((n,i)=>{const o=document.createElement("option");o.value=String(i+1);o.textContent=`${dev(i+1)}. ${n}`;s.appendChild(o)})}
+  function taraFor(birth,day){const count=mod(day-birth,27)+1,t=((count-1)%9)+1;return{count,t,name:TARA_NAMES[t-1],grade:TARA_GRADE[t],effect:TARA_EFFECT[t]}}
+  function renderTara(){const m=lastModel,box=$("ydTaraResult");if(!m||!box)return;const birth=Number($("ydBirthNak")?.value||0),purpose=$("ydPurpose")?.value||"general",dir=$("ydDirection")?.value||"पूर्व";$("ydDirectionField").hidden=purpose!=="travel";if(!birth){box.innerHTML='<div class="yd-empty">जन्म नक्षत्र चुनने पर चयनित दिन के नक्षत्रों से ताराबल और दिन में प्राथमिक उपलब्ध समय-खण्ड दिखेंगे।</div>';return}const tRows=m.nInts.map(x=>({...x,tara:taraFor(birth,x.i)}));const goodT=tRows.filter(x=>x.tara.grade==="good"),medium=tRows.filter(x=>x.tara.grade==="medium");const disha=typeof DIKSHOOL_MAP==="object"?(DIKSHOOL_MAP[m.row[2]]||""):"";const dishaBlock=purpose==="travel"&&dir===disha;let blocks=[...m.avoid];if(purpose==="travel"&&dir==="दक्षिण")blocks.push(...m.panchak);const candidate=[];for(const x of goodT){const base={a:Math.max(x.a,m.S),b:Math.min(x.b,m.A)};if(base.b<=base.a)continue;for(const p of subtract(base,blocks))candidate.push(p)}candidate.sort((a,b)=>a.a-b.a);const lines=tRows.map(x=>`<div class="yd-tara-row ${x.tara.grade}"><strong>${NAK[x.i-1]} — ${x.tara.name} तारा</strong><span>${timeRange(x.a,x.b,m.gb)} · ${x.tara.effect}</span></div>`).join("");let summary=`जन्म नक्षत्र <strong>${NAK[birth-1]}</strong> के लिये इस दिन ${goodT.length?`<strong>${dev(goodT.length)}</strong> अनुकूल नक्षत्र-अंश`:"कोई स्पष्ट अनुकूल नक्षत्र-अंश नहीं"}${medium.length?` तथा ${dev(medium.length)} मध्यम अंश`:""} मिला।`;if(purpose==="travel")summary+=` यात्रा-दिशा: <strong>${dir}</strong>${dishaBlock?` — आज इसी दिशा में <strong>दिशाशूल</strong> है; केवल समय बदलने से इसे स्वतः निरस्त नहीं माना गया।`:"।"}`;const winTitle=dishaBlock?"ताराबल-संगत समय (दिशाशूल-परिहार का पृथक् विचार आवश्यक)":"प्राथमिक उपलब्ध दिन-खण्ड";const wins=candidate.length?candidate.slice(0,6).map(x=>`<span class="yd-window">${timeRange(x.a,x.b,m.gb)}</span>`).join(""):'<span class="yd-window">उपलब्ध नहीं</span>';box.innerHTML=`<div class="yd-tara-summary">${summary}</div><div class="yd-tara-intervals">${lines}</div><div class="yd-window-title">${winTitle}</div><div class="yd-window-list">${wins}</div><p class="yd-note">यह समय-छँटाई केवल ताराबल + इस परीक्षण-पट्ट में निकले त्याज्यकालों पर आधारित है। पूर्ण मुहूर्त्त के लिये चन्द्रबल, लग्न, ग्रहबल, कार्यविशेष-संस्कार, यात्रादिशा के अन्य नियम आदि का पृथक् विचार आवश्यक है।</p>`}
+
+  function render(){const panel=$("dailyYogaDecisionPanel"),picker=$("datePicker");if(!panel||!picker||!picker.value||typeof workbookData==="undefined"||!workbookData){if(panel)panel.hidden=true;return}const gb=typeof pickerToGB==="function"?pickerToGB(picker.value):"",hit=typeof workbookRowByGBDate==="function"?workbookRowByGBDate(gb):null;if(!hit){panel.hidden=true;return}const row=hit.row,next=workbookData[hit.index+1]||null,m=buildModel(hit.index,row,next,gb);if(!m){panel.hidden=true;return}lastModel=m;panel.hidden=false;const place=String(typeof currentPlaceName!=="undefined"?currentPlaceName:"");const activeNak=m.nInts[0],nat=activeNak?natureFor(activeNak.i):"";$("ydContext").innerHTML=`<strong>${place}</strong> · ${dev(gb)} · ${WNAME[m.w]}${activeNak?` · ${NAK[activeNak.i-1]} (${nat||"स्वभाव-अनिर्णीत"})`:""}`;renderLists(m);renderDaily(m);renderTravel(m);renderTara()}
+
+  function init(){populateNak();$("ydBirthNak")?.addEventListener("change",renderTara);$("ydPurpose")?.addEventListener("change",renderTara);$("ydDirection")?.addEventListener("change",renderTara);const status=$("selectorStatus");if(status)new MutationObserver(()=>{if(status.textContent.includes("प्रदर्शित"))setTimeout(render,0);else if(!String(status.textContent).includes("प्राप्त")){const panel=$("dailyYogaDecisionPanel");if(panel&&(!workbookData||!$("datePicker")?.value))panel.hidden=true}}).observe(status,{childList:true,subtree:true,characterData:true});$("datePicker")?.addEventListener("change",()=>setTimeout(render,0));$("fileLink")?.addEventListener("change",()=>{lastModel=null;const p=$("dailyYogaDecisionPanel");if(p)p.hidden=true});setTimeout(render,250)}
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
+})();
+</script>
