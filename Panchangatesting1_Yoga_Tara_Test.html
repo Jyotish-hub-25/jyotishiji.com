@@ -3925,6 +3925,10 @@ body.smart-select-lock{overflow:hidden}
 .yd-compact b{color:#173f55}.yd-compact span{display:block;margin-top:1px;color:#5e5143}
 .yd-travel{padding:10px 11px;background:#f6f8fb;border:1px solid rgba(23,63,85,.15);border-radius:8px;font-size:.88rem;line-height:1.58}
 .yd-travel p{margin:0 0 5px!important;text-align:left!important;line-height:1.58!important}.yd-travel p:last-child{margin-bottom:0!important}
+.yd-travel-lines{display:grid;gap:6px;margin-top:7px}
+.yd-travel-line{padding:6px 8px;background:#fff;border:1px solid rgba(23,63,85,.11);border-radius:7px}
+.yd-travel-line.good{border-left:3px solid #2f8a5b}.yd-travel-line.bad{border-left:3px solid #b3483e}.yd-travel-line.mix{border-left:3px solid #b78324}
+.yd-travel-line strong{color:#173f55}.yd-abhijit{margin-top:7px;padding:7px 8px;background:#fff8df;border:1px solid #e1c879;border-radius:7px;color:#5c4700}
 .yd-personal{margin-top:15px;padding:12px;background:#eef8f4;border:1px solid rgba(11,85,85,.20);border-radius:10px}
 .yd-personal h3{margin:0 0 8px;color:var(--heading);font-size:1.08rem;line-height:1.45}
 .yd-form{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) minmax(0,.9fr);gap:8px;align-items:end}
@@ -3984,7 +3988,7 @@ body.smart-select-lock{overflow:hidden}
   </div>
 
   <div class="yd-personal">
-    <h3>ताराबल एवं वैयक्तिक समय-छँटाई</h3>
+    <h3>ताराबल एवं वैयक्तिक समय-चयन</h3>
     <div class="yd-form">
       <div class="yd-field">
         <label for="ydBirthNak">जन्म नक्षत्र</label>
@@ -4014,7 +4018,7 @@ body.smart-select-lock{overflow:hidden}
 
   <details class="yd-sources">
     <summary>गणना-आधार / परीक्षण-सूचना</summary>
-    <p>वार–तिथि, वार–नक्षत्र, सर्वार्थसिद्धि, रवियोग, आनन्दादि, पुष्कर, भद्रा, पञ्चक तथा दिनमान-आधारित कुलिक–कालवेला–यमघण्ट–कण्टक–अर्धयाम की गणना पृथक् परीक्षण-तन्त्र में प्रयुक्त नियमों पर आधारित है। नित्ययोग-वर्ज्यांश में नारद-उद्धृत मान रखे गये हैं। ताराबल में जन्म नक्षत्र से दिन-नक्षत्र तक गणना कर ९ से चक्रीय विभाग किया गया है; २, ४, ६, ८, ९ अनुकूल, १ मध्यम तथा ३, ५, ७ त्याज्य माने गये हैं। पञ्चक में दक्षिण-यात्रा, शय्या, गृहच्छादन/गृहसम्बन्धी आरम्भ, तृण-काष्ठ-संग्रह और मृतकर्म सम्बन्धी निषेध का संकेत दिया गया है। यह भाग अभी परीक्षणाधीन है; इसे पूर्ण संस्कार/यात्रा-मुहूर्त्त का विकल्प न माना जाए।</p>
+    <p>वार–तिथि, वार–नक्षत्र, सर्वार्थसिद्धि, रवियोग, आनन्दादि, पुष्कर, भद्रा, पञ्चक तथा दिनमान-आधारित कुलिक–कालवेला–यमघण्ट–कण्टक–अर्धयाम की गणना पृथक् परीक्षण-तन्त्र में प्रयुक्त नियमों पर आधारित है। नित्ययोग-वर्ज्यांश में नारद-उद्धृत मान रखे गये हैं। ताराबल में जन्म नक्षत्र से दिन-नक्षत्र तक गणना कर ९ से चक्रीय विभाग किया गया है; २, ४, ६, ८, ९ अनुकूल, १ मध्यम तथा ३, ५, ७ त्याज्य माने गये हैं। यात्रा-विचार में पञ्चक को सामान्य यात्रा-निर्णय का मुख्य आधार नहीं बनाया गया है; दिशाशूल के साथ चन्द्रराशि से चन्द्रवास (सम्मुख/दाहिने अनुकूल, वाम/पृष्ठ प्रतिकूल) जोड़ा गया है। दिशाशूल और चन्द्रवास को पृथक् अङ्ग मानकर संयुक्त सूचना दी जाती है; अनुकूल चन्द्रवास दिशाशूल को स्वतः समाप्त नहीं बताता। अत्यावश्यक यात्रा में अभिजित् का संकेत केवल सहायक विकल्प के रूप में है; बुधवार तथा दक्षिण-यात्रा में उसका प्रयोग नहीं दिखाया जाता। यह भाग अभी परीक्षणाधीन है; इसे पूर्ण संस्कार/यात्रा-मुहूर्त्त का विकल्प न माना जाए।</p>
   </details>
 </section>
 <!-- ===== /परीक्षण: दैनिक योग-मुहूर्त्त निर्णय ===== -->
@@ -13326,7 +13330,39 @@ if(document.readyState === "loading"){
   function absEvent(v,minStart,offsetSec=0,{allowSentinel=false}={}){if(!allowSentinel&&sentinel(v))return NaN;let x=rawSec(v);if(!Number.isFinite(x))return NaN;x+=offsetSec;while(x<minStart-1)x+=86400;return x}
   function fmt(sec,gb){if(!Number.isFinite(sec))return "—";if(typeof muhurtaNightClockMinuteLocal==="function")return muhurtaNightClockMinuteLocal(sec,gb);return dev(Math.floor(mod(sec,86400)/3600).toString().padStart(2,"0")+":"+Math.floor(mod(sec,3600)/60).toString().padStart(2,"0"))}
   function dur(seconds){if(!Number.isFinite(seconds)||seconds<=0)return "—";const mins=Math.round(seconds/60),h=Math.floor(mins/60),m=mins%60;if(h&&m)return `${dev(h)} घं ${dev(m)} मि`;if(h)return `${dev(h)} घं`;return `${dev(m)} मि`}
-  function timeRange(a,b,gb){return `${fmt(a,gb)} – ${fmt(b,gb)}`}
+  function clockOnly(sec,gb){return String(fmt(sec,gb)).replace(/^(?:रात्रिशेष|रात्रि)\s+/,"")}
+  function dayPartAt(sec,m,isEnd=false){
+    if(!m||!Number.isFinite(sec))return "";
+    if(isEnd && Math.abs(sec-m.E)<90)return "सूर्योदयपर्यन्त";
+    const at=isEnd?sec-1:sec;
+    if(at>=m.S && at<m.A){
+      const fifth=(m.A-m.S)/5;
+      if(at<m.S+fifth)return "प्रातः";
+      if(at<m.S+2*fifth)return "पूर्वाह्न";
+      if(at<m.S+3*fifth)return "मध्याह्न";
+      if(at<m.S+4*fifth)return "अपराह्न";
+      return "सायं";
+    }
+    if(at>=m.A && at<m.E){
+      const fifth=(m.E-m.A)/5;
+      if(at<m.A+fifth)return "प्रदोष";
+      return "रात्रि";
+    }
+    return "";
+  }
+  function timePoint(sec,gb,m,isEnd=false){
+    const label=dayPartAt(sec,m,isEnd);
+    if(label==="सूर्योदयपर्यन्त")return label;
+    const c=clockOnly(sec,gb);
+    return label?`${label} ${c}`:c;
+  }
+  function timeRange(a,b,gb,m=lastModel){
+    const la=dayPartAt(a,m,false),lb=dayPartAt(b,m,true);
+    const ca=clockOnly(a,gb),cb=clockOnly(b,gb);
+    if(lb==="सूर्योदयपर्यन्त")return `${la?la+" ":""}${ca} – सूर्योदयपर्यन्त`;
+    if(la&&la===lb)return `${la} ${ca} – ${cb}`;
+    return `${la?la+" ":""}${ca} – ${lb?lb+" ":""}${cb}`;
+  }
   function clip(x,S,E){const a=Math.max(x.a,S),b=Math.min(x.b,E);return b>a?{...x,a,b}:null}
   function merge(list){const a=list.filter(x=>x&&x.b>x.a).sort((x,y)=>x.a-y.a),out=[];for(const x of a){const p=out[out.length-1];if(p&&x.a<=p.b+1)p.b=Math.max(p.b,x.b);else out.push({a:x.a,b:x.b})}return out}
   function subtract(base,blocks){let parts=[{a:base.a,b:base.b}];for(const z of merge(blocks)){const next=[];for(const p of parts){if(z.b<=p.a||z.a>=p.b){next.push(p);continue}if(z.a>p.a)next.push({a:p.a,b:Math.min(z.a,p.b)});if(z.b<p.b)next.push({a:Math.max(z.b,p.a),b:p.b})}parts=next}return parts.filter(x=>x.b-x.a>=10*60)}
@@ -13369,11 +13405,90 @@ if(document.readyState === "loading"){
   function cardHtml(x,gb){return `<div class="yd-item ${x.kind}"><div class="yd-item-head"><span class="yd-name">${x.name}</span><span class="yd-time">${timeRange(x.a,x.b,gb)}</span></div><p class="yd-effect">${x.effect}</p>${x.avoid?`<div class="yd-avoid">त्याग: ${x.avoid}</div>`:""}</div>`}
   function renderLists(m){const gs=$("ydGoodSection"),bs=$("ydBadSection");gs.hidden=!m.good.length;bs.hidden=!m.bad.length;if(m.good.length){$("ydGoodCount").textContent=dev(m.good.length);$("ydGoodList").innerHTML=m.good.sort((a,b)=>a.a-b.a).map(x=>cardHtml(x,m.gb)).join("")}if(m.bad.length){$("ydBadCount").textContent=dev(m.bad.length);$("ydBadList").innerHTML=m.bad.sort((a,b)=>a.a-b.a).map(x=>cardHtml(x,m.gb)).join("")}}
   function renderDaily(m){$("ydDailyAvoid").innerHTML=m.daily.map(x=>`<div class="yd-compact"><b>${x.name}</b> — ${timeRange(x.a,x.b,m.gb)}<span>शुभारम्भ/यात्रा में ${dur(x.b-x.a)} त्याग।</span></div>`).join("")}
-  function renderTravel(m){const d=typeof DIKSHOOL_MAP==="object"?(DIKSHOOL_MAP[m.row[2]]||"—"):"—";const pc=m.panchak.length?m.panchak.map(x=>timeRange(x.a,x.b,m.gb)).join("; "):"नहीं";const nakParts=m.nature.map(x=>{const n=NAK[x.i-1],nature=x.name||"—";return `${n} (${nature}) ${timeRange(x.a,x.b,m.gb)}`}).join("; ");$("ydTravel").innerHTML=`<p><strong>दिशाशूल:</strong> ${d} दिशा। यात्रा-दिशा चुनने पर नीचे वैयक्तिक भाग में इसकी बाधा अलग दिखाई जाएगी।</p><p><strong>पञ्चक:</strong> ${pc}${m.panchak.length?" — इस अवधि में दक्षिण-दिशा की यात्रा विशेषतः टालें।":""}</p><p><strong>आज का नक्षत्र-स्वभाव:</strong> ${nakParts}।</p>`}
+  function renderTravel(m){
+    const d=typeof DIKSHOOL_MAP==="object"?(DIKSHOOL_MAP[m.row[2]]||"—"):"—";
+    const moon=moonRashiIntervals(m).map(x=>`${RASHI_MAP?.[x.r]||""} — ${CHANDRAVAS_BY_RASHI[x.r]||"—"} ${timeRange(x.a,x.b,m.gb,m)}`).join("; ");
+    const nakParts=m.nature.map(x=>{const n=NAK[x.i-1],nature=x.name||"—";return `${n} (${nature}) ${timeRange(x.a,x.b,m.gb,m)}`}).join("; ");
+    $("ydTravel").innerHTML=`<p><strong>दिशाशूल:</strong> ${d} दिशा। यात्रा-दिशा चुनने पर नीचे वैयक्तिक भाग में दिशाशूल और चन्द्रवास का संयुक्त विचार अलग दिखाई जाएगा।</p><p><strong>चन्द्रवास:</strong> ${moon||"अनिर्णीत"}। यात्रागत विचार में सम्मुख अथवा दाहिने चन्द्र को अनुकूल तथा वाम अथवा पृष्ठ चन्द्र को प्रतिकूल माना गया है।</p><p><strong>आज का नक्षत्र-स्वभाव:</strong> ${nakParts}।</p>`
+  }
 
   function populateNak(){const s=$("ydBirthNak");if(!s||s.options.length>1)return;NAK.forEach((n,i)=>{const o=document.createElement("option");o.value=String(i+1);o.textContent=`${dev(i+1)}. ${n}`;s.appendChild(o)})}
   function taraFor(birth,day){const count=mod(day-birth,27)+1,t=((count-1)%9)+1;return{count,t,name:TARA_NAMES[t-1],grade:TARA_GRADE[t],effect:TARA_EFFECT[t]}}
-  function renderTara(){const m=lastModel,box=$("ydTaraResult");if(!m||!box)return;const birth=Number($("ydBirthNak")?.value||0),purpose=$("ydPurpose")?.value||"general",dir=$("ydDirection")?.value||"पूर्व";$("ydDirectionField").hidden=purpose!=="travel";if(!birth){box.innerHTML='<div class="yd-empty">जन्म नक्षत्र चुनने पर चयनित दिन के नक्षत्रों से ताराबल और दिन में प्राथमिक उपलब्ध समय-खण्ड दिखेंगे।</div>';return}const tRows=m.nInts.map(x=>({...x,tara:taraFor(birth,x.i)}));const goodT=tRows.filter(x=>x.tara.grade==="good"),medium=tRows.filter(x=>x.tara.grade==="medium");const disha=typeof DIKSHOOL_MAP==="object"?(DIKSHOOL_MAP[m.row[2]]||""):"";const dishaBlock=purpose==="travel"&&dir===disha;let blocks=[...m.avoid];if(purpose==="travel"&&dir==="दक्षिण")blocks.push(...m.panchak);const candidate=[];for(const x of goodT){const base={a:Math.max(x.a,m.S),b:Math.min(x.b,m.A)};if(base.b<=base.a)continue;for(const p of subtract(base,blocks))candidate.push(p)}candidate.sort((a,b)=>a.a-b.a);const lines=tRows.map(x=>`<div class="yd-tara-row ${x.tara.grade}"><strong>${NAK[x.i-1]} — ${x.tara.name} तारा</strong><span>${timeRange(x.a,x.b,m.gb)} · ${x.tara.effect}</span></div>`).join("");let summary=`जन्म नक्षत्र <strong>${NAK[birth-1]}</strong> के लिये इस दिन ${goodT.length?`<strong>${dev(goodT.length)}</strong> अनुकूल नक्षत्र-अंश`:"कोई स्पष्ट अनुकूल नक्षत्र-अंश नहीं"}${medium.length?` तथा ${dev(medium.length)} मध्यम अंश`:""} मिला।`;if(purpose==="travel")summary+=` यात्रा-दिशा: <strong>${dir}</strong>${dishaBlock?` — आज इसी दिशा में <strong>दिशाशूल</strong> है; केवल समय बदलने से इसे स्वतः निरस्त नहीं माना गया।`:"।"}`;const winTitle=dishaBlock?"ताराबल-संगत समय (दिशाशूल-परिहार का पृथक् विचार आवश्यक)":"प्राथमिक उपलब्ध दिन-खण्ड";const wins=candidate.length?candidate.slice(0,6).map(x=>`<span class="yd-window">${timeRange(x.a,x.b,m.gb)}</span>`).join(""):'<span class="yd-window">उपलब्ध नहीं</span>';box.innerHTML=`<div class="yd-tara-summary">${summary}</div><div class="yd-tara-intervals">${lines}</div><div class="yd-window-title">${winTitle}</div><div class="yd-window-list">${wins}</div><p class="yd-note">यह समय-छँटाई केवल ताराबल + इस परीक्षण-पट्ट में निकले त्याज्यकालों पर आधारित है। पूर्ण मुहूर्त्त के लिये चन्द्रबल, लग्न, ग्रहबल, कार्यविशेष-संस्कार, यात्रादिशा के अन्य नियम आदि का पृथक् विचार आवश्यक है।</p>`}
+  function moonRashiIntervals(m){
+    const raw=String(m?.row?.[14]??"");
+    const z=Number(raw.split(":")[0]);
+    if(!Number.isFinite(z))return[];
+    let r=((z%12)+12)%12+1;
+    const endRaw=m.row[13],endClock=typeof excelTime==="function"?excelTime(endRaw):String(endRaw??"");
+    if(endRaw===0||endRaw==="0"||endClock==="00:00"||endClock==="00:00:00"||String(endRaw??"").trim()==="")return[{a:m.S,b:m.E,r}];
+    const t=absEvent(endRaw,m.S,0,{allowSentinel:true});
+    if(!Number.isFinite(t)||t<=m.S||t>=m.E)return[{a:m.S,b:m.E,r}];
+    return[{a:m.S,b:t,r},{a:t,b:m.E,r:r===12?1:r+1}];
+  }
+  const CHANDRAVAS_BY_RASHI={1:"पूर्व",5:"पूर्व",9:"पूर्व",2:"दक्षिण",6:"दक्षिण",10:"दक्षिण",3:"पश्चिम",7:"पश्चिम",11:"पश्चिम",4:"उत्तर",8:"उत्तर",12:"उत्तर"};
+  const DIR_ORDER=["पूर्व","दक्षिण","पश्चिम","उत्तर"];
+  function moonTravelRelation(travelDir,moonDir){
+    const t=DIR_ORDER.indexOf(travelDir),c=DIR_ORDER.indexOf(moonDir);
+    if(t<0||c<0)return{grade:"bad",name:"अनिर्णीत",effect:"चन्द्रवास सम्बन्ध स्पष्ट नहीं।"};
+    const d=mod(c-t,4);
+    if(d===0)return{grade:"good",name:"सम्मुख",effect:"सम्मुख चन्द्र — धनलाभकारक, यात्रा के लिये अनुकूल।"};
+    if(d===1)return{grade:"good",name:"दाहिने",effect:"दाहिने चन्द्र — सुख-सम्पत्ति कारक, यात्रा के लिये अनुकूल।"};
+    if(d===2)return{grade:"bad",name:"पृष्ठ",effect:"पृष्ठ चन्द्र — शोक/क्लेशकारक; यात्रा में प्रतिकूल।"};
+    return{grade:"bad",name:"वाम",effect:"वाम चन्द्र — धनहानिकारक; यात्रा में प्रतिकूल।"};
+  }
+  function abhijitInterval(m){const u=(m.A-m.S)/15;return{a:m.S+7*u,b:m.S+8*u}}
+  function travelDecisionHtml(m,dir){
+    const disha=typeof DIKSHOOL_MAP==="object"?(DIKSHOOL_MAP[m.row[2]]||""):"";
+    const hasShool=dir===disha;
+    const moon=moonRashiIntervals(m).map(x=>{const md=CHANDRAVAS_BY_RASHI[x.r]||"—",rel=moonTravelRelation(dir,md);return{...x,moonDir:md,rel}});
+    const rows=moon.map(x=>{
+      let msg;
+      if(hasShool&&x.rel.grade==="good")msg=`दिशाशूल विद्यमान है, किन्तु चन्द्रवास ${x.rel.name} होकर अनुकूल है। अत्यावश्यक यात्रा परिहार सहित विचारणीय; दिशाशूल को स्वतः भंग नहीं माना गया।`;
+      else if(hasShool)msg=`दिशाशूल और चन्द्रवास दोनों प्रतिकूल हैं; इस अंश में यात्रा स्थगित करना अधिक श्रेयस्कर।`;
+      else if(x.rel.grade==="good")msg=`दिशाशूल नहीं; चन्द्रवास ${x.rel.name} होकर अनुकूल है।`;
+      else msg=`दिशाशूल नहीं, पर चन्द्रवास ${x.rel.name} होकर प्रतिकूल है; अनुकूल चन्द्रवास की प्रतीक्षा श्रेयस्कर।`;
+      const cls=hasShool?(x.rel.grade==="good"?"mix":"bad"):(x.rel.grade==="good"?"good":"bad");
+      return `<div class="yd-travel-line ${cls}"><strong>${RASHI_MAP?.[x.r]||""} — चन्द्रवास ${x.moonDir} (${x.rel.name})</strong> · ${timeRange(x.a,x.b,m.gb,m)}<br>${msg}</div>`;
+    }).join("");
+    let ab="";
+    if(hasShool){
+      if(m.w===3)ab='<div class="yd-abhijit"><strong>अभिजित्:</strong> बुधवार होने से यात्रा-परिहार के लिये इसका प्रयोग नहीं दिखाया गया है।</div>';
+      else if(dir==="दक्षिण")ab='<div class="yd-abhijit"><strong>अभिजित्:</strong> दक्षिण-यात्रा हेतु इसका प्रयोग नहीं दिखाया गया है।</div>';
+      else{const a=abhijitInterval(m);const goodMoon=moon.some(x=>x.rel.grade==="good"&&Math.max(x.a,a.a)<Math.min(x.b,a.b));ab=`<div class="yd-abhijit"><strong>अत्यावश्यक दशा:</strong> अभिजित् ${timeRange(a.a,a.b,m.gb,m)}${goodMoon?"; इस समय चन्द्रवास भी अनुकूल अंश में है।":"; चन्द्रवास की अनुकूलता पृथक् जाँचें।"}</div>`}
+    }
+    return `<div class="yd-travel-lines">${rows}</div>${ab}`;
+  }
+  function renderTara(){
+    const m=lastModel,box=$("ydTaraResult");if(!m||!box)return;
+    const birth=Number($("ydBirthNak")?.value||0),purpose=$("ydPurpose")?.value||"general",dir=$("ydDirection")?.value||"पूर्व";
+    $("ydDirectionField").hidden=purpose!=="travel";
+    const travelHtml=purpose==="travel"?travelDecisionHtml(m,dir):"";
+    if(!birth){
+      box.innerHTML=`${travelHtml}<div class="yd-empty" style="margin-top:${travelHtml?"8px":"0"}">जन्म नक्षत्र चुनने पर चयनित दिन के नक्षत्रों से ताराबल और प्राथमिक उपलब्ध समय-खण्ड भी दिखेंगे।</div>`;
+      return;
+    }
+    const tRows=m.nInts.map(x=>({...x,tara:taraFor(birth,x.i)}));
+    const goodT=tRows.filter(x=>x.tara.grade==="good"),medium=tRows.filter(x=>x.tara.grade==="medium");
+    const disha=typeof DIKSHOOL_MAP==="object"?(DIKSHOOL_MAP[m.row[2]]||""):"";
+    const dishaBlock=purpose==="travel"&&dir===disha;
+    const blocks=[...m.avoid];
+    let candidate=[];
+    for(const x of goodT){
+      const base={a:Math.max(x.a,m.S),b:Math.min(x.b,m.A)};if(base.b<=base.a)continue;
+      for(const p of subtract(base,blocks))candidate.push(p);
+    }
+    if(purpose==="travel"){
+      const moonGood=moonRashiIntervals(m).filter(x=>moonTravelRelation(dir,CHANDRAVAS_BY_RASHI[x.r]).grade==="good");
+      const refined=[];for(const p of candidate)for(const q of moonGood){const a=Math.max(p.a,q.a),b=Math.min(p.b,q.b);if(b-a>=10*60)refined.push({a,b})}candidate=refined;
+    }
+    candidate.sort((a,b)=>a.a-b.a);
+    const lines=tRows.map(x=>`<div class="yd-tara-row ${x.tara.grade}"><strong>${NAK[x.i-1]} — ${x.tara.name} तारा</strong><span>${timeRange(x.a,x.b,m.gb,m)} · ${x.tara.effect}</span></div>`).join("");
+    let summary=`जन्म नक्षत्र <strong>${NAK[birth-1]}</strong> के लिये इस दिन ${goodT.length?`<strong>${dev(goodT.length)}</strong> अनुकूल नक्षत्र-अंश`:"कोई स्पष्ट अनुकूल नक्षत्र-अंश नहीं"}${medium.length?` तथा ${dev(medium.length)} मध्यम अंश`:""} मिला।`;
+    if(purpose==="travel")summary+=` यात्रा-दिशा: <strong>${dir}</strong>${dishaBlock?` — इस दिशा में आज <strong>दिशाशूल</strong> है; नीचे चन्द्रवास सहित संयुक्त निर्णय देखें।`:"।"}`;
+    const winTitle=purpose==="travel"?(dishaBlock?"अत्यावश्यक यात्रा हेतु विचारणीय खण्ड (दिशाशूल यथावत्)":"यात्रा हेतु प्राथमिक उपलब्ध खण्ड"):"प्राथमिक उपलब्ध दिन-खण्ड";
+    const wins=candidate.length?candidate.slice(0,6).map(x=>`<span class="yd-window">${timeRange(x.a,x.b,m.gb,m)}</span>`).join(""):'<span class="yd-window">उपलब्ध नहीं</span>';
+    box.innerHTML=`${travelHtml}<div class="yd-tara-summary" style="margin-top:${travelHtml?"8px":"0"}">${summary}</div><div class="yd-tara-intervals">${lines}</div><div class="yd-window-title">${winTitle}</div><div class="yd-window-list">${wins}</div><p class="yd-note">यह समय-चयन केवल ताराबल + इस परीक्षण-पट्ट में निकले त्याज्यकालों पर आधारित है। ध्यान देने योग्य है कि पूर्ण मुहूर्त्त के लिये चन्द्रबल, लग्न, ग्रहबल, कार्यविशेष-संस्कार, यात्रादिशा के अन्य नियम आदि का पृथक् विचार अतिआवश्यक है, अतः विशेषज्ञ का परामर्श लेकर ही अन्तिम निर्णय लेना श्रेयस्कर है।</p>`;
+  }
 
   function render(){const panel=$("dailyYogaDecisionPanel"),picker=$("datePicker");if(!panel||!picker||!picker.value||typeof workbookData==="undefined"||!workbookData){if(panel)panel.hidden=true;return}const gb=typeof pickerToGB==="function"?pickerToGB(picker.value):"",hit=typeof workbookRowByGBDate==="function"?workbookRowByGBDate(gb):null;if(!hit){panel.hidden=true;return}const row=hit.row,next=workbookData[hit.index+1]||null,m=buildModel(hit.index,row,next,gb);if(!m){panel.hidden=true;return}lastModel=m;panel.hidden=false;const place=String(typeof currentPlaceName!=="undefined"?currentPlaceName:"");const activeNak=m.nInts[0],nat=activeNak?natureFor(activeNak.i):"";$("ydContext").innerHTML=`<strong>${place}</strong> · ${dev(gb)} · ${WNAME[m.w]}${activeNak?` · ${NAK[activeNak.i-1]} (${nat||"स्वभाव-अनिर्णीत"})`:""}`;renderLists(m);renderDaily(m);renderTravel(m);renderTara()}
 
