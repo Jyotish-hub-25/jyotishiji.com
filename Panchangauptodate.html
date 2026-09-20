@@ -9,7 +9,7 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta content="श्रीसूर्यसिद्धान्तीय स्थानीय दैनिक पञ्चाङ्ग तथा भारतीय काल गणना के आधार।" name="description"/>
 <title>श्रीसूर्यसिद्धान्तीय स्थानीय पञ्चाङ्ग एवं भारतीय काल गणना</title>
-<meta name="panchanga-build" content="2026-09-20-v6-stepwise-kalahora-grahaudayasta-tyajya-yatra-75"/>
+<meta name="panchanga-build" content="2026-09-20-v8-final-layout-time-fix-75"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
@@ -3891,6 +3891,146 @@ body.smart-select-lock{overflow:hidden}
 }
 </style>
 
+
+
+<style id="panchanga-v8-final-layout-fixes">
+/* ===== v8: user-reviewed compact layout ===== */
+
+/* त्याज्य काल: desktop पर समय - कारण - प्रभाव एक ही पंक्ति; mobile पर स्वाभाविक wrap */
+#ydBadList{
+  display:grid !important;
+  grid-template-columns:1fr !important;
+  gap:5px !important;
+}
+#ydBadList > .yd-item{
+  min-width:0 !important;
+}
+@media (min-width:761px){
+  #ydBadList .yd-time-first-card,
+  #ydBadList .yd-baan-card{
+    display:flex !important;
+    flex-wrap:nowrap !important;
+    align-items:baseline !important;
+    gap:3px 6px !important;
+  }
+  #ydBadList .yd-time-first-card .yd-time,
+  #ydBadList .yd-baan-card .yd-time,
+  #ydBadList .yd-time-first-card .yd-name,
+  #ydBadList .yd-baan-card .yd-name,
+  #ydBadList .yd-sep{
+    flex:0 0 auto !important;
+    white-space:nowrap !important;
+  }
+  #ydBadList .yd-time-first-card .yd-effect,
+  #ydBadList .yd-time-first-card .yd-avoid,
+  #ydBadList .yd-baan-card .yd-effect,
+  #ydBadList .yd-baan-card .yd-avoid{
+    flex:0 1 auto !important;
+    min-width:0 !important;
+    white-space:normal !important;
+  }
+}
+@media (max-width:760px){
+  #ydBadList .yd-time-first-card,
+  #ydBadList .yd-baan-card{
+    display:flex !important;
+    flex-wrap:wrap !important;
+    gap:2px 5px !important;
+  }
+}
+
+/* ग्रह उदय-अस्त: desktop पर ठीक दो पंक्तियों में 3 + 2, चन्द्र अलग पूर्ण-पंक्ति में */
+@media (min-width:701px){
+  .odayika-udayasta-grid{
+    display:grid !important;
+    grid-template-columns:repeat(6,minmax(0,1fr)) !important;
+    gap:5px 7px !important;
+    align-items:stretch !important;
+  }
+  .odayika-event-chip:not(.odayika-moon-chip){
+    grid-column:span 2;
+    min-width:0 !important;
+  }
+  .odayika-event-chip:not(.odayika-moon-chip):nth-child(4){
+    grid-column:2 / span 2;
+  }
+  .odayika-event-chip:not(.odayika-moon-chip):nth-child(5){
+    grid-column:4 / span 2;
+  }
+  .odayika-event-chip.odayika-moon-chip{
+    grid-column:1 / -1 !important;
+  }
+}
+@media (max-width:700px){
+  .odayika-udayasta-grid{
+    display:grid !important;
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:5px !important;
+  }
+  .odayika-event-chip{
+    min-width:0 !important;
+    padding:4px 5px !important;
+    font-size:.92rem !important;
+    line-height:1.35 !important;
+  }
+  .odayika-event-chip.odayika-moon-chip{
+    grid-column:1 / -1 !important;
+  }
+}
+
+/* कालहोरा: wide desktop 3 columns; medium/tablet/large mobile 2; narrow mobile 1.
+   इससे ग्रह और समय के बीच का रिक्त स्थान उपयोगी रहता है, overflow नहीं होता। */
+.yd-kalahora-table{
+  display:grid !important;
+  gap:5px 7px !important;
+}
+@media (min-width:980px){
+  .yd-kalahora-table{
+    grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+    grid-template-rows:repeat(8,auto) !important;
+    grid-auto-flow:column !important;
+  }
+}
+@media (min-width:430px) and (max-width:979px){
+  .yd-kalahora-table{
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    grid-template-rows:repeat(12,auto) !important;
+    grid-auto-flow:column !important;
+  }
+}
+@media (max-width:429px){
+  .yd-kalahora-table{
+    grid-template-columns:1fr !important;
+    grid-template-rows:none !important;
+    grid-auto-flow:row !important;
+  }
+}
+.yd-kh-card{
+  display:grid !important;
+  grid-template-columns:1.35em minmax(3.8em,max-content) minmax(0,1fr) !important;
+  align-items:center !important;
+  column-gap:6px !important;
+  min-width:0 !important;
+  overflow:hidden !important;
+  padding:5px 7px !important;
+  font-size:1rem !important;
+}
+.yd-kh-time{
+  justify-self:end !important;
+  margin-left:0 !important;
+  white-space:nowrap !important;
+  font-size:.96em !important;
+}
+.yd-kh-lord{
+  white-space:nowrap !important;
+}
+
+/* शीर्षक के विसर्ग के लिये plain Unicode है; कोई pseudo-line नहीं। */
+.site-header h1{
+  text-decoration:none !important;
+}
+</style>
+
 </head>
 <body>
 <header class="site-header">
@@ -4195,7 +4335,7 @@ body.smart-select-lock{overflow:hidden}
   </div>
 
   <div class="odayika-udayasta" id="odayikaUdayasta" hidden>
-    <div class="odayika-udayasta-title" id="odayikaUdayastaTitle">दिशासहित ग्रहोदय–अस्त</div>
+    <div class="odayika-udayasta-title" id="odayikaUdayastaTitle">दिशासहित ग्रहोदय-अस्त</div>
     <div class="odayika-udayasta-grid" id="odayikaUdayastaGrid"></div>
   </div>
 </section>
@@ -4422,7 +4562,7 @@ body.smart-select-lock{overflow:hidden}
   <div class="yd-context" id="ydContext">चयनित पञ्चाङ्ग के अनुसार गणना की जा रही है…</div>
 
   <div class="yd-section" id="ydBadSection" hidden>
-    <div class="yd-section-title">त्याज्य / सावधानी <span class="yd-count" id="ydBadCount"></span></div>
+    <div class="yd-section-title">त्याज्य काल / सावधानी <span class="yd-section-subnote">(नित्य त्याज्य दुष्टक्षण सहित)</span> <span class="yd-count" id="ydBadCount"></span></div>
     <div class="yd-list" id="ydBadList"></div>
   </div>
 
@@ -4431,10 +4571,7 @@ body.smart-select-lock{overflow:hidden}
     <div class="yd-list" id="ydGoodList"></div>
   </div>
 
-  <div class="yd-section">
-    <div class="yd-section-title">नित्य दुष्टक्षण</div>
-    <div class="yd-compact-grid" id="ydDailyAvoid"></div>
-  </div>
+  <div id="ydDailyAvoid" hidden></div>
 
   <div class="yd-section yd-kalahora-section" id="ydKalahoraSection" hidden>
     <div class="yd-section-title">कालहोरा</div>
@@ -4448,13 +4585,15 @@ body.smart-select-lock{overflow:hidden}
   <div class="yd-section">
     <div class="yd-section-title">यात्रा-विचार</div>
     <div class="yd-travel-controls">
-      <label for="ydTravelDirection">यात्रा-दिशा</label>
-      <select id="ydTravelDirection">
-        <option value="">— दिशा चुनें —</option>
-        <option value="पूर्व">पूर्व</option>
-        <option value="दक्षिण">दक्षिण</option>
-        <option value="पश्चिम">पश्चिम</option>
-        <option value="उत्तर">उत्तर</option>
+      <span class="yd-travel-label">यात्रा-दिशा चुनें:</span>
+      <div class="yd-direction-buttons" role="group" aria-label="यात्रा-दिशा">
+        <button type="button" class="yd-dir-btn" data-dir="पूर्व">पूर्व</button>
+        <button type="button" class="yd-dir-btn" data-dir="दक्षिण">दक्षिण</button>
+        <button type="button" class="yd-dir-btn" data-dir="पश्चिम">पश्चिम</button>
+        <button type="button" class="yd-dir-btn" data-dir="उत्तर">उत्तर</button>
+      </div>
+      <select id="ydTravelDirection" hidden aria-hidden="true">
+        <option value=""></option><option value="पूर्व">पूर्व</option><option value="दक्षिण">दक्षिण</option><option value="पश्चिम">पश्चिम</option><option value="उत्तर">उत्तर</option>
       </select>
     </div>
     <div class="yd-travel" id="ydTravel"></div>
@@ -7242,15 +7381,18 @@ const PANCHANGA_PLACES = [
   /* Canada: Excel standard-time basis; website DST/seasonal offset लगाएगी। */
   {key:"edmonton", region:"foreign", countryKey:"canada", countryName:"कनाडा",
    name:"एडमण्टन, अल्बर्टा", heading:"एडमण्टनस्थ पञ्चाङ्ग",
-   file:"panchang-data/Edmonton_Alberta2026.xlsx", timeZone:"America/Edmonton", standardOffsetMinutes:-420, timeBasis:"standard"},
+   file:"panchang-data/Edmonton_Alberta2026.xlsx", timeZone:"America/Edmonton", standardOffsetMinutes:-420, timeBasis:"standard",
+   permanentOffsetMinutes:-360, permanentFromStandardLocal:"2026-11-01T01:00", permanentTimeLabel:"अल्बर्टा समय", permanentTimeAbbr:"ABT"},
 
   {key:"calgary", region:"foreign", countryKey:"canada", countryName:"कनाडा",
    name:"कैलगरी, अल्बर्टा", heading:"कैलगरीस्थ पञ्चाङ्ग",
-   file:"panchang-data/Calgary_Alberta2026.xlsx", timeZone:"America/Edmonton", standardOffsetMinutes:-420, timeBasis:"standard"},
+   file:"panchang-data/Calgary_Alberta2026.xlsx", timeZone:"America/Edmonton", standardOffsetMinutes:-420, timeBasis:"standard",
+   permanentOffsetMinutes:-360, permanentFromStandardLocal:"2026-11-01T01:00", permanentTimeLabel:"अल्बर्टा समय", permanentTimeAbbr:"ABT"},
 
   {key:"vancouver-bc", region:"foreign", countryKey:"canada", countryName:"कनाडा",
    name:"वैंकूवर, ब्रिटिश कोलम्बिया", heading:"वैंकूवरस्थ पञ्चाङ्ग",
-   file:"panchang-data/Vancouver_BC2026.xlsx", timeZone:"America/Vancouver", standardOffsetMinutes:-480, timeBasis:"standard"},
+   file:"panchang-data/Vancouver_BC2026.xlsx", timeZone:"America/Vancouver", standardOffsetMinutes:-480, timeBasis:"standard",
+   permanentOffsetMinutes:-420, permanentFromStandardLocal:"2026-11-01T01:00", permanentTimeLabel:"ब्रिटिश कोलम्बिया पैसिफिक समय", permanentTimeAbbr:"PCT"},
 
   {key:"toronto", region:"foreign", countryKey:"canada", countryName:"कनाडा",
    name:"टोरंटो, ओण्टारियो", heading:"टोरंटोस्थ पञ्चाङ्ग",
@@ -7264,10 +7406,9 @@ const PANCHANGA_PLACES = [
    name:"विनिपेग, मैनिटोबा", heading:"विनिपेगस्थ पञ्चाङ्ग",
    file:"panchang-data/Winnipeg_Manitoba2026.xlsx", timeZone:"America/Winnipeg",
    standardOffsetMinutes:-360, timeBasis:"standard",
-   /* 2026-03-08 02:00 CST के बाद Manitoba ने UTC−05:00 को स्थायी civil time बनाया।
-      इसलिए standard-time Excel (UTC−06:00) में +60 मिनट स्थायी रूप से जोड़ने हैं,
-      1 Nov 2026 को इसे वापस 0 नहीं करना है। */
-   permanentOffsetMinutes:-300, permanentFromStandardLocal:"2026-03-08T02:00"},
+   /* 1 Nov 2026 को पुराना fall-back नहीं होगा; source-standard clock में
+      उस पुराने transition instant का मान 01:00 है। */
+   permanentOffsetMinutes:-300, permanentFromStandardLocal:"2026-11-01T01:00", permanentTimeLabel:"मैनिटोबा स्थायी समय", permanentTimeAbbr:"CDT"},
 
   /* London global-file audit: Excel standard/GMT basis पर है; BST website लगाएगी। */
   {key:"london", region:"foreign", countryKey:"united-kingdom", countryName:"यूनाइटेड किंगडम",
@@ -7321,7 +7462,10 @@ const PANCHANGA_PLACES = [
 
   {key:"ghent", region:"foreign", countryKey:"belgium", countryName:"बेल्जियम",
    name:"घेण्ट", heading:"घेण्टस्थ पञ्चाङ्ग",
-   file:"panchang-data/Gent_Belgium2026.xlsx", timeZone:"Europe/Brussels", standardOffsetMinutes:60, timeBasis:"standard"},
+   file:"panchang-data/Gent_Belgium2026.xlsx", timeZone:"Europe/Brussels", standardOffsetMinutes:60, timeBasis:"standard",
+   /* Gent ~3°44′E से CET standard meridian 15°E तक 11°16′ = 45m04s.
+      Source sunrise/sunset local-meridian clock पर हैं; पहले यह correction, फिर CEST/DST. */
+   sourceClockCorrectionMinutes:45.0666666667},
 
   {key:"kathmandu", region:"foreign", countryKey:"nepal", countryName:"नेपाल",
    name:"काठमाण्डू", heading:"काठमाण्डूस्थ पञ्चाङ्ग",
@@ -7368,8 +7512,11 @@ const PLACE_META = Object.fromEntries(
       countryName:place.countryName,
       file:place.file,
       referenceLongitude:place.referenceLongitude,
+      sourceClockCorrectionMinutes:place.sourceClockCorrectionMinutes,
       permanentOffsetMinutes:place.permanentOffsetMinutes,
-      permanentFromStandardLocal:place.permanentFromStandardLocal
+      permanentFromStandardLocal:place.permanentFromStandardLocal,
+      permanentTimeLabel:place.permanentTimeLabel,
+      permanentTimeAbbr:place.permanentTimeAbbr
     }
   ])
 );
@@ -8039,26 +8186,46 @@ function dstAdjustmentMinutes(gbDate,standardTotalMinutes){
   return actualOffset - meta.standardOffsetMinutes;
 }
 
-function dstAdjustedSeconds(totalSeconds,gbDate){
-  const adjustment =
-    dstAdjustmentMinutes(gbDate,totalSeconds / 60);
+function sourceClockCorrectionMinutes(meta){
+  const v=Number(meta?.sourceClockCorrectionMinutes);
+  return Number.isFinite(v) ? v : 0;
+}
 
+/*
+  Source-clock -> local standard clock -> civil clock.
+  Gent जैसे स्थान में source local-meridian clock को पहले CET standard clock में
+  बदला जाता है; उसके बाद IANA seasonal/DST correction लगाया जाता है।
+*/
+function localClockAdjustmentMinutes(gbDate,sourceTotalMinutes){
+  const meta=PLACE_META[currentPlaceKey];
+  const sourceCorrection=sourceClockCorrectionMinutes(meta);
+  const standardMinutes=sourceTotalMinutes + sourceCorrection;
+  const seasonal=dstAdjustmentMinutes(gbDate,standardMinutes);
+  return sourceCorrection + seasonal;
+}
+
+function dstAdjustedSeconds(totalSeconds,gbDate){
+  const adjustment=localClockAdjustmentMinutes(gbDate,totalSeconds / 60);
   return totalSeconds + adjustment * 60;
 }
 
 function dstStatusText(gbDate){
   /* दोपहर का मान उस दिन की सामान्य seasonal/permanent civil-time स्थिति बताने के लिये पर्याप्त है। */
   const adjustment = dstAdjustmentMinutes(gbDate,12 * 60);
-  if(!adjustment) return "";
+  const meta=PLACE_META[currentPlaceKey];
+  const permanent=permanentOffsetAdjustmentMinutes(meta,gbDate,12*60);
 
-  if(currentPlaceKey==="winnipeg"){
-    const meta=PLACE_META[currentPlaceKey];
-    const permanent=permanentOffsetAdjustmentMinutes(meta,gbDate,12*60);
-    if(permanent!==null){
-      return "मैनिटोबा स्थायी समय +१ घण्टा समायोजित";
-    }
+  if(permanent!==null){
+    const label=meta?.permanentTimeLabel || "स्थायी समय";
+    const sign=permanent>=0?"+":"−";
+    const a=Math.abs(permanent),h=Math.floor(a/60),m=a%60;
+    let amount="";
+    if(h) amount+=toDev(h)+" घण्टा";
+    if(m) amount+=(amount?" ":"")+toDev(m)+" मिनट";
+    return `${label} ${sign}${amount} समायोजित`;
   }
 
+  if(!adjustment) return "";
   const sign = adjustment > 0 ? "+" : "−";
   const absolute = Math.abs(adjustment);
   const hours = Math.floor(absolute / 60);
@@ -8094,7 +8261,7 @@ function excelTimeDev(value,gbDate=""){
 
   const adjustedTotalMinutes =
     standardTotalMinutes +
-    (gbDate ? dstAdjustmentMinutes(gbDate,standardTotalMinutes) : 0);
+    (gbDate ? localClockAdjustmentMinutes(gbDate,standardTotalMinutes) : 0);
 
   const dayShift = Math.floor(adjustedTotalMinutes / 1440);
   const minuteOfDay =
@@ -10565,8 +10732,8 @@ function grahaUdayaTargetDateTime(totalStandardSeconds, selectedDate){
   const targetDate = addDaysGB(selectedDate, dayShift);
 
   const standardMinutes = secondsOfDay / 60;
-  const dstMinutes = dstAdjustmentMinutes(targetDate, standardMinutes);
-  let civilSeconds = secondsOfDay + dstMinutes * 60;
+  const clockAdjustment = localClockAdjustmentMinutes(targetDate, standardMinutes);
+  let civilSeconds = secondsOfDay + clockAdjustment * 60;
 
   let extraShift = Math.floor(civilSeconds / 86400);
   civilSeconds = ((civilSeconds % 86400) + 86400) % 86400;
@@ -11518,7 +11685,7 @@ function absMinutesToGBClock(absMinutes){
   const d = new Date(absMinutes*60000);
   const gb = `${String(d.getUTCDate()).padStart(2,"0")}/${String(d.getUTCMonth()+1).padStart(2,"0")}/${d.getUTCFullYear()}`;
   const standardMinutes = d.getUTCHours()*60+d.getUTCMinutes()+d.getUTCSeconds()/60;
-  const adjusted = standardMinutes + dstAdjustmentMinutes(gb,standardMinutes);
+  const adjusted = standardMinutes + localClockAdjustmentMinutes(gb,standardMinutes);
   const dayShift = Math.floor(adjusted/1440);
   const mod = ((adjusted%1440)+1440)%1440;
   let hh = Math.floor(mod/60), mm = Math.round(mod%60);
@@ -13252,7 +13419,7 @@ const PANCHANGA_COUNTRY_ENGLISH_NAMES = {
 };
 function panchangaBilingualPlaceName(place){
   const en=PANCHANGA_PLACE_ENGLISH_NAMES[place?.key] || "";
-  return en ? `${place.name} — ${en}` : (place?.name || "");
+  return en ? `${place.name} - ${en}` : (place?.name || "");
 }
 
 const TEMP_BLOCKED_PLACE_KEYS = new Set([]);
@@ -14501,8 +14668,8 @@ trigger.className="smart-select-trigger";
 (()=>{
   if(typeof PANCHANGA_UI_TRANSLATIONS!=="object")return;
   const en={
-    "दिशासहित ग्रहोदय–अस्त":"Directional planetary rise/set",
-    "दिशासहित ग्रहोदय–अस्त · चन्द्रोदय–चन्द्रास्त":"Directional planetary rise/set · Moonrise–Moonset",
+    "दिशासहित ग्रहोदय-अस्त":"Directional planetary rise/set",
+    "दिशासहित ग्रहोदय-अस्त - चन्द्रोदय-चन्द्रास्त":"Directional planetary rise/set - Moonrise-Moonset",
     "चन्द्रोदय":"Moonrise",
     "चन्द्रास्त":"Moonset",
     "कालहोरा":"Kālahorā",
@@ -14715,7 +14882,7 @@ trigger.className="smart-select-trigger";
   }
   function displayRange(a,b,gb,m=lastModel){if(m&&Math.abs(a-m.S)<90&&Math.abs(b-m.E)<90)return "अहोरात्र";return timeRange(a,b,gb,m)}
   function shiftGB(gb,days){const m=String(gb||"").match(/^(\d{2})\/(\d{2})\/(\d{4})$/);if(!m||!Number.isFinite(days))return gb;const d=new Date(Date.UTC(+m[3],+m[2]-1,+m[1]+days));return `${String(d.getUTCDate()).padStart(2,"0")}/${String(d.getUTCMonth()+1).padStart(2,"0")}/${d.getUTCFullYear()}`}
-  function absoluteLocalPoint(sec,baseGB){if(!Number.isFinite(sec))return "—";let dayShift=Math.floor(sec/86400),std=((sec%86400)+86400)%86400,targetGB=shiftGB(baseGB,dayShift);let adj=0;try{if(typeof dstAdjustmentMinutes==="function")adj=dstAdjustmentMinutes(targetGB,std/60)||0}catch(_){adj=0}let civil=std+adj*60,extra=Math.floor(civil/86400);civil=((civil%86400)+86400)%86400;if(extra){targetGB=shiftGB(targetGB,extra)}const mins=Math.round(civil/60)%1440,h=Math.floor(mins/60),mi=mins%60,clock=dev(`${String(h).padStart(2,"0")}:${String(mi).padStart(2,"0")}`);if(targetGB===baseGB)return clock;const dm=targetGB.slice(0,5);return `${dev(dm)} ${clock}`}
+  function absoluteLocalPoint(sec,baseGB){if(!Number.isFinite(sec))return "—";let dayShift=Math.floor(sec/86400),std=((sec%86400)+86400)%86400,targetGB=shiftGB(baseGB,dayShift);let adj=0;try{if(typeof localClockAdjustmentMinutes==="function")adj=localClockAdjustmentMinutes(targetGB,std/60)||0;else if(typeof dstAdjustmentMinutes==="function")adj=dstAdjustmentMinutes(targetGB,std/60)||0}catch(_){adj=0}let civil=std+adj*60,extra=Math.floor(civil/86400);civil=((civil%86400)+86400)%86400;if(extra){targetGB=shiftGB(targetGB,extra)}const mins=Math.round(civil/60)%1440,h=Math.floor(mins/60),mi=mins%60,clock=dev(`${String(h).padStart(2,"0")}:${String(mi).padStart(2,"0")}`);if(targetGB===baseGB)return clock;const dm=targetGB.slice(0,5);return `${dev(dm)} ${clock}`}
   function trueIntervalText(a,b,gb){return `आरम्भ ${absoluteLocalPoint(a,gb)} · समाप्ति ${absoluteLocalPoint(b,gb)}`}
 
   function clip(x,S,E){const a=Math.max(x.a,S),b=Math.min(x.b,E);return b>a?{...x,a,b}:null}
@@ -14772,7 +14939,7 @@ trigger.className="smart-select-trigger";
     const kInts=karanaIntervals(rowIndex,row,S,E,gb),bhadra=kInts.filter(x=>x.key==="Višti"||String(x.name).includes("विष्टि"));for(const x of bhadra){bad.push(eventCard("भद्रा (विष्टि करण)",x.a,x.b,"bad","सामान्य माङ्गलिक आरम्भ, विवाहादि सौम्य शुभकार्य और महत्त्वपूर्ण यात्रा में त्याग श्रेयस्कर; क्रूर/दमनात्मक कार्यों के पृथक् विधान हैं।",`सम्पूर्ण विष्टि-अंश — ${dur(x.b-x.a)}`));avoid.push({a:x.a,b:x.b})}
     const panchak=next?panchakIntervals(row,next,S,E):[];for(const x of panchak)bad.push(eventCard("पञ्चक",x.a,x.b,"caution","विशेषतः दक्षिण-यात्रा, शय्या-निर्माण/बिछाना, गृहच्छादन/गृहसम्बन्धी आरम्भ, तृण-काष्ठ-संग्रह और मृतकर्म में वर्जन का विचार।","इन निर्दिष्ट कार्यों में सक्रिय पञ्चक-अंश का त्याग"));
     const ntrs=nakTransitions(rowIndex,gb),mg=moolsanjnakAndGandanta(nInts,ntrs,S,E);for(const x of mg.moola)bad.push(eventCard(`मूलसंज्ञक (गण्डमूल) — ${NAK[x.i-1]}`,x.a,x.b,"caution","नक्षत्र का वास्तविक आरम्भ–समाप्ति; सम्बन्धित सन्धि में गण्डान्त-अंश पृथक् दिया गया है।","",trueIntervalText(x.a,x.b,gb)));for(const x of mg.gandanta)bad.push(eventCard(`नक्षत्र-गण्डान्त — ${x.label}`,x.a,x.b,"caution","सन्धि के पूर्व २ घटिका और उत्तर २ घटिका का गण्डान्त-अंश।","",trueIntervalText(x.a,x.b,gb)));
-    const baan=baanIntervals(row,next,S,E);for(const x of baan)bad.push(eventCard(`बाण-पञ्चक — ${x.name}`,x.a,x.b,"caution",x.effect));
+    const baan=baanIntervals(row,next,S,E);for(const x of baan)bad.push(eventCard(`बाण-पञ्चक - ${x.name}`,x.a,x.b,"caution",x.effect));
     const target={kulika:6,kala:3,yama:4,kantaka:2};const D=A-S;const kalansh=tw=>{const count=mod(tw-w,7)+1,k=2*count,u=D/16;return{a:S+(k-1)*u,b:S+k*u}};const daily=[{name:"कुलिक",...kalansh(target.kulika)},{name:"कालवेला",...kalansh(target.kala)},{name:"यमघण्ट",...kalansh(target.yama)},{name:"कण्टक",...kalansh(target.kantaka)}];const W=w+1,ai=((3*W)%8)+1,h=D/8;daily.push({name:"अर्धयाम",a:S+(ai-1)*h,b:S+ai*h});for(const x of daily)avoid.push({a:x.a,b:x.b});
     const nature=nInts.map(x=>({a:x.a,b:x.b,i:x.i,name:natureFor(x.i)}));return{rowIndex,row,next,gb,S,A,E,w,tInts,nInts,yInts,good,bad,avoid,daily,panchak,nature,bhadra,an,baan,mg}}
 
@@ -14780,18 +14947,25 @@ trigger.className="smart-select-trigger";
     const time=x.timeText||displayRange(x.a,x.b,gb);
     const isBaan=String(x.name||"").startsWith("बाण-पञ्चक");
     if(isBaan){
-      return `<div class="yd-item ${x.kind} yd-baan-card"><span class="yd-time">${time}</span><span class="yd-sep">—</span><span class="yd-name">${x.name}</span>${x.effect?`<span class="yd-sep">—</span><span class="yd-effect">${x.effect}</span>`:""}${x.avoid?`<span class="yd-sep">—</span><span class="yd-avoid">${x.avoid}</span>`:""}</div>`;
+      return `<div class="yd-item ${x.kind} yd-baan-card"><span class="yd-time">${time}</span><span class="yd-sep">-</span><span class="yd-name">${x.name}</span>${x.effect?`<span class="yd-sep">-</span><span class="yd-effect">${x.effect}</span>`:""}${x.avoid?`<span class="yd-sep">-</span><span class="yd-avoid">${x.avoid}</span>`:""}</div>`;
     }
     if(timeFirst){
-      return `<div class="yd-item ${x.kind} yd-time-first-card"><span class="yd-time">${time}</span><span class="yd-sep">—</span><span class="yd-name">${x.name}</span>${x.effect?`<span class="yd-sep yd-sep-effect">—</span><span class="yd-effect">${x.effect}</span>`:""}${x.avoid?`<span class="yd-sep yd-sep-avoid">—</span><span class="yd-avoid">${x.avoid}</span>`:""}</div>`;
+      return `<div class="yd-item ${x.kind} yd-time-first-card"><span class="yd-time">${time}</span><span class="yd-sep">-</span><span class="yd-name">${x.name}</span>${x.effect?`<span class="yd-sep yd-sep-effect">-</span><span class="yd-effect">${x.effect}</span>`:""}${x.avoid?`<span class="yd-sep yd-sep-avoid">-</span><span class="yd-avoid">${x.avoid}</span>`:""}</div>`;
     }
     return `<div class="yd-item ${x.kind}"><div class="yd-item-head"><span class="yd-name">${x.name}</span><span class="yd-time">${time}</span></div><p class="yd-effect">${x.effect}</p>${x.avoid?`<div class="yd-avoid">${x.avoid}</div>`:""}</div>`;
   }
-  function renderLists(m){const gs=$("ydGoodSection"),bs=$("ydBadSection");gs.hidden=!m.good.length;bs.hidden=!m.bad.length;if(m.good.length){$("ydGoodCount").textContent=dev(m.good.length);$("ydGoodList").innerHTML=m.good.sort((a,b)=>a.a-b.a).map(x=>cardHtml(x,m.gb,false)).join("")}if(m.bad.length){$("ydBadCount").textContent=dev(m.bad.length);$("ydBadList").innerHTML=m.bad.sort((a,b)=>a.a-b.a).map(x=>cardHtml(x,m.gb,true)).join("")}}
-  function renderDaily(m){$("ydDailyAvoid").innerHTML=m.daily.map(x=>{const tm=displayRange(x.a,x.b,m.gb,m);return `<div class="yd-compact"><b class="yd-compact-time">${tm}</b><span>— ${x.name} — शुभारम्भ/यात्रा में त्याज्य</span></div>`}).join("")}
+  function renderLists(m){
+    const gs=$("ydGoodSection"),bs=$("ydBadSection");
+    const dailyCards=m.daily.map(x=>eventCard(x.name,x.a,x.b,"bad","शुभारम्भ/यात्रा में त्याज्य"));
+    const allBad=[...m.bad,...dailyCards].sort((a,b)=>a.a-b.a);
+    gs.hidden=!m.good.length; bs.hidden=!allBad.length;
+    if(m.good.length){$("ydGoodCount").textContent=dev(m.good.length);$("ydGoodList").innerHTML=[...m.good].sort((a,b)=>a.a-b.a).map(x=>cardHtml(x,m.gb,false)).join("")}
+    if(allBad.length){$("ydBadCount").textContent=dev(allBad.length);$("ydBadList").innerHTML=allBad.map(x=>cardHtml(x,m.gb,true)).join("")}
+  }
+  function renderDaily(m){const box=$("ydDailyAvoid");if(box)box.innerHTML=""}
   function renderTravel(m){
     const d=typeof DIKSHOOL_MAP==="object"?(DIKSHOOL_MAP[m.row[2]]||"—"):"—";
-    const moon=moonRashiIntervals(m).map(x=>`${RASHI_MAP?.[x.r]||""} — ${CHANDRAVAS_BY_RASHI[x.r]||"—"} ${timeRange(x.a,x.b,m.gb,m)}`).join("; ");
+    const moon=moonRashiIntervals(m).map(x=>`${RASHI_MAP?.[x.r]||""} - ${CHANDRAVAS_BY_RASHI[x.r]||"-"} ${timeRange(x.a,x.b,m.gb,m)}`).join("; ");
     const nakParts=m.nature.map(x=>{const n=NAK[x.i-1],nature=x.name||"—";return `${n} (${nature}) ${timeRange(x.a,x.b,m.gb,m)}`}).join("; ");
     const dir=$("ydTravelDirection")?.value||"";
     const joint=dir?`<div class="yd-travel-joint">${travelDecisionHtml(m,dir)}</div>`:`<p><strong>यात्रा-दिशा:</strong> ऊपर दिशा चुनने पर दिशाशूल और चन्द्रवास का संयुक्त निर्णय यहीं दिखेगा।</p>`;
@@ -14818,9 +14992,9 @@ trigger.className="smart-select-trigger";
     if(t<0||c<0)return{grade:"bad",name:"अनिर्णीत",effect:"चन्द्रवास सम्बन्ध स्पष्ट नहीं।"};
     const d=mod(c-t,4);
     if(d===0)return{grade:"good",name:"सम्मुख",effect:"सम्मुख चन्द्र — धनलाभकारक, यात्रा के लिये अनुकूल।"};
-    if(d===1)return{grade:"good",name:"दाहिने",effect:"दाहिने चन्द्र — सुख-सम्पत्ति कारक, यात्रा के लिये अनुकूल।"};
-    if(d===2)return{grade:"bad",name:"पृष्ठ",effect:"पृष्ठ चन्द्र — शोक/क्लेशकारक; यात्रा में प्रतिकूल।"};
-    return{grade:"bad",name:"वाम",effect:"वाम चन्द्र — धनहानिकारक; यात्रा में प्रतिकूल।"};
+    if(d===1)return{grade:"good",name:"दाहिने",effect:"दाहिने चन्द्र - सुख-सम्पत्ति कारक, यात्रा के लिये अनुकूल।"};
+    if(d===2)return{grade:"bad",name:"पृष्ठ",effect:"पृष्ठ चन्द्र - शोक/क्लेशकारक; यात्रा में प्रतिकूल।"};
+    return{grade:"bad",name:"वाम",effect:"वाम चन्द्र - धनहानिकारक; यात्रा में प्रतिकूल।"};
   }
   function abhijitInterval(m){const u=(m.A-m.S)/15;return{a:m.S+7*u,b:m.S+8*u}}
   function travelDecisionHtml(m,dir){
@@ -14882,7 +15056,16 @@ trigger.className="smart-select-trigger";
     populateNak();
     $("ydBirthNak")?.addEventListener("change",renderTara);
     $("ydPurpose")?.addEventListener("change",renderTara);
-    $("ydTravelDirection")?.addEventListener("change",()=>{if(lastModel){renderTravel(lastModel);renderTara();}});
+    const dirSelect=$("ydTravelDirection");
+    const syncDirectionButtons=()=>{document.querySelectorAll(".yd-dir-btn").forEach(b=>b.classList.toggle("active",b.dataset.dir===(dirSelect?.value||"")))};
+    document.querySelectorAll(".yd-dir-btn").forEach(btn=>btn.addEventListener("click",()=>{
+      if(!dirSelect)return;
+      dirSelect.value=btn.dataset.dir||"";
+      syncDirectionButtons();
+      dirSelect.dispatchEvent(new Event("change",{bubbles:true}));
+    }));
+    dirSelect?.addEventListener("change",()=>{syncDirectionButtons();if(lastModel){renderTravel(lastModel);renderTara();}});
+    syncDirectionButtons();
     $("fileLink")?.addEventListener("change",()=>{
       lastModel=null;
       const p=$("dailyYogaDecisionPanel");
@@ -14955,7 +15138,7 @@ trigger.className="smart-select-trigger";
       if(!s) continue;
       const t=eventText(s)||transitionText(rowIndex,key,s);
       if(!t) continue;
-      items.push(`<span class="odayika-event-chip"><strong>${s.name}</strong> — ${t}</span>`);
+      items.push(`<span class="odayika-event-chip"><strong>${s.name}</strong> - ${t}</span>`);
     }
 
     /* चन्द्रोदय वही पूर्व-स्वीकृत formula; चन्द्रास्त उसी का सप्तम-बिन्दु रूप। */
@@ -14970,10 +15153,10 @@ trigger.className="smart-select-trigger";
       const parts=[];
       if(mr?.timeText) parts.push(`चन्द्रोदय ${mr.timeText}`);
       if(ms?.timeText) parts.push(`चन्द्रास्त ${ms.timeText}`);
-      items.push(`<span class="odayika-event-chip odayika-moon-chip"><strong>चन्द्र</strong> — ${parts.join(" · ")}</span>`);
-      if(title) title.textContent="दिशासहित ग्रहोदय–अस्त · चन्द्रोदय–चन्द्रास्त";
+      items.push(`<span class="odayika-event-chip odayika-moon-chip"><strong>चन्द्र</strong> - ${parts.join(" - ")}</span>`);
+      if(title) title.textContent="दिशासहित ग्रहोदय-अस्त - चन्द्रोदय-चन्द्रास्त";
     }else if(title){
-      title.textContent="दिशासहित ग्रहोदय–अस्त";
+      title.textContent="दिशासहित ग्रहोदय-अस्त";
     }
 
     grid.innerHTML=items.join("");
@@ -15030,16 +15213,19 @@ trigger.className="smart-select-trigger";
     const m=String(dateValue||"").match(/^(\d{4})-(\d{2})-(\d{2})$/);
     const ymd=m ? (+m[1]*10000 + +m[2]*100 + +m[3]) : 0;
 
-    /*
-      Manitoba: 8 Mar 2026 से UTC−05:00 स्थायी।
-      Browser/OS tzdata पुराना हो तो America/Winnipeg को 1 Nov के बाद CST
-      दिखा सकता है; selector में authoritative override दिखाएँ।
-    */
-    if(place?.key==="winnipeg" && ymd>=20260308){
-      if(ymd===20260308){
-        return "America/Winnipeg (०२:०० पर UTC−06:00 → UTC−05:00)";
+    /* 2026 में जिन Canadian jurisdictions ने fall-back समाप्त किया, वहाँ
+       browser/OS tzdata पुराना होने पर भी authoritative permanent offset दिखाएँ। */
+    if(Number.isFinite(place?.permanentOffsetMinutes) && place?.permanentFromStandardLocal && m){
+      const r=String(place.permanentFromStandardLocal).match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/);
+      if(r){
+        const trigger=Number(r[1])*10000+Number(r[2])*100+Number(r[3]);
+        if(ymd>=trigger){
+          const off=place.permanentOffsetMinutes,sgn=off>=0?"+":"−",a=Math.abs(off),hh=Math.floor(a/60),mm=a%60;
+          const offset=`UTC${sgn}${String(hh).padStart(2,"0")}:${String(mm).padStart(2,"0")}`;
+          const label=place.permanentTimeLabel||"स्थायी समय",abbr=place.permanentTimeAbbr?` · ${place.permanentTimeAbbr}`:"";
+          return `${timeZone} (${offset}${abbr} · ${label})`;
+        }
       }
-      return "America/Winnipeg (UTC−05:00 · स्थायी मैनिटोबा समय)";
     }
 
     try{
@@ -15083,6 +15269,70 @@ Kiritimati2026.xlsx | Pacific/Kiritimati | UTC+14:00 | no DST
 Honolulu2026.xlsx   | Pacific/Honolulu   | UTC-10:00 | no DST
 PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
 --->
+
+
+<style id="reviewed-layout-time-audit-20260920-v7">
+/* ===== v7: space use, chronological tyajya, visible travel controls ===== */
+.yd-section-subnote{font-size:.82em;font-weight:600;color:#6b6258}
+#ydBadList{grid-template-columns:1fr!important;gap:6px!important}
+#ydBadList>.yd-item:last-child:nth-child(odd){grid-column:auto!important}
+.yd-time-first-card,.yd-baan-card{flex-wrap:nowrap!important;gap:4px 6px!important;padding:6px 8px!important}
+.yd-time-first-card .yd-time,.yd-baan-card .yd-time{flex:0 0 auto!important;margin-left:0!important}
+.yd-time-first-card .yd-name,.yd-baan-card .yd-name{flex:0 0 auto!important}
+.yd-time-first-card .yd-effect,.yd-baan-card .yd-effect{flex:0 1 auto!important;min-width:0!important;margin:0!important}
+.yd-time-first-card .yd-avoid,.yd-baan-card .yd-avoid{flex:0 1 auto!important;min-width:0!important}
+.yd-sep{color:#776b5e!important}
+
+/* कालहोरा: number, lord, time left-packed; unused middle width no longer inserted between lord/time. */
+.yd-kalahora-table{grid-template-columns:repeat(3,minmax(0,1fr))!important;grid-template-rows:repeat(8,auto)!important;grid-auto-flow:column!important;gap:5px 7px!important}
+.yd-kh-card{display:grid!important;grid-template-columns:1.25em max-content max-content!important;justify-content:start!important;align-items:center!important;column-gap:6px!important;overflow:visible!important;padding:5px 7px!important}
+.yd-kh-no{width:auto!important;min-width:0!important;flex:none!important}
+.yd-kh-lord{min-width:0!important}
+.yd-kh-time{margin-left:0!important;text-align:left!important;font-size:.96em!important;letter-spacing:0!important}
+
+/* ग्रह उदय-अस्त: 5 ग्रह + चन्द्र = desktop पर 3 columns × 2 lines. */
+.odayika-udayasta{margin-top:7px!important;padding-top:7px!important}
+.odayika-udayasta-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:5px 7px!important;align-items:stretch}
+.odayika-event-chip,.odayika-event-chip.odayika-moon-chip{display:flex!important;align-items:center;justify-content:center;gap:4px;min-width:0;text-align:center!important;white-space:normal!important;padding:4px 6px!important}
+.odayika-event-chip.odayika-moon-chip{grid-column:auto!important}
+
+/* यात्रा दिशा स्पष्ट buttons में; hidden select गणना-संगतता के लिये सुरक्षित। */
+.yd-travel-controls{display:flex!important;align-items:center!important;gap:7px 9px!important;margin:3px 0 8px!important}
+.yd-travel-label{font-weight:700;color:#173f55;white-space:nowrap}
+.yd-direction-buttons{display:flex;flex-wrap:wrap;gap:5px}
+.yd-dir-btn{appearance:none;border:1px solid rgba(23,63,85,.28);background:#fff;color:#173f55;border-radius:7px;padding:5px 11px;font:inherit;font-weight:700;cursor:pointer;line-height:1.35}
+.yd-dir-btn:hover,.yd-dir-btn:focus-visible{border-color:#0b6b67;outline:none}
+.yd-dir-btn.active{background:#0b6b67;color:#fff;border-color:#0b6b67}
+
+@media(max-width:700px){
+  .yd-time-first-card,.yd-baan-card{flex-wrap:wrap!important}
+  .yd-time-first-card .yd-effect,.yd-baan-card .yd-effect{flex:1 1 170px!important}
+  .yd-section-subnote{display:block;width:100%;margin-top:-2px}
+  .odayika-udayasta-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .yd-kalahora-table{grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-template-rows:repeat(12,auto)!important}
+  .yd-kh-card{grid-template-columns:1.15em max-content max-content!important;column-gap:4px!important;padding:5px 5px!important;font-size:.95rem!important}
+  .yd-kh-time{font-size:.90em!important}
+}
+@media(max-width:430px){
+  .yd-direction-buttons{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));width:100%}
+  .yd-dir-btn{padding:5px 4px}
+}
+@media(max-width:350px){
+  .yd-kalahora-table{grid-template-columns:1fr!important;grid-template-rows:repeat(24,auto)!important;grid-auto-flow:row!important}
+  .odayika-udayasta-grid{grid-template-columns:1fr!important}
+}
+</style>\n
+<!--
+2026-09-20 TIME AUDIT (v8)
+- All 75 locations use the same excelTimeDev() display path for sunrise/sunset.
+- 41 India locations: Asia/Kolkata / UTC+05:30, no seasonal DST.
+- 34 foreign locations: IANA zone + standardOffsetMinutes metadata audited.
+- Seasonal zones are adjusted through IANA Intl.DateTimeFormat.
+- Canada 2026 permanent-time exceptions are explicitly overridden:
+  British Columbia UTC-07 (PCT), Alberta UTC-06 (ABT), Manitoba UTC-05 after the 1-Nov non-fallback point.
+- Ghent source sunrise/sunset requires source local-meridian -> CET correction (+45m04s approximately),
+  then Europe/Brussels seasonal DST/CEST correction.
+-->
 
 </body>
 </html>
