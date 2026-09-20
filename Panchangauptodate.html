@@ -9,7 +9,7 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta content="श्रीसूर्यसिद्धान्तीय स्थानीय दैनिक पञ्चाङ्ग तथा भारतीय काल गणना के आधार।" name="description"/>
 <title>श्रीसूर्यसिद्धान्तीय स्थानीय पञ्चाङ्ग एवं भारतीय काल गणना</title>
-<meta name="panchanga-build" content="2026-09-20-v9-odayika-only-fix-75"/>
+<meta name="panchanga-build" content="2026-09-20-v10-retrograde-24h-layout-fix-75"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
@@ -8277,15 +8277,7 @@ function excelTimeDev(value,gbDate=""){
     String(minute).padStart(2,"0")
   );
 
-  if(dayShift >= 1){
-    const label =
-      hour >= RATRISHESH_FROM_HOUR
-        ? "रात्रिशेष"
-        : "रात्रि";
-
-    return `${label} ${clock}`;
-  }
-
+  /* सभी clock-times 24-hour HH:MM में ही प्रदर्शित हों। */
   return clock;
 }
 
@@ -8401,13 +8393,10 @@ function panchangaKaalLabelForRawTime(rawTime,rowIndex,row){
 }
 
 function panchangaKaalTimeText(rawTime,rowIndex,row,selectedDate){
-  const kaal=panchangaKaalLabelForRawTime(rawTime,rowIndex,row);
-  /* excelTimeDev() 24+ घण्टे के समय में स्वयं “रात्रि/रात्रिशेष” जोड़ता है।
-     यहाँ काल-संज्ञा अलग से लग रही है, इसलिए केवल घड़ी का समय रखें;
-     अन्यथा “प्रातःकाल रात्रिशेष ०६:२२” जैसा द्विरुक्त/विरोधी पाठ बनता है। */
+  /* सभी पञ्चाङ्ग-अङ्ग समय 24-hour HH:MM में। */
   const time=excelTimeDev(rawTime,selectedDate)
     .replace(/^(?:रात्रिशेष|रात्रि)\s+/,"");
-  return `${kaal ? kaal + " " : ""}${time} बजे तक`;
+  return `${time} बजे तक`;
 }
 
 
@@ -8729,58 +8718,14 @@ function muhurtaClockMinute(totalSeconds){
 
 /* मध्यरात्रि-पार समय */
 function muhurtaNightClock(totalSeconds){
-  const rounded =
-    Math.round(totalSeconds);
-
-  const dayShift =
-    Math.floor(rounded / 86400);
-
-  const seconds =
-    ((rounded % 86400) + 86400) % 86400;
-
-  const hour =
-    Math.floor(seconds / 3600);
-
-  const clock =
-    muhurtaClock(seconds);
-
-  if(dayShift >= 1){
-    const label =
-      hour >= RATRISHESH_FROM_HOUR
-        ? "रात्रिशेष"
-        : "रात्रि";
-
-    return `${label} ${clock}`;
-  }
-
-  return clock;
+  /* 24-hour format: daypart label न जोड़ें। */
+  return muhurtaClock(totalSeconds);
 }
 
 
 function muhurtaNightClockMinute(totalSeconds){
-  const totalMinutes = muhurtaRoundedMinute(totalSeconds);
-  const dayShift = Math.floor(totalMinutes / 1440);
-  const minuteOfDay =
-    ((totalMinutes % 1440) + 1440) % 1440;
-
-  const hour = Math.floor(minuteOfDay / 60);
-  const minute = minuteOfDay % 60;
-
-  const clock = toDev(
-    String(hour).padStart(2,"0") + ":" +
-    String(minute).padStart(2,"0")
-  );
-
-  if(dayShift >= 1){
-    const label =
-      hour >= RATRISHESH_FROM_HOUR
-        ? "रात्रिशेष"
-        : "रात्रि";
-
-    return `${label} ${clock}`;
-  }
-
-  return clock;
+  /* 24-hour format: daypart label न जोड़ें। */
+  return muhurtaClockMinute(totalSeconds);
 }
 
 /* काल-मुहूर्त्त की गणना standard time में; केवल display civil/DST time में */
@@ -10080,20 +10025,13 @@ function odayikaPlanetState(grahaKey,rowIndex,col,grahaLon,sunLon){
     घोषित नहीं किया जाएगा। यही पहले गुरु/शुक्र को झूठा व० दिखाने का कारण था।
   */
   if(["mangal","budha","guru","shukra","shani"].includes(grahaKey)){
-    let retro = false;
-
-    if(src?.retrograde){
-      retro = true;
-    }else if(src?.direct){
-      retro = false;
-    }else if(typeof currentWorkbookFormat!=="undefined" && currentWorkbookFormat==="word952-28"){
-      /* 28-column source में AB authoritative है; अस्पष्ट दिन पर अनुमान न लगाएँ। */
-      retro = false;
-    }else{
-      /* पुराने legacy workbook में AB न हो तो ही longitude-motion fallback. */
-      retro = odayikaIsRetrograde(rowIndex,col);
-    }
-
+    /*
+      AB=ग्रहोदयास्त में ग्रह का record मिल गया तो वही authoritative है।
+      उसमें वक्री token हो तभी व०; अन्यथा ग्रह मार्गी माना जाएगा।
+      Longitude-delta fallback केवल तब, जब उस ग्रह का AB record ही न मिले।
+      इससे गुरु/शुक्र जैसे मार्गी ग्रह झूठे व० नहीं दिखेंगे।
+    */
+    const retro = src ? !!src.retrograde : odayikaIsRetrograde(rowIndex,col);
     if(retro) state.push("व०");
   }
 
@@ -14891,15 +14829,13 @@ trigger.className="smart-select-trigger";
   function timePoint(sec,gb,m,isEnd=false){
     const label=dayPartAt(sec,m,isEnd);
     if(label==="सूर्योदयपर्यन्त")return label;
-    const c=clockOnly(sec,gb);
-    return label?`${label} ${c}`:c;
+    return clockOnly(sec,gb);
   }
   function timeRange(a,b,gb,m=lastModel){
-    const la=dayPartAt(a,m,false),lb=dayPartAt(b,m,true);
+    const lb=dayPartAt(b,m,true);
     const ca=clockOnly(a,gb),cb=clockOnly(b,gb);
-    if(lb==="सूर्योदयपर्यन्त")return `${la?la+" ":""}${ca} – सूर्योदयपर्यन्त`;
-    if(la&&la===lb)return `${la} ${ca} – ${cb}`;
-    return `${la?la+" ":""}${ca} – ${lb?lb+" ":""}${cb}`;
+    if(lb==="सूर्योदयपर्यन्त")return `${ca} – सूर्योदयपर्यन्त`;
+    return `${ca} – ${cb}`;
   }
   function displayRange(a,b,gb,m=lastModel){if(m&&Math.abs(a-m.S)<90&&Math.abs(b-m.E)<90)return "अहोरात्र";return timeRange(a,b,gb,m)}
   function shiftGB(gb,days){const m=String(gb||"").match(/^(\d{2})\/(\d{2})\/(\d{4})$/);if(!m||!Number.isFinite(days))return gb;const d=new Date(Date.UTC(+m[3],+m[2]-1,+m[1]+days));return `${String(d.getUTCDate()).padStart(2,"0")}/${String(d.getUTCMonth()+1).padStart(2,"0")}/${d.getUTCFullYear()}`}
@@ -15148,7 +15084,7 @@ trigger.className="smart-select-trigger";
     const parsed=typeof window.odayikaParseSourceGrahaStates==="function"
       ? window.odayikaParseSourceGrahaStates(raw)
       : {};
-    const planetItems=[];
+    const planetItemsByKey={};
     const order=(typeof ODAYIKA_SOURCE_ORDER!=="undefined")
       ? ODAYIKA_SOURCE_ORDER
       : ["mangal","budha","guru","shukra","shani"];
@@ -15159,7 +15095,7 @@ trigger.className="smart-select-trigger";
       if(!s) continue;
       const t=eventText(s)||transitionText(rowIndex,key,s);
       if(!t) continue;
-      planetItems.push(`<span class="odayika-event-chip odayika-planet-chip"><strong>${s.name}</strong> - ${t}</span>`);
+      planetItemsByKey[key]=`<span class="odayika-event-chip odayika-planet-chip odayika-${key}-chip"><strong>${s.name}</strong> - ${t}</span>`;
     }
 
     /* चन्द्रोदय वही पूर्व-स्वीकृत formula; चन्द्रास्त उसी का सप्तम-बिन्दु रूप। */
@@ -15179,10 +15115,16 @@ trigger.className="smart-select-trigger";
     }
 
     /*
-      कुल 6 items: प्रथम पंक्ति = चन्द्र + मङ्गल + बुध,
-      द्वितीय पंक्ति = बृहस्पति + शुक्र + शनि।
+      कुल दो पंक्तियाँ:
+      प्रथम पंक्ति = चन्द्र + शुक्र
+      द्वितीय पंक्ति = मङ्गल + बुध + बृहस्पति + शनि
     */
-    const items = moonItem ? [moonItem, ...planetItems] : planetItems;
+    const items=[];
+    if(moonItem) items.push(moonItem);
+    if(planetItemsByKey.shukra) items.push(planetItemsByKey.shukra);
+    ["mangal","budha","guru","shani"].forEach(key=>{
+      if(planetItemsByKey[key]) items.push(planetItemsByKey[key]);
+    });
 
     if(title) title.textContent="चन्द्रमा व पञ्चताराग्रह उदयास्त";
     grid.innerHTML=items.join("");
@@ -15440,5 +15382,56 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
   }
 }
 </style>
+
+<style id="odayika-v10-two-row-layout">
+/* उदयास्त: ठीक दो पंक्तियाँ
+   Row 1: चन्द्र (2/3) + शुक्र (1/3)
+   Row 2: मङ्गल + बुध + बृहस्पति + शनि */
+.odayika-udayasta-grid{
+  display:grid !important;
+  grid-template-columns:repeat(12,minmax(0,1fr)) !important;
+  gap:5px 6px !important;
+  align-items:stretch !important;
+}
+.odayika-event-chip{
+  grid-column:auto !important;
+  min-width:0 !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  text-align:center !important;
+  white-space:normal !important;
+  padding:5px 5px !important;
+  font-size:.92rem !important;
+  line-height:1.28 !important;
+}
+.odayika-moon-chip{
+  grid-column:span 8 !important;
+  font-size:.92rem !important;
+}
+.odayika-shukra-chip{
+  grid-column:span 4 !important;
+}
+.odayika-mangal-chip,
+.odayika-budha-chip,
+.odayika-guru-chip,
+.odayika-shani-chip{
+  grid-column:span 3 !important;
+}
+@media(max-width:560px){
+  .odayika-udayasta-grid{
+    gap:4px !important;
+  }
+  .odayika-event-chip{
+    padding:4px 3px !important;
+    font-size:.78rem !important;
+    line-height:1.22 !important;
+  }
+  .odayika-moon-chip{
+    font-size:.78rem !important;
+  }
+}
+</style>
+
 </body>
 </html>
