@@ -9,7 +9,7 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta content="श्रीसूर्यसिद्धान्तीय स्थानीय दैनिक पञ्चाङ्ग तथा भारतीय काल गणना के आधार।" name="description"/>
 <title>श्रीसूर्यसिद्धान्तीय स्थानीय पञ्चाङ्ग एवं भारतीय काल गणना</title>
-<meta name="panchanga-build" content="2026-09-20-v8-final-layout-time-fix-75"/>
+<meta name="panchanga-build" content="2026-09-20-v9-odayika-only-fix-75"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
@@ -4031,6 +4031,8 @@ body.smart-select-lock{overflow:hidden}
 }
 </style>
 
+
+
 </head>
 <body>
 <header class="site-header">
@@ -4335,7 +4337,7 @@ body.smart-select-lock{overflow:hidden}
   </div>
 
   <div class="odayika-udayasta" id="odayikaUdayasta" hidden>
-    <div class="odayika-udayasta-title" id="odayikaUdayastaTitle">दिशासहित ग्रहोदय-अस्त</div>
+    <div class="odayika-udayasta-title" id="odayikaUdayastaTitle">चन्द्रमा व पञ्चताराग्रह उदयास्त</div>
     <div class="odayika-udayasta-grid" id="odayikaUdayastaGrid"></div>
   </div>
 </section>
@@ -10065,16 +10067,34 @@ function odayikaIsCombust(grahaKey,rowIndex){
 
 function odayikaPlanetState(grahaKey,rowIndex,col,grahaLon,sunLon){
   const state = [];
-  const raw =
+  const row =
     (typeof workbookData!=="undefined" && workbookData?.[rowIndex])
-      ? workbookData[rowIndex][29]
-      : "";
-  const src=odayikaSourceStateForGraha(raw,grahaKey);
+      ? workbookData[rowIndex]
+      : null;
+  const raw = row ? row[29] : "";
+  const src = odayikaSourceStateForGraha(raw,grahaKey);
 
+  /*
+    WORD_952 / 28-column data में AB=ग्रहोदयास्त स्वयं मार्गी/वक्री स्थिति देता है।
+    अतः AB में स्पष्ट "मार्गी" मिलने पर longitude-delta fallback से उसे वक्री
+    घोषित नहीं किया जाएगा। यही पहले गुरु/शुक्र को झूठा व० दिखाने का कारण था।
+  */
   if(["mangal","budha","guru","shukra","shani"].includes(grahaKey)){
-    if(src?.retrograde || odayikaIsRetrograde(rowIndex,col)){
-      state.push("व०");
+    let retro = false;
+
+    if(src?.retrograde){
+      retro = true;
+    }else if(src?.direct){
+      retro = false;
+    }else if(typeof currentWorkbookFormat!=="undefined" && currentWorkbookFormat==="word952-28"){
+      /* 28-column source में AB authoritative है; अस्पष्ट दिन पर अनुमान न लगाएँ। */
+      retro = false;
+    }else{
+      /* पुराने legacy workbook में AB न हो तो ही longitude-motion fallback. */
+      retro = odayikaIsRetrograde(rowIndex,col);
     }
+
+    if(retro) state.push("व०");
   }
 
   if(odayikaIsCombust(grahaKey,rowIndex)){
@@ -14668,6 +14688,7 @@ trigger.className="smart-select-trigger";
 (()=>{
   if(typeof PANCHANGA_UI_TRANSLATIONS!=="object")return;
   const en={
+    "चन्द्रमा व पञ्चताराग्रह उदयास्त":"Moon and five visible planets - rise/set",
     "दिशासहित ग्रहोदय-अस्त":"Directional planetary rise/set",
     "दिशासहित ग्रहोदय-अस्त - चन्द्रोदय-चन्द्रास्त":"Directional planetary rise/set - Moonrise-Moonset",
     "चन्द्रोदय":"Moonrise",
@@ -15127,7 +15148,7 @@ trigger.className="smart-select-trigger";
     const parsed=typeof window.odayikaParseSourceGrahaStates==="function"
       ? window.odayikaParseSourceGrahaStates(raw)
       : {};
-    const items=[];
+    const planetItems=[];
     const order=(typeof ODAYIKA_SOURCE_ORDER!=="undefined")
       ? ODAYIKA_SOURCE_ORDER
       : ["mangal","budha","guru","shukra","shani"];
@@ -15138,7 +15159,7 @@ trigger.className="smart-select-trigger";
       if(!s) continue;
       const t=eventText(s)||transitionText(rowIndex,key,s);
       if(!t) continue;
-      items.push(`<span class="odayika-event-chip"><strong>${s.name}</strong> - ${t}</span>`);
+      planetItems.push(`<span class="odayika-event-chip odayika-planet-chip"><strong>${s.name}</strong> - ${t}</span>`);
     }
 
     /* चन्द्रोदय वही पूर्व-स्वीकृत formula; चन्द्रास्त उसी का सप्तम-बिन्दु रूप। */
@@ -15149,16 +15170,21 @@ trigger.className="smart-select-trigger";
       ? internalMoonsetForDate(rowIndex,row,gb)
       : null;
 
+    let moonItem="";
     if(mr?.timeText || ms?.timeText){
       const parts=[];
-      if(mr?.timeText) parts.push(`चन्द्रोदय ${mr.timeText}`);
-      if(ms?.timeText) parts.push(`चन्द्रास्त ${ms.timeText}`);
-      items.push(`<span class="odayika-event-chip odayika-moon-chip"><strong>चन्द्र</strong> - ${parts.join(" - ")}</span>`);
-      if(title) title.textContent="दिशासहित ग्रहोदय-अस्त - चन्द्रोदय-चन्द्रास्त";
-    }else if(title){
-      title.textContent="दिशासहित ग्रहोदय-अस्त";
+      if(mr?.timeText) parts.push(`उदय ${mr.timeText}`);
+      if(ms?.timeText) parts.push(`अस्त ${ms.timeText}`);
+      moonItem=`<span class="odayika-event-chip odayika-moon-chip"><strong>चन्द्र</strong> - ${parts.join(" · ")}</span>`;
     }
 
+    /*
+      कुल 6 items: प्रथम पंक्ति = चन्द्र + मङ्गल + बुध,
+      द्वितीय पंक्ति = बृहस्पति + शुक्र + शनि।
+    */
+    const items = moonItem ? [moonItem, ...planetItems] : planetItems;
+
+    if(title) title.textContent="चन्द्रमा व पञ्चताराग्रह उदयास्त";
     grid.innerHTML=items.join("");
     box.hidden=!items.length;
   }
@@ -15334,5 +15360,85 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
   then Europe/Brussels seasonal DST/CEST correction.
 -->
 
+<style id="odayika-v9-section-only-fix">
+/* केवल औदयिक ग्रहस्पष्ट/उदयास्त section का संशोधन */
+
+/* खाली स्थान उपलब्ध है; legend को छोटा न रखें। */
+.odayika-legend-inside{
+  font-size:clamp(.78rem,1.08vw,.92rem) !important;
+  line-height:1.28 !important;
+  margin-top:4px !important;
+  padding-top:4px !important;
+  font-weight:650 !important;
+}
+@media(max-width:700px){
+  .odayika-legend-inside{
+    font-size:clamp(.70rem,2.75vw,.84rem) !important;
+    line-height:1.24 !important;
+  }
+}
+
+/* शीर्षक */
+.odayika-udayasta-title{
+  font-size:1rem !important;
+  font-weight:750 !important;
+  margin-bottom:6px !important;
+}
+
+/*
+  6 items = 3 × 2:
+  पंक्ति 1: चन्द्र, मङ्गल, बुध
+  पंक्ति 2: बृहस्पति, शुक्र, शनि
+*/
+.odayika-udayasta-grid{
+  display:grid !important;
+  grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+  gap:5px 7px !important;
+  align-items:stretch !important;
+}
+.odayika-event-chip,
+.odayika-event-chip.odayika-moon-chip{
+  grid-column:auto !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:3px !important;
+  min-width:0 !important;
+  padding:5px 6px !important;
+  text-align:center !important;
+  white-space:normal !important;
+  line-height:1.30 !important;
+  font-size:.94rem !important;
+}
+.odayika-moon-chip{
+  font-size:.88rem !important;
+}
+.odayika-event-chip strong{
+  flex:0 0 auto;
+  white-space:nowrap;
+}
+
+/* साधारण mobile पर भी दो पंक्तियाँ रखें; बहुत संकीर्ण screen पर readability प्राथमिक। */
+@media(max-width:520px){
+  .odayika-udayasta-grid{
+    grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+    gap:4px !important;
+  }
+  .odayika-event-chip,
+  .odayika-event-chip.odayika-moon-chip{
+    padding:4px 3px !important;
+    font-size:.82rem !important;
+    line-height:1.25 !important;
+  }
+  .odayika-moon-chip{
+    font-size:.75rem !important;
+  }
+}
+@media(max-width:360px){
+  .odayika-udayasta-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  }
+}
+</style>
 </body>
 </html>
