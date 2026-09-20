@@ -9,7 +9,7 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta content="श्रीसूर्यसिद्धान्तीय स्थानीय दैनिक पञ्चाङ्ग तथा भारतीय काल गणना के आधार।" name="description"/>
 <title>श्रीसूर्यसिद्धान्तीय स्थानीय पञ्चाङ्ग एवं भारतीय काल गणना</title>
-<meta name="panchanga-build" content="2026-09-20-v12-odayika-layout-retrograde-repair-75"/>
+<meta name="panchanga-build" content="2026-09-20-v13-moon-panchanga-format-75"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
@@ -15209,31 +15209,75 @@ trigger.className="smart-select-trigger";
       ? internalMoonsetForDate(rowIndex,row,gb)
       : null;
 
-    function compactMoonTime(t){
-      const s=String(t||"").trim();
-      const m=s.match(/^(\d{2}):(\d{2})(?::\d{2})?(?:\s*\((\d{2})\/(\d{2})\/\d{4}\))?$/);
-      if(!m) return s;
-      const clock=`${m[1]}:${m[2]}`;
-      return m[3] ? `${clock} (${m[3]}/${m[4]})` : clock;
+    function moonAsciiDigits(s){
+      const map={"०":"0","१":"1","२":"2","३":"3","४":"4","५":"5","६":"6","७":"7","८":"8","९":"9"};
+      return String(s||"").replace(/[०-९]/g,d=>map[d]||d);
+    }
+
+    function moonClockMinutes(value){
+      const a=moonAsciiDigits(value);
+      const m=a.match(/(\d{1,2}):(\d{2})/);
+      if(!m) return NaN;
+      return Number(m[1])*60+Number(m[2]);
+    }
+
+    /*
+      चन्द्रमा का समय मुख्य पञ्चाङ्ग-जैसे संक्षिप्त रूप में:
+      seconds नहीं; अगली तिथि का bracket नहीं; काल-संज्ञा सहित।
+    */
+    function moonPanchangaTime(t,baseGB){
+      const a=moonAsciiDigits(t).trim();
+      const m=a.match(/^(\d{1,2}):(\d{2})(?::\d{2})?(?:\s*\((\d{2}\/\d{2}\/\d{4})\))?$/);
+      if(!m) return String(t||"");
+
+      const hh=Number(m[1]), mm=Number(m[2]);
+      const mins=hh*60+mm;
+      const eventGB=m[3]||baseGB;
+
+      let refRow=row;
+      try{
+        const hit=typeof workbookRowByGBDate==="function" ? workbookRowByGBDate(eventGB) : null;
+        if(hit?.row) refRow=hit.row;
+      }catch(_){}
+
+      let sr=NaN, ss=NaN;
+      try{
+        sr=moonClockMinutes(excelTimeDev(refRow?.[10],eventGB));
+        ss=moonClockMinutes(excelTimeDev(refRow?.[11],eventGB));
+      }catch(_){}
+
+      let kaal="";
+      if(Number.isFinite(sr) && mins < sr){
+        kaal="रात्रि";
+      }else if(Number.isFinite(ss) && mins >= ss){
+        kaal="रात्रि";
+      }else if(mins >= 12*60){
+        kaal="अपराह्न";
+      }else{
+        kaal="पूर्वाह्न";
+      }
+
+      const clock=dev(`${String(hh).padStart(2,"0")}:${String(mm).padStart(2,"0")}`);
+      return `${kaal} ${clock}`;
     }
 
     let moonItem="";
     if(mr?.timeText || ms?.timeText){
       const parts=[];
-      if(mr?.timeText) parts.push(`उदय ${compactMoonTime(mr.timeText)}`);
-      if(ms?.timeText) parts.push(`अस्त ${compactMoonTime(ms.timeText)}`);
-      moonItem=`<span class="odayika-event-chip odayika-moon-chip"><strong>चन्द्र</strong> - <span>${parts.join(" · ")}</span></span>`;
+      if(mr?.timeText) parts.push(`<strong>चन्द्रोदय</strong> ${moonPanchangaTime(mr.timeText,gb)}`);
+      if(ms?.timeText) parts.push(`<strong>चन्द्रास्त</strong> ${moonPanchangaTime(ms.timeText,gb)}`);
+      moonItem=`<span class="odayika-event-chip odayika-moon-chip"><span>${parts.join(" · ")}</span></span>`;
     }
 
     /*
-      दो पंक्तियाँ:
-      1: चन्द्र + शुक्र
-      2: मङ्गल + बुध + बृहस्पति + शनि
+      कुल दो पंक्तियाँ:
+      1: चन्द्रमा + बृहस्पति
+      2: मङ्गल + बुध + शुक्र + शनि
     */
     const items=[];
     if(moonItem) items.push(moonItem);
-    if(planetItemsByKey.shukra) items.push(planetItemsByKey.shukra);
-    ["mangal","budha","guru","shani"].forEach(key=>{
+    if(planetItemsByKey.guru) items.push(planetItemsByKey.guru);
+    ["mangal","budha","shukra","shani"].forEach(key=>{
       if(planetItemsByKey[key]) items.push(planetItemsByKey[key]);
     });
 
@@ -15499,8 +15543,8 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
 <style id="odayika-v12-fixed-grid">
 /*
   निश्चित दो पंक्तियाँ:
-  Row 1 = चन्द्र (8/12) + शुक्र (4/12)
-  Row 2 = मङ्गल + बुध + बृहस्पति + शनि (3/12 each)
+  Row 1 = चन्द्रमा (8/12) + बृहस्पति (4/12)
+  Row 2 = मङ्गल + बुध + शुक्र + शनि (3/12 each)
 */
 #odayikaUdayastaGrid{
   display:grid !important;
@@ -15534,19 +15578,19 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
   white-space:nowrap !important;
 }
 
-/* First row */
+/* First row: चन्द्रमा + बृहस्पति */
 #odayikaUdayastaGrid .odayika-event-chip.odayika-moon-chip{
   grid-column:1 / span 8 !important;
   grid-row:1 !important;
   justify-content:flex-start !important;
   padding-left:9px !important;
 }
-#odayikaUdayastaGrid .odayika-event-chip.odayika-shukra-chip{
+#odayikaUdayastaGrid .odayika-event-chip.odayika-guru-chip{
   grid-column:9 / span 4 !important;
   grid-row:1 !important;
 }
 
-/* Second row */
+/* Second row: मङ्गल + बुध + शुक्र + शनि */
 #odayikaUdayastaGrid .odayika-event-chip.odayika-mangal-chip{
   grid-column:1 / span 3 !important;
   grid-row:2 !important;
@@ -15555,7 +15599,7 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
   grid-column:4 / span 3 !important;
   grid-row:2 !important;
 }
-#odayikaUdayastaGrid .odayika-event-chip.odayika-guru-chip{
+#odayikaUdayastaGrid .odayika-event-chip.odayika-shukra-chip{
   grid-column:7 / span 3 !important;
   grid-row:2 !important;
 }
