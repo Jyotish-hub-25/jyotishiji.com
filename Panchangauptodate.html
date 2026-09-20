@@ -9,7 +9,7 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta content="श्रीसूर्यसिद्धान्तीय स्थानीय दैनिक पञ्चाङ्ग तथा भारतीय काल गणना के आधार।" name="description"/>
 <title>श्रीसूर्यसिद्धान्तीय स्थानीय पञ्चाङ्ग एवं भारतीय काल गणना</title>
-<meta name="panchanga-build" content="2026-09-20-v13-moon-panchanga-format-75"/>
+<meta name="panchanga-build" content="2026-09-20-v14-runtime-repair-75"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
@@ -15257,7 +15257,8 @@ trigger.className="smart-select-trigger";
         kaal="पूर्वाह्न";
       }
 
-      const clock=dev(`${String(hh).padStart(2,"0")}:${String(mm).padStart(2,"0")}`);
+      const rawClock=`${String(hh).padStart(2,"0")}:${String(mm).padStart(2,"0")}`;
+      const clock=typeof toDev==="function" ? toDev(rawClock) : rawClock;
       return `${kaal} ${clock}`;
     }
 
