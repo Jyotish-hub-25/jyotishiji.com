@@ -14332,6 +14332,276 @@ if(document.readyState === "loading"){
 })();
 </script>
 
+<script id="daily-yoga-language-safety-20260920">
+(()=>{
+  "use strict";
+
+  const panel=document.getElementById("dailyYogaDecisionPanel");
+  if(!panel) return;
+
+  const SOURCE=new WeakMap();
+  const ORIGINAL_HTML=new Map();
+
+  // Static controls must be restorable when the user returns to Hindi.
+  [
+    "ydBirthNak","ydPurpose","ydDirection"
+  ].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) ORIGINAL_HTML.set(id,el.innerHTML);
+  });
+
+  const exact=new Map(Object.entries({
+    "दैनिक योग–मुहूर्त्त निर्णय":"Daily Yoga–Muhūrta assessment",
+    "चयनित पञ्चाङ्ग के अनुसार गणना की जा रही है…":"Calculating from the selected Pañcāṅga…",
+    "अनुकूल योग":"Favorable Yogas",
+    "त्याज्य / सावधानी":"Avoid / caution",
+    "नित्य दुष्टक्षण":"Daily inauspicious periods",
+    "यात्रा-विचार":"Travel considerations",
+    "ताराबल एवं वैयक्तिक समय-चयन":"Tārābala & personalized time selection",
+    "जन्म नक्षत्र":"Birth Nakṣatra",
+    "— जन्म नक्षत्र चुनें —":"— Choose birth Nakṣatra —",
+    "प्रयोग":"Purpose",
+    "सामान्य शुभकार्य":"General auspicious activity",
+    "यात्रा":"Travel",
+    "यात्रा-दिशा":"Direction of travel",
+    "पूर्व":"East","दक्षिण":"South","पश्चिम":"West","उत्तर":"North",
+    "जन्म नक्षत्र चुनने पर चयनित दिन के नक्षत्रों से ताराबल तथा दिन के शुभ/अशुभ समय का विचार दिखाया जाएगा।":"After you choose the birth Nakṣatra, Tārābala and the favorable/unfavorable periods of the selected day will be shown from the day's Nakṣatras.",
+    "जन्मविवरण से नक्षत्र क्यों नहीं निकाला गया?":"Why is the Nakṣatra not calculated from birth details?",
+    "जन्म-तिथि, समय और स्थान से नक्षत्र निकालने के लिये उस जन्मकाल का सर्वकालिक चन्द्रस्पष्ट आवश्यक है। वर्तमान पञ्चाङ्ग-पृष्ठ के स्थानिक Excel आँकड़े २०२६ के दैनिक पञ्चाङ्ग के लिये हैं; उनसे पुराने जन्मकाल का अनुमान लगाना उचित नहीं। अतः इस चरण में प्रत्यक्ष जन्म-नक्षत्र प्रविष्टि ही कार्यशील रखी गयी है।":"Calculating the Nakṣatra from birth date, time and place requires the Moon's precise longitude for that birth moment. The local Excel data on this Pañcāṅga page are for the daily Pañcāṅga of 2026; they should not be used to estimate an earlier birth moment. Therefore, at this stage the birth Nakṣatra is entered directly.",
+    "गणना-आधार / उपयोग-सूचना":"Calculation basis / usage note",
+    "वार–तिथि, वार–नक्षत्र, सर्वार्थसिद्धि, रवियोग, आनन्दादि, पुष्कर, भद्रा, पञ्चक तथा दिनमान-आधारित कुलिक–कालवेला–यमघण्ट–कण्टक–अर्धयाम की गणना पृथक् शास्त्रीय गणना-तन्त्र में प्रयुक्त नियमों पर आधारित है। नित्ययोग-वर्ज्यांश में नारद-उद्धृत मान रखे गये हैं। ताराबल में जन्म नक्षत्र से दिन-नक्षत्र तक गणना कर ९ से चक्रीय विभाग किया गया है; २, ४, ६, ८, ९ अनुकूल, १ मध्यम तथा ३, ५, ७ त्याज्य माने गये हैं।":"The calculations for Vāra–Tithi, Vāra–Nakṣatra, Sarvārthasiddhi, Ravi-yoga, Ānandādi, Puṣkara, Bhadrā, Pañcaka, and the day-length based Kulika, Kālavela, Yamaghanta, Kaṇṭaka and Ardhayāma follow rules used in the separate śāstric calculation system. The prohibited portions of Nitya-yoga use values quoted from Nārada. For Tārābala, the count from the birth Nakṣatra to the day's Nakṣatra is divided cyclically by 9: 2, 4, 6, 8 and 9 are treated as favorable; 1 as moderate; and 3, 5 and 7 as avoidable.",
+    "अस्वीकरण एवं उपयोग-सूचना:":"Disclaimer and usage note:",
+    "इस पञ्चाङ्ग में प्रदर्शित योग, मुहूर्त्त, ताराबल, चन्द्रवास तथा यात्रा-विचार शास्त्रीय गणना और उपलब्ध स्थानिक आँकड़ों पर आधारित मार्गदर्शक सूचनाएँ हैं। प्रयोजन-विशेष के अनुसार किसी कार्य का निर्णय व्यक्ति-विशेष, जन्मकुण्डली, देश-काल तथा कार्यविशेष के अन्य आवश्यक घटकों एवं विचारों पर निर्भर होता है। स्वास्थ्य, विधि, वित्त, सुरक्षा अथवा अन्य महत्त्वपूर्ण व्यावहारिक निर्णयों के लिये सम्बन्धित विषय-विशेषज्ञ की सलाह लेना उचित है। अतः अन्तिम निर्णय के लिये प्रयोक्ता स्वयं उत्तरदायी होगा।":"The Yoga, Muhūrta, Tārābala, Candra-vāsa and travel indications displayed in this Pañcāṅga are guidance based on śāstric calculation and the available local data. A decision for a specific purpose may depend on the individual, birth chart, place and time, and other factors relevant to the particular activity. For health, legal, financial, safety or other important practical decisions, advice from the appropriate subject specialist should be taken. The user remains responsible for the final decision.",
+
+    "स्थायी स्थापना, दीर्घकालिक आरम्भ और स्थिर कार्यों के लिये अनुकूल।":"Favorable for permanent establishment, long-term beginnings and stable undertakings.",
+    "यात्रा, गमनागमन और परिवर्तनशील कार्यों के लिये अनुकूल।":"Favorable for travel, movement and changeable activities.",
+    "शीघ्र निष्पादन, व्यापारिक/लघु आरम्भ और त्वरित कार्यों के लिये उपयोगी।":"Useful for quick execution, commercial or small beginnings, and fast-moving tasks.",
+    "मैत्री, अलंकार, कला, सौम्य व्यवहार और मङ्गल कार्यों में उपयोगी।":"Useful for friendship, adornment, arts, gentle dealings and auspicious activities.",
+    "कठोर, साहसिक अथवा दमनात्मक कार्यों का स्वभाव; सामान्य मङ्गलारम्भ में सावधानी।":"A nature suited to hard, daring or coercive actions; use caution for ordinary auspicious beginnings.",
+    "भेदन, शमन, उच्छेदन जैसे कठोर कार्यों का स्वभाव; सौम्य मङ्गलकार्य में वर्जनीय।":"A nature suited to forceful acts such as piercing, suppression or removal; avoid for gentle auspicious activities.",
+    "मिश्र फल; कार्य-स्वरूप और अन्य अङ्गों के साथ विचार अपेक्षित।":"Mixed result; consider the nature of the activity together with the other Pañcāṅga factors.",
+
+    "मध्यम — सामान्य कार्य में अन्य बलों का विचार करें।":"Moderate — consider the other strengths for ordinary activities.",
+    "अनुकूल — लाभ, सम्पत्ति और वृद्धि-सम्बन्धी कार्य।":"Favorable — for gain, prosperity and growth-related activities.",
+    "त्याज्य — विघ्न/हानि की आशंका; शुभारम्भ व यात्रा टालें।":"Avoid — risk of obstruction or loss; avoid auspicious beginnings and travel.",
+    "अनुकूल — क्षेम, सुरक्षा, स्वास्थ्य और स्थिर प्रगति।":"Favorable — for welfare, safety, health and steady progress.",
+    "त्याज्य — विरोध/प्रतिबन्ध का संकेत; महत्त्वपूर्ण आरम्भ टालें।":"Avoid — indicates opposition or obstruction; avoid important beginnings.",
+    "अनुकूल — साधना, सिद्धि, लक्ष्य-पूर्ति और कार्यसाधन।":"Favorable — for practice, accomplishment, goal-fulfilment and successful execution.",
+    "त्याज्य — निधन/वध तारा; शुभकार्य और यात्रा से बचें।":"Avoid — Nidhana/Vadha Tārā; avoid auspicious activities and travel.",
+    "अनुकूल — मैत्री, संधि, सम्पर्क और सहयोग।":"Favorable — for friendship, agreement, contact and cooperation.",
+    "विशेष अनुकूल — परममैत्री, सौहार्द और सामान्य शुभकार्य।":"Especially favorable — for close friendship, harmony and general auspicious activities.",
+
+    "यात्रा, गमनागमन और चल कार्यों के लिये अनुकूल संकेत।":"A favorable indication for travel, movement and mobile activities.",
+    "स्थायी और दीर्घकालिक कार्यों के लिये अनुकूल संकेत।":"A favorable indication for stable and long-term activities.",
+    "वृद्धि, विस्तार और उन्नति-सम्बन्धी कार्यों के लिये अनुकूल संकेत।":"A favorable indication for growth, expansion and advancement.",
+    "मैत्री, समझौता, सम्पर्क और सहयोग के लिये अनुकूल।":"Favorable for friendship, agreement, contact and cooperation.",
+    "सामान्य मङ्गल और शुभकार्य के लिये अत्यन्त अनुकूल नामफल।":"The name-indication is highly favorable for general auspicious activities.",
+    "नामफलानुसार अनुकूल; अन्य पञ्चाङ्ग-दोषों के साथ संयुक्त विचार करें।":"Favorable by its name-indication; assess together with other Pañcāṅga defects.",
+    "दोषप्रधान नामफल; नीचे दिये वर्ज्यांश में शुभारम्भ न करें।":"The name-indication is predominantly adverse; do not begin auspicious work during the prohibited portion shown below.",
+    "मिश्र/कार्यविशेष संकेत; अन्य अङ्गों के साथ विचार अपेक्षित।":"Mixed or activity-specific indication; consider it together with the other factors.",
+
+    "सामान्य शुभारम्भ और कार्यसिद्धि हेतु अनुकूल वार–तिथि संयोग।":"A favorable Vāra–Tithi combination for general auspicious beginnings and successful completion.",
+    "माङ्गलिक आरम्भ और सामान्य शुभकार्य टालना श्रेयस्कर।":"It is preferable to avoid auspicious beginnings and ordinary auspicious activities.",
+    "शुभकार्य तथा महत्त्वपूर्ण यात्रा/आरम्भ में त्याग श्रेयस्कर।":"It is preferable to avoid this for auspicious work and important travel or beginnings.",
+    "माङ्गलिक और स्थायी आरम्भ में त्याग/सावधानी श्रेयस्कर।":"Avoidance or caution is preferable for auspicious and lasting beginnings.",
+    "शुभारम्भ और यात्रा में त्याग श्रेयस्कर।":"It is preferable to avoid this for auspicious beginnings and travel.",
+    "सामान्य शुभकार्य में दोषशमनकारी अनुकूल संयोग; कार्यविशेष के अन्य अङ्ग भी देखें।":"A favorable combination that can mitigate defects in general auspicious work; also examine the other factors relevant to the specific activity.",
+    "आरम्भ किये कार्य की पुनरावृत्ति का संकेत; इच्छित वृद्धि वाले शुभ कार्यों में उपयोगी, अप्रिय/हानिकर कार्य न करें।":"Indicates repetition of an initiated activity; useful for auspicious work where desired growth is intended. Do not undertake unpleasant or harmful actions.",
+    "कार्यफल की पुनरावृत्ति/वृद्धि का प्रबल संकेत; शुभ वृद्धि वाले कार्य चुनें, हानिकर कार्य टालें।":"A strong indication of repetition or increase of the result; choose activities where auspicious growth is desired and avoid harmful acts.",
+    "नित्ययोग का शास्त्रोक्त दोषांश; इस अंश में माङ्गलिक/शुभारम्भ टालें।":"The śāstrically prescribed adverse portion of the Nitya-yoga; avoid auspicious beginnings during this segment.",
+    "सामान्य माङ्गलिक आरम्भ, विवाहादि सौम्य शुभकार्य और महत्त्वपूर्ण यात्रा में त्याग श्रेयस्कर; क्रूर/दमनात्मक कार्यों के पृथक् विधान हैं।":"It is preferable to avoid this for general auspicious beginnings, gentle rites such as marriage, and important travel; forceful or coercive activities have separate rules.",
+    "विशेषतः दक्षिण-यात्रा, शय्या-निर्माण/बिछाना, गृहच्छादन/गृहसम्बन्धी आरम्भ, तृण-काष्ठ-संग्रह और मृतकर्म में वर्जन का विचार।":"Particular restriction is considered for southward travel, making or laying a bed, roofing or house-related beginnings, collecting grass or wood, and funerary rites.",
+
+    "चन्द्रवास सम्बन्ध स्पष्ट नहीं।":"The Candra-vāsa relation is not determined.",
+    "सम्मुख चन्द्र — धनलाभकारक, यात्रा के लिये अनुकूल।":"Moon in front — conducive to financial gain and favorable for travel.",
+    "दाहिने चन्द्र — सुख-सम्पत्ति कारक, यात्रा के लिये अनुकूल।":"Moon on the right — conducive to comfort and prosperity and favorable for travel.",
+    "पृष्ठ चन्द्र — शोक/क्लेशकारक; यात्रा में प्रतिकूल।":"Moon behind — associated with sorrow or difficulty; unfavorable for travel.",
+    "वाम चन्द्र — धनहानिकारक; यात्रा में प्रतिकूल।":"Moon on the left — associated with financial loss; unfavorable for travel.",
+
+    "जन्म नक्षत्र चुनने पर चयनित दिन के नक्षत्रों से ताराबल तथा शुभ/अशुभ समय का विचार भी दिखाया जाएगा।":"After you choose the birth Nakṣatra, Tārābala and favorable/unfavorable times will also be shown from the selected day's Nakṣatras.",
+    "यात्रा के लिये अनुकूल समय":"Favorable time for travel",
+    "शुभ कार्य के लिये अनुकूल समय":"Favorable time for auspicious activity",
+    "अत्यावश्यक यात्रा के लिये विचारणीय समय (दिशाशूल विद्यमान)":"Time that may be considered for essential travel (Diśāśūla is present)",
+    "स्पष्ट अनुकूल समय नहीं मिला":"No clearly favorable time was found",
+    "यह समय-चयन केवल ताराबल + इस निर्णय-पट्ट में निकले त्याज्यकालों पर आधारित है। ध्यान देने योग्य है कि पूर्ण मुहूर्त्त के लिये चन्द्रबल, लग्न, ग्रहबल, कार्यविशेष-संस्कार, यात्रादिशा के अन्य नियम आदि का पृथक् विचार अतिआवश्यक है, अतः विशेषज्ञ का परामर्श लेकर ही अन्तिम निर्णय लेना श्रेयस्कर है।":"This time selection is based only on Tārābala and the avoidable periods identified in this assessment panel. A complete Muhūrta requires separate consideration of Candra-bala, Lagna, planetary strength, activity-specific saṃskāras, other rules governing the direction of travel, and related factors. The final decision should therefore be made after consulting an appropriate expert.",
+
+    "रविवार":"Sunday","सोमवार":"Monday","मंगलवार":"Tuesday","मङ्गलवार":"Tuesday","बुधवार":"Wednesday","गुरुवार":"Thursday","बृहस्पतिवार":"Thursday","शुक्रवार":"Friday","शनिवार":"Saturday",
+    "प्रातः":"morning","पूर्वाह्न":"forenoon","मध्याह्न":"midday","अपराह्न":"afternoon","सायं":"evening","प्रदोष":"Pradoṣa","रात्रि":"night","रात्रिशेष":"late night","सूर्योदयपर्यन्त":"until sunrise",
+    "स्वभाव-अनिर्णीत":"nature undetermined",
+    "ध्रुव/स्थिर":"Dhruva / fixed","चर":"movable","उग्र":"fierce","मिश्र":"mixed","क्षिप्र":"swift","मृदु":"gentle","तीक्ष्ण":"sharp",
+    "सम्मुख":"in front","दाहिने":"on the right","पृष्ठ":"behind","वाम":"on the left","अनिर्णीत":"undetermined",
+    "जन्म":"Janma","सम्पत्":"Sampat","विपत्":"Vipat","क्षेम":"Kṣema","प्रत्यरि":"Pratyari","साधक":"Sādhaka","निधन/वध":"Nidhana / Vadha","मित्र":"Mitra","परममित्र":"Parama-mitra",
+
+    "सिद्धतिथि योग":"Siddha-tithi Yoga","दग्धतिथि":"Dagdha-tithi","विषतिथि":"Viṣa-tithi","हुताशनतिथि":"Hutāśana-tithi","सर्वार्थसिद्धि योग":"Sarvārthasiddhi Yoga","यमघण्ट-नक्षत्रयोग":"Yamaghanta–Nakṣatra Yoga","रवियोग":"Ravi Yoga","द्विपुष्कर योग":"Dvi-puṣkara Yoga","त्रिपुष्कर योग":"Tri-puṣkara Yoga","भद्रा (विष्टि करण)":"Bhadrā (Viṣṭi Karaṇa)","पञ्चक":"Pañcaka","आनन्दादि":"Ānandādi",
+    "कुलिक":"Kulika","कालवेला":"Kālavela","यमघण्ट":"Yamaghanta","कण्टक":"Kaṇṭaka","अर्धयाम":"Ardhayāma","अभिजित्":"Abhijit",
+    "त्याग":"Avoid","सम्पूर्ण":"entire","पूर्वार्ध":"first half","सम्पूर्ण योग":"entire Yoga"
+  }));
+
+  const replacements=[
+    ["दिशाशूल विद्यमान है, किन्तु चन्द्रवास ","Diśāśūla is present, but Candra-vāsa is "],
+    [" होकर अनुकूल है। अत्यावश्यक यात्रा परिहार सहित विचारणीय; दिशाशूल को स्वतः भंग नहीं माना गया।"," and favorable. Essential travel may be considered with the prescribed remedy; Diśāśūla is not treated as automatically cancelled."],
+    ["दिशाशूल और चन्द्रवास दोनों प्रतिकूल हैं; इस अंश में यात्रा स्थगित करना अधिक श्रेयस्कर।","Both Diśāśūla and Candra-vāsa are unfavorable; postponing travel during this segment is preferable."],
+    ["दिशाशूल नहीं; चन्द्रवास ","There is no Diśāśūla; Candra-vāsa is "],
+    [" होकर अनुकूल है।"," and favorable."],
+    ["दिशाशूल नहीं, पर चन्द्रवास ","There is no Diśāśūla, but Candra-vāsa is "],
+    [" होकर प्रतिकूल है; अनुकूल चन्द्रवास की प्रतीक्षा श्रेयस्कर।"," and unfavorable; waiting for a favorable Candra-vāsa is preferable."],
+    ["बुधवार होने से यात्रा-परिहार के लिये इसका प्रयोग नहीं दिखाया गया है।","Because it is Wednesday, this is not shown for use as a travel remedy."],
+    ["दक्षिण-यात्रा हेतु इसका प्रयोग नहीं दिखाया गया है।","This is not shown for use for southward travel."],
+    ["इस समय चन्द्रवास भी अनुकूल अंश में है।","Candra-vāsa is also favorable during this interval."],
+    ["चन्द्रवास की अनुकूलता पृथक् जाँचें।","Check Candra-vāsa favorability separately."],
+    ["शुभारम्भ/यात्रा में ","For auspicious beginnings/travel, avoid for "],
+    [" त्याग।","."],
+    ["सम्पूर्ण सक्रिय अंश — ","Entire active segment — "],
+    ["सम्पूर्ण विष्टि-अंश — ","Entire Viṣṭi segment — "],
+    ["इन निर्दिष्ट कार्यों में सक्रिय पञ्चक-अंश का त्याग","Avoid the active Pañcaka segment for these specified activities"],
+    ["इस दिन त्याग ","Avoid on this day for "],
+    ["प्रथम ","First "],
+    [" घटिका"," ghaṭikā"],
+    ["योग-वर्ज्यांश","Yoga prohibited segment"],
+    ["आनन्दादि — ","Ānandādi — "],
+    [" नक्षत्र में सामान्य शुभकार्य, आरम्भ और सिद्धि-साध्य कार्यों हेतु अनुकूल संयोग।"," Nakṣatra gives a favorable combination for general auspicious work, beginnings and accomplishment-oriented activities."],
+    ["दिशाशूल:","Diśāśūla:"],
+    [" दिशा। यात्रा-दिशा चुनने पर दिशाशूल और चन्द्रवास का संयुक्त विचार नीचे वैयक्तिक भाग में अलग से दिखाया जाएगा।"," direction. After choosing the direction of travel, the combined consideration of Diśāśūla and Candra-vāsa will be shown separately in the personalized section below."],
+    ["चन्द्रवास:","Candra-vāsa:"],
+    ["यात्रागत विचार में सम्मुख अथवा दाहिने चन्द्र को अनुकूल तथा वाम अथवा पृष्ठ चन्द्र को प्रतिकूल माना गया है।","For travel, the Moon in front or on the right is treated as favorable, while the Moon on the left or behind is treated as unfavorable."],
+    ["आज का नक्षत्र-स्वभाव:","Today's Nakṣatra nature:"],
+    ["जन्म नक्षत्र ","Birth Nakṣatra "],
+    [" के लिये इस दिन "," — on this day, "],
+    [" अनुकूल नक्षत्र-अंश"," favorable Nakṣatra segment(s)"],
+    ["कोई स्पष्ट अनुकूल नक्षत्र-अंश नहीं","no clearly favorable Nakṣatra segment"],
+    [" तथा "," and "],
+    [" मध्यम अंश"," moderate segment(s)"],
+    [" मिला।"," were found."],
+    ["यात्रा-दिशा:","Direction of travel:"],
+    [" — इस दिशा में आज "," — today this direction has "],
+    [" है; नीचे चन्द्रवास सहित संयुक्त निर्णय देखें।","; see the combined assessment with Candra-vāsa below."],
+    ["अत्यावश्यक दशा:","If travel is essential:"],
+    ["तारा","Tārā"],
+    ["घं","h"],["मि","min"]
+  ].sort((a,b)=>b[0].length-a[0].length);
+
+  const nativeCodes=new Set(["hi"]);
+
+  function currentLang(){
+    return (typeof currentPanchangaLanguage!=="undefined" ? currentPanchangaLanguage : "hi") || "hi";
+  }
+
+  function latinDigits(s){
+    try{return typeof panchangaNormalizeDigits==="function"?panchangaNormalizeDigits(s):String(s)}catch(_){return String(s)}
+  }
+
+  function iast(s){
+    let out=String(s??"");
+    try{
+      if(window.Sanscript && typeof window.Sanscript.t==="function"){
+        out=window.Sanscript.t(out,"devanagari","iast");
+      }
+    }catch(_){ /* phrase replacements below still prevent Hindi prose leakage */ }
+    return out;
+  }
+
+  function englishize(input){
+    let s=latinDigits(String(input??""));
+    const trimmed=s.trim();
+    if(exact.has(trimmed)){
+      const value=exact.get(trimmed);
+      return s.replace(trimmed,value);
+    }
+    for(const [a,b] of replacements) s=s.split(a).join(b);
+    // Anything still in Devanagari here should be a proper/technical name;
+    // transliterate it rather than leaving Hindi script inside English display.
+    if(/[\u0900-\u097F]/.test(s)) s=iast(s);
+    return latinDigits(s);
+  }
+
+  function rememberTree(root){
+    const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+    let n;
+    while((n=walker.nextNode())) if(!SOURCE.has(n)) SOURCE.set(n,n.nodeValue||"");
+  }
+
+  function translateTree(root){
+    const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+    let n;
+    while((n=walker.nextNode())){
+      if(!SOURCE.has(n)) SOURCE.set(n,n.nodeValue||"");
+      const src=SOURCE.get(n) || "";
+      n.nodeValue=englishize(src);
+    }
+  }
+
+  function restoreTree(root){
+    const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+    let n;
+    while((n=walker.nextNode())) if(SOURCE.has(n)) n.nodeValue=SOURCE.get(n);
+  }
+
+  function apply(){
+    const lang=currentLang();
+    if(lang==="hi"){
+      restoreTree(panel);
+      panel.querySelectorAll("[data-yd-translation-note]").forEach(n=>n.remove());
+      return;
+    }
+    translateTree(panel);
+    // For languages whose native prose pack is not yet separately verified,
+    // use one coherent English fallback instead of mixed Hindi/transliteration.
+    if(lang!=="en"){
+      let note=panel.querySelector("[data-yd-translation-note]");
+      if(!note){
+        note=document.createElement("div");
+        note.dataset.ydTranslationNote="1";
+        note.className="yd-context";
+        note.style.marginBottom="10px";
+        panel.querySelector(".yd-head")?.insertAdjacentElement("afterend",note);
+      }
+      note.textContent="This new Yoga–Muhūrta section is temporarily shown in English while its native-language prose is being verified.";
+    }else{
+      panel.querySelectorAll("[data-yd-translation-note]").forEach(n=>n.remove());
+    }
+  }
+
+  // Capture the original Hindi static source before any language switch.
+  rememberTree(panel);
+
+  const originalRender=window.renderDailyYogaDecision;
+  if(typeof originalRender==="function"){
+    window.renderDailyYogaDecision=function(...args){
+      const result=originalRender.apply(this,args);
+      rememberTree(panel);
+      apply();
+      return result;
+    };
+  }
+
+  ["ydBirthNak","ydPurpose","ydDirection"].forEach(id=>{
+    document.getElementById(id)?.addEventListener("change",()=>setTimeout(()=>{rememberTree(panel);apply();},0));
+  });
+  document.getElementById("panchangaLanguage")?.addEventListener("change",()=>{
+    setTimeout(()=>{
+      if(typeof window.renderDailyYogaDecision==="function") window.renderDailyYogaDecision();
+      else apply();
+    },0);
+  });
+
+  // Dynamic Tara/travel blocks are recreated by the engine. Re-apply after mutations,
+  // but never recursively chase our own text changes.
+  let scheduled=false;
+  new MutationObserver(()=>{
+    if(scheduled) return;
+    scheduled=true;
+    queueMicrotask(()=>{
+      scheduled=false;
+      rememberTree(panel);
+      apply();
+    });
+  }).observe(panel,{childList:true,subtree:true});
+
+  setTimeout(()=>{rememberTree(panel);apply();},350);
+})();
+</script>
+
+
 <script
   src="/visitor-tracker.js"
   data-endpoint="https://jyotishiji-visitor-analytics.jyotishsamvad.workers.dev"
