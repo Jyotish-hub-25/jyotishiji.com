@@ -9,7 +9,7 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta content="श्रीसूर्यसिद्धान्तीय स्थानीय दैनिक पञ्चाङ्ग तथा भारतीय काल गणना के आधार।" name="description"/>
 <title>श्रीसूर्यसिद्धान्तीय स्थानीय पञ्चाङ्ग एवं भारतीय काल गणना</title>
-<meta name="panchanga-build" content="2026-09-20-reviewed-v3-ab-legacy-manitoba-permanent-time-kalahora-diagnostics-63"/>
+<meta name="panchanga-build" content="2026-09-20-reviewed-v4-75-locations-ab-manitoba-kalahora"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
@@ -7295,7 +7295,60 @@ const PANCHANGA_PLACES = [
   /* Connecticut: Excel EST/standard-time basis; website America/New_York DST लगाएगी। */
   {key:"wilton-ct", region:"foreign", countryKey:"united-states", countryName:"संयुक्त राज्य अमेरिका",
    name:"विल्टन, कनेक्टिकट", heading:"विल्टनस्थ पञ्चाङ्ग",
-   file:"panchang-data/Wilton_Connecticut2026.xlsx", timeZone:"America/New_York", standardOffsetMinutes:-300, timeBasis:"standard"}
+   file:"panchang-data/Wilton_Connecticut2026.xlsx", timeZone:"America/New_York", standardOffsetMinutes:-300, timeBasis:"standard"},
+
+  /* ===== 2026-09-20 : 12 नये verified website-data locations =====
+     सभी source Excel standard-time basis पर हैं; DST वाले स्थानों में website IANA timezone से civil-time adjustment लगाएगी। */
+
+  {key:"auckland", region:"foreign", countryKey:"new-zealand", countryName:"न्यूज़ीलैण्ड",
+   name:"ऑकलैण्ड", heading:"ऑकलैण्डस्थ पञ्चाङ्ग",
+   file:"panchang-data/Auckland2026.xlsx", timeZone:"Pacific/Auckland", standardOffsetMinutes:720, timeBasis:"standard"},
+
+  {key:"chicago", region:"foreign", countryKey:"united-states", countryName:"संयुक्त राज्य अमेरिका",
+   name:"शिकागो, इलिनॉय", heading:"शिकागोस्थ पञ्चाङ्ग",
+   file:"panchang-data/Chicago2026.xlsx", timeZone:"America/Chicago", standardOffsetMinutes:-360, timeBasis:"standard"},
+
+  {key:"dubai", region:"foreign", countryKey:"united-arab-emirates", countryName:"संयुक्त अरब अमीरात",
+   name:"दुबई", heading:"दुबईस्थ पञ्चाङ्ग",
+   file:"panchang-data/Dubai2026.xlsx", timeZone:"Asia/Dubai", standardOffsetMinutes:240, timeBasis:"standard"},
+
+  {key:"durban", region:"foreign", countryKey:"south-africa", countryName:"दक्षिण अफ्रीका",
+   name:"डरबन", heading:"डरबनस्थ पञ्चाङ्ग",
+   file:"panchang-data/Durban2026.xlsx", timeZone:"Africa/Johannesburg", standardOffsetMinutes:120, timeBasis:"standard"},
+
+  {key:"ghent", region:"foreign", countryKey:"belgium", countryName:"बेल्जियम",
+   name:"घेण्ट", heading:"घेण्टस्थ पञ्चाङ्ग",
+   file:"panchang-data/Gent_Belgium2026.xlsx", timeZone:"Europe/Brussels", standardOffsetMinutes:60, timeBasis:"standard"},
+
+  {key:"kathmandu", region:"foreign", countryKey:"nepal", countryName:"नेपाल",
+   name:"काठमाण्डू", heading:"काठमाण्डूस्थ पञ्चाङ्ग",
+   file:"panchang-data/Kathmandu2026.xlsx", timeZone:"Asia/Kathmandu", standardOffsetMinutes:345, timeBasis:"standard"},
+
+  {key:"kuala-lumpur", region:"foreign", countryKey:"malaysia", countryName:"मलेशिया",
+   name:"कुआलालम्पुर", heading:"कुआलालम्पुरस्थ पञ्चाङ्ग",
+   file:"panchang-data/KualaLumpur2026.xlsx", timeZone:"Asia/Kuala_Lumpur", standardOffsetMinutes:480, timeBasis:"standard",
+   referenceLongitude:101.7},
+
+  {key:"melbourne", region:"foreign", countryKey:"australia", countryName:"ऑस्ट्रेलिया",
+   name:"मेलबर्न", heading:"मेलबर्नस्थ पञ्चाङ्ग",
+   file:"panchang-data/Melbourne2026.xlsx", timeZone:"Australia/Melbourne", standardOffsetMinutes:600, timeBasis:"standard"},
+
+  {key:"new-york", region:"foreign", countryKey:"united-states", countryName:"संयुक्त राज्य अमेरिका",
+   name:"न्यूयॉर्क", heading:"न्यूयॉर्कस्थ पञ्चाङ्ग",
+   file:"panchang-data/NewYork2026.xlsx", timeZone:"America/New_York", standardOffsetMinutes:-300, timeBasis:"standard"},
+
+  {key:"singapore", region:"foreign", countryKey:"singapore", countryName:"सिंगापुर",
+   name:"सिंगापुर", heading:"सिंगापुरस्थ पञ्चाङ्ग",
+   file:"panchang-data/Singapore2026.xlsx", timeZone:"Asia/Singapore", standardOffsetMinutes:480, timeBasis:"standard",
+   referenceLongitude:103.84999722222223},
+
+  {key:"sydney", region:"foreign", countryKey:"australia", countryName:"ऑस्ट्रेलिया",
+   name:"सिडनी", heading:"सिडनीस्थ पञ्चाङ्ग",
+   file:"panchang-data/Sydney2026.xlsx", timeZone:"Australia/Sydney", standardOffsetMinutes:600, timeBasis:"standard"},
+
+  {key:"tokyo", region:"foreign", countryKey:"japan", countryName:"जापान",
+   name:"टोक्यो", heading:"टोक्योस्थ पञ्चाङ्ग",
+   file:"panchang-data/Tokyo2026.xlsx", timeZone:"Asia/Tokyo", standardOffsetMinutes:540, timeBasis:"standard"}
 ];
 
 const PLACE_META = Object.fromEntries(
@@ -7310,7 +7363,10 @@ const PLACE_META = Object.fromEntries(
       region:place.region,
       countryKey:place.countryKey,
       countryName:place.countryName,
-      file:place.file
+      file:place.file,
+      referenceLongitude:place.referenceLongitude,
+      permanentOffsetMinutes:place.permanentOffsetMinutes,
+      permanentFromStandardLocal:place.permanentFromStandardLocal
     }
   ])
 );
@@ -13082,11 +13138,17 @@ const PANCHANGA_PLACE_ENGLISH_NAMES = {
   "vancouver-bc":"Vancouver, British Columbia", toronto:"Toronto, Ontario",
   montreal:"Montreal, Quebec", winnipeg:"Winnipeg, Manitoba", london:"London", doha:"Doha",
   rome:"Rome, Lazio", "venice-veneto":"Venice, Veneto", verona:"Verona, Veneto",
-  "vicenza-veneto":"Vicenza, Veneto", "wilton-ct":"Wilton, Connecticut"
+  "vicenza-veneto":"Vicenza, Veneto", "wilton-ct":"Wilton, Connecticut",
+  auckland:"Auckland", chicago:"Chicago, Illinois", dubai:"Dubai", durban:"Durban",
+  ghent:"Ghent, Belgium", kathmandu:"Kathmandu", "kuala-lumpur":"Kuala Lumpur",
+  melbourne:"Melbourne", "new-york":"New York", singapore:"Singapore", sydney:"Sydney", tokyo:"Tokyo"
 };
 const PANCHANGA_COUNTRY_ENGLISH_NAMES = {
   india:"India", "united-states":"United States", canada:"Canada",
-  "united-kingdom":"United Kingdom", qatar:"Qatar", italy:"Italy", kenya:"Kenya"
+  "united-kingdom":"United Kingdom", qatar:"Qatar", italy:"Italy", kenya:"Kenya",
+  "new-zealand":"New Zealand", "united-arab-emirates":"United Arab Emirates",
+  "south-africa":"South Africa", belgium:"Belgium", nepal:"Nepal", malaysia:"Malaysia",
+  australia:"Australia", singapore:"Singapore", japan:"Japan"
 };
 function panchangaBilingualPlaceName(place){
   const en=PANCHANGA_PLACE_ENGLISH_NAMES[place?.key] || "";
@@ -14893,23 +14955,10 @@ trigger.className="smart-select-trigger";
 </script>
 
 
-<!-- 2026-09-20 PENDING NEW LOCATIONS — intentionally NOT active until Builder PASS and verified Excel upload.
-Canonical planned metadata (standard-time source basis):
-Auckland2026.xlsx       | Pacific/Auckland     | UTC+12:00 | DST yes
-Kathmandu2026.xlsx      | Asia/Kathmandu       | UTC+05:45 | no DST
-Singapore2026.xlsx      | Asia/Singapore       | UTC+08:00 | no DST
-Dubai2026.xlsx          | Asia/Dubai           | UTC+04:00 | no DST
-Kiritimati2026.xlsx     | Pacific/Kiritimati   | UTC+14:00 | no DST
-Sydney2026.xlsx         | Australia/Sydney     | UTC+10:00 | DST yes
-Durban2026.xlsx         | Africa/Johannesburg  | UTC+02:00 | no DST
-Melbourne2026.xlsx      | Australia/Melbourne  | UTC+10:00 | DST yes
-Tokyo2026.xlsx          | Asia/Tokyo           | UTC+09:00 | no DST
-Gent_Belgium2026.xlsx   | Europe/Brussels      | UTC+01:00 | DST yes
-NewYork2026.xlsx        | America/New_York     | UTC-05:00 | DST yes
-Chicago2026.xlsx        | America/Chicago      | UTC-06:00 | DST yes
-Honolulu2026.xlsx       | Pacific/Honolulu     | UTC-10:00 | no DST
-PagoPago2026.xlsx       | Pacific/Pago_Pago    | UTC-11:00 | no DST
-KualaLumpur2026.xlsx    | Asia/Kuala_Lumpur    | UTC+08:00 | no DST
+<!-- 2026-09-20 REMAINING PENDING LOCATIONS — not active because their verified Excel files are not yet in website panchang-data.
+Kiritimati2026.xlsx | Pacific/Kiritimati | UTC+14:00 | no DST
+Honolulu2026.xlsx   | Pacific/Honolulu   | UTC-10:00 | no DST
+PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
 --->
 
 </body>
