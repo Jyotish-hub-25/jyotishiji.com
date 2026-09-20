@@ -9,7 +9,7 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta content="श्रीसूर्यसिद्धान्तीय स्थानीय दैनिक पञ्चाङ्ग तथा भारतीय काल गणना के आधार।" name="description"/>
 <title>श्रीसूर्यसिद्धान्तीय स्थानीय पञ्चाङ्ग एवं भारतीय काल गणना</title>
-<meta name="panchanga-build" content="2026-09-20-v11-ghent-section-repaired-75"/>
+<meta name="panchanga-build" content="2026-09-20-v12-odayika-layout-retrograde-repair-75"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
@@ -9949,7 +9949,8 @@ const ODAYIKA_SOURCE_STATE_MEANING={
   यही source-state fallback ग्रहस्पष्ट के व० के लिये प्रयुक्त होगा।
 */
 const ODAYIKA_2026_RETROGRADE_CHANGES={
-  guru:[[20260101,false],[20260315,false],[20261213,true]],
+  /* Kashi Word-source AB=ग्रहोदयास्त, all 365 dates verified */
+  guru:[[20260101,true],[20260315,false],[20261213,true]],
   shukra:[[20260101,false],[20260925,true],[20261106,false]],
   shani:[[20260101,false],[20260723,true],[20261207,false]],
   mangal:[[20260101,false]],
@@ -10119,27 +10120,22 @@ function odayikaPlanetState(grahaKey,rowIndex,col,grahaLon,sunLon){
   const gb = row && typeof normalizeDate==="function" ? normalizeDate(row[0]) : "";
 
   /*
-    Rise/set chips और ग्रहस्पष्ट दोनों एक ही source-state पढ़ेंगे।
-    AB उपलब्ध हो तो AB; AB रिक्त हो तो 2026 Word-source fallback।
+    वक्रत्व स्थानानुसार नहीं बदलता। 2026 में Kashi Word-source के 365-दिवसीय
+    AB record से सत्यापित global direct/retrograde state ही authoritative है।
+    इससे विदेशी workbook के legacy parsing से गुरु/शुक्र पर झूठा व० नहीं लगेगा।
   */
-  const src = typeof odayikaResolvedSourceState==="function"
-    ? odayikaResolvedSourceState(raw,gb,grahaKey)
-    : odayikaSourceStateForGraha(raw,grahaKey);
-
   if(["mangal","budha","guru","shukra","shani"].includes(grahaKey)){
-    let retro;
-
-    if(src && (src.retrograde || src.direct)){
-      retro = !!src.retrograde;
-    }else if(src && src.source==="word-ab-fallback"){
-      retro = !!src.retrograde;
-    }else{
-      retro = odayikaIsRetrograde(rowIndex,col);
-    }
+    const verifiedRetro = odayikaFallbackRetrogradeForDate(gb,grahaKey);
+    const src = odayikaSourceStateForGraha(raw,grahaKey);
+    const retro =
+      verifiedRetro !== null
+        ? verifiedRetro
+        : (src ? !!src.retrograde : odayikaIsRetrograde(rowIndex,col));
 
     if(retro) state.push("व०");
   }
 
+  /* अ० अभी source AB की अस्तावस्था से ही। */
   if(odayikaIsCombust(grahaKey,rowIndex)){
     state.push("अ०");
   }
@@ -15498,73 +15494,96 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
 }
 </style>
 
-<style id="odayika-v11-two-row-repair">
-/* केवल औदयिक उदयास्त layout: Row-1 चन्द्र+शुक्र; Row-2 चार ग्रह */
-.odayika-udayasta-grid{
+
+
+<style id="odayika-v12-fixed-grid">
+/*
+  निश्चित दो पंक्तियाँ:
+  Row 1 = चन्द्र (8/12) + शुक्र (4/12)
+  Row 2 = मङ्गल + बुध + बृहस्पति + शनि (3/12 each)
+*/
+#odayikaUdayastaGrid{
   display:grid !important;
   grid-template-columns:repeat(12,minmax(0,1fr)) !important;
+  grid-template-rows:auto auto !important;
+  grid-auto-flow:row !important;
+  align-items:center !important;
   gap:5px 6px !important;
-  align-items:stretch !important;
 }
-.odayika-event-chip,
-.odayika-event-chip.odayika-moon-chip{
-  grid-column:auto !important;
+
+#odayikaUdayastaGrid .odayika-event-chip{
   min-width:0 !important;
+  min-height:0 !important;
+  height:auto !important;
   display:flex !important;
   align-items:center !important;
   justify-content:center !important;
-  gap:3px !important;
   padding:5px 6px !important;
-  text-align:center !important;
+  margin:0 !important;
   white-space:normal !important;
-  overflow:hidden !important;
+  word-break:normal !important;
+  overflow-wrap:normal !important;
+  overflow:visible !important;
+  line-height:1.28 !important;
   font-size:.91rem !important;
-  line-height:1.26 !important;
+  text-align:center !important;
 }
-.odayika-event-chip strong{
+
+#odayikaUdayastaGrid .odayika-event-chip strong{
   flex:0 0 auto !important;
   white-space:nowrap !important;
 }
-.odayika-moon-chip{
-  grid-column:span 8 !important;
+
+/* First row */
+#odayikaUdayastaGrid .odayika-event-chip.odayika-moon-chip{
+  grid-column:1 / span 8 !important;
+  grid-row:1 !important;
   justify-content:flex-start !important;
   padding-left:9px !important;
 }
-.odayika-moon-chip > span{
-  min-width:0 !important;
-  overflow-wrap:anywhere !important;
+#odayikaUdayastaGrid .odayika-event-chip.odayika-shukra-chip{
+  grid-column:9 / span 4 !important;
+  grid-row:1 !important;
 }
-.odayika-shukra-chip{grid-column:span 4 !important;}
-.odayika-mangal-chip,
-.odayika-budha-chip,
-.odayika-guru-chip,
-.odayika-shani-chip{grid-column:span 3 !important;}
 
+/* Second row */
+#odayikaUdayastaGrid .odayika-event-chip.odayika-mangal-chip{
+  grid-column:1 / span 3 !important;
+  grid-row:2 !important;
+}
+#odayikaUdayastaGrid .odayika-event-chip.odayika-budha-chip{
+  grid-column:4 / span 3 !important;
+  grid-row:2 !important;
+}
+#odayikaUdayastaGrid .odayika-event-chip.odayika-guru-chip{
+  grid-column:7 / span 3 !important;
+  grid-row:2 !important;
+}
+#odayikaUdayastaGrid .odayika-event-chip.odayika-shani-chip{
+  grid-column:10 / span 3 !important;
+  grid-row:2 !important;
+}
+
+/* Available space is sufficient; keep legend readable. */
+.odayika-legend-inside{
+  font-size:clamp(.78rem,1.08vw,.92rem) !important;
+  line-height:1.28 !important;
+  font-weight:650 !important;
+}
+
+/* Mobile: same two-row structure, only slightly smaller typography. */
 @media(max-width:560px){
-  .odayika-udayasta-grid{gap:4px !important;}
-  .odayika-event-chip,
-  .odayika-event-chip.odayika-moon-chip{
+  #odayikaUdayastaGrid{
+    gap:4px !important;
+  }
+  #odayikaUdayastaGrid .odayika-event-chip{
     padding:4px 3px !important;
     font-size:.76rem !important;
     line-height:1.22 !important;
   }
-  .odayika-moon-chip{
-    grid-column:span 8 !important;
-    justify-content:flex-start !important;
+  #odayikaUdayastaGrid .odayika-event-chip.odayika-moon-chip{
     padding-left:5px !important;
   }
-  .odayika-shukra-chip{grid-column:span 4 !important;}
-  .odayika-mangal-chip,
-  .odayika-budha-chip,
-  .odayika-guru-chip,
-  .odayika-shani-chip{grid-column:span 3 !important;}
-}
-
-/* legend को उपलब्ध स्थान के अनुरूप स्पष्ट रखें */
-.odayika-legend-inside{
-  font-size:clamp(.76rem,1.03vw,.90rem) !important;
-  line-height:1.28 !important;
-  font-weight:650 !important;
 }
 </style>
 
