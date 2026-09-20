@@ -9,7 +9,7 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta content="श्रीसूर्यसिद्धान्तीय स्थानीय दैनिक पञ्चाङ्ग तथा भारतीय काल गणना के आधार।" name="description"/>
 <title>श्रीसूर्यसिद्धान्तीय स्थानीय पञ्चाङ्ग एवं भारतीय काल गणना</title>
-<meta name="panchanga-build" content="2026-09-20-63loc-canonical-data-updated"/>
+<meta name="panchanga-build" content="2026-09-20-reviewed-v2-yoga-baan-gandanta-kalahora-grahaudayasta-63"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
@@ -998,7 +998,7 @@ body{display:flex;flex-direction:column;min-height:100vh}
   .muhurta-note{
     font-size:.88rem;
     line-height:1.65;
-  }
+}
 }
 /* =========================================================
    औदयिक ग्रहस्पष्ट एवं ग्रहचक्र
@@ -2998,7 +2998,7 @@ html[lang="en"] .panchanga-column{
 }
 .panchanga-language-mode-inline .panchanga-mode-button{
   width:100% !important;
-  min-width:0 !important;
+min-width:0 !important;
   max-width:100% !important;
   min-height:42px !important;
   padding:4px 5px !important;
@@ -3998,7 +3998,7 @@ body.smart-select-lock{overflow:hidden}
 <header class="panchanga-title">
 <p class="ganesh-heading">॥ॐ श्रीगणेशाय नमः॥</p>
 <p class="main-panchanga-heading">
-            ॥श्रीसूर्यसिद्धान्तीय
+॥श्रीसूर्यसिद्धान्तीय
             <span aria-hidden="true">🌞</span>
             <span id="placeHeading">काशीस्थ पञ्चाङ्ग</span>॥
           </p>
@@ -4166,7 +4166,7 @@ body.smart-select-lock{overflow:hidden}
       <div class="odayika-spashta" aria-label="औदयिक ग्रहस्पष्ट">
       <div class="odayika-sp-box-title">तात्कालिक ग्रहस्पष्ट</div>
       <div id="odayikaSpashta"></div>
-      <p class="odayika-legend odayika-legend-inside">व० = वक्री · अ० = अस्त</p>
+      <p class="odayika-legend odayika-legend-inside">व० = वक्री · अ० = अस्तग्रह/मौढ्य</p>
     </div>
     </div>
 
@@ -4192,6 +4192,11 @@ body.smart-select-lock{overflow:hidden}
         <g id="odayikaPlanetLayer"></g>
       </svg>
     </div>
+  </div>
+
+  <div class="odayika-udayasta" id="odayikaUdayasta" hidden>
+    <div class="odayika-udayasta-title">दिशासहित ग्रहोदय–अस्त · चन्द्रोदय–चन्द्रास्त</div>
+    <div class="odayika-udayasta-grid" id="odayikaUdayastaGrid"></div>
   </div>
 </section>
     
@@ -4431,6 +4436,15 @@ body.smart-select-lock{overflow:hidden}
     <div class="yd-compact-grid" id="ydDailyAvoid"></div>
   </div>
 
+  <div class="yd-section yd-kalahora-section" id="ydKalahoraSection" hidden>
+    <div class="yd-section-title">कालहोरा</div>
+    <div class="yd-kalahora-rule">ग्रहवार का कार्य उस ग्रह की होरा में किया जाए।</div>
+    <details class="yd-kalahora-details">
+      <summary>२४ कालहोरा देखें ▼</summary>
+      <div class="yd-kalahora-table" id="ydKalahoraTable"></div>
+    </details>
+  </div>
+
   <div class="yd-section">
     <div class="yd-section-title">यात्रा-विचार</div>
     <div class="yd-travel" id="ydTravel"></div>
@@ -4467,7 +4481,7 @@ body.smart-select-lock{overflow:hidden}
 
   <details class="yd-sources">
     <summary>गणना-आधार / उपयोग-सूचना</summary>
-    <p>वार–तिथि, वार–नक्षत्र, सर्वार्थसिद्धि, रवियोग, आनन्दादि, पुष्कर, भद्रा, पञ्चक तथा दिनमान-आधारित कुलिक–कालवेला–यमघण्ट–कण्टक–अर्धयाम की गणना पृथक् शास्त्रीय गणना-तन्त्र में प्रयुक्त नियमों पर आधारित है। नित्ययोग-वर्ज्यांश में नारद-उद्धृत मान रखे गये हैं। ताराबल में जन्म नक्षत्र से दिन-नक्षत्र तक गणना कर ९ से चक्रीय विभाग किया गया है; २, ४, ६, ८, ९ अनुकूल, १ मध्यम तथा ३, ५, ७ त्याज्य माने गये हैं।</p>
+    <p>वार–तिथि, वार–नक्षत्र, सर्वार्थसिद्धि, रवियोग, आनन्दादि, पुष्कर, भद्रा, पञ्चक, बाण-पञ्चक, मूलसंज्ञक/नक्षत्र-गण्डान्त तथा दिनमान-आधारित कुलिक–कालवेला–यमघण्ट–कण्टक–अर्धयाम की गणना पृथक् शास्त्रीय गणना-तन्त्र में प्रयुक्त नियमों पर आधारित है। नित्ययोग-वर्ज्यांश में नारद-उद्धृत मान रखे गये हैं। ताराबल में जन्म नक्षत्र से दिन-नक्षत्र तक गणना कर ९ से चक्रीय विभाग किया गया है; २, ४, ६, ८, ९ अनुकूल, १ मध्यम तथा ३, ५, ७ त्याज्य माने गये हैं।</p>
   </details>
 
   <div class="yd-disclaimer" role="note" aria-label="अस्वीकरण एवं उपयोग-सूचना">
@@ -4997,8 +5011,6 @@ function panchangaTransliterateWithTermPolicy(text){
   }
   return out;
 }
-
-
 /*
   केवल सामान्य UI-वाक्यांशों का भाषानुवाद।
   शास्त्रीय नाम नीचे Sanscript से लिप्यन्तरित होते हैं, इसलिए गणना-संज्ञा नहीं बदलती।
@@ -5997,8 +6009,7 @@ PANCHANGA_RICH_HTML_TRANSLATIONS.mai = PANCHANGA_RICH_HTML_TRANSLATIONS.mai || {
   add("६. विभिन्न कालमानों का प्रयोग","६. विभिन्न कालमानक प्रयोग");
   add("७. देवताओं और असुरों का दिन-रात्रि","७. देवता आ असुरक दिन-राति");
   add("८. षष्ट्यब्द संवत्सर और “रौद्र” संवत्सर","८. षष्ट्यब्द संवत्सर आ “रौद्र” संवत्सर");
-
-  add("भारतीय नववर्ष चैत्र शुक्लपक्ष प्रतिपदा से प्रारम्भ होता है, परन्तु इस वर्ष प्रतिपदा का क्षय होने के कारण नववर्ष चैत्र शुक्लपक्ष द्वितीया तदनुसार अंग्रेज़ी कैलेण्डर के अनुसार २० मार्च २०२६, शुक्रवार को इस नववर्ष का आरम्भ हो रहा है।",
+add("भारतीय नववर्ष चैत्र शुक्लपक्ष प्रतिपदा से प्रारम्भ होता है, परन्तु इस वर्ष प्रतिपदा का क्षय होने के कारण नववर्ष चैत्र शुक्लपक्ष द्वितीया तदनुसार अंग्रेज़ी कैलेण्डर के अनुसार २० मार्च २०२६, शुक्रवार को इस नववर्ष का आरम्भ हो रहा है।",
       "भारतीय नववर्ष चैत्र शुक्लपक्षक प्रतिपदासँ आरम्भ होइत अछि; मुदा एहि वर्ष प्रतिपदाक क्षय भेलाक कारण नववर्ष चैत्र शुक्लपक्ष द्वितीयासँ, तदनुसार अंग्रेजी कैलेण्डरक अनुसार २० मार्च २०२६, शुक्र दिन, आरम्भ भऽ रहल अछि।");
 
   add("समय की गणना के लिए ज्योतिष में ९ प्रकार के कालमान (गणना की विधियों) की चर्चा है।",
@@ -6998,8 +7009,7 @@ const DEV_DIGITS = ["०","१","२","३","४","५","६","७","८","९"]
   2. महाकालेश्वर, उज्जैन
   3. नई दिल्ली
   4. अन्य स्थान - इनका क्रम बाद में केवल इसी list में बदलना है।
-
-  विदेश में countryKey/countryName के आधार पर
+विदेश में countryKey/countryName के आधार पर
   देश / क्षेत्र -> स्थान selector स्वतः बनेगा।
 */
 const PANCHANGA_PLACES = [
@@ -7160,6 +7170,8 @@ const PANCHANGA_PLACES = [
    name:"राँची", heading:"राँचीस्थ पञ्चाङ्ग",
    file:"panchang-data/Ranchi2026.xlsx", timeZone:"Asia/Kolkata", standardOffsetMinutes:330, timeBasis:"standard"},
 
+
+
   {key:"gaya", region:"india", countryKey:"india", countryName:"भारत",
    name:"गया", heading:"गयास्थ पञ्चाङ्ग",
    file:"panchang-data/Gaya2026.xlsx", timeZone:"Asia/Kolkata", standardOffsetMinutes:330, timeBasis:"standard"},
@@ -7172,8 +7184,8 @@ const PANCHANGA_PLACES = [
    name:"गुरुग्राम", heading:"गुरुग्रामस्थ पञ्चाङ्ग",
    file:"panchang-data/Gurugram2026.xlsx", timeZone:"Asia/Kolkata", standardOffsetMinutes:330, timeBasis:"standard"},
 
-  {key:"tirupati-ap", region:"india", countryKey:"india", countryName:"भारत",
-   name:"तिरुपति, आन्ध्र प्रदेश", heading:"तिरुपतिस्थ पञ्चाङ्ग",
+  {key:"tirupati", region:"india", countryKey:"india", countryName:"भारत",
+   name:"तिरुपति", heading:"तिरुपतिस्थ पञ्चाङ्ग",
    file:"panchang-data/Tirupati_AP2026.xlsx", timeZone:"Asia/Kolkata", standardOffsetMinutes:330, timeBasis:"standard"},
 
   {key:"tryambakeshwar", region:"india", countryKey:"india", countryName:"भारत",
@@ -7217,6 +7229,8 @@ const PANCHANGA_PLACES = [
   {key:"concord-ca", region:"foreign", countryKey:"united-states", countryName:"संयुक्त राज्य अमेरिका",
    name:"कॉनकॉर्ड, कैलिफ़ोर्निया", heading:"कॉनकॉर्डस्थ पञ्चाङ्ग",
    file:"panchang-data/Concord_CA_2026.xlsx", timeZone:"America/Los_Angeles", standardOffsetMinutes:-480, timeBasis:"standard"},
+
+
 
   {key:"seattle-wa", region:"foreign", countryKey:"united-states", countryName:"संयुक्त राज्य अमेरिका",
    name:"सिएटल, वॉशिंगटन", heading:"सिएटलस्थ पञ्चाङ्ग",
@@ -8021,7 +8035,6 @@ function sameAngaAtSunrise(rowA,rowB,valueColumn){
   const b = angaSunriseKey(rowB[valueColumn]);
   return !!a && a === b;
 }
-
 function isAngaVriddhiFullDay(rowIndex,valueColumn){
   if(!workbookData) return false;
   return sameAngaAtSunrise(
@@ -9022,7 +9035,7 @@ function computedThirdKaranaEnd(rowIndex,row,selectedDate){
 
 
         const p1 =
-          samples[seg];
+samples[seg];
 
         const p2 =
           samples[seg + 1];
@@ -10022,7 +10035,7 @@ function odayikaPlanetPositions(house,count){
 
     const extra = i - triPattern.length;
     return point(130 + extra*28,0);
-  });
+});
 }
 
 
@@ -11022,8 +11035,7 @@ function renderMaasAdminWarning(){
   }
 
   const parts=[];
-
-  if(maasMismatches.length){
+if(maasMismatches.length){
     const state=MAAS_VERIFICATION_STATE;
     const preview=maasMismatches.slice(0,6).map(x =>
       `${x.date}: B=${x.excel || "∅"}, गणना=${x.calculated || "∅"}`
@@ -12022,7 +12034,7 @@ function decideRakshaBandhan(){
     अल्प औदयिक पूर्णिमा:
     केवल पूर्वदिन का प्रदोष
   */
-  const windows =
+const windows =
     rakshaBandhanFreeWindows(
       iv,
       gb,
@@ -13021,8 +13033,7 @@ function populateIndiaPlaces(selectedKey="kashi"){
   places.forEach(place => {
     select.appendChild(selectorPlaceOption(place));
   });
-
-  const wanted = places.find(place => place.key === selectedKey);
+const wanted = places.find(place => place.key === selectedKey);
   if(wanted){
     select.value = wanted.file;
   }
@@ -14022,7 +14033,7 @@ if(document.readyState === "loading"){
     if(!select || triggerBySelect.has(select)) return;
     const trigger=document.createElement("button");
     trigger.type="button";
-    trigger.className="smart-select-trigger";
+trigger.className="smart-select-trigger";
     trigger.setAttribute("aria-haspopup","listbox");
     trigger.setAttribute("aria-expanded","false");
     select.classList.add("smart-select-native");
@@ -14114,6 +14125,58 @@ if(document.readyState === "loading"){
 </script>
 
 
+
+
+<script id="reviewed-new-label-translations-20260920">
+(()=>{
+  if(typeof PANCHANGA_UI_TRANSLATIONS!=="object")return;
+  const en={
+    "दिशासहित ग्रहोदय–अस्त · चन्द्रोदय–चन्द्रास्त":"Directional planetary rise/set · Moonrise–Moonset",
+    "कालहोरा":"Kālahorā",
+    "ग्रहवार का कार्य उस ग्रह की होरा में किया जाए।":"A task prescribed for a planet's weekday may be performed in that planet's Horā.",
+    "२४ कालहोरा देखें ▼":"View 24 Kālahorās ▼",
+    "क्रम":"No.",
+    "कालहोरा-स्वामी":"Kālahorā lord",
+    "स्थानीय समय":"Local time",
+    "व० = वक्री · अ० = अस्तग्रह/मौढ्य":"V = Vakrī · A = Asta-graha/Mauḍhya"
+  };
+  Object.assign(PANCHANGA_UI_TRANSLATIONS.en||(PANCHANGA_UI_TRANSLATIONS.en={}),en);
+})();
+</script>
+
+<style id="reviewed-compact-yoga-graha-20260920">
+/* 2026-09-20: vertical + horizontal space economy; गणना का अर्थ नहीं बदलता। */
+.yd-item{display:flex!important;flex-wrap:wrap!important;align-items:baseline!important;gap:2px 8px!important;padding:7px 9px!important;line-height:1.42!important}
+.yd-item-head{display:contents!important}
+.yd-name{flex:0 1 auto}.yd-time{flex:0 0 auto;margin-left:auto}
+.yd-effect{flex:1 1 300px;margin:0!important;line-height:1.42!important}
+.yd-avoid{flex:0 1 auto;margin:0!important;line-height:1.42!important}
+.yd-compact-grid{grid-template-columns:repeat(auto-fit,minmax(255px,1fr))!important;gap:5px!important}
+.yd-compact{display:flex!important;flex-wrap:wrap;align-items:baseline;gap:2px 7px;padding:6px 8px!important;line-height:1.4!important}
+.yd-compact span{display:inline!important;margin:0!important;line-height:1.4!important}
+.yd-kalahora-rule{padding:6px 8px;background:rgba(255,255,255,.66);border:1px solid rgba(23,63,85,.12);border-radius:7px;line-height:1.45}
+.yd-kalahora-details{margin-top:6px}
+.yd-kalahora-details summary{cursor:pointer;color:#0b5555;font-weight:700;font-size:.9rem}
+.yd-kalahora-table{margin-top:6px;border:1px solid rgba(23,63,85,.14);border-radius:7px;overflow:hidden;background:#fff}
+.yd-kh-row{display:grid;grid-template-columns:52px minmax(100px,.8fr) minmax(150px,1.2fr);gap:6px;align-items:center;padding:4px 8px;border-bottom:1px solid rgba(23,63,85,.09);font-size:.88rem;line-height:1.35}
+.yd-kh-row:last-child{border-bottom:0}.yd-kh-head{font-weight:700;background:#eef8f4;color:#173f55}
+.odayika-legend-inside{white-space:normal!important}
+.odayika-udayasta{margin-top:8px;padding-top:8px;border-top:1px solid rgba(23,63,85,.16)}
+.odayika-udayasta-title{text-align:center;color:#173f55;font-weight:700;font-size:.95rem;line-height:1.35;margin-bottom:5px}
+.odayika-udayasta-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:5px 8px}
+.odayika-event-chip{padding:4px 7px;border:1px solid rgba(23,63,85,.13);border-radius:7px;background:rgba(255,255,255,.62);font-size:.88rem;line-height:1.35;white-space:normal}
+.odayika-event-chip strong{color:#173f55}
+@media(max-width:700px){
+ .yd-item{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;gap:2px 6px!important}
+ .yd-item-head{display:contents!important}.yd-effect,.yd-avoid{grid-column:1/-1!important}
+ .yd-compact-grid{grid-template-columns:1fr!important}
+ .yd-kh-row{grid-template-columns:42px minmax(85px,.8fr) minmax(128px,1.2fr);padding:4px 6px;font-size:.86rem}
+ .odayika-udayasta-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+ .odayika-event-chip{font-size:.86rem;padding:4px 6px}
+}
+@media(max-width:420px){.odayika-udayasta-grid{grid-template-columns:1fr}.yd-kh-row{grid-template-columns:38px 86px minmax(0,1fr)}}
+</style>
+
 <script id="daily-yoga-decision-engine-20260919">
 (()=>{
   "use strict";
@@ -14135,6 +14198,18 @@ if(document.readyState === "loading"){
   const NATURE_EFFECT={"ध्रुव/स्थिर":"स्थायी स्थापना, दीर्घकालिक आरम्भ और स्थिर कार्यों के लिये अनुकूल।","चर":"यात्रा, गमनागमन और परिवर्तनशील कार्यों के लिये अनुकूल।","क्षिप्र":"शीघ्र निष्पादन, व्यापारिक/लघु आरम्भ और त्वरित कार्यों के लिये उपयोगी।","मृदु":"मैत्री, अलंकार, कला, सौम्य व्यवहार और मङ्गल कार्यों में उपयोगी।","उग्र":"कठोर, साहसिक अथवा दमनात्मक कार्यों का स्वभाव; सामान्य मङ्गलारम्भ में सावधानी।","तीक्ष्ण":"भेदन, शमन, उच्छेदन जैसे कठोर कार्यों का स्वभाव; सौम्य मङ्गलकार्य में वर्जनीय।","मिश्र":"मिश्र फल; कार्य-स्वरूप और अन्य अङ्गों के साथ विचार अपेक्षित।"};
   const TARA_NAMES=["जन्म","सम्पत्","विपत्","क्षेम","प्रत्यरि","साधक","निधन/वध","मित्र","परममित्र"];
   const TARA_GRADE={1:"medium",2:"good",3:"bad",4:"good",5:"bad",6:"good",7:"bad",8:"good",9:"good"};
+  const MOOLSANJNAK=new Set([1,9,10,18,19,27]);
+  const GANDANTA_PAIRS=new Map([['27-1','रेवती→अश्विनी'],['9-10','आश्लेषा→मघा'],['18-19','ज्येष्ठा→मूल']]);
+  /* बाण-पञ्चक: मुहूर्त्तचिन्तामणि विवाहप्रकरण ६.७३–७४; सूर्य के राशिगत भुक्तांश पर आधारित। */
+  const BAAN_BY_DEG={1:['मृत्युबाण','विवाह में त्याज्य'],10:['मृत्युबाण','विवाह में त्याज्य'],19:['मृत्युबाण','विवाह में त्याज्य'],28:['मृत्युबाण','विवाह में त्याज्य'],2:['अग्निबाण','गृहच्छादन में त्याज्य'],11:['अग्निबाण','गृहच्छादन में त्याज्य'],20:['अग्निबाण','गृहच्छादन में त्याज्य'],29:['अग्निबाण','गृहच्छादन में त्याज्य'],4:['राजबाण','राजसेवा/नौकरी में त्याज्य'],13:['राजबाण','राजसेवा/नौकरी में त्याज्य'],22:['राजबाण','राजसेवा/नौकरी में त्याज्य'],6:['चोरबाण','यात्रा/सवारी में त्याज्य'],15:['चोरबाण','यात्रा/सवारी में त्याज्य'],24:['चोरबाण','यात्रा/सवारी में त्याज्य'],8:['रोगबाण','उपनयन में त्याज्य'],17:['रोगबाण','उपनयन में त्याज्य'],26:['रोगबाण','उपनयन में त्याज्य']};
+  /* कालहोरा: मुहूर्त्तचिन्तामणि शुभाशुभप्रकरण ५४–५६; १ होरा = २½ घटिका = १ घण्टा। */
+  const HORA_PLANETS=['सूर्य','शुक्र','बुध','चन्द्र','शनि','बृहस्पति','मङ्गल'];
+  const WDAY_LORD=['सूर्य','चन्द्र','मङ्गल','बुध','बृहस्पति','शुक्र','शनि'];
+  const UJJAIN_REFERENCE_LONGITUDE=75.76824722222221;
+  /* केवल सत्यापित/स्थिर reference longitude जहाँ उपलब्ध है; अन्य स्थानों में गलत कालहोरा दिखाने की अपेक्षा section छिपा रहता है। */
+  const KALAHORA_LONGITUDE_BY_KEY={
+    kashi:83.01053055555556,mahakaleshwar:75.76824722222221,ayodhya:82.19430555555556,gorakhpur:83.35777777777777,jagannathpuri:85.81833333333333,delhi:77.2088888888889,prayagraj:81.89233055555556,mumbai:72.8775,jammu:74.85805555555555,jaipur:75.7873,kedarnath:79.06686944444444,kolkata:88.37,'nageshwar-saurashtra':69.08696944444443,rameshwaram:79.31728333333334,'shardapitha-kashmir':74.19,shringeri:75.25197222222222,devghar:86.69991111111112,somnath:70.40125,mallikarjuna:78.86815,omkareshwar:76.15061111111112,'bhimashankar-asam':91.69605,chennai:80.275,dwaraka:68.96756111111111,jyoshimath:79.56096944444444,'kamrup-kamakhya':91.69605,bengaluru:77.5913,patna:85.1376,ranchi:85.3096,grishneshwar:75.16993055555557,tryambakeshwar:73.53069166666667,fremont:-121.98200277777778,'los-angeles':-118.39721666666668,irvine:-117.82613055555555,'san-diego':-117.12448888888888,'artesia-ca':-118.0799611111111,'san-jose-ca':-121.88536944444445,'concord-ca':-122.02421111111111,edmonton:-113.47694444444444,calgary:-114.00805555555556,'vancouver-bc':-123.11388888888888,toronto:-79.24833333333333,montreal:-73.63611111111112,winnipeg:-97.17083333333333,london:-0.26169444444444445,rome:12.543111111111111
+  };
   const TARA_EFFECT={1:"मध्यम — सामान्य कार्य में अन्य बलों का विचार करें।",2:"अनुकूल — लाभ, सम्पत्ति और वृद्धि-सम्बन्धी कार्य।",3:"त्याज्य — विघ्न/हानि की आशंका; शुभारम्भ व यात्रा टालें।",4:"अनुकूल — क्षेम, सुरक्षा, स्वास्थ्य और स्थिर प्रगति।",5:"त्याज्य — विरोध/प्रतिबन्ध का संकेत; महत्त्वपूर्ण आरम्भ टालें।",6:"अनुकूल — साधना, सिद्धि, लक्ष्य-पूर्ति और कार्यसाधन।",7:"त्याज्य — निधन/वध तारा; शुभकार्य और यात्रा से बचें।",8:"अनुकूल — मैत्री, संधि, सम्पर्क और सहयोग।",9:"विशेष अनुकूल — परममैत्री, सौहार्द और सामान्य शुभकार्य।"};
   let lastModel=null;
   const $=id=>document.getElementById(id);
@@ -14186,6 +14261,11 @@ if(document.readyState === "loading"){
     if(la&&la===lb)return `${la} ${ca} – ${cb}`;
     return `${la?la+" ":""}${ca} – ${lb?lb+" ":""}${cb}`;
   }
+  function displayRange(a,b,gb,m=lastModel){if(m&&Math.abs(a-m.S)<90&&Math.abs(b-m.E)<90)return "अहोरात्र";return timeRange(a,b,gb,m)}
+  function shiftGB(gb,days){const m=String(gb||"").match(/^(\d{2})\/(\d{2})\/(\d{4})$/);if(!m||!Number.isFinite(days))return gb;const d=new Date(Date.UTC(+m[3],+m[2]-1,+m[1]+days));return `${String(d.getUTCDate()).padStart(2,"0")}/${String(d.getUTCMonth()+1).padStart(2,"0")}/${d.getUTCFullYear()}`}
+  function absoluteLocalPoint(sec,baseGB){if(!Number.isFinite(sec))return "—";let dayShift=Math.floor(sec/86400),std=((sec%86400)+86400)%86400,targetGB=shiftGB(baseGB,dayShift);let adj=0;try{if(typeof dstAdjustmentMinutes==="function")adj=dstAdjustmentMinutes(targetGB,std/60)||0}catch(_){adj=0}let civil=std+adj*60,extra=Math.floor(civil/86400);civil=((civil%86400)+86400)%86400;if(extra){targetGB=shiftGB(targetGB,extra)}const mins=Math.round(civil/60)%1440,h=Math.floor(mins/60),mi=mins%60,clock=dev(`${String(h).padStart(2,"0")}:${String(mi).padStart(2,"0")}`);if(targetGB===baseGB)return clock;const dm=targetGB.slice(0,5);return `${dev(dm)} ${clock}`}
+  function trueIntervalText(a,b,gb){return `आरम्भ ${absoluteLocalPoint(a,gb)} · समाप्ति ${absoluteLocalPoint(b,gb)}`}
+
   function clip(x,S,E){const a=Math.max(x.a,S),b=Math.min(x.b,E);return b>a?{...x,a,b}:null}
   function merge(list){const a=list.filter(x=>x&&x.b>x.a).sort((x,y)=>x.a-y.a),out=[];for(const x of a){const p=out[out.length-1];if(p&&x.a<=p.b+1)p.b=Math.max(p.b,x.b);else out.push({a:x.a,b:x.b})}return out}
   function subtract(base,blocks){let parts=[{a:base.a,b:base.b}];for(const z of merge(blocks)){const next=[];for(const p of parts){if(z.b<=p.a||z.a>=p.b){next.push(p);continue}if(z.a>p.a)next.push({a:p.a,b:Math.min(z.a,p.b)});if(z.b<p.b)next.push({a:Math.max(z.b,p.a),b:p.b})}parts=next}return parts.filter(x=>x.b-x.a>=10*60)}
@@ -14199,6 +14279,16 @@ if(document.readyState === "loading"){
   function sunNakIntervals(row,next,S,E){const a=longitude(row[12]),b0=next?longitude(next[12]):NaN;if(!Number.isFinite(a))return[];const span=40/3;if(!Number.isFinite(b0))return[{a:S,b:E,i:Math.floor(mod(a,360)/span)+1}];const b=unwrap(a,b0),out=[];let start=S,idx=Math.floor(mod(a,360)/span)+1,boundary=(Math.floor(a/span)+1)*span;while(boundary<b-1e-9){const t=S+(boundary-a)/(b-a)*(E-S);out.push({a:start,b:t,i:idx});start=t;idx=mod(idx,27)+1;boundary+=span}out.push({a:start,b:E,i:idx});return out}
   function panchakIntervals(row,next,S,E){const a=longitude(row[14]),b0=next?longitude(next[14]):NaN;if(!Number.isFinite(a)||!Number.isFinite(b0))return[];const b=unwrap(a,b0),cuts=[];for(let k=Math.floor(a/360)-1;k<=Math.floor(b/360)+1;k++)for(const x of[300+360*k,360+360*k])if(x>a&&x<b)cuts.push(x);cuts.sort((x,y)=>x-y);const pts=[a,...cuts,b],out=[];for(let i=0;i<pts.length-1;i++){const da=pts[i],db=pts[i+1];if(mod((da+db)/2,360)>=300)out.push({a:S+(da-a)/(b-a)*(E-S),b:S+(db-a)/(b-a)*(E-S)})}return out}
 
+  function nakTransitions(rowIndex,baseGB){const out=[];const baseOrd=gbOrdinal(baseGB);for(let j=Math.max(1,rowIndex-4);j<=Math.min(workbookData.length-1,rowIndex+4);j++){const r=workbookData[j],gb=rowDate(r),ord=gbOrdinal(gb);if(!Number.isFinite(ord))continue;const off=(ord-baseOrd)*86400,rs=rawSec(r[10])+off;let cur=nakIndex(r[16]);if(!Number.isFinite(rs)||!cur)continue;const e1=absEvent(r[15],rs,off,{allowSentinel:true});if(Number.isFinite(e1)){const n1=mod(cur,27)+1;out.push({t:e1,from:cur,to:n1});cur=n1;const e2=absEvent(r[28],e1,off,{allowSentinel:false});if(Number.isFinite(e2)){const n2=mod(cur,27)+1;out.push({t:e2,from:cur,to:n2})}}}out.sort((a,b)=>a.t-b.t);return out.filter((x,i,a)=>i===0||Math.abs(x.t-a[i-1].t)>2||x.from!==a[i-1].from||x.to!==a[i-1].to)}
+  function trueNakBounds(interval,trs){let start=NaN,end=NaN;for(const tr of trs){if(tr.to===interval.i&&tr.t<=interval.a+2)start=tr.t;if(tr.from===interval.i&&tr.t>interval.a+2){end=tr.t;break}}if(!Number.isFinite(start))start=interval.a;if(!Number.isFinite(end))end=interval.b;return{start,end}}
+  function moolsanjnakAndGandanta(nInts,trs,S,E){const moola=[],gandanta=[];const seen=new Set();for(const x of nInts){if(!MOOLSANJNAK.has(x.i))continue;const bd=trueNakBounds(x,trs),key=`${x.i}:${Math.round(bd.start)}:${Math.round(bd.end)}`;if(seen.has(key))continue;seen.add(key);if(bd.end>S&&bd.start<E)moola.push({a:bd.start,b:bd.end,i:x.i})}for(const tr of trs){const label=GANDANTA_PAIRS.get(`${tr.from}-${tr.to}`);if(!label)continue;const a=tr.t-48*60,b=tr.t+48*60;if(b>S&&a<E)gandanta.push({a,b,label})}return{moola,gandanta}}
+  function baanIntervals(row,next,S,E){if(!next)return[];const a0=longitude(row[12]),b0=longitude(next[12]);if(!Number.isFinite(a0)||!Number.isFinite(b0)||E<=S)return[];const a=a0,b=unwrap(a0,b0);if(!(b>a))return[];const cuts=[a];let k=Math.floor(a)+1;while(k<b-1e-9){cuts.push(k);k++}cuts.push(b);const out=[];for(let i=0;i<cuts.length-1;i++){const da=cuts[i],db=cuts[i+1],mid=(da+db)/2;const d=Math.floor(mod(mid,30));const rule=BAAN_BY_DEG[d];if(!rule)continue;out.push({a:S+(da-a)/(b-a)*(E-S),b:S+(db-a)/(b-a)*(E-S),name:rule[0],effect:rule[1]})}return out}
+  function normalize180(x){let v=mod(x+180,360)-180;return v===-180?180:v}
+  function selectedPlaceKey(){try{return (typeof selectedPlaceKeyFromSelector==='function'?selectedPlaceKeyFromSelector():'')||(typeof currentPlaceKey!=='undefined'?currentPlaceKey:'')||''}catch(_){return''}}
+  function kalahoraRows(m){const key=selectedPlaceKey(),lon=KALAHORA_LONGITUDE_BY_KEY[key];if(!Number.isFinite(lon))return[];const deltaLon=normalize180(lon-UJJAIN_REFERENCE_LONGITUDE),deshantarSec=deltaLon*240,halfDay=(m.A-m.S)/2,corrected15=21600-deshantarSec,V=m.S+(halfDay-corrected15),lord=WDAY_LORD[m.w],start=HORA_PLANETS.indexOf(lord);if(start<0)return[];const out=[];for(let i=0;i<24;i++)out.push({n:i+1,planet:HORA_PLANETS[mod(start+i,7)],a:V+i*3600,b:V+(i+1)*3600});return out}
+  function renderKalahora(m){const sec=$("ydKalahoraSection"),box=$("ydKalahoraTable");if(!sec||!box)return;const rows=kalahoraRows(m);sec.hidden=!rows.length;if(!rows.length){box.innerHTML="";return}box.innerHTML=`<div class="yd-kh-row yd-kh-head"><span>क्रम</span><span>कालहोरा-स्वामी</span><span>स्थानीय समय</span></div>`+rows.map(h=>`<div class="yd-kh-row"><span>${dev(h.n)}</span><strong>${h.planet}</strong><span>${clockOnly(h.a,m.gb)}–${clockOnly(h.b,m.gb)}</span></div>`).join("")}
+
+
   function yogaTransitions(rowIndex,baseGB){const out=[];const baseOrd=gbOrdinal(baseGB);for(let j=Math.max(1,rowIndex-4);j<=Math.min(workbookData.length-1,rowIndex+4);j++){const r=workbookData[j],gb=rowDate(r),ord=gbOrdinal(gb);if(!Number.isFinite(ord))continue;const off=(ord-baseOrd)*86400,rs=rawSec(r[10])+off;let cur=yogaIndex(r[5]);if(!Number.isFinite(rs)||!cur)continue;const e1=absEvent(r[6],rs,off,{allowSentinel:true});if(Number.isFinite(e1)){const n1=mod(cur,27)+1;out.push({t:e1,from:cur,to:n1});cur=n1;const e2=absEvent(r[27],e1,off,{allowSentinel:false});if(Number.isFinite(e2)){const n2=mod(cur,27)+1;out.push({t:e2,from:cur,to:n2})}}}out.sort((a,b)=>a.t-b.t);return out.filter((x,i,a)=>i===0||Math.abs(x.t-a[i-1].t)>2||x.from!==a[i-1].from||x.to!==a[i-1].to)}
   function trueYogaBounds(interval,trs){let start=NaN,end=NaN;for(const tr of trs){if(tr.to===interval.i&&tr.t<=interval.a+2)start=tr.t;if(tr.from===interval.i&&tr.t>interval.a+2){end=tr.t;break}}if(!Number.isFinite(start))start=interval.a;if(!Number.isFinite(end))end=interval.b;return{start,end}}
   function varjyaYoga(i,start,end){const r=YOGA_VARJYA[i];if(!r||end<=start)return null;let b=r.kind==="ghati"?Math.min(end,start+r.n*24*60):r.kind==="half"?start+(end-start)/2:end;return{a:start,b,rule:r}}
@@ -14209,7 +14299,7 @@ if(document.readyState === "loading"){
 
   function natureFor(i){for(const [name,set] of Object.entries(NAK_NATURE))if(set.has(i))return name;return""}
   function anandaEffect(name){if(name==="चर")return"यात्रा, गमनागमन और चल कार्यों के लिये अनुकूल संकेत।";if(name==="सुस्थिर")return"स्थायी और दीर्घकालिक कार्यों के लिये अनुकूल संकेत।";if(name==="प्रवर्धमान")return"वृद्धि, विस्तार और उन्नति-सम्बन्धी कार्यों के लिये अनुकूल संकेत।";if(name==="मित्र")return"मैत्री, समझौता, सम्पर्क और सहयोग के लिये अनुकूल।";if(name==="अमृत")return"सामान्य मङ्गल और शुभकार्य के लिये अत्यन्त अनुकूल नामफल।";if(ANANDA_GOOD.has(name))return"नामफलानुसार अनुकूल; अन्य पञ्चाङ्ग-दोषों के साथ संयुक्त विचार करें।";if(ANANDA_BAD.has(name))return"दोषप्रधान नामफल; नीचे दिये वर्ज्यांश में शुभारम्भ न करें।";return"मिश्र/कार्यविशेष संकेत; अन्य अङ्गों के साथ विचार अपेक्षित।"}
-  function eventCard(name,a,b,kind,effect,avoid=""){return{name,a,b,kind,effect,avoid}}
+  function eventCard(name,a,b,kind,effect,avoid="",timeText=""){return{name,a,b,kind,effect,avoid,timeText}}
 
   function buildModel(rowIndex,row,next,gb){const S=rawSec(row[10]);let A=rawSec(row[11]);if(!Number.isFinite(S)||!Number.isFinite(A))return null;while(A<S)A+=86400;let E=next?rawSec(next[10]):NaN;if(Number.isFinite(E))while(E<=A)E+=86400;else E=A;const w=WKEY[row[2]]??0,tInts=buildSeq(row,next,S,E,"t"),nInts=buildSeq(row,next,S,E,"n"),yInts=buildSeq(row,next,S,E,"y");const good=[],bad=[],avoid=[];
     const sg=SIDDHA_GROUP[w];if(sg)for(const x of tInts.filter(z=>tithiGroup(z.i)===sg))good.push(eventCard("सिद्धतिथि योग",x.a,x.b,"good","सामान्य शुभारम्भ और कार्यसिद्धि हेतु अनुकूल वार–तिथि संयोग।"));
@@ -14222,12 +14312,14 @@ if(document.readyState === "loading"){
     const an=anandadiIntervals(row,next,S,E,nInts,w);for(const x of an){const r=ANANDA_VARJYA[x.name];if(r){const vb=r.whole?x.b:Math.min(x.b,x.a+r.g*24*60);if(vb>x.a){bad.push(eventCard(`आनन्दादि — ${x.name}`,x.a,vb,"bad",anandaEffect(x.name),`${r.label} · ${dur(vb-x.a)} त्याग`));avoid.push({a:x.a,b:vb});if(vb<x.b&&ANANDA_GOOD.has(x.name))good.push(eventCard(`आनन्दादि — ${x.name}`,vb,x.b,"good",anandaEffect(x.name)))}}else{const kind=ANANDA_GOOD.has(x.name)?"good":ANANDA_BAD.has(x.name)?"bad":"caution";(kind==="good"?good:bad).push(eventCard(`आनन्दादि — ${x.name}`,x.a,x.b,kind,anandaEffect(x.name),kind==="bad"?`सम्पूर्ण सक्रिय अंश — ${dur(x.b-x.a)}`:""));if(kind==="bad")avoid.push({a:x.a,b:x.b})}}
     const kInts=karanaIntervals(rowIndex,row,S,E,gb),bhadra=kInts.filter(x=>x.key==="Višti"||String(x.name).includes("विष्टि"));for(const x of bhadra){bad.push(eventCard("भद्रा (विष्टि करण)",x.a,x.b,"bad","सामान्य माङ्गलिक आरम्भ, विवाहादि सौम्य शुभकार्य और महत्त्वपूर्ण यात्रा में त्याग श्रेयस्कर; क्रूर/दमनात्मक कार्यों के पृथक् विधान हैं।",`सम्पूर्ण विष्टि-अंश — ${dur(x.b-x.a)}`));avoid.push({a:x.a,b:x.b})}
     const panchak=next?panchakIntervals(row,next,S,E):[];for(const x of panchak)bad.push(eventCard("पञ्चक",x.a,x.b,"caution","विशेषतः दक्षिण-यात्रा, शय्या-निर्माण/बिछाना, गृहच्छादन/गृहसम्बन्धी आरम्भ, तृण-काष्ठ-संग्रह और मृतकर्म में वर्जन का विचार।","इन निर्दिष्ट कार्यों में सक्रिय पञ्चक-अंश का त्याग"));
+    const ntrs=nakTransitions(rowIndex,gb),mg=moolsanjnakAndGandanta(nInts,ntrs,S,E);for(const x of mg.moola)bad.push(eventCard(`मूलसंज्ञक (गण्डमूल) — ${NAK[x.i-1]}`,x.a,x.b,"caution","नक्षत्र का वास्तविक आरम्भ–समाप्ति; सम्बन्धित सन्धि में गण्डान्त-अंश पृथक् दिया गया है।","",trueIntervalText(x.a,x.b,gb)));for(const x of mg.gandanta)bad.push(eventCard(`नक्षत्र-गण्डान्त — ${x.label}`,x.a,x.b,"caution","सन्धि के पूर्व २ घटिका और उत्तर २ घटिका का गण्डान्त-अंश।","",trueIntervalText(x.a,x.b,gb)));
+    const baan=baanIntervals(row,next,S,E);for(const x of baan)bad.push(eventCard(`बाण-पञ्चक — ${x.name}`,x.a,x.b,"caution",x.effect));
     const target={kulika:6,kala:3,yama:4,kantaka:2};const D=A-S;const kalansh=tw=>{const count=mod(tw-w,7)+1,k=2*count,u=D/16;return{a:S+(k-1)*u,b:S+k*u}};const daily=[{name:"कुलिक",...kalansh(target.kulika)},{name:"कालवेला",...kalansh(target.kala)},{name:"यमघण्ट",...kalansh(target.yama)},{name:"कण्टक",...kalansh(target.kantaka)}];const W=w+1,ai=((3*W)%8)+1,h=D/8;daily.push({name:"अर्धयाम",a:S+(ai-1)*h,b:S+ai*h});for(const x of daily)avoid.push({a:x.a,b:x.b});
-    const nature=nInts.map(x=>({a:x.a,b:x.b,i:x.i,name:natureFor(x.i)}));return{rowIndex,row,next,gb,S,A,E,w,tInts,nInts,yInts,good,bad,avoid,daily,panchak,nature,bhadra,an}}
+    const nature=nInts.map(x=>({a:x.a,b:x.b,i:x.i,name:natureFor(x.i)}));return{rowIndex,row,next,gb,S,A,E,w,tInts,nInts,yInts,good,bad,avoid,daily,panchak,nature,bhadra,an,baan,mg}}
 
-  function cardHtml(x,gb){return `<div class="yd-item ${x.kind}"><div class="yd-item-head"><span class="yd-name">${x.name}</span><span class="yd-time">${timeRange(x.a,x.b,gb)}</span></div><p class="yd-effect">${x.effect}</p>${x.avoid?`<div class="yd-avoid">त्याग: ${x.avoid}</div>`:""}</div>`}
+  function cardHtml(x,gb){return `<div class="yd-item ${x.kind}"><div class="yd-item-head"><span class="yd-name">${x.name}</span><span class="yd-time">${x.timeText||displayRange(x.a,x.b,gb)}</span></div><p class="yd-effect">${x.effect}</p>${x.avoid?`<div class="yd-avoid">${x.avoid}</div>`:""}</div>`}
   function renderLists(m){const gs=$("ydGoodSection"),bs=$("ydBadSection");gs.hidden=!m.good.length;bs.hidden=!m.bad.length;if(m.good.length){$("ydGoodCount").textContent=dev(m.good.length);$("ydGoodList").innerHTML=m.good.sort((a,b)=>a.a-b.a).map(x=>cardHtml(x,m.gb)).join("")}if(m.bad.length){$("ydBadCount").textContent=dev(m.bad.length);$("ydBadList").innerHTML=m.bad.sort((a,b)=>a.a-b.a).map(x=>cardHtml(x,m.gb)).join("")}}
-  function renderDaily(m){$("ydDailyAvoid").innerHTML=m.daily.map(x=>`<div class="yd-compact"><b>${x.name}</b> — ${timeRange(x.a,x.b,m.gb)}<span>शुभारम्भ/यात्रा में ${dur(x.b-x.a)} त्याग।</span></div>`).join("")}
+  function renderDaily(m){$("ydDailyAvoid").innerHTML=m.daily.map(x=>`<div class="yd-compact"><b>${x.name}</b><span>${displayRange(x.a,x.b,m.gb,m)} · शुभारम्भ/यात्रा में त्याज्य</span></div>`).join("")}
   function renderTravel(m){
     const d=typeof DIKSHOOL_MAP==="object"?(DIKSHOOL_MAP[m.row[2]]||"—"):"—";
     const moon=moonRashiIntervals(m).map(x=>`${RASHI_MAP?.[x.r]||""} — ${CHANDRAVAS_BY_RASHI[x.r]||"—"} ${timeRange(x.a,x.b,m.gb,m)}`).join("; ");
@@ -14313,7 +14405,7 @@ if(document.readyState === "loading"){
     box.innerHTML=`${travelHtml}<div class="yd-tara-summary" style="margin-top:${travelHtml?"8px":"0"}">${summary}</div><div class="yd-tara-intervals">${lines}</div><div class="yd-window-title">${winTitle}</div><div class="yd-window-list">${wins}</div><p class="yd-note">यह समय-चयन केवल ताराबल + इस निर्णय-पट्ट में निकले त्याज्यकालों पर आधारित है। ध्यान देने योग्य है कि पूर्ण मुहूर्त्त के लिये चन्द्रबल, लग्न, ग्रहबल, कार्यविशेष-संस्कार, यात्रादिशा के अन्य नियम आदि का पृथक् विचार अतिआवश्यक है, अतः विशेषज्ञ का परामर्श लेकर ही अन्तिम निर्णय लेना श्रेयस्कर है।</p>`;
   }
 
-  function render(){const panel=$("dailyYogaDecisionPanel"),picker=$("datePicker");if(!panel||!picker||!picker.value||typeof workbookData==="undefined"||!workbookData){if(panel)panel.hidden=true;return}const gb=typeof pickerToGB==="function"?pickerToGB(picker.value):"",hit=typeof workbookRowByGBDate==="function"?workbookRowByGBDate(gb):null;if(!hit){panel.hidden=true;return}const row=hit.row,next=workbookData[hit.index+1]||null,m=buildModel(hit.index,row,next,gb);if(!m){panel.hidden=true;return}lastModel=m;panel.hidden=false;const place=String(typeof currentPlaceName!=="undefined"?currentPlaceName:"");const activeNak=m.nInts[0],nat=activeNak?natureFor(activeNak.i):"";$("ydContext").innerHTML=`<strong>${place}</strong> · ${dev(gb)} · ${WNAME[m.w]}${activeNak?` · ${NAK[activeNak.i-1]} (${nat||"स्वभाव-अनिर्णीत"})`:""}`;renderLists(m);renderDaily(m);renderTravel(m);renderTara()}
+  function render(){const panel=$("dailyYogaDecisionPanel"),picker=$("datePicker");if(!panel||!picker||!picker.value||typeof workbookData==="undefined"||!workbookData){if(panel)panel.hidden=true;return}const gb=typeof pickerToGB==="function"?pickerToGB(picker.value):"",hit=typeof workbookRowByGBDate==="function"?workbookRowByGBDate(gb):null;if(!hit){panel.hidden=true;return}const row=hit.row,next=workbookData[hit.index+1]||null,m=buildModel(hit.index,row,next,gb);if(!m){panel.hidden=true;return}lastModel=m;panel.hidden=false;const place=String(typeof currentPlaceName!=="undefined"?currentPlaceName:"");const activeNak=m.nInts[0],nat=activeNak?natureFor(activeNak.i):"";$("ydContext").innerHTML=`<strong>${place}</strong> · ${dev(gb)} · ${WNAME[m.w]}${activeNak?` · ${NAK[activeNak.i-1]} (${nat||"स्वभाव-अनिर्णीत"})`:""}`;renderLists(m);renderDaily(m);renderKalahora(m);renderTravel(m);renderTara()}
 
   window.renderDailyYogaDecision = render;
   function init(){
@@ -14332,275 +14424,31 @@ if(document.readyState === "loading"){
 })();
 </script>
 
-<script id="daily-yoga-language-safety-20260920">
+
+<script id="odayika-source-udayasta-20260920">
 (()=>{
   "use strict";
-
-  const panel=document.getElementById("dailyYogaDecisionPanel");
-  if(!panel) return;
-
-  const SOURCE=new WeakMap();
-  const ORIGINAL_HTML=new Map();
-
-  // Static controls must be restorable when the user returns to Hindi.
-  [
-    "ydBirthNak","ydPurpose","ydDirection"
-  ].forEach(id=>{
-    const el=document.getElementById(id);
-    if(el) ORIGINAL_HTML.set(id,el.innerHTML);
-  });
-
-  const exact=new Map(Object.entries({
-    "दैनिक योग–मुहूर्त्त निर्णय":"Daily Yoga–Muhūrta assessment",
-    "चयनित पञ्चाङ्ग के अनुसार गणना की जा रही है…":"Calculating from the selected Pañcāṅga…",
-    "अनुकूल योग":"Favorable Yogas",
-    "त्याज्य / सावधानी":"Avoid / caution",
-    "नित्य दुष्टक्षण":"Daily inauspicious periods",
-    "यात्रा-विचार":"Travel considerations",
-    "ताराबल एवं वैयक्तिक समय-चयन":"Tārābala & personalized time selection",
-    "जन्म नक्षत्र":"Birth Nakṣatra",
-    "— जन्म नक्षत्र चुनें —":"— Choose birth Nakṣatra —",
-    "प्रयोग":"Purpose",
-    "सामान्य शुभकार्य":"General auspicious activity",
-    "यात्रा":"Travel",
-    "यात्रा-दिशा":"Direction of travel",
-    "पूर्व":"East","दक्षिण":"South","पश्चिम":"West","उत्तर":"North",
-    "जन्म नक्षत्र चुनने पर चयनित दिन के नक्षत्रों से ताराबल तथा दिन के शुभ/अशुभ समय का विचार दिखाया जाएगा।":"After you choose the birth Nakṣatra, Tārābala and the favorable/unfavorable periods of the selected day will be shown from the day's Nakṣatras.",
-    "जन्मविवरण से नक्षत्र क्यों नहीं निकाला गया?":"Why is the Nakṣatra not calculated from birth details?",
-    "जन्म-तिथि, समय और स्थान से नक्षत्र निकालने के लिये उस जन्मकाल का सर्वकालिक चन्द्रस्पष्ट आवश्यक है। वर्तमान पञ्चाङ्ग-पृष्ठ के स्थानिक Excel आँकड़े २०२६ के दैनिक पञ्चाङ्ग के लिये हैं; उनसे पुराने जन्मकाल का अनुमान लगाना उचित नहीं। अतः इस चरण में प्रत्यक्ष जन्म-नक्षत्र प्रविष्टि ही कार्यशील रखी गयी है।":"Calculating the Nakṣatra from birth date, time and place requires the Moon's precise longitude for that birth moment. The local Excel data on this Pañcāṅga page are for the daily Pañcāṅga of 2026; they should not be used to estimate an earlier birth moment. Therefore, at this stage the birth Nakṣatra is entered directly.",
-    "गणना-आधार / उपयोग-सूचना":"Calculation basis / usage note",
-    "वार–तिथि, वार–नक्षत्र, सर्वार्थसिद्धि, रवियोग, आनन्दादि, पुष्कर, भद्रा, पञ्चक तथा दिनमान-आधारित कुलिक–कालवेला–यमघण्ट–कण्टक–अर्धयाम की गणना पृथक् शास्त्रीय गणना-तन्त्र में प्रयुक्त नियमों पर आधारित है। नित्ययोग-वर्ज्यांश में नारद-उद्धृत मान रखे गये हैं। ताराबल में जन्म नक्षत्र से दिन-नक्षत्र तक गणना कर ९ से चक्रीय विभाग किया गया है; २, ४, ६, ८, ९ अनुकूल, १ मध्यम तथा ३, ५, ७ त्याज्य माने गये हैं।":"The calculations for Vāra–Tithi, Vāra–Nakṣatra, Sarvārthasiddhi, Ravi-yoga, Ānandādi, Puṣkara, Bhadrā, Pañcaka, and the day-length based Kulika, Kālavela, Yamaghanta, Kaṇṭaka and Ardhayāma follow rules used in the separate śāstric calculation system. The prohibited portions of Nitya-yoga use values quoted from Nārada. For Tārābala, the count from the birth Nakṣatra to the day's Nakṣatra is divided cyclically by 9: 2, 4, 6, 8 and 9 are treated as favorable; 1 as moderate; and 3, 5 and 7 as avoidable.",
-    "अस्वीकरण एवं उपयोग-सूचना:":"Disclaimer and usage note:",
-    "इस पञ्चाङ्ग में प्रदर्शित योग, मुहूर्त्त, ताराबल, चन्द्रवास तथा यात्रा-विचार शास्त्रीय गणना और उपलब्ध स्थानिक आँकड़ों पर आधारित मार्गदर्शक सूचनाएँ हैं। प्रयोजन-विशेष के अनुसार किसी कार्य का निर्णय व्यक्ति-विशेष, जन्मकुण्डली, देश-काल तथा कार्यविशेष के अन्य आवश्यक घटकों एवं विचारों पर निर्भर होता है। स्वास्थ्य, विधि, वित्त, सुरक्षा अथवा अन्य महत्त्वपूर्ण व्यावहारिक निर्णयों के लिये सम्बन्धित विषय-विशेषज्ञ की सलाह लेना उचित है। अतः अन्तिम निर्णय के लिये प्रयोक्ता स्वयं उत्तरदायी होगा।":"The Yoga, Muhūrta, Tārābala, Candra-vāsa and travel indications displayed in this Pañcāṅga are guidance based on śāstric calculation and the available local data. A decision for a specific purpose may depend on the individual, birth chart, place and time, and other factors relevant to the particular activity. For health, legal, financial, safety or other important practical decisions, advice from the appropriate subject specialist should be taken. The user remains responsible for the final decision.",
-
-    "स्थायी स्थापना, दीर्घकालिक आरम्भ और स्थिर कार्यों के लिये अनुकूल।":"Favorable for permanent establishment, long-term beginnings and stable undertakings.",
-    "यात्रा, गमनागमन और परिवर्तनशील कार्यों के लिये अनुकूल।":"Favorable for travel, movement and changeable activities.",
-    "शीघ्र निष्पादन, व्यापारिक/लघु आरम्भ और त्वरित कार्यों के लिये उपयोगी।":"Useful for quick execution, commercial or small beginnings, and fast-moving tasks.",
-    "मैत्री, अलंकार, कला, सौम्य व्यवहार और मङ्गल कार्यों में उपयोगी।":"Useful for friendship, adornment, arts, gentle dealings and auspicious activities.",
-    "कठोर, साहसिक अथवा दमनात्मक कार्यों का स्वभाव; सामान्य मङ्गलारम्भ में सावधानी।":"A nature suited to hard, daring or coercive actions; use caution for ordinary auspicious beginnings.",
-    "भेदन, शमन, उच्छेदन जैसे कठोर कार्यों का स्वभाव; सौम्य मङ्गलकार्य में वर्जनीय।":"A nature suited to forceful acts such as piercing, suppression or removal; avoid for gentle auspicious activities.",
-    "मिश्र फल; कार्य-स्वरूप और अन्य अङ्गों के साथ विचार अपेक्षित।":"Mixed result; consider the nature of the activity together with the other Pañcāṅga factors.",
-
-    "मध्यम — सामान्य कार्य में अन्य बलों का विचार करें।":"Moderate — consider the other strengths for ordinary activities.",
-    "अनुकूल — लाभ, सम्पत्ति और वृद्धि-सम्बन्धी कार्य।":"Favorable — for gain, prosperity and growth-related activities.",
-    "त्याज्य — विघ्न/हानि की आशंका; शुभारम्भ व यात्रा टालें।":"Avoid — risk of obstruction or loss; avoid auspicious beginnings and travel.",
-    "अनुकूल — क्षेम, सुरक्षा, स्वास्थ्य और स्थिर प्रगति।":"Favorable — for welfare, safety, health and steady progress.",
-    "त्याज्य — विरोध/प्रतिबन्ध का संकेत; महत्त्वपूर्ण आरम्भ टालें।":"Avoid — indicates opposition or obstruction; avoid important beginnings.",
-    "अनुकूल — साधना, सिद्धि, लक्ष्य-पूर्ति और कार्यसाधन।":"Favorable — for practice, accomplishment, goal-fulfilment and successful execution.",
-    "त्याज्य — निधन/वध तारा; शुभकार्य और यात्रा से बचें।":"Avoid — Nidhana/Vadha Tārā; avoid auspicious activities and travel.",
-    "अनुकूल — मैत्री, संधि, सम्पर्क और सहयोग।":"Favorable — for friendship, agreement, contact and cooperation.",
-    "विशेष अनुकूल — परममैत्री, सौहार्द और सामान्य शुभकार्य।":"Especially favorable — for close friendship, harmony and general auspicious activities.",
-
-    "यात्रा, गमनागमन और चल कार्यों के लिये अनुकूल संकेत।":"A favorable indication for travel, movement and mobile activities.",
-    "स्थायी और दीर्घकालिक कार्यों के लिये अनुकूल संकेत।":"A favorable indication for stable and long-term activities.",
-    "वृद्धि, विस्तार और उन्नति-सम्बन्धी कार्यों के लिये अनुकूल संकेत।":"A favorable indication for growth, expansion and advancement.",
-    "मैत्री, समझौता, सम्पर्क और सहयोग के लिये अनुकूल।":"Favorable for friendship, agreement, contact and cooperation.",
-    "सामान्य मङ्गल और शुभकार्य के लिये अत्यन्त अनुकूल नामफल।":"The name-indication is highly favorable for general auspicious activities.",
-    "नामफलानुसार अनुकूल; अन्य पञ्चाङ्ग-दोषों के साथ संयुक्त विचार करें।":"Favorable by its name-indication; assess together with other Pañcāṅga defects.",
-    "दोषप्रधान नामफल; नीचे दिये वर्ज्यांश में शुभारम्भ न करें।":"The name-indication is predominantly adverse; do not begin auspicious work during the prohibited portion shown below.",
-    "मिश्र/कार्यविशेष संकेत; अन्य अङ्गों के साथ विचार अपेक्षित।":"Mixed or activity-specific indication; consider it together with the other factors.",
-
-    "सामान्य शुभारम्भ और कार्यसिद्धि हेतु अनुकूल वार–तिथि संयोग।":"A favorable Vāra–Tithi combination for general auspicious beginnings and successful completion.",
-    "माङ्गलिक आरम्भ और सामान्य शुभकार्य टालना श्रेयस्कर।":"It is preferable to avoid auspicious beginnings and ordinary auspicious activities.",
-    "शुभकार्य तथा महत्त्वपूर्ण यात्रा/आरम्भ में त्याग श्रेयस्कर।":"It is preferable to avoid this for auspicious work and important travel or beginnings.",
-    "माङ्गलिक और स्थायी आरम्भ में त्याग/सावधानी श्रेयस्कर।":"Avoidance or caution is preferable for auspicious and lasting beginnings.",
-    "शुभारम्भ और यात्रा में त्याग श्रेयस्कर।":"It is preferable to avoid this for auspicious beginnings and travel.",
-    "सामान्य शुभकार्य में दोषशमनकारी अनुकूल संयोग; कार्यविशेष के अन्य अङ्ग भी देखें।":"A favorable combination that can mitigate defects in general auspicious work; also examine the other factors relevant to the specific activity.",
-    "आरम्भ किये कार्य की पुनरावृत्ति का संकेत; इच्छित वृद्धि वाले शुभ कार्यों में उपयोगी, अप्रिय/हानिकर कार्य न करें।":"Indicates repetition of an initiated activity; useful for auspicious work where desired growth is intended. Do not undertake unpleasant or harmful actions.",
-    "कार्यफल की पुनरावृत्ति/वृद्धि का प्रबल संकेत; शुभ वृद्धि वाले कार्य चुनें, हानिकर कार्य टालें।":"A strong indication of repetition or increase of the result; choose activities where auspicious growth is desired and avoid harmful acts.",
-    "नित्ययोग का शास्त्रोक्त दोषांश; इस अंश में माङ्गलिक/शुभारम्भ टालें।":"The śāstrically prescribed adverse portion of the Nitya-yoga; avoid auspicious beginnings during this segment.",
-    "सामान्य माङ्गलिक आरम्भ, विवाहादि सौम्य शुभकार्य और महत्त्वपूर्ण यात्रा में त्याग श्रेयस्कर; क्रूर/दमनात्मक कार्यों के पृथक् विधान हैं।":"It is preferable to avoid this for general auspicious beginnings, gentle rites such as marriage, and important travel; forceful or coercive activities have separate rules.",
-    "विशेषतः दक्षिण-यात्रा, शय्या-निर्माण/बिछाना, गृहच्छादन/गृहसम्बन्धी आरम्भ, तृण-काष्ठ-संग्रह और मृतकर्म में वर्जन का विचार।":"Particular restriction is considered for southward travel, making or laying a bed, roofing or house-related beginnings, collecting grass or wood, and funerary rites.",
-
-    "चन्द्रवास सम्बन्ध स्पष्ट नहीं।":"The Candra-vāsa relation is not determined.",
-    "सम्मुख चन्द्र — धनलाभकारक, यात्रा के लिये अनुकूल।":"Moon in front — conducive to financial gain and favorable for travel.",
-    "दाहिने चन्द्र — सुख-सम्पत्ति कारक, यात्रा के लिये अनुकूल।":"Moon on the right — conducive to comfort and prosperity and favorable for travel.",
-    "पृष्ठ चन्द्र — शोक/क्लेशकारक; यात्रा में प्रतिकूल।":"Moon behind — associated with sorrow or difficulty; unfavorable for travel.",
-    "वाम चन्द्र — धनहानिकारक; यात्रा में प्रतिकूल।":"Moon on the left — associated with financial loss; unfavorable for travel.",
-
-    "जन्म नक्षत्र चुनने पर चयनित दिन के नक्षत्रों से ताराबल तथा शुभ/अशुभ समय का विचार भी दिखाया जाएगा।":"After you choose the birth Nakṣatra, Tārābala and favorable/unfavorable times will also be shown from the selected day's Nakṣatras.",
-    "यात्रा के लिये अनुकूल समय":"Favorable time for travel",
-    "शुभ कार्य के लिये अनुकूल समय":"Favorable time for auspicious activity",
-    "अत्यावश्यक यात्रा के लिये विचारणीय समय (दिशाशूल विद्यमान)":"Time that may be considered for essential travel (Diśāśūla is present)",
-    "स्पष्ट अनुकूल समय नहीं मिला":"No clearly favorable time was found",
-    "यह समय-चयन केवल ताराबल + इस निर्णय-पट्ट में निकले त्याज्यकालों पर आधारित है। ध्यान देने योग्य है कि पूर्ण मुहूर्त्त के लिये चन्द्रबल, लग्न, ग्रहबल, कार्यविशेष-संस्कार, यात्रादिशा के अन्य नियम आदि का पृथक् विचार अतिआवश्यक है, अतः विशेषज्ञ का परामर्श लेकर ही अन्तिम निर्णय लेना श्रेयस्कर है।":"This time selection is based only on Tārābala and the avoidable periods identified in this assessment panel. A complete Muhūrta requires separate consideration of Candra-bala, Lagna, planetary strength, activity-specific saṃskāras, other rules governing the direction of travel, and related factors. The final decision should therefore be made after consulting an appropriate expert.",
-
-    "रविवार":"Sunday","सोमवार":"Monday","मंगलवार":"Tuesday","मङ्गलवार":"Tuesday","बुधवार":"Wednesday","गुरुवार":"Thursday","बृहस्पतिवार":"Thursday","शुक्रवार":"Friday","शनिवार":"Saturday",
-    "प्रातः":"morning","पूर्वाह्न":"forenoon","मध्याह्न":"midday","अपराह्न":"afternoon","सायं":"evening","प्रदोष":"Pradoṣa","रात्रि":"night","रात्रिशेष":"late night","सूर्योदयपर्यन्त":"until sunrise",
-    "स्वभाव-अनिर्णीत":"nature undetermined",
-    "ध्रुव/स्थिर":"Dhruva / fixed","चर":"movable","उग्र":"fierce","मिश्र":"mixed","क्षिप्र":"swift","मृदु":"gentle","तीक्ष्ण":"sharp",
-    "सम्मुख":"in front","दाहिने":"on the right","पृष्ठ":"behind","वाम":"on the left","अनिर्णीत":"undetermined",
-    "जन्म":"Janma","सम्पत्":"Sampat","विपत्":"Vipat","क्षेम":"Kṣema","प्रत्यरि":"Pratyari","साधक":"Sādhaka","निधन/वध":"Nidhana / Vadha","मित्र":"Mitra","परममित्र":"Parama-mitra",
-
-    "सिद्धतिथि योग":"Siddha-tithi Yoga","दग्धतिथि":"Dagdha-tithi","विषतिथि":"Viṣa-tithi","हुताशनतिथि":"Hutāśana-tithi","सर्वार्थसिद्धि योग":"Sarvārthasiddhi Yoga","यमघण्ट-नक्षत्रयोग":"Yamaghanta–Nakṣatra Yoga","रवियोग":"Ravi Yoga","द्विपुष्कर योग":"Dvi-puṣkara Yoga","त्रिपुष्कर योग":"Tri-puṣkara Yoga","भद्रा (विष्टि करण)":"Bhadrā (Viṣṭi Karaṇa)","पञ्चक":"Pañcaka","आनन्दादि":"Ānandādi",
-    "कुलिक":"Kulika","कालवेला":"Kālavela","यमघण्ट":"Yamaghanta","कण्टक":"Kaṇṭaka","अर्धयाम":"Ardhayāma","अभिजित्":"Abhijit",
-    "त्याग":"Avoid","सम्पूर्ण":"entire","पूर्वार्ध":"first half","सम्पूर्ण योग":"entire Yoga"
-  }));
-
-  const replacements=[
-    ["दिशाशूल विद्यमान है, किन्तु चन्द्रवास ","Diśāśūla is present, but Candra-vāsa is "],
-    [" होकर अनुकूल है। अत्यावश्यक यात्रा परिहार सहित विचारणीय; दिशाशूल को स्वतः भंग नहीं माना गया।"," and favorable. Essential travel may be considered with the prescribed remedy; Diśāśūla is not treated as automatically cancelled."],
-    ["दिशाशूल और चन्द्रवास दोनों प्रतिकूल हैं; इस अंश में यात्रा स्थगित करना अधिक श्रेयस्कर।","Both Diśāśūla and Candra-vāsa are unfavorable; postponing travel during this segment is preferable."],
-    ["दिशाशूल नहीं; चन्द्रवास ","There is no Diśāśūla; Candra-vāsa is "],
-    [" होकर अनुकूल है।"," and favorable."],
-    ["दिशाशूल नहीं, पर चन्द्रवास ","There is no Diśāśūla, but Candra-vāsa is "],
-    [" होकर प्रतिकूल है; अनुकूल चन्द्रवास की प्रतीक्षा श्रेयस्कर।"," and unfavorable; waiting for a favorable Candra-vāsa is preferable."],
-    ["बुधवार होने से यात्रा-परिहार के लिये इसका प्रयोग नहीं दिखाया गया है।","Because it is Wednesday, this is not shown for use as a travel remedy."],
-    ["दक्षिण-यात्रा हेतु इसका प्रयोग नहीं दिखाया गया है।","This is not shown for use for southward travel."],
-    ["इस समय चन्द्रवास भी अनुकूल अंश में है।","Candra-vāsa is also favorable during this interval."],
-    ["चन्द्रवास की अनुकूलता पृथक् जाँचें।","Check Candra-vāsa favorability separately."],
-    ["शुभारम्भ/यात्रा में ","For auspicious beginnings/travel, avoid for "],
-    [" त्याग।","."],
-    ["सम्पूर्ण सक्रिय अंश — ","Entire active segment — "],
-    ["सम्पूर्ण विष्टि-अंश — ","Entire Viṣṭi segment — "],
-    ["इन निर्दिष्ट कार्यों में सक्रिय पञ्चक-अंश का त्याग","Avoid the active Pañcaka segment for these specified activities"],
-    ["इस दिन त्याग ","Avoid on this day for "],
-    ["प्रथम ","First "],
-    [" घटिका"," ghaṭikā"],
-    ["योग-वर्ज्यांश","Yoga prohibited segment"],
-    ["आनन्दादि — ","Ānandādi — "],
-    [" नक्षत्र में सामान्य शुभकार्य, आरम्भ और सिद्धि-साध्य कार्यों हेतु अनुकूल संयोग।"," Nakṣatra gives a favorable combination for general auspicious work, beginnings and accomplishment-oriented activities."],
-    ["दिशाशूल:","Diśāśūla:"],
-    [" दिशा। यात्रा-दिशा चुनने पर दिशाशूल और चन्द्रवास का संयुक्त विचार नीचे वैयक्तिक भाग में अलग से दिखाया जाएगा।"," direction. After choosing the direction of travel, the combined consideration of Diśāśūla and Candra-vāsa will be shown separately in the personalized section below."],
-    ["चन्द्रवास:","Candra-vāsa:"],
-    ["यात्रागत विचार में सम्मुख अथवा दाहिने चन्द्र को अनुकूल तथा वाम अथवा पृष्ठ चन्द्र को प्रतिकूल माना गया है।","For travel, the Moon in front or on the right is treated as favorable, while the Moon on the left or behind is treated as unfavorable."],
-    ["आज का नक्षत्र-स्वभाव:","Today's Nakṣatra nature:"],
-    ["जन्म नक्षत्र ","Birth Nakṣatra "],
-    [" के लिये इस दिन "," — on this day, "],
-    [" अनुकूल नक्षत्र-अंश"," favorable Nakṣatra segment(s)"],
-    ["कोई स्पष्ट अनुकूल नक्षत्र-अंश नहीं","no clearly favorable Nakṣatra segment"],
-    [" तथा "," and "],
-    [" मध्यम अंश"," moderate segment(s)"],
-    [" मिला।"," were found."],
-    ["यात्रा-दिशा:","Direction of travel:"],
-    [" — इस दिशा में आज "," — today this direction has "],
-    [" है; नीचे चन्द्रवास सहित संयुक्त निर्णय देखें।","; see the combined assessment with Candra-vāsa below."],
-    ["अत्यावश्यक दशा:","If travel is essential:"],
-    ["तारा","Tārā"],
-    ["घं","h"],["मि","min"]
-  ].sort((a,b)=>b[0].length-a[0].length);
-
-  const nativeCodes=new Set(["hi"]);
-
-  function currentLang(){
-    return (typeof currentPanchangaLanguage!=="undefined" ? currentPanchangaLanguage : "hi") || "hi";
-  }
-
-  function latinDigits(s){
-    try{return typeof panchangaNormalizeDigits==="function"?panchangaNormalizeDigits(s):String(s)}catch(_){return String(s)}
-  }
-
-  function iast(s){
-    let out=String(s??"");
-    try{
-      if(window.Sanscript && typeof window.Sanscript.t==="function"){
-        out=window.Sanscript.t(out,"devanagari","iast");
-      }
-    }catch(_){ /* phrase replacements below still prevent Hindi prose leakage */ }
-    return out;
-  }
-
-  function englishize(input){
-    let s=latinDigits(String(input??""));
-    const trimmed=s.trim();
-    if(exact.has(trimmed)){
-      const value=exact.get(trimmed);
-      return s.replace(trimmed,value);
-    }
-    for(const [a,b] of replacements) s=s.split(a).join(b);
-    // Anything still in Devanagari here should be a proper/technical name;
-    // transliterate it rather than leaving Hindi script inside English display.
-    if(/[\u0900-\u097F]/.test(s)) s=iast(s);
-    return latinDigits(s);
-  }
-
-  function rememberTree(root){
-    const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
-    let n;
-    while((n=walker.nextNode())) if(!SOURCE.has(n)) SOURCE.set(n,n.nodeValue||"");
-  }
-
-  function translateTree(root){
-    const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
-    let n;
-    while((n=walker.nextNode())){
-      if(!SOURCE.has(n)) SOURCE.set(n,n.nodeValue||"");
-      const src=SOURCE.get(n) || "";
-      n.nodeValue=englishize(src);
-    }
-  }
-
-  function restoreTree(root){
-    const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
-    let n;
-    while((n=walker.nextNode())) if(SOURCE.has(n)) n.nodeValue=SOURCE.get(n);
-  }
-
-  function apply(){
-    const lang=currentLang();
-    if(lang==="hi"){
-      restoreTree(panel);
-      panel.querySelectorAll("[data-yd-translation-note]").forEach(n=>n.remove());
-      return;
-    }
-    translateTree(panel);
-    // For languages whose native prose pack is not yet separately verified,
-    // use one coherent English fallback instead of mixed Hindi/transliteration.
-    if(lang!=="en"){
-      let note=panel.querySelector("[data-yd-translation-note]");
-      if(!note){
-        note=document.createElement("div");
-        note.dataset.ydTranslationNote="1";
-        note.className="yd-context";
-        note.style.marginBottom="10px";
-        panel.querySelector(".yd-head")?.insertAdjacentElement("afterend",note);
-      }
-      note.textContent="This new Yoga–Muhūrta section is temporarily shown in English while its native-language prose is being verified.";
-    }else{
-      panel.querySelectorAll("[data-yd-translation-note]").forEach(n=>n.remove());
-    }
-  }
-
-  // Capture the original Hindi static source before any language switch.
-  rememberTree(panel);
-
-  const originalRender=window.renderDailyYogaDecision;
-  if(typeof originalRender==="function"){
-    window.renderDailyYogaDecision=function(...args){
-      const result=originalRender.apply(this,args);
-      rememberTree(panel);
-      apply();
-      return result;
-    };
-  }
-
-  ["ydBirthNak","ydPurpose","ydDirection"].forEach(id=>{
-    document.getElementById(id)?.addEventListener("change",()=>setTimeout(()=>{rememberTree(panel);apply();},0));
-  });
-  document.getElementById("panchangaLanguage")?.addEventListener("change",()=>{
-    setTimeout(()=>{
-      if(typeof window.renderDailyYogaDecision==="function") window.renderDailyYogaDecision();
-      else apply();
-    },0);
-  });
-
-  // Dynamic Tara/travel blocks are recreated by the engine. Re-apply after mutations,
-  // but never recursively chase our own text changes.
-  let scheduled=false;
-  new MutationObserver(()=>{
-    if(scheduled) return;
-    scheduled=true;
-    queueMicrotask(()=>{
-      scheduled=false;
-      rememberTree(panel);
-      apply();
-    });
-  }).observe(panel,{childList:true,subtree:true});
-
-  setTimeout(()=>{rememberTree(panel);apply();},350);
+  const $=id=>document.getElementById(id);
+  const DEV_MAP={"0":"०","1":"१","2":"२","3":"३","4":"४","5":"५","6":"६","7":"७","8":"८","9":"९"};
+  const dev=s=>String(s??"").replace(/[0-9]/g,d=>DEV_MAP[d]||d);
+  const aliases=[
+    {name:"मङ्गल",rx:/(?:mars|mangal|mangala|maṅgal|मंगल|मङ्गल)/i},
+    {name:"बुध",rx:/(?:mercury|budha|budh|बुध)/i},
+    {name:"बृहस्पति",rx:/(?:jupiter|guru|brihaspati|bṛhaspati|गुरु|बृहस्पति)/i},
+    {name:"शुक्र",rx:/(?:venus|shukra|sukra|śukra|शुक्र)/i},
+    {name:"शनि",rx:/(?:saturn|shani|sani|śani|शनि)/i}
+  ];
+  function normalizeWords(t){return String(t||"").replace(/[–—]/g,"-").replace(/\s+/g," ").trim()}
+  function eventWord(t){if(/(?:rise|rises|rising|udaya|उदय)/i.test(t))return"उदय";if(/(?:set|sets|setting|asta|अस्त)/i.test(t))return"अस्त";return""}
+  function directionWord(t){if(/(?:\beast\b|eastern|पूर्व)/i.test(t)||/(?:^|[\s,;()])E(?:$|[\s,;()])/i.test(t))return"पूर्व";if(/(?:\bwest\b|western|पश्चिम)/i.test(t)||/(?:^|[\s,;()])W(?:$|[\s,;()])/i.test(t))return"पश्चिम";return""}
+  function planetEvents(raw){const text=normalizeWords(raw),out=[];for(const p of aliases){let m=p.rx.exec(text);if(!m)continue;const pos=m.index,window=text.slice(Math.max(0,pos-28),Math.min(text.length,pos+m[0].length+55));const ev=eventWord(window),dir=directionWord(window);if(ev&&dir)out.push({name:p.name,text:`${ev} ${dir} में`});else if(ev)out.push({name:p.name,text:ev})}return out}
+  function findMoonTime(raw,which){const text=normalizeWords(raw),moon=/(?:moon|chandra|candra|चन्द्र|चंद्र)/i,evt=which==="rise"?/(?:moon\s*rise|moonrise|chandra\s*udaya|chandrodaya|चन्द्रोदय|चंद्रोदय)/i:/(?:moon\s*set|moonset|chandra\s*asta|chandrasta|चन्द्रास्त|चंद्रास्त)/i;let m=evt.exec(text);if(!m){const mm=moon.exec(text);if(!mm)return"";const w=text.slice(Math.max(0,mm.index-25),Math.min(text.length,mm.index+90));const e=which==="rise"?/(?:rise|udaya|उदय)/i:/(?:set|asta|अस्त)/i;if(!e.test(w))return"";m={index:mm.index,0:mm[0]}}const w=text.slice(m.index,Math.min(text.length,m.index+90));const tm=w.match(/(?:\b|^)(\d{1,2})[:.]([0-5]\d)(?::([0-5]\d))?/);return tm?dev(`${tm[1].padStart(2,"0")}:${tm[2]}${tm[3]?":"+tm[3]:""}`):""}
+  function renderSourceUdayasta(){const box=$("odayikaUdayasta"),grid=$("odayikaUdayastaGrid");if(!box||!grid||typeof workbookData==="undefined"||!workbookData)return;const picker=$("datePicker"),gb=picker&&typeof pickerToGB==="function"?pickerToGB(picker.value):"",hit=gb&&typeof workbookRowByGBDate==="function"?workbookRowByGBDate(gb):null;if(!hit){box.hidden=true;grid.innerHTML="";return}const raw=String(hit.row?.[29]??"").trim(),items=[];for(const x of planetEvents(raw))items.push(`<span class="odayika-event-chip"><strong>${x.name}</strong> — ${x.text}</span>`);const mr=findMoonTime(raw,"rise"),ms=findMoonTime(raw,"set");if(mr||ms){let t=[];if(mr)t.push(`चन्द्रोदय ${mr}`);if(ms)t.push(`चन्द्रास्त ${ms}`);items.push(`<span class="odayika-event-chip"><strong>चन्द्र</strong> — ${t.join(" · ")}</span>`)}grid.innerHTML=items.join("");box.hidden=!items.length}
+  window.renderOdayikaSourceUdayasta=renderSourceUdayasta;
+  function bind(){["fileLink","datePicker","countryLink","indiaModeButton","foreignModeButton"].forEach(id=>{const el=$(id);if(!el)return;el.addEventListener("change",()=>setTimeout(renderSourceUdayasta,320));el.addEventListener("click",()=>setTimeout(renderSourceUdayasta,380))});setTimeout(renderSourceUdayasta,650);setTimeout(renderSourceUdayasta,1400)}
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",bind);else bind();
 })();
 </script>
-
 
 <script
   src="/visitor-tracker.js"
@@ -14659,6 +14507,26 @@ if(document.readyState === "loading"){
   else bind();
 })();
 </script>
+
+
+<!-- 2026-09-20 PENDING NEW LOCATIONS — intentionally NOT active until Builder PASS and verified Excel upload.
+Canonical planned metadata (standard-time source basis):
+Auckland2026.xlsx       | Pacific/Auckland     | UTC+12:00 | DST yes
+Kathmandu2026.xlsx      | Asia/Kathmandu       | UTC+05:45 | no DST
+Singapore2026.xlsx      | Asia/Singapore       | UTC+08:00 | no DST
+Dubai2026.xlsx          | Asia/Dubai           | UTC+04:00 | no DST
+Kiritimati2026.xlsx     | Pacific/Kiritimati   | UTC+14:00 | no DST
+Sydney2026.xlsx         | Australia/Sydney     | UTC+10:00 | DST yes
+Durban2026.xlsx         | Africa/Johannesburg  | UTC+02:00 | no DST
+Melbourne2026.xlsx      | Australia/Melbourne  | UTC+10:00 | DST yes
+Tokyo2026.xlsx          | Asia/Tokyo           | UTC+09:00 | no DST
+Gent_Belgium2026.xlsx   | Europe/Brussels      | UTC+01:00 | DST yes
+NewYork2026.xlsx        | America/New_York     | UTC-05:00 | DST yes
+Chicago2026.xlsx        | America/Chicago      | UTC-06:00 | DST yes
+Honolulu2026.xlsx       | Pacific/Honolulu     | UTC-10:00 | no DST
+PagoPago2026.xlsx       | Pacific/Pago_Pago    | UTC-11:00 | no DST
+KualaLumpur2026.xlsx    | Asia/Kuala_Lumpur    | UTC+08:00 | no DST
+--->
 
 </body>
 </html>
