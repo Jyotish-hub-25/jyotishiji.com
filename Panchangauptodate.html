@@ -9,7 +9,7 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta content="श्रीसूर्यसिद्धान्तीय स्थानीय दैनिक पञ्चाङ्ग तथा भारतीय काल गणना के आधार।" name="description"/>
 <title>श्रीसूर्यसिद्धान्तीय स्थानीय पञ्चाङ्ग एवं भारतीय काल गणना</title>
-<meta name="panchanga-build" content="2026-09-20-reviewed-v4-75-locations-ab-manitoba-kalahora"/>
+<meta name="panchanga-build" content="2026-09-20-reviewed-v5-75-locations-sequential-ui-graha-chandra-kalahora"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
@@ -4166,7 +4166,7 @@ body.smart-select-lock{overflow:hidden}
       <div class="odayika-spashta" aria-label="औदयिक ग्रहस्पष्ट">
       <div class="odayika-sp-box-title">तात्कालिक ग्रहस्पष्ट</div>
       <div id="odayikaSpashta"></div>
-      <p class="odayika-legend odayika-legend-inside">व० = वक्री · अ० = अस्तग्रह/मौढ्य</p>
+      <p class="odayika-legend odayika-legend-inside">व० = वक्री · अ० = अस्तग्रह</p>
     </div>
     </div>
 
@@ -4421,14 +4421,14 @@ body.smart-select-lock{overflow:hidden}
   </div>
   <div class="yd-context" id="ydContext">चयनित पञ्चाङ्ग के अनुसार गणना की जा रही है…</div>
 
-  <div class="yd-section" id="ydGoodSection" hidden>
-    <div class="yd-section-title">अनुकूल योग <span class="yd-count" id="ydGoodCount"></span></div>
-    <div class="yd-list" id="ydGoodList"></div>
-  </div>
-
   <div class="yd-section" id="ydBadSection" hidden>
     <div class="yd-section-title">त्याज्य / सावधानी <span class="yd-count" id="ydBadCount"></span></div>
     <div class="yd-list" id="ydBadList"></div>
+  </div>
+
+  <div class="yd-section" id="ydGoodSection" hidden>
+    <div class="yd-section-title">अनुकूल योग <span class="yd-count" id="ydGoodCount"></span></div>
+    <div class="yd-list" id="ydGoodList"></div>
   </div>
 
   <div class="yd-section">
@@ -10700,6 +10700,61 @@ function internalMoonriseForGB(gb){
   return internalMoonriseForDate(hit.index, hit.row, gb);
 }
 
+/*
+  चन्द्रास्त — उसी स्वीकृत सौरपक्षीय लग्न-साम्य पद्धति का पश्चिमक्षितिज रूप।
+  चन्द्र उदय में L(t)=Moon(t); अस्त में सप्तम-बिन्दु Moon पर होने से
+  L(t)=Moon(t)+180° लिया जाता है। कोई atmospheric refraction/दृग-प्रभाव
+  यहाँ पृथक् नहीं जोड़ा जाता; यही वही central-rise framework है जो
+  संकष्टचतुर्थी के चन्द्रोदय-निर्णय में पहले से चल रहा है।
+*/
+function internalMoonsetForDate(rowIndex,row,selectedDate){
+  const nextRow = workbookData?.[rowIndex + 1];
+  if(!row || !nextRow) return null;
+
+  const sun0 = odayikaParseRashiSpashta(row[12]);
+  const sun1 = odayikaParseRashiSpashta(nextRow[12]);
+  const moon0 = odayikaParseRashiSpashta(row[14]);
+  const moon1 = odayikaParseRashiSpashta(nextRow[14]);
+  const sunrise0 = muhurtaTimeToSeconds(row[10]);
+  const nextSunriseClock = muhurtaTimeToSeconds(nextRow[10]);
+
+  if(
+    !sun0 || !sun1 || !moon0 || !moon1 ||
+    !Number.isFinite(sun0.longitude) ||
+    !Number.isFinite(sun1.longitude) ||
+    !Number.isFinite(moon0.longitude) ||
+    !Number.isFinite(moon1.longitude) ||
+    sunrise0 === null || nextSunriseClock === null
+  ) return null;
+
+  const west0 = odayikaNormalize360(moon0.longitude + 180);
+  const west1 = odayikaNormalize360(moon1.longitude + 180);
+
+  const solved = grahaUdayaSolveLinear(
+    sun0.longitude,
+    sun1.longitude,
+    west0,
+    west1,
+    sunrise0,
+    nextSunriseClock + 86400
+  );
+  if(!solved) return null;
+
+  return {
+    absSeconds: solved.riseTotal,
+    absMinutes: gbToOrdinalMinutes(selectedDate, solved.riseTotal / 60),
+    timeText: grahaUdayaTargetDateTime(solved.riseTotal, selectedDate),
+    longitude: solved.lagnaLongitude,
+    method: "सौरपक्षीय सप्तम-बिन्दु-साम्य"
+  };
+}
+
+function internalMoonsetForGB(gb){
+  const hit = workbookRowByGBDate(gb);
+  if(!hit) return null;
+  return internalMoonsetForDate(hit.index, hit.row, gb);
+}
+
 
 
 function indianDate(gb){
@@ -13130,11 +13185,13 @@ const PANCHANGA_PLACE_ENGLISH_NAMES = {
   mallikarjuna:"Mallikarjuna", omkareshwar:"Omkareshwar", "bhimashankar-asam":"Bhimashankar–Assam",
   chennai:"Chennai", dwaraka:"Dwarka", jyoshimath:"Jyotirmath (Joshimath)",
   "kamrup-kamakhya":"Kamrup–Kamakhya", bengaluru:"Bengaluru", dumka:"Dumka",
-  nellore:"Nellore", patna:"Patna", ranchi:"Ranchi", shrimeru:"Shrimeru",
+  nellore:"Nellore", patna:"Patna", ranchi:"Ranchi", gaya:"Gaya", grishneshwar:"Grishneshwar",
+  gurugram:"Gurugram", tirupati:"Tirupati", tryambakeshwar:"Tryambakeshwar, Nashik",
+  shrimeru:"Shrimeru",
   fremont:"Fremont, California", "los-angeles":"Los Angeles, California",
   irvine:"Irvine, California", "san-diego":"San Diego, California",
   "artesia-ca":"Artesia, California", "san-jose-ca":"San Jose, California",
-  "concord-ca":"Concord, California", edmonton:"Edmonton, Alberta", calgary:"Calgary, Alberta",
+  "concord-ca":"Concord, California", "seattle-wa":"Seattle, Washington", edmonton:"Edmonton, Alberta", calgary:"Calgary, Alberta",
   "vancouver-bc":"Vancouver, British Columbia", toronto:"Toronto, Ontario",
   montreal:"Montreal, Quebec", winnipeg:"Winnipeg, Manitoba", london:"London", doha:"Doha",
   rome:"Rome, Lazio", "venice-veneto":"Venice, Veneto", verona:"Verona, Veneto",
@@ -13690,6 +13747,17 @@ setText("sunset",excelTimeDev(row[11],selectedDate) + " बजे");
 /* उसी स्थान एवं दिनाङ्क का औदयिक ग्रहस्पष्ट एवं ग्रहचक्र */
 renderOdayikaGrahaBox(rowIndex,row,selectedDate);
 
+/* AB-स्रोत का दिशासहित ग्रहोदय-अस्त तथा गणितीय चन्द्रोदय-चन्द्रास्त */
+const renderOdayikaRiseSetNow = ()=>{
+  if(typeof window.renderOdayikaSourceUdayastaForRow === "function"){
+    window.renderOdayikaSourceUdayastaForRow(rowIndex,row,selectedDate);
+    return true;
+  }
+  return false;
+};
+if(!renderOdayikaRiseSetNow()){
+  setTimeout(renderOdayikaRiseSetNow,0);
+}
 
 /* उसी स्थान एवं दिनाङ्क का काल-मुहूर्त्त-विभाजन */
 renderMuhurtaBox(rowIndex,row,selectedDate);
@@ -14392,49 +14460,85 @@ trigger.className="smart-select-trigger";
   const en={
     "दिशासहित ग्रहोदय–अस्त":"Directional planetary rise/set",
     "दिशासहित ग्रहोदय–अस्त · चन्द्रोदय–चन्द्रास्त":"Directional planetary rise/set · Moonrise–Moonset",
+    "चन्द्रोदय":"Moonrise",
+    "चन्द्रास्त":"Moonset",
     "कालहोरा":"Kālahorā",
     "ग्रहवार का कार्य उस ग्रह की होरा में किया जाए।":"A task prescribed for a planet's weekday may be performed in that planet's Horā.",
     "२४ कालहोरा देखें ▼":"View 24 Kālahorās ▼",
     "क्रम":"No.",
     "कालहोरा-स्वामी":"Kālahorā lord",
     "स्थानीय समय":"Local time",
-    "व० = वक्री · अ० = अस्तग्रह/मौढ्य":"V = Vakrī · A = Asta-graha/Mauḍhya"
+    "व० = वक्री · अ० = अस्तग्रह":"V = Vakrī · A = Asta-graha"
   };
   Object.assign(PANCHANGA_UI_TRANSLATIONS.en||(PANCHANGA_UI_TRANSLATIONS.en={}),en);
 })();
 </script>
 
-<style id="reviewed-compact-yoga-graha-20260920">
-/* 2026-09-20: vertical + horizontal space economy; गणना का अर्थ नहीं बदलता। */
+<style id="reviewed-compact-yoga-graha-20260920-v5">
+/* 2026-09-20 v5: समय पहले, स्थान-संयम, पठनीय कालहोरा। */
 .yd-item{display:flex!important;flex-wrap:wrap!important;align-items:baseline!important;gap:2px 8px!important;padding:7px 9px!important;line-height:1.42!important}
 .yd-item-head{display:contents!important}
 .yd-name{flex:0 1 auto}.yd-time{flex:0 0 auto;margin-left:auto}
 .yd-effect{flex:1 1 300px;margin:0!important;line-height:1.42!important}
 .yd-avoid{flex:0 1 auto;margin:0!important;line-height:1.42!important}
+
+/* त्याज्य / सावधानी में क्रम: काल -> कारण/योग -> फल/त्याज्यता */
+.yd-time-first-card .yd-time{order:1;margin-left:0!important;color:#6b2f20;font-weight:700}
+.yd-time-first-card .yd-name{order:2;flex:1 1 180px}
+.yd-time-first-card .yd-effect{order:3;flex-basis:100%}
+.yd-time-first-card .yd-avoid{order:4}
+
+/* बाण-पञ्चक को एक ही संक्षिप्त पंक्ति में रखें; निरर्थक card-height नहीं। */
+.yd-baan-card{display:flex!important;gap:4px 7px!important;padding:6px 9px!important}
+.yd-baan-card .yd-time{order:1;margin-left:0!important;color:#6b2f20;font-weight:700}
+.yd-baan-card .yd-name{order:2;flex:0 1 auto}
+.yd-baan-card .yd-effect{order:3;flex:0 1 auto!important;margin:0!important}
+.yd-baan-card .yd-avoid{order:4}
+
 .yd-compact-grid{grid-template-columns:repeat(auto-fit,minmax(255px,1fr))!important;gap:5px!important}
 .yd-compact{display:flex!important;flex-wrap:wrap;align-items:baseline;gap:2px 7px;padding:6px 8px!important;line-height:1.4!important}
+.yd-compact b.yd-compact-time{color:#6b2f20;white-space:nowrap}
 .yd-compact span{display:inline!important;margin:0!important;line-height:1.4!important}
-.yd-kalahora-rule{padding:6px 8px;background:rgba(255,255,255,.66);border:1px solid rgba(23,63,85,.12);border-radius:7px;line-height:1.45}
+
+.yd-kalahora-rule{padding:6px 8px;background:rgba(255,255,255,.66);border:1px solid rgba(23,63,85,.12);border-radius:7px;line-height:1.45;font-size:1rem}
 .yd-kalahora-details{margin-top:6px}
-.yd-kalahora-details summary{cursor:pointer;color:#0b5555;font-weight:700;font-size:.9rem}
-.yd-kalahora-table{margin-top:6px;border:1px solid rgba(23,63,85,.14);border-radius:7px;overflow:hidden;background:#fff}
-.yd-kh-row{display:grid;grid-template-columns:52px minmax(100px,.8fr) minmax(150px,1.2fr);gap:6px;align-items:center;padding:4px 8px;border-bottom:1px solid rgba(23,63,85,.09);font-size:.88rem;line-height:1.35}
-.yd-kh-row:last-child{border-bottom:0}.yd-kh-head{font-weight:700;background:#eef8f4;color:#173f55}
+.yd-kalahora-details summary{cursor:pointer;color:#0b5555;font-weight:700;font-size:1.03rem;line-height:1.5}
+.yd-kalahora-table{margin-top:7px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(8,auto);grid-auto-flow:column;gap:6px;background:transparent;border:0;overflow:visible}
+.yd-kh-card{display:grid;grid-template-columns:28px minmax(76px,.75fr) minmax(112px,1.25fr);gap:5px;align-items:center;padding:6px 7px;border:1px solid rgba(23,63,85,.14);border-radius:7px;background:#fff;font-size:1rem;line-height:1.35;min-width:0}
+.yd-kh-no{color:#173f55;font-weight:700}
+.yd-kh-lord{color:#173f55;min-width:0}
+.yd-kh-time{text-align:right;white-space:nowrap;font-weight:600}
+
 .odayika-legend-inside{white-space:normal!important}
 .odayika-udayasta{margin-top:8px;padding-top:8px;border-top:1px solid rgba(23,63,85,.16)}
-.odayika-udayasta-title{text-align:center;color:#173f55;font-weight:700;font-size:.95rem;line-height:1.35;margin-bottom:5px}
+.odayika-udayasta-title{text-align:center;color:#173f55;font-weight:700;font-size:.98rem;line-height:1.35;margin-bottom:5px}
 .odayika-udayasta-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:5px 8px}
-.odayika-event-chip{padding:4px 7px;border:1px solid rgba(23,63,85,.13);border-radius:7px;background:rgba(255,255,255,.62);font-size:.88rem;line-height:1.35;white-space:normal}
+.odayika-event-chip{padding:4px 7px;border:1px solid rgba(23,63,85,.13);border-radius:7px;background:rgba(255,255,255,.62);font-size:.92rem;line-height:1.35;white-space:normal}
 .odayika-event-chip strong{color:#173f55}
-@media(max-width:700px){
- .yd-item{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;gap:2px 6px!important}
- .yd-item-head{display:contents!important}.yd-effect,.yd-avoid{grid-column:1/-1!important}
- .yd-compact-grid{grid-template-columns:1fr!important}
- .yd-kh-row{grid-template-columns:42px minmax(85px,.8fr) minmax(128px,1.2fr);padding:4px 6px;font-size:.86rem}
- .odayika-udayasta-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px}
- .odayika-event-chip{font-size:.86rem;padding:4px 6px}
+.odayika-event-chip.odayika-moon-chip{flex:1 1 100%;text-align:center}
+
+@media(max-width:900px){
+ .yd-kalahora-table{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(12,auto);grid-auto-flow:column}
 }
-@media(max-width:420px){.odayika-udayasta-grid{grid-template-columns:1fr}.yd-kh-row{grid-template-columns:38px 86px minmax(0,1fr)}}
+@media(max-width:700px){
+ .yd-item{display:grid!important;grid-template-columns:auto minmax(0,1fr)!important;gap:2px 7px!important}
+ .yd-item-head{display:contents!important}
+ .yd-item:not(.yd-baan-card) .yd-effect,.yd-item:not(.yd-baan-card) .yd-avoid{grid-column:1/-1!important}
+ .yd-time-first-card .yd-time{grid-column:1;grid-row:1;white-space:nowrap}
+ .yd-time-first-card .yd-name{grid-column:2;grid-row:1}
+ .yd-baan-card{display:flex!important;flex-wrap:wrap!important}
+ .yd-baan-card .yd-effect{flex:0 1 auto!important}
+ .yd-compact-grid{grid-template-columns:1fr!important}
+ .odayika-udayasta-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+ .odayika-event-chip{font-size:.91rem;padding:4px 6px}
+ .odayika-event-chip.odayika-moon-chip{grid-column:1/-1}
+}
+@media(max-width:430px){
+ .yd-kalahora-table{grid-template-columns:1fr;grid-template-rows:repeat(24,auto);grid-auto-flow:row}
+ .yd-kh-card{font-size:1.02rem;grid-template-columns:30px minmax(86px,.8fr) minmax(120px,1.2fr)}
+ .odayika-udayasta-grid{grid-template-columns:1fr}
+ .odayika-event-chip.odayika-moon-chip{grid-column:auto}
+}
 </style>
 
 <script id="daily-yoga-decision-engine-20260919">
@@ -14579,7 +14683,14 @@ trigger.className="smart-select-trigger";
   function normalize180(x){let v=mod(x+180,360)-180;return v===-180?180:v}
   function selectedPlaceKey(){try{return (typeof selectedPlaceKeyFromSelector==='function'?selectedPlaceKeyFromSelector():'')||(typeof currentPlaceKey!=='undefined'?currentPlaceKey:'')||''}catch(_){return''}}
   function kalahoraRows(m){const key=selectedPlaceKey(),lon=kalahoraReferenceLongitude(key);if(!Number.isFinite(lon))return[];const deltaLon=normalize180(lon-UJJAIN_REFERENCE_LONGITUDE),deshantarSec=deltaLon*240,halfDay=(m.A-m.S)/2,corrected15=21600-deshantarSec,V=m.S+(halfDay-corrected15),lord=WDAY_LORD[m.w],start=HORA_PLANETS.indexOf(lord);if(start<0)return[];const out=[];for(let i=0;i<24;i++)out.push({n:i+1,planet:HORA_PLANETS[mod(start+i,7)],a:V+i*3600,b:V+(i+1)*3600});return out}
-  function renderKalahora(m){const sec=$("ydKalahoraSection"),box=$("ydKalahoraTable");if(!sec||!box)return;const rows=kalahoraRows(m);sec.hidden=!rows.length;if(!rows.length){box.innerHTML="";return}box.innerHTML=`<div class="yd-kh-row yd-kh-head"><span>क्रम</span><span>कालहोरा-स्वामी</span><span>स्थानीय समय</span></div>`+rows.map(h=>`<div class="yd-kh-row"><span>${dev(h.n)}</span><strong>${h.planet}</strong><span>${clockOnly(h.a,m.gb)}–${clockOnly(h.b,m.gb)}</span></div>`).join("")}
+  function renderKalahora(m){
+    const sec=$("ydKalahoraSection"),box=$("ydKalahoraTable");
+    if(!sec||!box)return;
+    const rows=kalahoraRows(m);
+    sec.hidden=!rows.length;
+    if(!rows.length){box.innerHTML="";return}
+    box.innerHTML=rows.map(h=>`<div class="yd-kh-card"><span class="yd-kh-no">${dev(h.n)}</span><strong class="yd-kh-lord">${h.planet}</strong><span class="yd-kh-time">${clockOnly(h.a,m.gb)}–${clockOnly(h.b,m.gb)}</span></div>`).join("");
+  }
 
 
   function yogaTransitions(rowIndex,baseGB){const out=[];const baseOrd=gbOrdinal(baseGB);for(let j=Math.max(1,rowIndex-4);j<=Math.min(workbookData.length-1,rowIndex+4);j++){const r=workbookData[j],gb=rowDate(r),ord=gbOrdinal(gb);if(!Number.isFinite(ord))continue;const off=(ord-baseOrd)*86400,rs=rawSec(r[10])+off;let cur=yogaIndex(r[5]);if(!Number.isFinite(rs)||!cur)continue;const e1=absEvent(r[6],rs,off,{allowSentinel:true});if(Number.isFinite(e1)){const n1=mod(cur,27)+1;out.push({t:e1,from:cur,to:n1});cur=n1;const e2=absEvent(r[27],e1,off,{allowSentinel:false});if(Number.isFinite(e2)){const n2=mod(cur,27)+1;out.push({t:e2,from:cur,to:n2})}}}out.sort((a,b)=>a.t-b.t);return out.filter((x,i,a)=>i===0||Math.abs(x.t-a[i-1].t)>2||x.from!==a[i-1].from||x.to!==a[i-1].to)}
@@ -14610,9 +14721,19 @@ trigger.className="smart-select-trigger";
     const target={kulika:6,kala:3,yama:4,kantaka:2};const D=A-S;const kalansh=tw=>{const count=mod(tw-w,7)+1,k=2*count,u=D/16;return{a:S+(k-1)*u,b:S+k*u}};const daily=[{name:"कुलिक",...kalansh(target.kulika)},{name:"कालवेला",...kalansh(target.kala)},{name:"यमघण्ट",...kalansh(target.yama)},{name:"कण्टक",...kalansh(target.kantaka)}];const W=w+1,ai=((3*W)%8)+1,h=D/8;daily.push({name:"अर्धयाम",a:S+(ai-1)*h,b:S+ai*h});for(const x of daily)avoid.push({a:x.a,b:x.b});
     const nature=nInts.map(x=>({a:x.a,b:x.b,i:x.i,name:natureFor(x.i)}));return{rowIndex,row,next,gb,S,A,E,w,tInts,nInts,yInts,good,bad,avoid,daily,panchak,nature,bhadra,an,baan,mg}}
 
-  function cardHtml(x,gb){return `<div class="yd-item ${x.kind}"><div class="yd-item-head"><span class="yd-name">${x.name}</span><span class="yd-time">${x.timeText||displayRange(x.a,x.b,gb)}</span></div><p class="yd-effect">${x.effect}</p>${x.avoid?`<div class="yd-avoid">${x.avoid}</div>`:""}</div>`}
-  function renderLists(m){const gs=$("ydGoodSection"),bs=$("ydBadSection");gs.hidden=!m.good.length;bs.hidden=!m.bad.length;if(m.good.length){$("ydGoodCount").textContent=dev(m.good.length);$("ydGoodList").innerHTML=m.good.sort((a,b)=>a.a-b.a).map(x=>cardHtml(x,m.gb)).join("")}if(m.bad.length){$("ydBadCount").textContent=dev(m.bad.length);$("ydBadList").innerHTML=m.bad.sort((a,b)=>a.a-b.a).map(x=>cardHtml(x,m.gb)).join("")}}
-  function renderDaily(m){$("ydDailyAvoid").innerHTML=m.daily.map(x=>`<div class="yd-compact"><b>${x.name}</b><span>${displayRange(x.a,x.b,m.gb,m)} · शुभारम्भ/यात्रा में त्याज्य</span></div>`).join("")}
+  function cardHtml(x,gb,timeFirst=false){
+    const time=x.timeText||displayRange(x.a,x.b,gb);
+    const isBaan=String(x.name||"").startsWith("बाण-पञ्चक");
+    if(isBaan){
+      return `<div class="yd-item ${x.kind} yd-item-inline yd-baan-card"><span class="yd-time">${time}</span><span class="yd-name">${x.name}</span>${x.effect?`<span class="yd-effect">· ${x.effect}</span>`:""}${x.avoid?`<span class="yd-avoid">· ${x.avoid}</span>`:""}</div>`;
+    }
+    const head=timeFirst
+      ? `<div class="yd-item-head yd-item-head-time-first"><span class="yd-time">${time}</span><span class="yd-name">${x.name}</span></div>`
+      : `<div class="yd-item-head"><span class="yd-name">${x.name}</span><span class="yd-time">${time}</span></div>`;
+    return `<div class="yd-item ${x.kind}${timeFirst?" yd-time-first-card":""}">${head}<p class="yd-effect">${x.effect}</p>${x.avoid?`<div class="yd-avoid">${x.avoid}</div>`:""}</div>`;
+  }
+  function renderLists(m){const gs=$("ydGoodSection"),bs=$("ydBadSection");gs.hidden=!m.good.length;bs.hidden=!m.bad.length;if(m.good.length){$("ydGoodCount").textContent=dev(m.good.length);$("ydGoodList").innerHTML=m.good.sort((a,b)=>a.a-b.a).map(x=>cardHtml(x,m.gb,false)).join("")}if(m.bad.length){$("ydBadCount").textContent=dev(m.bad.length);$("ydBadList").innerHTML=m.bad.sort((a,b)=>a.a-b.a).map(x=>cardHtml(x,m.gb,true)).join("")}}
+  function renderDaily(m){$("ydDailyAvoid").innerHTML=m.daily.map(x=>{const tm=displayRange(x.a,x.b,m.gb,m);return `<div class="yd-compact"><b class="yd-compact-time">${tm}</b><span>· ${x.name} — शुभारम्भ/यात्रा में त्याज्य</span></div>`}).join("")}
   function renderTravel(m){
     const d=typeof DIKSHOOL_MAP==="object"?(DIKSHOOL_MAP[m.row[2]]||"—"):"—";
     const moon=moonRashiIntervals(m).map(x=>`${RASHI_MAP?.[x.r]||""} — ${CHANDRAVAS_BY_RASHI[x.r]||"—"} ${timeRange(x.a,x.b,m.gb,m)}`).join("; ");
@@ -14718,16 +14839,10 @@ trigger.className="smart-select-trigger";
 </script>
 
 
-<script id="odayika-source-udayasta-20260920-v2">
+<script id="odayika-source-udayasta-20260920-v3">
 (()=>{
   "use strict";
   const $=id=>document.getElementById(id);
-  const DEV_MAP={"0":"०","1":"१","2":"२","3":"३","4":"४","5":"५","6":"६","7":"७","8":"८","9":"९"};
-  const dev=s=>String(s??"").replace(/[0-9]/g,d=>DEV_MAP[d]||d);
-
-  function normalizeWords(t){
-    return String(t||"").replace(/[–—]/g,"-").replace(/\s+/g," ").trim();
-  }
 
   function eventText(s){
     if(!s?.event) return "";
@@ -14735,19 +14850,13 @@ trigger.className="smart-select-trigger";
   }
 
   function nearestSourceState(rowIndex,key,step){
-    if(
-      typeof workbookData==="undefined" ||
-      !Array.isArray(workbookData)
-    ) return null;
-
+    if(typeof workbookData==="undefined" || !Array.isArray(workbookData)) return null;
     for(let n=1;n<=4;n++){
       const row=workbookData[rowIndex + step*n];
       if(!row) break;
-      const raw=String(row?.[29]??"");
-      const parsed=
-        typeof window.odayikaParseSourceGrahaStates==="function"
-          ? window.odayikaParseSourceGrahaStates(raw)
-          : {};
+      const parsed=typeof window.odayikaParseSourceGrahaStates==="function"
+        ? window.odayikaParseSourceGrahaStates(String(row?.[29]??""))
+        : {};
       const s=parsed?.[key];
       if(s?.event) return s;
     }
@@ -14758,7 +14867,6 @@ trigger.className="smart-select-trigger";
     if(!state?.transition) return "";
     const before=nearestSourceState(rowIndex,key,-1);
     const after=nearestSourceState(rowIndex,key,1);
-
     if(before?.event && after?.event){
       const a=eventText(before),b=eventText(after);
       return a===b ? b : `${a} → ${b}`;
@@ -14766,88 +14874,46 @@ trigger.className="smart-select-trigger";
     return eventText(after)||eventText(before)||"ग्रहोदयास्त-परिवर्तन";
   }
 
-  /*
-    AB source में Moonrise/Moonset भविष्य में Unicode/English रूप में जुड़ें तो
-    केवल तभी दिखाएँ। वर्तमान legacy ग्रह-स्थिति data में चन्द्र-समय नहीं गढ़ा जाता।
-  */
-  function findMoonTime(raw,which){
-    const text=normalizeWords(raw);
-    const moon=/(?:moon|chandra|candra|चन्द्र|चंद्र)/i;
-    const evt=which==="rise"
-      ?/(?:moon\s*rise|moonrise|chandra\s*udaya|chandrodaya|चन्द्रोदय|चंद्रोदय)/i
-      :/(?:moon\s*set|moonset|chandra\s*asta|chandrasta|चन्द्रास्त|चंद्रास्त)/i;
-
-    let m=evt.exec(text);
-    if(!m){
-      const mm=moon.exec(text);
-      if(!mm) return "";
-      const w=text.slice(Math.max(0,mm.index-25),Math.min(text.length,mm.index+100));
-      const e=which==="rise"?/(?:rise|udaya|उदय)/i:/(?:set|asta|अस्त)/i;
-      if(!e.test(w)) return "";
-      m={index:mm.index,0:mm[0]};
-    }
-
-    const w=text.slice(m.index,Math.min(text.length,m.index+110));
-    const tm=w.match(/(?:\b|^)(\d{1,2})[:.]([0-5]\d)(?::([0-5]\d))?/);
-    return tm
-      ? dev(`${tm[1].padStart(2,"0")}:${tm[2]}${tm[3]?":"+tm[3]:""}`)
-      : "";
-  }
-
-  function renderSourceUdayasta(){
+  function renderForRow(rowIndex,row,gb){
     const box=$("odayikaUdayasta");
     const grid=$("odayikaUdayastaGrid");
     const title=$("odayikaUdayastaTitle");
-
-    if(!box||!grid||typeof workbookData==="undefined"||!workbookData) return;
-
-    const picker=$("datePicker");
-    const gb=
-      picker&&typeof pickerToGB==="function"
-        ? pickerToGB(picker.value)
-        : "";
-    const hit=
-      gb&&typeof workbookRowByGBDate==="function"
-        ? workbookRowByGBDate(gb)
-        : null;
-
-    if(!hit){
-      box.hidden=true;
-      grid.innerHTML="";
+    if(!box||!grid||!row||!gb){
+      if(box) box.hidden=true;
+      if(grid) grid.innerHTML="";
       return;
     }
 
-    const raw=String(hit.row?.[29]??"").trim();
-    const parsed=
-      typeof window.odayikaParseSourceGrahaStates==="function"
-        ? window.odayikaParseSourceGrahaStates(raw)
-        : {};
+    const raw=String(row?.[29]??"").trim();
+    const parsed=typeof window.odayikaParseSourceGrahaStates==="function"
+      ? window.odayikaParseSourceGrahaStates(raw)
+      : {};
     const items=[];
-
-    const order =
-      (typeof ODAYIKA_SOURCE_ORDER!=="undefined")
-        ? ODAYIKA_SOURCE_ORDER
-        : ["mangal","budha","guru","shukra","shani"];
+    const order=(typeof ODAYIKA_SOURCE_ORDER!=="undefined")
+      ? ODAYIKA_SOURCE_ORDER
+      : ["mangal","budha","guru","shukra","shani"];
 
     for(const key of order){
       const s=parsed?.[key];
       if(!s) continue;
-      const t=eventText(s)||transitionText(hit.index,key,s);
+      const t=eventText(s)||transitionText(rowIndex,key,s);
       if(!t) continue;
-      items.push(
-        `<span class="odayika-event-chip"><strong>${s.name}</strong> — ${t}</span>`
-      );
+      items.push(`<span class="odayika-event-chip"><strong>${s.name}</strong> — ${t}</span>`);
     }
 
-    const mr=findMoonTime(raw,"rise");
-    const ms=findMoonTime(raw,"set");
-    if(mr||ms){
-      const t=[];
-      if(mr) t.push(`चन्द्रोदय ${mr}`);
-      if(ms) t.push(`चन्द्रास्त ${ms}`);
-      items.push(
-        `<span class="odayika-event-chip"><strong>चन्द्र</strong> — ${t.join(" · ")}</span>`
-      );
+    /* चन्द्रोदय वही पूर्व-स्वीकृत formula; चन्द्रास्त उसी का सप्तम-बिन्दु रूप। */
+    const mr=typeof internalMoonriseForDate==="function"
+      ? internalMoonriseForDate(rowIndex,row,gb)
+      : null;
+    const ms=typeof internalMoonsetForDate==="function"
+      ? internalMoonsetForDate(rowIndex,row,gb)
+      : null;
+
+    if(mr?.timeText || ms?.timeText){
+      const parts=[];
+      if(mr?.timeText) parts.push(`चन्द्रोदय ${mr.timeText}`);
+      if(ms?.timeText) parts.push(`चन्द्रास्त ${ms.timeText}`);
+      items.push(`<span class="odayika-event-chip odayika-moon-chip"><strong>चन्द्र</strong> — ${parts.join(" · ")}</span>`);
       if(title) title.textContent="दिशासहित ग्रहोदय–अस्त · चन्द्रोदय–चन्द्रास्त";
     }else if(title){
       title.textContent="दिशासहित ग्रहोदय–अस्त";
@@ -14857,26 +14923,26 @@ trigger.className="smart-select-trigger";
     box.hidden=!items.length;
   }
 
-  window.renderOdayikaSourceUdayasta=renderSourceUdayasta;
+  window.renderOdayikaSourceUdayastaForRow=renderForRow;
+
+  function renderSelected(){
+    const picker=$("datePicker");
+    const gb=picker&&typeof pickerToGB==="function"?pickerToGB(picker.value):"";
+    const hit=gb&&typeof workbookRowByGBDate==="function"?workbookRowByGBDate(gb):null;
+    if(hit) renderForRow(hit.index,hit.row,gb);
+  }
+  window.renderOdayikaSourceUdayasta=renderSelected;
 
   function bind(){
-    ["fileLink","datePicker","countryLink","indiaModeButton","foreignModeButton"]
-      .forEach(id=>{
-        const el=$(id);
-        if(!el) return;
-        el.addEventListener("change",()=>setTimeout(renderSourceUdayasta,320));
-        el.addEventListener("click",()=>setTimeout(renderSourceUdayasta,380));
-      });
-
-    setTimeout(renderSourceUdayasta,650);
-    setTimeout(renderSourceUdayasta,1400);
+    ["fileLink","datePicker","countryLink","indiaModeButton","foreignModeButton"].forEach(id=>{
+      const el=$(id); if(!el)return;
+      el.addEventListener("change",()=>setTimeout(renderSelected,180));
+      el.addEventListener("click",()=>setTimeout(renderSelected,220));
+    });
+    setTimeout(renderSelected,500);
+    setTimeout(renderSelected,1100);
   }
-
-  if(document.readyState==="loading"){
-    document.addEventListener("DOMContentLoaded",bind);
-  }else{
-    bind();
-  }
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",bind); else bind();
 })();
 </script>
 
