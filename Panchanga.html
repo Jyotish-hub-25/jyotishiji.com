@@ -9,7 +9,7 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta content="श्रीसूर्यसिद्धान्तीय स्थानीय दैनिक पञ्चाङ्ग तथा भारतीय काल गणना के आधार।" name="description"/>
 <title>श्रीसूर्यसिद्धान्तीय स्थानीय पञ्चाङ्ग एवं भारतीय काल गणना</title>
-<meta name="panchanga-build" content="odayika-v24-maas-dualverify-localboundary-20260918"/>
+<meta name="panchanga-build" content="2026-09-21-live-merge-75-ghent-odayika"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
@@ -2420,6 +2420,119 @@ body{display:flex;flex-direction:column;min-height:100vh}
 }
 </style>
 
+
+<style id="odayika-rise-set-merged-20260921">
+.odayika-udayasta{
+  margin-top:8px;
+  padding-top:8px;
+  border-top:1px solid rgba(23,63,85,.16);
+}
+.odayika-udayasta-title{
+  text-align:center;
+  color:#173f55;
+  font-weight:700;
+  font-size:1rem;
+  line-height:1.35;
+  margin-bottom:6px;
+}
+.odayika-event-chip{
+  border:1px solid rgba(23,63,85,.13);
+  border-radius:7px;
+  background:rgba(255,255,255,.62);
+}
+.odayika-event-chip strong{color:#173f55}
+
+/*
+  निश्चित दो पंक्तियाँ:
+  Row 1 = चन्द्रमा (8/12) + बृहस्पति (4/12)
+  Row 2 = मङ्गल + बुध + शुक्र + शनि (3/12 each)
+*/
+#odayikaUdayastaGrid{
+  display:grid !important;
+  grid-template-columns:repeat(12,minmax(0,1fr)) !important;
+  grid-template-rows:auto auto !important;
+  grid-auto-flow:row !important;
+  align-items:center !important;
+  gap:5px 6px !important;
+}
+
+#odayikaUdayastaGrid .odayika-event-chip{
+  min-width:0 !important;
+  min-height:0 !important;
+  height:auto !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  padding:5px 6px !important;
+  margin:0 !important;
+  white-space:normal !important;
+  word-break:normal !important;
+  overflow-wrap:normal !important;
+  overflow:visible !important;
+  line-height:1.28 !important;
+  font-size:.91rem !important;
+  text-align:center !important;
+}
+
+#odayikaUdayastaGrid .odayika-event-chip strong{
+  flex:0 0 auto !important;
+  white-space:nowrap !important;
+}
+
+/* First row: चन्द्रमा + बृहस्पति */
+#odayikaUdayastaGrid .odayika-event-chip.odayika-moon-chip{
+  grid-column:1 / span 8 !important;
+  grid-row:1 !important;
+  justify-content:flex-start !important;
+  padding-left:9px !important;
+}
+#odayikaUdayastaGrid .odayika-event-chip.odayika-guru-chip{
+  grid-column:9 / span 4 !important;
+  grid-row:1 !important;
+}
+
+/* Second row: मङ्गल + बुध + शुक्र + शनि */
+#odayikaUdayastaGrid .odayika-event-chip.odayika-mangal-chip{
+  grid-column:1 / span 3 !important;
+  grid-row:2 !important;
+}
+#odayikaUdayastaGrid .odayika-event-chip.odayika-budha-chip{
+  grid-column:4 / span 3 !important;
+  grid-row:2 !important;
+}
+#odayikaUdayastaGrid .odayika-event-chip.odayika-shukra-chip{
+  grid-column:7 / span 3 !important;
+  grid-row:2 !important;
+}
+#odayikaUdayastaGrid .odayika-event-chip.odayika-shani-chip{
+  grid-column:10 / span 3 !important;
+  grid-row:2 !important;
+}
+
+/* Available space is sufficient; keep legend readable. */
+.odayika-legend-inside{
+  font-size:clamp(.78rem,1.08vw,.92rem) !important;
+  line-height:1.28 !important;
+  font-weight:650 !important;
+}
+
+/* Mobile: same two-row structure, only slightly smaller typography. */
+@media(max-width:560px){
+  #odayikaUdayastaGrid{
+    gap:4px !important;
+  }
+  #odayikaUdayastaGrid .odayika-event-chip{
+    padding:4px 3px !important;
+    font-size:.76rem !important;
+    line-height:1.22 !important;
+  }
+  #odayikaUdayastaGrid .odayika-event-chip.odayika-moon-chip{
+    padding-left:5px !important;
+  }
+}
+
+</style>
+
 </head>
 <body>
 <header class="site-header">
@@ -2663,7 +2776,7 @@ body{display:flex;flex-direction:column;min-height:100vh}
       <div class="odayika-spashta" aria-label="औदयिक ग्रहस्पष्ट">
       <div class="odayika-sp-box-title">तात्कालिक ग्रहस्पष्ट</div>
       <div id="odayikaSpashta"></div>
-      <p class="odayika-legend odayika-legend-inside">व० = वक्री · अ० = अस्त</p>
+      <p class="odayika-legend odayika-legend-inside">व० = वक्री · अ० = अस्तग्रह</p>
     </div>
     </div>
 
@@ -2689,6 +2802,11 @@ body{display:flex;flex-direction:column;min-height:100vh}
         <g id="odayikaPlanetLayer"></g>
       </svg>
     </div>
+  </div>
+
+  <div class="odayika-udayasta" id="odayikaUdayasta" hidden>
+    <div class="odayika-udayasta-title" id="odayikaUdayastaTitle">चन्द्रमा व पञ्चताराग्रह उदयास्त</div>
+    <div class="odayika-udayasta-grid" id="odayikaUdayastaGrid"></div>
   </div>
 </section>
     
@@ -3450,7 +3568,58 @@ const PANCHANGA_PLACES = [
   /* Connecticut: Excel EST/standard-time basis; website America/New_York DST लगाएगी। */
   {key:"wilton-ct", region:"foreign", countryKey:"united-states", countryName:"संयुक्त राज्य अमेरिका",
    name:"विल्टन, कनेक्टिकट", heading:"विल्टनस्थ पञ्चाङ्ग",
-   file:"panchang-data/Wilton_Connecticut2026.xlsx", timeZone:"America/New_York", standardOffsetMinutes:-300, timeBasis:"standard"}
+   file:"panchang-data/Wilton_Connecticut2026.xlsx", timeZone:"America/New_York", standardOffsetMinutes:-300, timeBasis:"standard"},
+
+  {key:"auckland", region:"foreign", countryKey:"new-zealand", countryName:"न्यूज़ीलैण्ड",
+   name:"ऑकलैण्ड", heading:"ऑकलैण्डस्थ पञ्चाङ्ग",
+   file:"panchang-data/Auckland2026.xlsx", timeZone:"Pacific/Auckland", standardOffsetMinutes:720, timeBasis:"standard"},
+
+  {key:"chicago", region:"foreign", countryKey:"united-states", countryName:"संयुक्त राज्य अमेरिका",
+   name:"शिकागो, इलिनॉय", heading:"शिकागोस्थ पञ्चाङ्ग",
+   file:"panchang-data/Chicago2026.xlsx", timeZone:"America/Chicago", standardOffsetMinutes:-360, timeBasis:"standard"},
+
+  {key:"dubai", region:"foreign", countryKey:"united-arab-emirates", countryName:"संयुक्त अरब अमीरात",
+   name:"दुबई", heading:"दुबईस्थ पञ्चाङ्ग",
+   file:"panchang-data/Dubai2026.xlsx", timeZone:"Asia/Dubai", standardOffsetMinutes:240, timeBasis:"standard"},
+
+  {key:"durban", region:"foreign", countryKey:"south-africa", countryName:"दक्षिण अफ्रीका",
+   name:"डरबन", heading:"डरबनस्थ पञ्चाङ्ग",
+   file:"panchang-data/Durban2026.xlsx", timeZone:"Africa/Johannesburg", standardOffsetMinutes:120, timeBasis:"standard"},
+
+  {key:"ghent", region:"foreign", countryKey:"belgium", countryName:"बेल्जियम",
+   name:"घेण्ट", heading:"घेण्टस्थ पञ्चाङ्ग",
+   file:"panchang-data/Gent_Belgium2026.xlsx",
+   timeZone:"Europe/Brussels", standardOffsetMinutes:60, timeBasis:"standard"},
+
+  {key:"kathmandu", region:"foreign", countryKey:"nepal", countryName:"नेपाल",
+   name:"काठमाण्डू", heading:"काठमाण्डूस्थ पञ्चाङ्ग",
+   file:"panchang-data/Kathmandu2026.xlsx", timeZone:"Asia/Kathmandu", standardOffsetMinutes:345, timeBasis:"standard"},
+
+  {key:"kuala-lumpur", region:"foreign", countryKey:"malaysia", countryName:"मलेशिया",
+   name:"कुआलालम्पुर", heading:"कुआलालम्पुरस्थ पञ्चाङ्ग",
+   file:"panchang-data/KualaLumpur2026.xlsx", timeZone:"Asia/Kuala_Lumpur", standardOffsetMinutes:480, timeBasis:"standard",
+   referenceLongitude:101.7},
+
+  {key:"melbourne", region:"foreign", countryKey:"australia", countryName:"ऑस्ट्रेलिया",
+   name:"मेलबर्न", heading:"मेलबर्नस्थ पञ्चाङ्ग",
+   file:"panchang-data/Melbourne2026.xlsx", timeZone:"Australia/Melbourne", standardOffsetMinutes:600, timeBasis:"standard"},
+
+  {key:"new-york", region:"foreign", countryKey:"united-states", countryName:"संयुक्त राज्य अमेरिका",
+   name:"न्यूयॉर्क", heading:"न्यूयॉर्कस्थ पञ्चाङ्ग",
+   file:"panchang-data/NewYork2026.xlsx", timeZone:"America/New_York", standardOffsetMinutes:-300, timeBasis:"standard"},
+
+  {key:"singapore", region:"foreign", countryKey:"singapore", countryName:"सिंगापुर",
+   name:"सिंगापुर", heading:"सिंगापुरस्थ पञ्चाङ्ग",
+   file:"panchang-data/Singapore2026.xlsx", timeZone:"Asia/Singapore", standardOffsetMinutes:480, timeBasis:"standard",
+   referenceLongitude:103.84999722222223},
+
+  {key:"sydney", region:"foreign", countryKey:"australia", countryName:"ऑस्ट्रेलिया",
+   name:"सिडनी", heading:"सिडनीस्थ पञ्चाङ्ग",
+   file:"panchang-data/Sydney2026.xlsx", timeZone:"Australia/Sydney", standardOffsetMinutes:600, timeBasis:"standard"},
+
+  {key:"tokyo", region:"foreign", countryKey:"japan", countryName:"जापान",
+   name:"टोक्यो", heading:"टोक्योस्थ पञ्चाङ्ग",
+   file:"panchang-data/Tokyo2026.xlsx", timeZone:"Asia/Tokyo", standardOffsetMinutes:540, timeBasis:"standard"}
 ];
 
 const PLACE_META = Object.fromEntries(
@@ -3953,27 +4122,104 @@ function pickerToGB(value){
   return `${d}/${m}/${y}`;
 }
 
+function excelClockAscii(value){
+  const map={
+    "०":"0","१":"1","२":"2","३":"3","४":"4",
+    "५":"5","६":"6","७":"7","८":"8","९":"9"
+  };
+  return String(value??"")
+    .replace(/[०-९]/g,d=>map[d]||d)
+    .replace(/：/g,":")
+    .replace(/[٫٬]/g,".")
+    .trim();
+}
+
 function excelTime(value){
   if(value === "" || value === null || value === undefined) return "";
 
-  if(typeof value === "string"){
-    const text = value.trim();
+  /*
+    एक ही rounding rule सभी clock inputs पर:
+    seconds >= 30  -> अगला minute
+    seconds < 30   -> वही minute
+  */
 
-    if(/^\d{1,2}:\d{2}(:\d{2})?$/.test(text)){
-      const p = text.split(":");
-      return `${p[0].padStart(2,"0")}:${p[1].padStart(2,"0")}`;
-    }
-
-    return text;
+  if(typeof value === "number" && Number.isFinite(value)){
+    const totalMinutes = Math.round(value * 24 * 60);
+    const h = Math.floor(totalMinutes / 60);
+    const m = ((totalMinutes % 60) + 60) % 60;
+    return `${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}`;
   }
 
-  if(isNaN(value)) return String(value);
+  if(value instanceof Date && !isNaN(value)){
+    const totalMinutes = Math.round(
+      value.getUTCHours() * 60 +
+      value.getUTCMinutes() +
+      value.getUTCSeconds() / 60 +
+      value.getUTCMilliseconds() / 60000
+    );
+    const h = Math.floor(totalMinutes / 60);
+    const m = ((totalMinutes % 60) + 60) % 60;
+    return `${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}`;
+  }
 
-  const totalMinutes = Math.round(Number(value) * 24 * 60);
-  const h = Math.floor(totalMinutes / 60);
-  const m = totalMinutes % 60;
+  let s = excelClockAscii(value)
+    .replace(/\s*(?:बजे|hrs?|hours?)\s*$/i,"")
+    .trim();
 
-  return `${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}`;
+  /*
+    HH:MM:SS अथवा HH:MM:SS.fraction
+    उदाहरण: 17:54:32 -> 17:55
+  */
+  let m = s.match(/^(\d{1,3}):(\d{1,2}):(\d{1,2}(?:\.\d+)?)$/);
+  if(m){
+    const h = Number(m[1]);
+    const mi = Number(m[2]);
+    const sec = Number(m[3]);
+
+    if(mi < 60 && sec < 60){
+      const totalMinutes = Math.round(h * 60 + mi + sec / 60);
+      const rh = Math.floor(totalMinutes / 60);
+      const rm = ((totalMinutes % 60) + 60) % 60;
+      return `${String(rh).padStart(2,"0")}:${String(rm).padStart(2,"0")}`;
+    }
+  }
+
+  /*
+    HH:MM.fraction
+    उदाहरण: 13:08.066666... ≈ 13:08:04 -> 13:08
+  */
+  m = s.match(/^(\d{1,3}):(\d{1,2})(\.\d+)$/);
+  if(m){
+    const h = Number(m[1]);
+    const minWithFraction = Number(m[2] + m[3]);
+
+    if(minWithFraction < 60){
+      const totalMinutes = Math.round(h * 60 + minWithFraction);
+      const rh = Math.floor(totalMinutes / 60);
+      const rm = ((totalMinutes % 60) + 60) % 60;
+      return `${String(rh).padStart(2,"0")}:${String(rm).padStart(2,"0")}`;
+    }
+  }
+
+  /* HH:MM — seconds नहीं हैं, अतः minute यथावत। */
+  m = s.match(/^(\d{1,3}):(\d{1,2})$/);
+  if(m){
+    const h = Number(m[1]);
+    const mi = Number(m[2]);
+    if(mi < 60){
+      return `${String(h).padStart(2,"0")}:${String(mi).padStart(2,"0")}`;
+    }
+  }
+
+  /* Plain Excel serial/fraction supplied as text. */
+  if(/^[+-]?\d+(?:\.\d+)?$/.test(s)){
+    const totalMinutes = Math.round(Number(s) * 1440);
+    const h = Math.floor(totalMinutes / 60);
+    const mi = ((totalMinutes % 60) + 60) % 60;
+    return `${String(h).padStart(2,"0")}:${String(mi).padStart(2,"0")}`;
+  }
+
+  return s;
 }
 
 const RATRISHESH_FROM_HOUR = 4;
@@ -5757,25 +6003,230 @@ function odayikaIsRetrograde(rowIndex,col){
   return false;
 }
 
+const ODAYIKA_SOURCE_GRAHA_META = {
+  mangal:{name:"मङ्गल", legacy:["dqt"], readable:/(?:mars|kuja|mangal|mangala|maṅgal|कुज|मंगल|मङ्गल)/i},
+  budha:{name:"बुध", legacy:["cq/k"], readable:/(?:mercury|budha|budh|बुध)/i},
+  guru:{name:"बृहस्पति", legacy:["xq#"], readable:/(?:jupiter|guru|brihaspati|bṛhaspati|गुरु|बृहस्पति)/i},
+  shukra:{name:"शुक्र", legacy:["'kq¥","'kqØ"], readable:/(?:venus|shukra|sukra|śukra|शुक्र)/i},
+  shani:{name:"शनि", legacy:["'kfu"], readable:/(?:saturn|shani|sani|śani|शनि)/i}
+};
+
+const ODAYIKA_SOURCE_ORDER=["mangal","budha","guru","shukra","shani"];
+
+
 /*
-  अस्तत्व अभी जानबूझकर false रखा गया है।
-  सूर्यसिद्धान्तीय/स्वीकृत शास्त्रीय अस्त-अंश निश्चित होने पर
-  इसी function में ग्रहवार नियम डालेंगे; कोई आधुनिक अनुमान नहीं।
+  Fallback केवल तब उपयोग होता है जब generated Excel का AB cell रिक्त हो।
+  यह 2026 के काशी Word-source के AB=ग्रहोदयास्त दैनिक states से निकला है;
+  कोई आधुनिक/दृग अनुमान नहीं। Excel में AB उपलब्ध हो तो वही प्राथमिक source है।
 */
-function odayikaIsCombust(grahaKey,grahaLon,sunLon){
-  return false;
+const ODAYIKA_2026_SOURCE_STATE_CHANGES={
+  guru:[[20260101,"पूर्वोदित"],[20260714,"पश्चिमास्त"],[20260814,"पूर्वोदित"]],
+  shukra:[[20260101,"पूर्वास्त"],[20260209,"पश्चिमोदित"],[20261011,"पश्चिमास्त"],[20261021,"पश्चिमोदित"]],
+  shani:[[20260101,"पूर्वोदित"],[20260306,"पश्चिमास्त"],[20260411,"पूर्वोदित"]],
+  mangal:[[20260101,"पश्चिमास्त"],[20260403,"पूर्वोदित"]],
+  budha:[[20260101,"पूर्वास्त"],[20260126,"पश्चिमोदित"],[20260301,"पश्चिमास्त"],[20260317,"पश्चिमोदित"],[20260420,"पूर्वास्त"],[20260524,"पश्चिमोदित"],[20260627,"पश्चिमास्त"],[20260713,"पश्चिमोदित"],[20260816,"पूर्वास्त"],[20260918,"पश्चिमोदित"],[20261021,"पश्चिमास्त"],[20261105,"पश्चिमोदित"],[20261208,"पूर्वास्त"]]
+};
+const ODAYIKA_SOURCE_STATE_MEANING={
+  "पूर्वोदित":{event:"उदय",direction:"पूर्व"},
+  "पश्चिमोदित":{event:"उदय",direction:"पश्चिम"},
+  "पूर्वास्त":{event:"अस्त",direction:"पूर्व"},
+  "पश्चिमास्त":{event:"अस्त",direction:"पश्चिम"}
+};
+
+/*
+  2026 Kashi Word-source AB=ग्रहोदयास्त से प्रत्यक्ष मार्गी/वक्री परिवर्तन।
+  ग्रह की गति पृथ्वी के स्थान से नहीं बदलती; अतः AB रिक्त विदेशी workbook में
+  यही source-state fallback ग्रहस्पष्ट के व० के लिये प्रयुक्त होगा।
+*/
+const ODAYIKA_2026_RETROGRADE_CHANGES={
+  /* Kashi Word-source AB=ग्रहोदयास्त, all 365 dates verified */
+  guru:[[20260101,true],[20260315,false],[20261213,true]],
+  shukra:[[20260101,false],[20260925,true],[20261106,false]],
+  shani:[[20260101,false],[20260723,true],[20261207,false]],
+  mangal:[[20260101,false]],
+  budha:[[20260101,false],[20260225,true],[20260320,false],[20260623,true],[20260716,false],[20261017,true],[20261109,false]]
+};
+
+function odayikaFallbackRetrogradeForDate(gb,key){
+  const k=odayikaGBDateKey(gb);
+  const changes=ODAYIKA_2026_RETROGRADE_CHANGES[key];
+  if(!Number.isFinite(k)||!changes?.length||k<changes[0][0]||k>20261231)return null;
+  let retro=changes[0][1];
+  for(const [date,state] of changes){
+    if(k>=date) retro=!!state;
+    else break;
+  }
+  return retro;
+}
+function odayikaGBDateKey(gb){
+  const m=String(gb||"").match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  return m ? Number(m[3])*10000+Number(m[2])*100+Number(m[1]) : NaN;
+}
+function odayikaFallbackStateForDate(gb,key){
+  const k=odayikaGBDateKey(gb),changes=ODAYIKA_2026_SOURCE_STATE_CHANGES[key];
+  if(!Number.isFinite(k)||!changes?.length||k<changes[0][0]||k>20261231)return null;
+  let label=changes[0][1];
+  for(const [date,state] of changes){if(k>=date)label=state;else break}
+  const meaning=ODAYIKA_SOURCE_STATE_MEANING[label];
+  if(!meaning)return null;
+  const retro=odayikaFallbackRetrogradeForDate(gb,key);
+  return {
+    key,
+    name:ODAYIKA_SOURCE_GRAHA_META[key]?.name||key,
+    label,
+    event:meaning.event,
+    direction:meaning.direction,
+    retrograde:retro===true,
+    direct:retro===false,
+    source:"word-ab-fallback"
+  };
+}
+function odayikaResolvedSourceState(raw,gb,key){
+  const parsed=odayikaParseSourceGrahaStates(raw);
+  const direct=parsed?.[key];
+  if(direct?.event)return direct;
+  return odayikaFallbackStateForDate(gb,key) || direct || null;
+}
+
+function odayikaSourceEventFromText(t){
+  const s=String(t||"");
+  if(s.includes("iwoksZfnr")) return {event:"उदय",direction:"पूर्व",legacyLabel:"पूर्वोदित"};
+  if(s.includes("ifÎeksfnr")) return {event:"उदय",direction:"पश्चिम",legacyLabel:"पश्चिमोदित"};
+  if(s.includes("iwokZLr"))    return {event:"अस्त",direction:"पूर्व",legacyLabel:"पूर्वास्त"};
+  if(s.includes("ifÎekLr"))    return {event:"अस्त",direction:"पश्चिम",legacyLabel:"पश्चिमास्त"};
+
+  if(/(?:rise|rises|rising|udaya|udita|उदय|उदित)/i.test(s)){
+    const direction =
+      /(?:\beast\b|eastern|पूर्व)/i.test(s) ? "पूर्व" :
+      /(?:\bwest\b|western|पश्चिम)/i.test(s) ? "पश्चिम" : "";
+    return {event:"उदय",direction,legacyLabel:""};
+  }
+  if(/(?:set|sets|setting|asta|अस्त)/i.test(s)){
+    const direction =
+      /(?:\beast\b|eastern|पूर्व)/i.test(s) ? "पूर्व" :
+      /(?:\bwest\b|western|पश्चिम)/i.test(s) ? "पश्चिम" : "";
+    return {event:"अस्त",direction,legacyLabel:""};
+  }
+  return {event:"",direction:"",legacyLabel:""};
+}
+
+function odayikaParseSourceGrahaStates(raw){
+  const text=String(raw??"").replace(/[–—]/g,"-").replace(/\s+/g," ").trim();
+  const out={};
+  if(!text) return out;
+
+  /* Legacy KrutiDev/key-stream: हर ग्रह के आसपास का अपना segment पढ़ें। */
+  const hits=[];
+  for(const [key,meta] of Object.entries(ODAYIKA_SOURCE_GRAHA_META)){
+    for(const token of meta.legacy){
+      const idx=text.indexOf(token);
+      if(idx>=0){
+        hits.push({key,token,idx});
+        break;
+      }
+    }
+  }
+  hits.sort((a,b)=>a.idx-b.idx);
+
+  for(let i=0;i<hits.length;i++){
+    const h=hits[i];
+    const start=i===0 ? Math.max(0,h.idx-18) : hits[i-1].idx + hits[i-1].token.length;
+    const end=i+1<hits.length ? hits[i+1].idx : text.length;
+    const stateSegment=text.slice(start,h.idx);
+    const eventSegment=text.slice(h.idx,end);
+    const ev=odayikaSourceEventFromText(eventSegment);
+
+    out[h.key]={
+      key:h.key,
+      name:ODAYIKA_SOURCE_GRAHA_META[h.key].name,
+      event:ev.event,
+      direction:ev.direction,
+      label:ev.legacyLabel,
+      retrograde:/o[¥Ø]h/.test(stateSegment) || /वक्री/i.test(stateSegment),
+      direct:/ekxhZ/.test(stateSegment) || /मार्गी/i.test(stateSegment),
+      transition:!ev.event && /n-\d{4}%\d{1,2}%\d{1,2}/.test(eventSegment),
+      rawSegment:`${stateSegment}${eventSegment}`
+    };
+  }
+
+  /*
+    भविष्य में source Unicode/English हो तो वही decoder काम करे।
+    Legacy hit न मिलने पर/किसी ग्रह के लिये शेष रहने पर readable नाम खोजें।
+  */
+  for(const key of ODAYIKA_SOURCE_ORDER){
+    if(out[key]?.event) continue;
+    const meta=ODAYIKA_SOURCE_GRAHA_META[key];
+    const m=meta.readable.exec(text);
+    if(!m) continue;
+
+    let next=text.length;
+    for(const other of ODAYIKA_SOURCE_ORDER){
+      if(other===key) continue;
+      const om=ODAYIKA_SOURCE_GRAHA_META[other].readable.exec(text.slice(m.index+m[0].length));
+      if(om) next=Math.min(next,m.index+m[0].length+om.index);
+    }
+    const segment=text.slice(Math.max(0,m.index-24),Math.min(text.length,next+75));
+    const ev=odayikaSourceEventFromText(segment);
+    out[key]={
+      key,name:meta.name,event:ev.event,direction:ev.direction,label:ev.legacyLabel,
+      retrograde:/वक्री|retrograde/i.test(segment),
+      direct:/मार्गी|direct/i.test(segment),
+      transition:false,rawSegment:segment
+    };
+  }
+
+  return out;
+}
+
+function odayikaSourceStateForGraha(raw,grahaKey){
+  return odayikaParseSourceGrahaStates(raw)[grahaKey] || null;
+}
+
+/* अन्य renderer भी इसी canonical decoder का उपयोग करें। */
+window.odayikaParseSourceGrahaStates=odayikaParseSourceGrahaStates;
+window.odayikaSourceStateForGraha=odayikaSourceStateForGraha;
+
+/*
+  अ० अब किसी अनुमानित angular combustion rule से नहीं,
+  AB source में ग्रह की 'पूर्वास्त/पश्चिमास्त' स्थिति से लिया जाता है।
+*/
+function odayikaIsCombust(grahaKey,rowIndex){
+  const row=(typeof workbookData!=="undefined" && workbookData?.[rowIndex]) ? workbookData[rowIndex] : null;
+  const raw=row ? row[29] : "";
+  const gb=row && typeof normalizeDate==="function" ? normalizeDate(row[0]) : "";
+  const src=typeof odayikaResolvedSourceState==="function"
+    ? odayikaResolvedSourceState(raw,gb,grahaKey)
+    : odayikaSourceStateForGraha(raw,grahaKey);
+  return !!src && src.event==="अस्त";
 }
 
 function odayikaPlanetState(grahaKey,rowIndex,col,grahaLon,sunLon){
   const state = [];
+  const row =
+    (typeof workbookData!=="undefined" && workbookData?.[rowIndex])
+      ? workbookData[rowIndex]
+      : null;
+  const raw = row ? row[29] : "";
+  const gb = row && typeof normalizeDate==="function" ? normalizeDate(row[0]) : "";
 
+  /*
+    वक्रत्व स्थानानुसार नहीं बदलता। 2026 में Kashi Word-source के 365-दिवसीय
+    AB record से सत्यापित global direct/retrograde state ही authoritative है।
+    इससे विदेशी workbook के legacy parsing से गुरु/शुक्र पर झूठा व० नहीं लगेगा।
+  */
   if(["mangal","budha","guru","shukra","shani"].includes(grahaKey)){
-    if(odayikaIsRetrograde(rowIndex,col)){
-      state.push("व०");
-    }
+    const verifiedRetro = odayikaFallbackRetrogradeForDate(gb,grahaKey);
+    const src = odayikaSourceStateForGraha(raw,grahaKey);
+    const retro =
+      verifiedRetro !== null
+        ? verifiedRetro
+        : (src ? !!src.retrograde : odayikaIsRetrograde(rowIndex,col));
+
+    if(retro) state.push("व०");
   }
 
-  if(odayikaIsCombust(grahaKey,grahaLon,sunLon)){
+  /* अ० अभी source AB की अस्तावस्था से ही। */
+  if(odayikaIsCombust(grahaKey,rowIndex)){
     state.push("अ०");
   }
 
@@ -6607,6 +7058,62 @@ function internalMoonriseForGB(gb){
   if(!hit) return null;
   return internalMoonriseForDate(hit.index, hit.row, gb);
 }
+
+/*
+  चन्द्रास्त — उसी स्वीकृत सौरपक्षीय लग्न-साम्य पद्धति का पश्चिमक्षितिज रूप।
+  चन्द्र उदय में L(t)=Moon(t); अस्त में सप्तम-बिन्दु Moon पर होने से
+  L(t)=Moon(t)+180° लिया जाता है। कोई atmospheric refraction/दृग-प्रभाव
+  यहाँ पृथक् नहीं जोड़ा जाता; यही वही central-rise framework है जो
+  संकष्टचतुर्थी के चन्द्रोदय-निर्णय में पहले से चल रहा है।
+*/
+function internalMoonsetForDate(rowIndex,row,selectedDate){
+  const nextRow = workbookData?.[rowIndex + 1];
+  if(!row || !nextRow) return null;
+
+  const sun0 = odayikaParseRashiSpashta(row[12]);
+  const sun1 = odayikaParseRashiSpashta(nextRow[12]);
+  const moon0 = odayikaParseRashiSpashta(row[14]);
+  const moon1 = odayikaParseRashiSpashta(nextRow[14]);
+  const sunrise0 = muhurtaTimeToSeconds(row[10]);
+  const nextSunriseClock = muhurtaTimeToSeconds(nextRow[10]);
+
+  if(
+    !sun0 || !sun1 || !moon0 || !moon1 ||
+    !Number.isFinite(sun0.longitude) ||
+    !Number.isFinite(sun1.longitude) ||
+    !Number.isFinite(moon0.longitude) ||
+    !Number.isFinite(moon1.longitude) ||
+    sunrise0 === null || nextSunriseClock === null
+  ) return null;
+
+  const west0 = odayikaNormalize360(moon0.longitude + 180);
+  const west1 = odayikaNormalize360(moon1.longitude + 180);
+
+  const solved = grahaUdayaSolveLinear(
+    sun0.longitude,
+    sun1.longitude,
+    west0,
+    west1,
+    sunrise0,
+    nextSunriseClock + 86400
+  );
+  if(!solved) return null;
+
+  return {
+    absSeconds: solved.riseTotal,
+    absMinutes: gbToOrdinalMinutes(selectedDate, solved.riseTotal / 60),
+    timeText: grahaUdayaTargetDateTime(solved.riseTotal, selectedDate),
+    longitude: solved.lagnaLongitude,
+    method: "सौरपक्षीय सप्तम-बिन्दु-साम्य"
+  };
+}
+
+function internalMoonsetForGB(gb){
+  const hit = workbookRowByGBDate(gb);
+  if(!hit) return null;
+  return internalMoonsetForDate(hit.index, hit.row, gb);
+}
+
 
 
 
@@ -9025,6 +9532,44 @@ let currentSelectorMode = "india";
   13-09-2026: Irvine, Edmonton और Calgary की अद्यतन Excel files भी जोड़ दी गयी हैं।
   वर्तमान उपलब्ध foreign data files के लिए कोई स्थान अस्थायी रूप से blocked नहीं है।
 */
+const PANCHANGA_PLACE_ENGLISH_NAMES = {
+  kashi:"Kashi", mahakaleshwar:"Mahakaleshwar–Ujjain", ayodhya:"Ayodhya",
+  gorakhpur:"Gorakhpur", jagannathpuri:"Jagannath Puri", delhi:"New Delhi",
+  prayagraj:"Prayagraj", mumbai:"Mumbai", jammu:"Jammu", jaipur:"Jaipur",
+  darbhanga:"Darbhanga", ludhiana:"Ludhiana", vidisha:"Vidisha", kedarnath:"Kedarnath",
+  kolkata:"Kolkata", "nageshwar-saurashtra":"Nageshwar–Saurashtra", rameshwaram:"Rameshwaram",
+  "shardapitha-kashmir":"Sharada Pitha–Kashmir", shringeri:"Sringeri", devghar:"Deoghar",
+  haridwar:"Haridwar", vrindavan:"Vrindavan", badrinath:"Badrinath", somnath:"Somnath",
+  mallikarjuna:"Mallikarjuna", omkareshwar:"Omkareshwar", "bhimashankar-asam":"Bhimashankar–Assam",
+  chennai:"Chennai", dwaraka:"Dwarka", jyoshimath:"Jyotirmath (Joshimath)",
+  "kamrup-kamakhya":"Kamrup–Kamakhya", bengaluru:"Bengaluru", dumka:"Dumka",
+  nellore:"Nellore", patna:"Patna", ranchi:"Ranchi", gaya:"Gaya", grishneshwar:"Grishneshwar",
+  gurugram:"Gurugram", "tirupati-ap":"Tirupati", tryambakeshwar:"Tryambakeshwar, Nashik",
+  shrimeru:"Shrimeru",
+  fremont:"Fremont, California", "los-angeles":"Los Angeles, California",
+  irvine:"Irvine, California", "san-diego":"San Diego, California",
+  "artesia-ca":"Artesia, California", "san-jose-ca":"San Jose, California",
+  "concord-ca":"Concord, California", "seattle-wa":"Seattle, Washington", edmonton:"Edmonton, Alberta", calgary:"Calgary, Alberta",
+  "vancouver-bc":"Vancouver, British Columbia", toronto:"Toronto, Ontario",
+  montreal:"Montreal, Quebec", winnipeg:"Winnipeg, Manitoba", london:"London", doha:"Doha",
+  rome:"Rome, Lazio", "venice-veneto":"Venice, Veneto", verona:"Verona, Veneto",
+  "vicenza-veneto":"Vicenza, Veneto", "wilton-ct":"Wilton, Connecticut",
+  auckland:"Auckland", chicago:"Chicago, Illinois", dubai:"Dubai", durban:"Durban",
+  ghent:"Ghent, Belgium", kathmandu:"Kathmandu", "kuala-lumpur":"Kuala Lumpur",
+  melbourne:"Melbourne", "new-york":"New York", singapore:"Singapore", sydney:"Sydney", tokyo:"Tokyo"
+};
+const PANCHANGA_COUNTRY_ENGLISH_NAMES = {
+  india:"India", "united-states":"United States", canada:"Canada",
+  "united-kingdom":"United Kingdom", qatar:"Qatar", italy:"Italy", kenya:"Kenya",
+  "new-zealand":"New Zealand", "united-arab-emirates":"United Arab Emirates",
+  "south-africa":"South Africa", belgium:"Belgium", nepal:"Nepal", malaysia:"Malaysia",
+  australia:"Australia", singapore:"Singapore", japan:"Japan"
+};
+function panchangaBilingualPlaceName(place){
+  const en=PANCHANGA_PLACE_ENGLISH_NAMES[place?.key] || "";
+  return en ? `${place.name} - ${en}` : (place?.name || "");
+}
+
 const TEMP_BLOCKED_PLACE_KEYS = new Set([]);
 
 function isTemporarilyBlockedPlaceKey(placeKey){
@@ -9091,13 +9636,16 @@ function selectorPlaceOption(place){
   const option = document.createElement("option");
   option.value = place.file;
   option.dataset.place = place.key;
+  option.dataset.hiName = place.name || "";
+  option.dataset.enName = PANCHANGA_PLACE_ENGLISH_NAMES[place.key] || "";
 
+  const bilingualName = panchangaBilingualPlaceName(place);
   const blocked = isTemporarilyBlockedPlaceKey(place.key);
   if(blocked){
     option.dataset.verificationBlocked = "true";
-    option.textContent = `${place.name} — पुनः सत्यापनाधीन`;
+    option.textContent = `${bilingualName} — पुनः सत्यापनाधीन`;
   }else{
-    option.textContent = place.name;
+    option.textContent = bilingualName;
   }
 
   return option;
@@ -9192,7 +9740,8 @@ function populateForeignCountries(){
     .forEach(([countryKey, countryName]) => {
       const option = document.createElement("option");
       option.value = countryKey;
-      option.textContent = countryName;
+      const enCountry = PANCHANGA_COUNTRY_ENGLISH_NAMES[countryKey] || "";
+      option.textContent = enCountry ? `${countryName} — ${enCountry}` : countryName;
       countrySelect.appendChild(option);
     });
 }
@@ -9557,6 +10106,18 @@ setText("sunset",excelTimeDev(row[11],selectedDate) + " बजे");
 
 /* उसी स्थान एवं दिनाङ्क का औदयिक ग्रहस्पष्ट एवं ग्रहचक्र */
 renderOdayikaGrahaBox(rowIndex,row,selectedDate);
+
+/* AB-स्रोत का दिशासहित ग्रहोदय-अस्त तथा गणितीय चन्द्रोदय-चन्द्रास्त */
+const renderOdayikaRiseSetNow = ()=>{
+  if(typeof window.renderOdayikaSourceUdayastaForRow === "function"){
+    window.renderOdayikaSourceUdayastaForRow(rowIndex,row,selectedDate);
+    return true;
+  }
+  return false;
+};
+if(!renderOdayikaRiseSetNow()){
+  setTimeout(renderOdayikaRiseSetNow,0);
+}
 
 
 /* उसी स्थान एवं दिनाङ्क का काल-मुहूर्त्त-विभाजन */
@@ -9963,6 +10524,178 @@ if(document.readyState === "loading"){
   src="/visitor-tracker.js"
   data-endpoint="https://jyotishiji-visitor-analytics.jyotishsamvad.workers.dev"
   defer>
+</script>
+
+<script id="odayika-source-udayasta-20260920-v3">
+(()=>{
+  "use strict";
+  const $=id=>document.getElementById(id);
+
+  function eventText(s){
+    if(!s?.event) return "";
+    return s.direction ? `${s.event} ${s.direction} में` : s.event;
+  }
+
+  function nearestSourceState(rowIndex,key,step){
+    if(typeof workbookData==="undefined" || !Array.isArray(workbookData)) return null;
+    for(let n=1;n<=4;n++){
+      const row=workbookData[rowIndex + step*n];
+      if(!row) break;
+      const parsed=typeof window.odayikaParseSourceGrahaStates==="function"
+        ? window.odayikaParseSourceGrahaStates(String(row?.[29]??""))
+        : {};
+      const s=parsed?.[key];
+      if(s?.event) return s;
+    }
+    return null;
+  }
+
+  function transitionText(rowIndex,key,state){
+    if(!state?.transition) return "";
+    const before=nearestSourceState(rowIndex,key,-1);
+    const after=nearestSourceState(rowIndex,key,1);
+    if(before?.event && after?.event){
+      const a=eventText(before),b=eventText(after);
+      return a===b ? b : `${a} → ${b}`;
+    }
+    return eventText(after)||eventText(before)||"ग्रहोदयास्त-परिवर्तन";
+  }
+
+  function renderForRow(rowIndex,row,gb){
+    const box=$("odayikaUdayasta");
+    const grid=$("odayikaUdayastaGrid");
+    const title=$("odayikaUdayastaTitle");
+    if(!box||!grid||!row||!gb){
+      if(box) box.hidden=true;
+      if(grid) grid.innerHTML="";
+      return;
+    }
+
+    const raw=String(row?.[29]??"").trim();
+    const parsed=typeof window.odayikaParseSourceGrahaStates==="function"
+      ? window.odayikaParseSourceGrahaStates(raw)
+      : {};
+    const planetItemsByKey={};
+    const order=(typeof ODAYIKA_SOURCE_ORDER!=="undefined")
+      ? ODAYIKA_SOURCE_ORDER
+      : ["mangal","budha","guru","shukra","shani"];
+
+    for(const key of order){
+      const direct=parsed?.[key];
+      const s=(direct?.event?direct:null) || (typeof odayikaFallbackStateForDate==="function"?odayikaFallbackStateForDate(gb,key):null) || direct;
+      if(!s) continue;
+      const t=eventText(s)||transitionText(rowIndex,key,s);
+      if(!t) continue;
+      planetItemsByKey[key]=`<span class="odayika-event-chip odayika-planet-chip odayika-${key}-chip"><strong>${s.name}</strong> - ${t}</span>`;
+    }
+
+    /* चन्द्रोदय वही पूर्व-स्वीकृत formula; चन्द्रास्त उसी का सप्तम-बिन्दु रूप। */
+    const mr=typeof internalMoonriseForDate==="function"
+      ? internalMoonriseForDate(rowIndex,row,gb)
+      : null;
+    const ms=typeof internalMoonsetForDate==="function"
+      ? internalMoonsetForDate(rowIndex,row,gb)
+      : null;
+
+    function moonAsciiDigits(s){
+      const map={"०":"0","१":"1","२":"2","३":"3","४":"4","५":"5","६":"6","७":"7","८":"8","९":"9"};
+      return String(s||"").replace(/[०-९]/g,d=>map[d]||d);
+    }
+
+    function moonClockMinutes(value){
+      const a=moonAsciiDigits(value);
+      const m=a.match(/(\d{1,2}):(\d{2})/);
+      if(!m) return NaN;
+      return Number(m[1])*60+Number(m[2]);
+    }
+
+    /*
+      चन्द्रमा का समय मुख्य पञ्चाङ्ग-जैसे संक्षिप्त रूप में:
+      seconds नहीं; अगली तिथि का bracket नहीं; काल-संज्ञा सहित।
+    */
+    function moonPanchangaTime(t,baseGB){
+      const a=moonAsciiDigits(t).trim();
+      const m=a.match(/^(\d{1,2}):(\d{2})(?::\d{2})?(?:\s*\((\d{2}\/\d{2}\/\d{4})\))?$/);
+      if(!m) return String(t||"");
+
+      const hh=Number(m[1]), mm=Number(m[2]);
+      const mins=hh*60+mm;
+      const eventGB=m[3]||baseGB;
+
+      let refRow=row;
+      try{
+        const hit=typeof workbookRowByGBDate==="function" ? workbookRowByGBDate(eventGB) : null;
+        if(hit?.row) refRow=hit.row;
+      }catch(_){}
+
+      let sr=NaN, ss=NaN;
+      try{
+        sr=moonClockMinutes(excelTimeDev(refRow?.[10],eventGB));
+        ss=moonClockMinutes(excelTimeDev(refRow?.[11],eventGB));
+      }catch(_){}
+
+      let kaal="";
+      if(Number.isFinite(sr) && mins < sr){
+        kaal="रात्रि";
+      }else if(Number.isFinite(ss) && mins >= ss){
+        kaal="रात्रि";
+      }else if(mins >= 12*60){
+        kaal="अपराह्न";
+      }else{
+        kaal="पूर्वाह्न";
+      }
+
+      const rawClock=`${String(hh).padStart(2,"0")}:${String(mm).padStart(2,"0")}`;
+      const clock=typeof toDev==="function" ? toDev(rawClock) : rawClock;
+      return `${kaal} ${clock}`;
+    }
+
+    let moonItem="";
+    if(mr?.timeText || ms?.timeText){
+      const parts=[];
+      if(mr?.timeText) parts.push(`<strong>चन्द्रोदय</strong> ${moonPanchangaTime(mr.timeText,gb)}`);
+      if(ms?.timeText) parts.push(`<strong>चन्द्रास्त</strong> ${moonPanchangaTime(ms.timeText,gb)}`);
+      moonItem=`<span class="odayika-event-chip odayika-moon-chip"><span>${parts.join(" · ")}</span></span>`;
+    }
+
+    /*
+      कुल दो पंक्तियाँ:
+      1: चन्द्रमा + बृहस्पति
+      2: मङ्गल + बुध + शुक्र + शनि
+    */
+    const items=[];
+    if(moonItem) items.push(moonItem);
+    if(planetItemsByKey.guru) items.push(planetItemsByKey.guru);
+    ["mangal","budha","shukra","shani"].forEach(key=>{
+      if(planetItemsByKey[key]) items.push(planetItemsByKey[key]);
+    });
+
+    if(title) title.textContent="चन्द्रमा व पञ्चताराग्रह उदयास्त";
+    grid.innerHTML=items.join("");
+    box.hidden=!items.length;
+  }
+
+  window.renderOdayikaSourceUdayastaForRow=renderForRow;
+
+  function renderSelected(){
+    const picker=$("datePicker");
+    const gb=picker&&typeof pickerToGB==="function"?pickerToGB(picker.value):"";
+    const hit=gb&&typeof workbookRowByGBDate==="function"?workbookRowByGBDate(gb):null;
+    if(hit) renderForRow(hit.index,hit.row,gb);
+  }
+  window.renderOdayikaSourceUdayasta=renderSelected;
+
+  function bind(){
+    ["fileLink","datePicker","countryLink","indiaModeButton","foreignModeButton"].forEach(id=>{
+      const el=$(id); if(!el)return;
+      el.addEventListener("change",()=>setTimeout(renderSelected,180));
+      el.addEventListener("click",()=>setTimeout(renderSelected,220));
+    });
+    setTimeout(renderSelected,500);
+    setTimeout(renderSelected,1100);
+  }
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",bind); else bind();
+})();
 </script>
 
 </body>
