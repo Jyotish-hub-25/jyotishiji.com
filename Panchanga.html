@@ -10532,9 +10532,15 @@ if(document.readyState === "loading"){
   const $=id=>document.getElementById(id);
 
   function eventText(s){
-    if(!s?.event) return "";
-    return s.direction ? `${s.event} ${s.direction} में` : s.event;
-  }
+  if(!s?.event) return "";
+
+  const event =
+    s.event === "उदय" ? "उदित" :
+    s.event === "अस्त" ? "अस्त" :
+    s.event;
+
+  return s.direction ? `${event} ${s.direction} में` : event;
+}
 
   function nearestSourceState(rowIndex,key,step){
     if(typeof workbookData==="undefined" || !Array.isArray(workbookData)) return null;
