@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="श्रीसूर्यसिद्धान्तीय पञ्चाङ्ग के गणना-स्रोत, कर्तृत्व, प्रस्तुति तथा उपयोग-मर्यादा का अधिकृत परिचय।">
+  <title>गणना-स्रोत, कर्तृत्व एवं उपयोग-मर्यादा | Jyotishiji.com</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@400;600;700&amp;display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --red:#8b0000;
+      --red-dark:#650000;
+      --cream:#fffaf0;
+      --cream-deep:#f7e7c9;
+      --gold:#c99337;
+      --brown:#4d2b11;
+      --teal:#0b5555;
+      --ink:#26211c;
+      --muted:#685b50;
+      --line:rgba(120,68,20,.22);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+    body{
+      margin:0;
+      min-height:100vh;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 10% 0,rgba(255,255,255,.95),transparent 26%),
+        #edf5f2;
+      font-family:"Noto Serif Devanagari","Sanskrit Text","Nirmala UI","Mangal",serif;
+      font-size:18px;
+      line-height:1.82;
+    }
+    a{overflow-wrap:anywhere}
+    .site-header{
+      color:#fff;
+      background:linear-gradient(135deg,var(--red-dark),var(--red));
+      border-bottom:1px solid rgba(255,255,255,.18);
+      text-align:center;
+      padding:16px 14px 13px;
+    }
+    .site-header h1{margin:0 0 7px;font-size:clamp(1.35rem,3vw,1.9rem);line-height:1.4}
+    .site-nav{display:flex;justify-content:center;align-items:center;gap:6px 24px;flex-wrap:wrap}
+    .site-nav a{color:#fff;text-decoration:none;font-weight:600;font-size:1rem}
+    .site-nav a:hover,.site-nav a:focus-visible{text-decoration:underline;text-underline-offset:4px}
+    .source-page{width:min(100% - 28px,980px);margin:24px auto 38px}
+    .dawn-hero{
+      position:relative;
+      isolation:isolate;
+      overflow:hidden;
+      min-height:270px;
+      display:grid;
+      place-items:center;
+      padding:42px 22px 35px;
+      border:1px solid rgba(139,90,22,.30);
+      border-radius:18px;
+      background:
+        linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,250,240,.98) 77%),
+        linear-gradient(180deg,#cc7242 0%,#efa85c 30%,#f8d899 58%,#fff8e8 100%);
+      box-shadow:0 12px 34px rgba(71,45,26,.15);
+      text-align:center;
+    }
+    .dawn-hero::before{
+      content:"";
+      position:absolute;
+      z-index:-1;
+      left:50%;
+      top:-86px;
+      width:250px;
+      height:250px;
+      transform:translateX(-50%);
+      border-radius:50%;
+      background:radial-gradient(circle,#fffde5 0 22%,#ffe28b 23% 39%,rgba(255,184,62,.35) 40% 64%,transparent 65%);
+      filter:drop-shadow(0 12px 24px rgba(139,55,8,.18));
+    }
+    .dawn-hero::after{
+      content:"";
+      position:absolute;
+      z-index:-1;
+      left:-7%;right:-7%;bottom:-72px;height:160px;
+      border-radius:50% 50% 0 0;
+      background:linear-gradient(180deg,rgba(112,58,20,.17),rgba(112,58,20,.02));
+    }
+    .hero-kicker{margin:0 0 7px;color:#77280e;font-size:.92rem;font-weight:700;letter-spacing:.08em}
+    .dawn-hero h2{margin:0;color:#5d1c09;font-size:clamp(1.65rem,4.2vw,2.55rem);line-height:1.35}
+    .hero-subtitle{max-width:760px;margin:13px auto 0;color:#4e3725;font-size:1.04rem;line-height:1.75}
+    .section-card{
+      margin-top:18px;
+      padding:24px 25px;
+      background:rgba(255,250,240,.97);
+      border:1px solid var(--line);
+      border-left:5px solid var(--teal);
+      border-radius:14px;
+      box-shadow:0 6px 20px rgba(33,58,52,.08);
+    }
+    .section-card h2{margin:0 0 14px;color:#173f55;font-size:1.32rem;line-height:1.48}
+    .section-card h3{margin:20px 0 8px;color:#6e3b10;font-size:1.08rem}
+    .section-card p{margin:0 0 13px;text-align:justify;text-align-last:left}
+    .section-card p:last-child{margin-bottom:0}
+    .identity-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    .identity-item{padding:15px;background:#fffdf7;border:1px solid rgba(139,90,22,.18);border-radius:10px}
+    .identity-label{display:block;margin-bottom:3px;color:#7b5a32;font-size:.84rem;font-weight:700}
+    .identity-value{display:block;color:#2e2116;font-size:1.05rem;font-weight:700}
+    .link-cluster{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+    .source-link{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:43px;
+      padding:9px 15px;
+      color:#fff;
+      background:var(--teal);
+      border:1px solid #073f3f;
+      border-radius:999px;
+      font-size:.91rem;
+      font-weight:700;
+      line-height:1.35;
+      text-decoration:none;
+      box-shadow:0 3px 9px rgba(11,85,85,.14);
+    }
+    .source-link.secondary{background:var(--red);border-color:var(--red-dark)}
+    .source-link:hover,.source-link:focus-visible{filter:brightness(.88);transform:translateY(-1px)}
+    .credit-sample{
+      margin:14px 0 0;
+      padding:16px 18px;
+      color:#322114;
+      background:#fff4d8;
+      border:1px solid rgba(173,111,25,.28);
+      border-radius:10px;
+      line-height:1.82;
+    }
+    .credit-sample strong{color:#6d2b0b}
+    .software-notice{
+      padding:18px 19px;
+      color:#f8f1df;
+      background:#14110e;
+      border:1px solid #4b3827;
+      border-radius:11px;
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.03);
+    }
+    .software-notice p{margin:0 0 14px;text-align:justify;text-align-last:left}
+    .software-notice p:last-child{margin-bottom:0}
+    .software-notice .software-rule{
+      padding:10px 12px;
+      color:#ffe8a8;
+      background:rgba(255,255,255,.06);
+      border-left:3px solid #e2a941;
+      border-radius:6px;
+      font-weight:700;
+    }
+    .translation-note{margin:0 0 13px !important;color:#765b42;font-size:.91rem}
+    .policy-list{margin:8px 0 0;padding-left:1.4em}
+    .policy-list li{margin:7px 0;padding-left:3px}
+    .notice{
+      margin-top:18px;
+      padding:18px 20px;
+      color:#542313;
+      background:#fff0e8;
+      border:1px solid rgba(139,0,0,.20);
+      border-radius:12px;
+      font-weight:600;
+      text-align:justify;
+    }
+    .back-row{text-align:center;margin-top:22px}
+    .back-link{display:inline-block;padding:9px 18px;color:#fff;background:var(--red);border-radius:999px;text-decoration:none;font-weight:700}
+    .site-footer{padding:14px;color:#fff;background:var(--red);text-align:center;font-size:.88rem}
+    @media(max-width:650px){
+      body{font-size:16.5px;line-height:1.76}
+      .source-page{width:min(100% - 18px,980px);margin-top:12px}
+      .dawn-hero{min-height:235px;padding:34px 15px 28px;border-radius:13px}
+      .identity-grid{grid-template-columns:1fr}
+      .section-card{padding:19px 15px;border-left-width:3px;border-radius:11px}
+      .link-cluster{display:grid;grid-template-columns:1fr}
+      .source-link{width:100%}
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <h1>॥ कालः कलयतामहम् ॥</h1>
+    <nav class="site-nav" aria-label="मुख्य नेविगेशन">
+      <a href="index.html">मुख्यपृष्ठ</a>
+      <a href="articles.html">लेख</a>
+      <a href="Panchanga.html">पञ्चाङ्ग</a>
+      <a href="Grahashanti.htm">ग्रहशान्ति</a>
+      <a href="contact.html">सम्पर्क</a>
+    </nav>
+  </header>
+
+  <main class="source-page">
+    <section class="dawn-hero" aria-labelledby="pageTitle">
+      <div>
+        <p class="hero-kicker">श्रीसूर्यसिद्धान्तीय पञ्चाङ्ग</p>
+        <h2 id="pageTitle">गणना-स्रोत, कर्तृत्व एवं उपयोग-मर्यादा</h2>
+        <p class="hero-subtitle">पञ्चाङ्ग की मूल गणना, प्रयुक्त सॉफ्टवेयर, वेब-संयोजन तथा सामग्री के समुचित उपयोग का अधिकृत परिचय</p>
+      </div>
+    </section>
+
+    <section class="section-card" aria-labelledby="sourceTitle">
+      <h2 id="sourceTitle">मूल गणना-स्रोत</h2>
+      <p>इस वेबसाइट पर प्रस्तुत श्रीसूर्यसिद्धान्तीय पञ्चाङ्ग पूर्णतः श्री विनय झा द्वारा निर्मित और निःशुल्क उपलब्ध कराए गए “Kundalee” सॉफ्टवेयर से प्राप्त गणनात्मक सामग्री पर आधारित है।</p>
+
+      <div class="identity-grid">
+        <div class="identity-item">
+          <span class="identity-label">पञ्चाङ्गगणितकर्त्ता</span>
+          <span class="identity-value">श्री विनय झा</span>
+        </div>
+        <div class="identity-item">
+          <span class="identity-label">मूल सॉफ्टवेयर</span>
+          <span class="identity-value">“Kundalee”</span>
+        </div>
+      </div>
+
+      <div class="link-cluster" aria-label="मूल गणना-स्रोत सम्बन्धी कड़ियाँ">
+        <a class="source-link" href="https://vedicastrology.wikidot.com/profile-of-vinay-jha" target="_blank" rel="noopener noreferrer">श्री विनय झा का परिचय</a>
+        <a class="source-link" href="https://vedicastrology.wikidot.com/credentials" target="_blank" rel="noopener noreferrer">प्रमाण एवं योग्यताएँ</a>
+        <a class="source-link" href="https://vedicastrology.wikidot.com/kundalee-software-download" target="_blank" rel="noopener noreferrer">“Kundalee” सॉफ्टवेयर</a>
+      </div>
+    </section>
+
+    <section class="section-card" aria-labelledby="presentationTitle">
+      <h2 id="presentationTitle">वेब-संयोजन एवं प्रस्तुति</h2>
+      <p>“Kundalee” सॉफ्टवेयर से प्राप्त सामग्री का स्थानानुसार संयोजन, परीक्षण, निर्णय, वेब-अनुकूल प्रस्तुतीकरण तथा jyotishiji.com पर प्रकाशन गोविन्द द्विवेदी द्वारा किया गया स्वतंत्र कार्य है।</p>
+
+      <div class="identity-grid">
+        <div class="identity-item">
+          <span class="identity-label">वेब-संयोजन एवं प्रस्तुति</span>
+          <span class="identity-value">गोविन्द द्विवेदी</span>
+        </div>
+        <div class="identity-item">
+          <span class="identity-label">मूल वेबसाइट</span>
+          <span class="identity-value"><a href="https://jyotishiji.com/">jyotishiji.com</a></span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-card" aria-labelledby="softwareNoticeTitle">
+      <h2 id="softwareNoticeTitle">“Kundalee” सॉफ्टवेयर में प्रदर्शित उद्देश्य एवं उपयोग-शर्तें</h2>
+      <p class="translation-note">निम्न सामग्री “Kundalee” सॉफ्टवेयर में प्रदर्शित मूल अंग्रेजी सूचना का हिन्दी रूपान्तरण है। किसी अर्थ-सन्देह की स्थिति में सॉफ्टवेयर में उपलब्ध मूल सूचना ही प्राथमिक मानी जाएगी।</p>
+
+      <div class="software-notice">
+        <p class="software-rule">यह सॉफ्टवेयर लाभ कमाने के उद्देश्य से नहीं बेचा जा सकता। केवल इसके वितरण में होने वाला व्यय लिया जा सकता है।</p>
+
+        <p>इस सॉफ्टवेयर का एकमात्र उद्देश्य पीड़ित मानवता को दोषरहित ज्योतिषीय सहायता प्रदान करना है। श्रीसूर्यसिद्धान्तीय ग्रहस्थितियाँ भौतिक खगोलविज्ञान की ग्रहस्थितियों से भिन्न हैं, क्योंकि भौतिक खगोलविज्ञान उन निर्जीव पिण्डों का अध्ययन करता है जिनका जीवों के भाग्य पर कोई अधिकार नहीं है और जिन्हें स्तोत्रों द्वारा प्रसन्न भी नहीं किया जा सकता। ज्योतिष के ग्रह भुवर्लोक में स्थित देवता हैं, जिन्हें मनुष्य अपनी इन्द्रियों से नहीं देख सकता।</p>
+
+        <p>यह सॉफ्टवेयर ललित नारायण मिथिला विश्वविद्यालय के दिवंगत कुलपति डॉ. लक्ष्मण झा के उपदेशों पर आधारित है। यह साधु-सन्तों के आशीर्वाद का फल है और इसका उपयोग ईश्वर तथा मानवता की निःस्वार्थ सेवा के लिए किया जाना चाहिए। इसमें प्रयुक्त सूत्रों की सार्वजनिक व्याख्या नहीं की गई है, क्योंकि श्रीसूर्यसिद्धान्त ब्रह्मविद्या है, जिसे केवल आजीवन ब्रह्मचारियों के लिए प्रकाशित किया जा सकता है।</p>
+
+        <p>जो व्यक्ति इस सॉफ्टवेयर के गणित से असहमत हों, वे संवाद, वाद-विवाद अथवा विधिक परीक्षण के लिए स्वतंत्र हैं, बशर्ते वे ज्योतिष की गणितीय समीकरणों को जानते हों। इस सॉफ्टवेयर का लाभ उन्हीं व्यक्तियों को मिलेगा जो यथासम्भव अपने व्यावहारिक जीवन में सनातन धर्म के सिद्धान्तों का पालन करते हैं। यदि जन्मसमय और जन्मस्थान का देशान्तर शुद्ध हो तो संसार के इस विशुद्ध वैदिक सॉफ्टवेयर की सहायता से फलादेश में कुछ मिनटों तक की सूक्ष्मता प्राप्त की जा सकती है।</p>
+
+        <p>इस सॉफ्टवेयर से सम्बन्धित वर्षा-पूर्वानुमान और शोधपत्रों का वैज्ञानिकों तथा अनेक प्रतिष्ठित संस्थानों द्वारा परीक्षण किया गया है। इस सॉफ्टवेयर पर आधारित पञ्चाङ्ग आदि शङ्कराचार्य के गोवर्धन मठ, पुरी; बिहार राज्य संस्कृत अकादमी, बिहार सरकार; तथा वाराणसी, इलाहाबाद, पुरी, रायपुर, पटना, गया, दरभङ्गा, महासमुन्द, मणिपुर आदि के अन्य प्रतिष्ठित प्रकाशकों द्वारा प्रकाशित किए गए हैं।</p>
+
+        <p>सॉफ्टवेयर की सभी आवृत्तियाँ निःशुल्क हैं।</p>
+
+        <p class="software-rule">श्री विनय झा की पूर्व अनुमति के बिना इस सॉफ्टवेयर की सहायता से कोई पञ्चाङ्ग अथवा कालगणना-पत्रिका प्रकाशित नहीं की जा सकती। मूल सूचना में यह अनुमति उल्लिखित Vedic Astrology Forum के माध्यम से प्राप्त करने का निर्देश है।</p>
+      </div>
+    </section>
+
+    <section class="section-card" aria-labelledby="creditTitle">
+      <h2 id="creditTitle">साझा करते समय अपेक्षित श्रेय</h2>
+      <p>इस पञ्चाङ्ग के किसी चित्र, अंश अथवा दैनिक विवरण को सार्वजनिक रूप से साझा करते समय गणना-स्रोत और मूल वेबसाइट का परिचय स्पष्ट रूप से सुरक्षित रखा जाए।</p>
+
+      <div class="credit-sample">
+        <strong>पञ्चाङ्गगणितकर्त्ता</strong> - श्री विनय झा<br>
+        <strong>मूल सॉफ्टवेयर</strong> - “Kundalee”<br>
+        <strong>वेब-संयोजन एवं प्रस्तुति</strong> - गोविन्द द्विवेदी<br>
+        <strong>मूल वेबसाइट</strong> - https://jyotishiji.com/
+      </div>
+    </section>
+
+    <section class="section-card" aria-labelledby="usageTitle">
+      <h2 id="usageTitle">उपयोग-मर्यादा</h2>
+      <p>पञ्चाङ्ग का व्यक्तिगत और अव्यावसायिक उपयोग स्वागतयोग्य है। इसका सार्वजनिक प्रचार-प्रसार करते समय उपर्युक्त गणना-स्रोत तथा मूल वेबसाइट का सीधा लिंक अवश्य दिया जाए।</p>
+      <p>jyotishiji.com पर उपलब्ध सामग्री मानवता और धर्म की सेवा के लिए पूर्णतः निःशुल्क रखी गई है; किन्तु इस निःशुल्क उपलब्धता का अर्थ सामग्री-अधिकार का हस्तान्तरण नहीं है। पूर्व लिखित अनुमति के बिना jyotishiji.com पर प्रस्तुत सामग्री के निम्नलिखित प्रयोग प्रतिबन्धित हैं-</p>
+
+      <ul class="policy-list">
+        <li>सामग्री अथवा आँकड़ों का सामूहिक प्रतिलिपिकरण;</li>
+        <li>किसी अन्य नाम, वेबसाइट, ऐप अथवा ब्राण्ड के अन्तर्गत पुनर्प्रकाशन;</li>
+        <li>मूल परिचय अथवा श्रेय हटाकर पुनर्ब्राण्डिंग;</li>
+        <li>किसी सशुल्क सेवा, परामर्श, उत्पाद अथवा व्यावसायिक मंच में समावेशन;</li>
+        <li>सम्पूर्ण अथवा पर्याप्त सामग्री का किसी तृतीय पक्ष को हस्तान्तरण;</li>
+        <li>वेबसाइट के आँकड़ों का स्वतः संग्रह, सामूहिक डाउनलोड अथवा पृथक् डेटाबेस के रूप में उपयोग।</li>
+      </ul>
+    </section>
+
+    <aside class="notice">
+      किसी व्यक्ति या संस्था द्वारा मूल लिंक सहित पञ्चाङ्ग साझा किए जाने को व्यावसायिक साझेदारी, आधिकारिक प्रतिनिधित्व, समर्थन, सम्बद्धता अथवा सामग्री-अधिकार प्रदान किया जाना न समझा जाए।
+    </aside>
+
+    <div class="back-row">
+      <a class="back-link" href="Panchanga.html">पञ्चाङ्ग पर लौटें</a>
+    </div>
+  </main>
+
+  <footer class="site-footer">© <span id="siteYear"></span> Jyotishiji.com - सर्वाधिकार सुरक्षित</footer>
+  <script>document.getElementById("siteYear").textContent=new Date().getFullYear();</script>
+</body>
+</html>
