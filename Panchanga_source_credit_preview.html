@@ -144,6 +144,22 @@ a{overflow-wrap:anywhere}
         0 4px 7px rgba(24,62,58,.16);
     }
 
+    /* स्रोत-सन्दर्भ लिंक दृश्य रूप में मूल पाठ जैसे ही रहें */
+    .source-text-link,
+    .source-text-link:visited,
+    .source-text-link:hover,
+    .source-text-link:active {
+      color: inherit;
+      font: inherit;
+      font-weight: inherit;
+      text-decoration: none;
+    }
+
+    .source-text-link:focus-visible {
+      outline: 1px dotted currentColor;
+      outline-offset: 2px;
+    }
+
     .panchanga-section {
       margin-bottom: 14px;
       line-height: 1.62;
@@ -2646,11 +2662,11 @@ body{display:flex;flex-direction:column;min-height:100vh}
 <header class="panchanga-title">
 <p class="ganesh-heading">॥ॐ श्रीगणेशाय नमः॥</p>
 <p class="main-panchanga-heading">
-            ॥श्रीसूर्यसिद्धान्तीय
+            ॥<a class="source-text-link" href="https://vedicastrology.wikidot.com/kundalee-software-download" rel="noopener noreferrer" target="_blank">श्रीसूर्यसिद्धान्तीय</a>
             <span aria-hidden="true">🌞</span>
             <span id="placeHeading">काशीस्थ पञ्चाङ्ग</span>॥
           </p>
-<p class="panchanga-calculator-credit">पञ्चाङ्गगणितकर्त्ता - श्री विनय झा</p>
+<p class="panchanga-calculator-credit"><a class="source-text-link" href="https://vedicastrology.wikidot.com/credentials" rel="noopener noreferrer" target="_blank">पञ्चाङ्गगणितकर्त्ता</a> - <a class="source-text-link" href="https://vedicastrology.wikidot.com/profile-of-vinay-jha" rel="noopener noreferrer" target="_blank">श्री विनय झा</a></p>
 </header>
 <div id="panchangaContent">
 <section class="panchanga-section">
