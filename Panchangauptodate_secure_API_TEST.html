@@ -15687,7 +15687,7 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
 
 <script id="secure-api-migration-test-20260923">
 /* =========================================================
-   Jyotishiji Panchanga — SECURE API MIGRATION TEST v3
+   Jyotishiji Panchanga — SECURE API MIGRATION TEST v4
    Selector-enabled test copy. Raw XLSX loading remains disabled.
    Known seeded fallback: Kashi / 2026-09-22.
    ========================================================= */
@@ -16252,12 +16252,8 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
     const birth=Number($("ydBirthNak")?.value||0);
     const purpose=$("ydPurpose")?.value||"general";
     const dir=$("ydTravelDirection")?.value||"";
-    const travelHtml=purpose==="travel"
-      ? (dir?secureTravelDecisionHtml(d,m,dir):'<div class="yd-empty">यात्रा-दिशा ऊपर यात्रा-विचार में चुनें।</div>')
-      : "";
-
     if(!birth){
-      box.innerHTML=`${travelHtml}<div class="yd-empty" style="margin-top:${travelHtml?"8px":"0"}">${esc(d?.daily_yoga?.tara_default||"जन्म नक्षत्र चुनने पर चयनित दिन के नक्षत्रों से ताराबल तथा शुभ/अशुभ समय का विचार भी दिखाया जाएगा।")}</div>`;
+      box.innerHTML=`<div class="yd-empty">${esc(d?.daily_yoga?.tara_default||"जन्म नक्षत्र चुनने पर चयनित दिन के नक्षत्रों से ताराबल तथा शुभ/अशुभ समय का विचार भी दिखाया जाएगा।")}</div>`;
       return;
     }
 
@@ -16313,8 +16309,7 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
       : '<span class="yd-window">स्पष्ट अनुकूल समय नहीं मिला</span>';
 
     box.innerHTML=
-      `${travelHtml}`+
-      `<div class="yd-tara-summary" style="margin-top:${travelHtml?"8px":"0"}">${summary}</div>`+
+      `<div class="yd-tara-summary">${summary}</div>`+
       `<div class="yd-tara-intervals">${lines}</div>`+
       `<div class="yd-window-title">${esc(winTitle)}</div>`+
       `<div class="yd-window-list">${wins}</div>`+
@@ -16421,7 +16416,7 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
     if(!host || $("secureApiTestBadge")) return;
     const badge=document.createElement("div");
     badge.id="secureApiTestBadge";
-    badge.textContent="SECURE API TEST v3 — interactive controls enabled — raw XLSX loading disabled";
+    badge.textContent="SECURE API TEST v4 — interactive controls clean — raw XLSX loading disabled";
     badge.style.cssText="margin:6px 0 10px;padding:6px 9px;border:1px solid #b7791f;border-radius:7px;background:#fff8df;color:#654700;font:700 12px/1.4 system-ui,sans-serif;text-align:center";
     host.prepend(badge);
   }
