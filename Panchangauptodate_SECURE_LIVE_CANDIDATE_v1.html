@@ -9,7 +9,7 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta content="श्रीसूर्यसिद्धान्तीय स्थानीय दैनिक पञ्चाङ्ग तथा भारतीय काल गणना के आधार।" name="description"/>
 <title>श्रीसूर्यसिद्धान्तीय स्थानीय पञ्चाङ्ग एवं भारतीय काल गणना</title>
-<meta name="panchanga-build" content="2026-09-23-secure-live-candidate-v4"/>
+<meta name="panchanga-build" content="2026-09-23-secure-live-candidate-v5"/>
 <meta name="panchanga-data-source" content="secure-api-day-public-v2"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -4304,7 +4304,7 @@ body.smart-select-lock{overflow:hidden}
 }
 #odayikaSpashta .odayika-sp-value{
   flex:0 0 auto !important;
-  margin-left:auto !important;
+  margin-left:0 !important;
   text-align:right !important;
   letter-spacing:-.02em !important;
 }
@@ -4421,7 +4421,7 @@ body.smart-select-lock{overflow:hidden}
     padding-right:0 !important;
   }
   #odayikaSpashta .odayika-sp-value{
-    margin-left:auto !important;
+    margin-left:0 !important;
     letter-spacing:-.035em !important;
   }
   .odayika-legend-inside{
@@ -4467,6 +4467,58 @@ body.smart-select-lock{overflow:hidden}
   }
   #odayikaUdayastaGrid{
     font-size:.88rem !important;
+  }
+}
+</style>
+
+
+<style id="odayika-spashta-natural-spread-v5-20260923">
+/* औदयिक ग्रहस्पष्ट - कृत्रिम margin push हटाकर सहज प्रसार */
+#odayikaSpashta .odayika-sp-row{
+  width:100% !important;
+  max-width:100% !important;
+  min-width:0 !important;
+  padding-left:1px !important;
+  padding-right:1px !important;
+}
+
+#odayikaSpashta .odayika-sp-row.no-state{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  gap:.35em !important;
+}
+
+#odayikaSpashta .odayika-sp-row.has-state{
+  display:grid !important;
+  grid-template-columns:max-content minmax(0,1fr) max-content !important;
+  align-items:center !important;
+  column-gap:.18em !important;
+}
+
+#odayikaSpashta .odayika-sp-row.has-state .odayika-sp-value{
+  justify-self:end !important;
+  min-width:0 !important;
+}
+
+#odayikaSpashta .odayika-sp-left,
+#odayikaSpashta .odayika-sp-value,
+#odayikaSpashta .odayika-state,
+#odayikaSpashta .odayika-sp-state-right{
+  margin-left:0 !important;
+}
+
+/* Legend exactly as requested; keep it on one line when space permits. */
+.odayika-legend-inside{
+  white-space:nowrap !important;
+}
+
+@media(max-width:600px){
+  #odayikaSpashta .odayika-sp-row.no-state{
+    gap:.20em !important;
+  }
+  #odayikaSpashta .odayika-sp-row.has-state{
+    column-gap:.10em !important;
   }
 }
 </style>
@@ -4746,7 +4798,7 @@ body.smart-select-lock{overflow:hidden}
       <div class="odayika-spashta" aria-label="औदयिक ग्रहस्पष्ट">
       <div class="odayika-sp-box-title">तात्कालिक ग्रहस्पष्ट</div>
       <div id="odayikaSpashta"></div>
-      <p class="odayika-legend odayika-legend-inside">व० = वक्री · अ० = अस्तग्रह/मौढ्य</p>
+      <p class="odayika-legend odayika-legend-inside">व० = वक्री · अ० = अस्त</p>
     </div>
     </div>
 
@@ -5634,7 +5686,7 @@ const PANCHANGA_UI_TRANSLATIONS = {
     "वार्षिक पर्व एवं व्रत-निर्णय":"Annual Parva & Vrata decisions",
     "॥ औदयिक ग्रहस्पष्ट एवं ग्रहचक्र ॥":"॥ Audayika Grahaspaṣṭa & Grahacakra ॥",
     "तात्कालिक ग्रहस्पष्ट":"Current Grahaspaṣṭa",
-    "व० = वक्री · अ० = अस्तग्रह/मौढ्य":"V = Vakrī · A = Asta",
+    "व० = वक्री · अ० = अस्त":"V = Vakrī · A = Asta",
     "सूर्योदयकालीन ग्रहचक्र":"Grahacakra at sunrise",
     "आज का काल एवं मुहूर्त्त-विभाजन":"Today's Kāla & Muhūrta division",
     "दिनमान + रात्रिमान = सावन-अहोरात्र":"Dinamāna + Rātrimāna = Sāvana-ahorātra",
@@ -5844,7 +5896,7 @@ Object.assign(PANCHANGA_UI_TRANSLATIONS,{
     "वार्षिक पर्व एवं व्रत-निर्णय":"वार्षिक पर्व आ व्रत-निर्णय",
     "॥ औदयिक ग्रहस्पष्ट एवं ग्रहचक्र ॥":"॥ औदयिक ग्रहस्पष्ट आ ग्रहचक्र ॥",
     "तात्कालिक ग्रहस्पष्ट":"तात्कालिक ग्रहस्पष्ट",
-    "व० = वक्री · अ० = अस्तग्रह/मौढ्य":"व० = वक्री · अ० = अस्त",
+    "व० = वक्री · अ० = अस्त":"व० = वक्री · अ० = अस्त",
     "सूर्योदयकालीन ग्रहचक्र":"सूर्योदयकालीन ग्रहचक्र",
     "चयनित स्थान एवं दिनाङ्क के सूर्योदयकालीन ग्रहों का राशिचक्र":"चुनल स्थान आ दिनाङ्कक सूर्योदयकालीन ग्रहसभक राशिचक्र",
     "आज का काल एवं मुहूर्त्त-विभाजन":"आइक काल आ मुहूर्त्त-विभाजन",
@@ -5966,7 +6018,7 @@ Object.assign(PANCHANGA_UI_TRANSLATIONS.sa,{
   "सूर्योदयकालीन ग्रहचक्र":"सूर्योदयकालीनं ग्रहचक्रम्",
   "क्रम":"क्रमः","भाग":"भागः","अथर्वज्योतिषीय नाम":"अथर्वज्योतिषीयं नाम",
   "विशेष संज्ञा":"विशेषसंज्ञा","३० मुहूर्त्त देखें ▼":"३० मुहूर्त्तान् पश्यन्तु ▼",
-  "व० = वक्री · अ० = अस्तग्रह/मौढ्य":"व० = वक्री · अ० = अस्तः",
+  "व० = वक्री · अ० = अस्त":"व० = वक्री · अ० = अस्तः",
   "एक सूर्योदय से अगले सूर्योदय तक के सावन अहोरात्र को ६० घटी मानकर दिनमान एवं रात्रिमान की गणना की गयी है। दिवा एवं रात्रि के मुहूर्त्त उनके अपने-अपने मान के पन्द्रहवें भाग से निकाले गये हैं।":"एकस्मात् सूर्योदयात् अग्रिमसूर्योदयपर्यन्तं सावनाहोरात्रं ६० घटिकाः मत्वा दिनमानस्य रात्रिमानस्य च गणना कृता। दिवा-रात्र्योः मुहूर्त्ताः स्वस्वमानस्य पञ्चदशांशेन गणिताः।",
   "॥श्रीसूर्यसिद्धान्तीय":"॥श्रीसूर्यसिद्धान्तीयं",
   "काशीस्थ पञ्चाङ्ग":"काशीस्थं पञ्चाङ्गम्"
@@ -6246,7 +6298,7 @@ Object.assign(PANCHANGA_UI_TRANSLATIONS.mai || (PANCHANGA_UI_TRANSLATIONS.mai={}
   "वार्षिक पर्व एवं व्रत-निर्णय":"वार्षिक पर्व आ व्रत-निर्णय",
   "॥ औदयिक ग्रहस्पष्ट एवं ग्रहचक्र ॥":"॥ औदयिक ग्रहस्पष्ट आ ग्रहचक्र ॥",
   "तात्कालिक ग्रहस्पष्ट":"तात्कालिक ग्रहस्पष्ट",
-  "व० = वक्री · अ० = अस्तग्रह/मौढ्य":"व० = वक्री · अ० = अस्त",
+  "व० = वक्री · अ० = अस्त":"व० = वक्री · अ० = अस्त",
   "सूर्योदयकालीन ग्रहचक्र":"सूर्योदयकालीन ग्रहचक्र",
   "चयनित स्थान एवं दिनाङ्क के सूर्योदयकालीन ग्रहों का राशिचक्र":"चुनल ठाम आ दिनाङ्कक सूर्योदयकालीन ग्रहसभक राशिचक्र",
   "आज का काल एवं मुहूर्त्त-विभाजन":"आइक काल आ मुहूर्त्त-विभाजन",
@@ -15224,7 +15276,7 @@ trigger.className="smart-select-trigger";
     "स्थानीय समय":"Local time",
     "यात्रा-दिशा":"Travel direction",
     "— दिशा चुनें —":"— Select direction —",
-    "व० = वक्री · अ० = अस्तग्रह/मौढ्य":"V = Vakrī · A = Asta-graha/Mauḍhya"
+    "व० = वक्री · अ० = अस्त":"V = Vakrī · A = Asta"
   };
   Object.assign(PANCHANGA_UI_TRANSLATIONS.en||(PANCHANGA_UI_TRANSLATIONS.en={}),en);
 })();
@@ -16368,7 +16420,7 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
     }
 
     const legend=document.querySelector(".odayika-legend-inside");
-    if(legend) legend.textContent="व० = वक्री · अ० = अस्तग्रह/मौढ्य";
+    if(legend) legend.textContent="व० = वक्री · अ० = अस्त";
 
     setTextSafe("odayikaUdayastaTitle","दिशासहित ग्रहोदय-अस्त · चन्द्रोदय-चन्द्रास्त");
     if($("odayikaBox")) $("odayikaBox").hidden=false;
