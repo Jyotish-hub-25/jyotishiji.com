@@ -9,7 +9,7 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta content="श्रीसूर्यसिद्धान्तीय स्थानीय दैनिक पञ्चाङ्ग तथा भारतीय काल गणना के आधार।" name="description"/>
 <title>श्रीसूर्यसिद्धान्तीय स्थानीय पञ्चाङ्ग एवं भारतीय काल गणना</title>
-<meta name="panchanga-build" content="2026-09-23-secure-live-candidate-v1"/>
+<meta name="panchanga-build" content="2026-09-23-secure-live-candidate-v3"/>
 <meta name="panchanga-data-source" content="secure-api-day-public-v2"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -4050,6 +4050,213 @@ body.smart-select-lock{overflow:hidden}
 }
 </style>
 
+
+<style id="kalahora-summary-marker-fix-20260923">
+.yd-kalahora-details > summary{
+  list-style:none;
+}
+.yd-kalahora-details > summary::-webkit-details-marker{
+  display:none;
+}
+</style>
+
+
+<style id="odayika-sandhya-approved-mobile-layout-20260923">
+/* =========================================================
+   APPROVED FINAL PRESENTATION
+   1. औदयिक ग्रहस्पष्ट/ग्रहचक्र
+   2. दिशासहित ग्रहोदय-अस्त / चन्द्रोदय-चन्द्रास्त
+   3. त्रिकाल-सन्ध्योपासन: प्रत्येक सन्ध्या केवल दो compact पंक्तियाँ
+   ========================================================= */
+
+/* ---- औदयिक legend ---- */
+.odayika-legend-inside{
+  white-space:normal !important;
+}
+
+/* ---- ग्रह-उदयास्त : एक ही responsive text box ---- */
+#odayikaUdayasta{
+  margin-top:8px !important;
+  padding-top:8px !important;
+}
+#odayikaUdayastaTitle{
+  margin:0 0 5px !important;
+  font-weight:700 !important;
+  line-height:1.35 !important;
+}
+#odayikaUdayastaGrid{
+  display:block !important;
+  width:100% !important;
+  max-width:100% !important;
+  min-width:0 !important;
+  padding:7px 9px !important;
+  border:1px solid rgba(23,63,85,.14) !important;
+  border-radius:7px !important;
+  background:rgba(255,255,255,.62) !important;
+  line-height:1.48 !important;
+  text-align:center !important;
+  overflow:hidden !important;
+}
+#odayikaUdayastaGrid .odayika-event-chip,
+#odayikaUdayastaGrid .odayika-event-chip.odayika-moon-chip,
+#odayikaUdayastaGrid .odayika-event-chip.odayika-planet-chip{
+  display:inline !important;
+  position:static !important;
+  width:auto !important;
+  min-width:0 !important;
+  height:auto !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:0 !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  white-space:normal !important;
+  line-height:inherit !important;
+  font-size:inherit !important;
+  text-align:inherit !important;
+}
+#odayikaUdayastaGrid .odayika-event-chip strong{
+  display:inline !important;
+  white-space:nowrap !important;
+}
+#odayikaUdayastaGrid .odayika-event-sep{
+  display:inline !important;
+  white-space:pre !important;
+}
+
+/* ---- secure-rendered ग्रहस्पष्ट को legacy auto-fit का पूरा लाभ ---- */
+#odayikaSpashta .odayika-sp-row{
+  justify-content:flex-start !important;
+  width:100% !important;
+}
+#odayikaSpashta .odayika-sp-value{
+  min-width:0 !important;
+}
+
+/* ---- त्रिकाल-सन्ध्योपासन: अलग-अलग card/box नहीं ---- */
+.sandhya-full-box .sandhya-main-list{
+  display:block !important;
+}
+.sandhya-full-box .sandhya-main-item.sandhya-compact-item{
+  display:block !important;
+  width:100% !important;
+  margin:0 !important;
+  padding:7px 2px !important;
+  background:transparent !important;
+  border:0 !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+}
+.sandhya-full-box .sandhya-main-item.sandhya-compact-item + .sandhya-main-item.sandhya-compact-item{
+  border-top:1px dotted rgba(23,63,85,.18) !important;
+}
+.sandhya-compact-mainline,
+.sandhya-compact-gradeline{
+  display:flex !important;
+  flex-wrap:wrap !important;
+  align-items:baseline !important;
+  gap:2px 6px !important;
+  width:100% !important;
+  min-width:0 !important;
+}
+.sandhya-compact-mainline{
+  color:var(--heading);
+  font-size:1.01rem;
+  line-height:1.52;
+}
+.sandhya-compact-gradeline{
+  margin-top:2px;
+  font-size:.96rem;
+  line-height:1.50;
+  color:#222;
+}
+.sandhya-compact-mainline .sandhya-main-name{
+  font:inherit !important;
+  font-weight:700 !important;
+  color:var(--heading) !important;
+}
+.sandhya-compact-mainline .sandhya-main-time{
+  font:inherit !important;
+  white-space:normal !important;
+  color:#222 !important;
+}
+.sandhya-compact-sep,
+.sandhya-comma{
+  flex:0 0 auto;
+}
+.sandhya-compact-gradeline strong{
+  color:var(--heading);
+}
+.sandhya-full-box .sandhya-grade,
+.sandhya-full-box .sandhya-main-head{
+  display:none !important;
+}
+
+@media(max-width:600px){
+  /* ग्रहस्पष्ट संख्याएँ दाहिने किनारे तक available width में auto-fit हों */
+  #odayikaSpashta .odayika-sp-head,
+  #odayikaSpashta .odayika-sp-row{
+    width:100% !important;
+    max-width:100% !important;
+    padding-left:0 !important;
+    padding-right:0 !important;
+    gap:.02em !important;
+  }
+  #odayikaSpashta .odayika-sp-value{
+    letter-spacing:-.045em !important;
+  }
+
+  /* ग्रहचक्र: responsive font calculations already depend on rendered width;
+     SVG को पूर्ण cell-width देना आवश्यक है। */
+  .odayika-chart-box,
+  .odayika-chart{
+    width:100% !important;
+    max-width:100% !important;
+    min-width:0 !important;
+  }
+  .odayika-chart{
+    overflow:visible !important;
+  }
+
+  /* उदयास्त: comma-separated, अधिकतम दो दृश्य पंक्तियों में fit किया जाएगा */
+  #odayikaUdayastaTitle{
+    font-size:.92rem !important;
+  }
+  #odayikaUdayastaGrid{
+    padding:6px 7px !important;
+    font-size:.80rem;
+    line-height:1.42 !important;
+  }
+
+  /* सन्ध्या: प्रत्येक सन्ध्या दो compact पंक्तियाँ */
+  .sandhya-full-box{
+    padding:13px 11px 14px !important;
+  }
+  .sandhya-full-box h3{
+    margin-bottom:7px !important;
+    font-size:1.18rem !important;
+    line-height:1.42 !important;
+  }
+  .sandhya-full-box .sandhya-main-item.sandhya-compact-item{
+    padding:6px 0 !important;
+  }
+  .sandhya-compact-mainline{
+    font-size:.98rem !important;
+    line-height:1.48 !important;
+  }
+  .sandhya-compact-gradeline{
+    font-size:.93rem !important;
+    line-height:1.46 !important;
+  }
+}
+
+/* Devanagari visarga in this section: use Sans glyph to avoid the unwanted top stroke. */
+.sandhya-full-box{
+  font-family:"Noto Sans Devanagari","Nirmala UI","Mangal",sans-serif !important;
+}
+</style>
+
 </head>
 <body>
 <header class="site-header">
@@ -4325,7 +4532,7 @@ body.smart-select-lock{overflow:hidden}
       <div class="odayika-spashta" aria-label="औदयिक ग्रहस्पष्ट">
       <div class="odayika-sp-box-title">तात्कालिक ग्रहस्पष्ट</div>
       <div id="odayikaSpashta"></div>
-      <p class="odayika-legend odayika-legend-inside">व० = वक्री · अ० = अस्तग्रह</p>
+      <p class="odayika-legend odayika-legend-inside">व० = वक्री · अ० = अस्तग्रह/मौढ्य</p>
     </div>
     </div>
 
@@ -4576,7 +4783,7 @@ body.smart-select-lock{overflow:hidden}
 
 <section class="daily-yoga-decision" id="dailyYogaDecisionPanel" hidden>
   <div class="yd-head">
-    <h2>दैनिक योग–मुहूर्त्त निर्णय</h2>
+    <h2>दैनिक योग-मुहूर्त्त निर्णय</h2>
   </div>
   <div class="yd-context" id="ydContext">चयनित पञ्चाङ्ग के अनुसार गणना की जा रही है…</div>
 
@@ -5213,7 +5420,7 @@ const PANCHANGA_UI_TRANSLATIONS = {
     "वार्षिक पर्व एवं व्रत-निर्णय":"Annual Parva & Vrata decisions",
     "॥ औदयिक ग्रहस्पष्ट एवं ग्रहचक्र ॥":"॥ Audayika Grahaspaṣṭa & Grahacakra ॥",
     "तात्कालिक ग्रहस्पष्ट":"Current Grahaspaṣṭa",
-    "व० = वक्री · अ० = अस्त":"V = Vakrī · A = Asta",
+    "व० = वक्री · अ० = अस्तग्रह/मौढ्य":"V = Vakrī · A = Asta",
     "सूर्योदयकालीन ग्रहचक्र":"Grahacakra at sunrise",
     "आज का काल एवं मुहूर्त्त-विभाजन":"Today's Kāla & Muhūrta division",
     "दिनमान + रात्रिमान = सावन-अहोरात्र":"Dinamāna + Rātrimāna = Sāvana-ahorātra",
@@ -5423,7 +5630,7 @@ Object.assign(PANCHANGA_UI_TRANSLATIONS,{
     "वार्षिक पर्व एवं व्रत-निर्णय":"वार्षिक पर्व आ व्रत-निर्णय",
     "॥ औदयिक ग्रहस्पष्ट एवं ग्रहचक्र ॥":"॥ औदयिक ग्रहस्पष्ट आ ग्रहचक्र ॥",
     "तात्कालिक ग्रहस्पष्ट":"तात्कालिक ग्रहस्पष्ट",
-    "व० = वक्री · अ० = अस्त":"व० = वक्री · अ० = अस्त",
+    "व० = वक्री · अ० = अस्तग्रह/मौढ्य":"व० = वक्री · अ० = अस्त",
     "सूर्योदयकालीन ग्रहचक्र":"सूर्योदयकालीन ग्रहचक्र",
     "चयनित स्थान एवं दिनाङ्क के सूर्योदयकालीन ग्रहों का राशिचक्र":"चुनल स्थान आ दिनाङ्कक सूर्योदयकालीन ग्रहसभक राशिचक्र",
     "आज का काल एवं मुहूर्त्त-विभाजन":"आइक काल आ मुहूर्त्त-विभाजन",
@@ -5545,7 +5752,7 @@ Object.assign(PANCHANGA_UI_TRANSLATIONS.sa,{
   "सूर्योदयकालीन ग्रहचक्र":"सूर्योदयकालीनं ग्रहचक्रम्",
   "क्रम":"क्रमः","भाग":"भागः","अथर्वज्योतिषीय नाम":"अथर्वज्योतिषीयं नाम",
   "विशेष संज्ञा":"विशेषसंज्ञा","३० मुहूर्त्त देखें ▼":"३० मुहूर्त्तान् पश्यन्तु ▼",
-  "व० = वक्री · अ० = अस्त":"व० = वक्री · अ० = अस्तः",
+  "व० = वक्री · अ० = अस्तग्रह/मौढ्य":"व० = वक्री · अ० = अस्तः",
   "एक सूर्योदय से अगले सूर्योदय तक के सावन अहोरात्र को ६० घटी मानकर दिनमान एवं रात्रिमान की गणना की गयी है। दिवा एवं रात्रि के मुहूर्त्त उनके अपने-अपने मान के पन्द्रहवें भाग से निकाले गये हैं।":"एकस्मात् सूर्योदयात् अग्रिमसूर्योदयपर्यन्तं सावनाहोरात्रं ६० घटिकाः मत्वा दिनमानस्य रात्रिमानस्य च गणना कृता। दिवा-रात्र्योः मुहूर्त्ताः स्वस्वमानस्य पञ्चदशांशेन गणिताः।",
   "॥श्रीसूर्यसिद्धान्तीय":"॥श्रीसूर्यसिद्धान्तीयं",
   "काशीस्थ पञ्चाङ्ग":"काशीस्थं पञ्चाङ्गम्"
@@ -5825,7 +6032,7 @@ Object.assign(PANCHANGA_UI_TRANSLATIONS.mai || (PANCHANGA_UI_TRANSLATIONS.mai={}
   "वार्षिक पर्व एवं व्रत-निर्णय":"वार्षिक पर्व आ व्रत-निर्णय",
   "॥ औदयिक ग्रहस्पष्ट एवं ग्रहचक्र ॥":"॥ औदयिक ग्रहस्पष्ट आ ग्रहचक्र ॥",
   "तात्कालिक ग्रहस्पष्ट":"तात्कालिक ग्रहस्पष्ट",
-  "व० = वक्री · अ० = अस्त":"व० = वक्री · अ० = अस्त",
+  "व० = वक्री · अ० = अस्तग्रह/मौढ्य":"व० = वक्री · अ० = अस्त",
   "सूर्योदयकालीन ग्रहचक्र":"सूर्योदयकालीन ग्रहचक्र",
   "चयनित स्थान एवं दिनाङ्क के सूर्योदयकालीन ग्रहों का राशिचक्र":"चुनल ठाम आ दिनाङ्कक सूर्योदयकालीन ग्रहसभक राशिचक्र",
   "आज का काल एवं मुहूर्त्त-विभाजन":"आइक काल आ मुहूर्त्त-विभाजन",
@@ -14344,7 +14551,7 @@ visheshRow.hidden = !visheshText;
     `${currentPlaceName} - ${toDev(selectedDate)} का पञ्चाङ्ग प्रदर्शित है।` +
     (dstNote ? ` (${dstNote})` : "");
 
-  /* वही स्वीकृत स्थान + दिनाङ्क दैनिक योग–मुहूर्त्त निर्णय में भी एक साथ लागू हों। */
+  /* वही स्वीकृत स्थान + दिनाङ्क दैनिक योग-मुहूर्त्त निर्णय में भी एक साथ लागू हों। */
   if(typeof window.renderDailyYogaDecision === "function"){
     window.renderDailyYogaDecision();
   }
@@ -14803,7 +15010,7 @@ trigger.className="smart-select-trigger";
     "स्थानीय समय":"Local time",
     "यात्रा-दिशा":"Travel direction",
     "— दिशा चुनें —":"— Select direction —",
-    "व० = वक्री · अ० = अस्तग्रह":"V = Vakrī · A = Asta-graha"
+    "व० = वक्री · अ० = अस्तग्रह/मौढ्य":"V = Vakrī · A = Asta-graha/Mauḍhya"
   };
   Object.assign(PANCHANGA_UI_TRANSLATIONS.en||(PANCHANGA_UI_TRANSLATIONS.en={}),en);
 })();
@@ -15874,12 +16081,35 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
   function renderSandhya(d){
     const host=$("sandhyaMainTimes");
     if(!host) return;
+
+    const smallDash=v=>String(v??"").replace(/[–—]/g,"-").replace(/\s*-\s*/g," - ").trim();
+
+    function mainText(x){
+      const name=String(x?.name||"");
+      const raw=smallDash(x?.main||"");
+      const parts=raw.split(/\s+-\s+/).map(v=>v.trim()).filter(Boolean);
+
+      if(/प्रातः/.test(name) && parts.length){
+        return `रात्रिशेष ${parts[0]} - सूर्योदयपर्यन्त`;
+      }
+      if(/सायं|सायम्|सायंसन्ध्या/.test(name) && parts.length){
+        return `${parts[0]} - सूर्यास्तपर्यन्त`;
+      }
+      return raw;
+    }
+
     host.innerHTML=(d.sandhya||[]).map(x=>`
-      <div class="sandhya-main-item">
-        <div class="sandhya-main-head"><span class="sandhya-main-name">${esc(x.name)}</span><span class="sandhya-main-time">मुख्यकाल ${esc(x.main)}</span></div>
-        <div class="sandhya-grade"><strong>उत्तम</strong><span class="sandhya-start">${esc(x.uttama)}</span></div>
-        <div class="sandhya-grade"><strong>मध्यम</strong><span class="sandhya-start">${esc(x.madhyama)}</span></div>
-        <div class="sandhya-grade"><strong>अधम</strong><span class="sandhya-start">${esc(x.adhama)}</span></div>
+      <div class="sandhya-main-item sandhya-compact-item">
+        <div class="sandhya-compact-mainline">
+          <strong class="sandhya-main-name">${esc(x.name)}</strong>
+          <span class="sandhya-compact-sep">-</span>
+          <span class="sandhya-main-time"><strong>मुख्यकाल</strong> ${esc(mainText(x))}</span>
+        </div>
+        <div class="sandhya-compact-gradeline">
+          <span><strong>उत्तम</strong> ${esc(smallDash(x.uttama))}</span><span class="sandhya-comma">,</span>
+          <span><strong>मध्यम</strong> ${esc(smallDash(x.madhyama))}</span><span class="sandhya-comma">,</span>
+          <span><strong>अधम</strong> - ${esc(smallDash(x.adhama))}</span>
+        </div>
       </div>`).join("");
   }
 
@@ -15911,16 +16141,36 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
     if(grid){
       const planetClass={"बृहस्पति":"guru","मङ्गल":"mangal","बुध":"budha","शुक्र":"shukra","शनि":"shani"};
       const items=[];
-      if(rs.moon) items.push(`<span class="odayika-event-chip odayika-moon-chip"><span>${esc(rs.moon)}</span></span>`);
+      if(rs.moon){
+        items.push(`<span class="odayika-event-chip odayika-moon-chip">${esc(rs.moon)}</span>`);
+      }
       for(const p of (rs.planets||[])){
         const k=planetClass[p.name]||"planet";
-        items.push(`<span class="odayika-event-chip odayika-planet-chip odayika-${k}-chip"><strong>${esc(p.name)}</strong> - ${esc(p.state)}</span>`);
+        const state=String(p.state||"").replace(/^उदित\s+/,"उदय ");
+        items.push(`<span class="odayika-event-chip odayika-planet-chip odayika-${k}-chip"><strong>${esc(p.name)}</strong> - ${esc(state)}</span>`);
       }
-      grid.innerHTML=items.join("");
+      grid.innerHTML=items.join('<span class="odayika-event-sep" aria-hidden="true">, </span>');
       if(box) box.hidden=!items.length;
     }
-    setTextSafe("odayikaUdayastaTitle","चन्द्रमा व पञ्चताराग्रह उदयास्त");
+
+    const legend=document.querySelector(".odayika-legend-inside");
+    if(legend) legend.textContent="व० = वक्री · अ० = अस्तग्रह/मौढ्य";
+
+    setTextSafe("odayikaUdayastaTitle","दिशासहित ग्रहोदय-अस्त · चन्द्रोदय-चन्द्रास्त");
     if($("odayikaBox")) $("odayikaBox").hidden=false;
+
+    // Secure API renderer must also run the existing responsive fit routines.
+    try{
+      if(typeof odayikaScheduleSpashtaFit==="function") odayikaScheduleSpashtaFit();
+      if(typeof odayikaScheduleHeadlineFit==="function") odayikaScheduleHeadlineFit();
+      setTimeout(()=>{
+        try{
+          if(typeof odayikaFitSpashtaTypography==="function") odayikaFitSpashtaTypography();
+          if(typeof odayikaFitHeadlineTypography==="function") odayikaFitHeadlineTypography();
+        }catch(_){}
+        try{ fitOdayikaRiseSetTwoLines(); }catch(_){}
+      },80);
+    }catch(_){}
   }
 
   function renderDailyYoga(d){
@@ -16378,7 +16628,7 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
     renderOdayika(d);
     renderDailyYoga(d);
     renderFestivals(d);
-    apiStatus(`${placeName} - ${asciiToDev(isoToGB(dateIso))} का पञ्चाङ्ग सुरक्षित API से प्रदर्शित है।`);
+    apiStatus(`${placeName} · ${asciiToDev(isoToGB(dateIso))} का पञ्चाङ्ग प्रदर्शित है।`);
     try{ if(typeof updatePanchangaStickyPosition==="function") updatePanchangaStickyPosition(); }catch(_){ }
   }
 
@@ -16406,7 +16656,7 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
       return true;
     }catch(err){
       console.error("Secure Panchanga API:",err);
-      apiStatus("Secure API से पञ्चाङ्ग प्राप्त नहीं हुआ: "+(err?.message||err)+"।",true);
+      apiStatus("पञ्चाङ्ग प्राप्त नहीं हुआ: "+(err?.message||err)+"।",true);
       hideSecurePanels();
       if($("panchangaError")) $("panchangaError").hidden=false;
       return false;
@@ -16442,5 +16692,33 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
 })();
 
 </script>
+
+<script id="odayika-rise-set-two-line-fit-20260923">
+function fitOdayikaRiseSetTwoLines(){
+  const el=document.getElementById("odayikaUdayastaGrid");
+  if(!el || el.hidden || el.clientWidth<=0) return;
+
+  const mobile=window.matchMedia("(max-width:600px)").matches;
+  const maxPx=mobile?13.2:16;
+  const minPx=mobile?9.2:12;
+  let size=maxPx;
+
+  el.style.fontSize=size+"px";
+
+  const fits=()=>{
+    const cs=getComputedStyle(el);
+    const lh=parseFloat(cs.lineHeight) || size*1.42;
+    return el.scrollHeight <= (lh*2 + 5);
+  };
+
+  while(size>minPx && !fits()){
+    size-=0.25;
+    el.style.fontSize=size.toFixed(2)+"px";
+  }
+}
+window.addEventListener("resize",()=>requestAnimationFrame(fitOdayikaRiseSetTwoLines));
+window.addEventListener("orientationchange",()=>setTimeout(fitOdayikaRiseSetTwoLines,80));
+</script>
+
 </body>
 </html>
