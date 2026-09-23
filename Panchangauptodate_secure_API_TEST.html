@@ -15687,7 +15687,7 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
 
 <script id="secure-api-migration-test-20260923">
 /* =========================================================
-   Jyotishiji Panchanga — SECURE API MIGRATION TEST v2
+   Jyotishiji Panchanga — SECURE API MIGRATION TEST v3
    Selector-enabled test copy. Raw XLSX loading remains disabled.
    Known seeded fallback: Kashi / 2026-09-22.
    ========================================================= */
@@ -15920,8 +15920,405 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
     if($("ydTravel")) $("ydTravel").innerHTML=`<p><strong>दिशाशूल:</strong> ${esc(tr.dishashool||"")}।</p><p><strong>चन्द्रवास:</strong> ${esc(tr.moonvas||"")}। ${esc(tr.moonvas_note||"")}</p><p>${esc(tr.direction_prompt||"")}</p><p><strong>आज का नक्षत्र-स्वभाव:</strong> ${esc(tr.nakshatra_nature||"")}</p>`;
     if($("ydTaraResult")) $("ydTaraResult").innerHTML=`<div class="yd-empty">${esc(y.tara_default||"")}</div>`;
 
-    ["ydBirthNak","ydPurpose","ydTravelDirection"].forEach(id=>{ const el=$(id); if(el){el.disabled=true; el.title="Secure API test: interactive derived endpoint pending";} });
-    document.querySelectorAll(".yd-dir-btn").forEach(btn=>{btn.disabled=true; btn.title="Secure API test: interactive derived endpoint pending";});
+    enableSecureInteractiveControls(d);
+    renderSecureInteractive(d);
+  }
+
+  const SECURE_NAK=[
+    "अश्विनी","भरणी","कृत्तिका","रोहिणी","मृगशिरा","आर्द्रा","पुनर्वसु","पुष्य","आश्लेषा",
+    "मघा","पूर्वाफाल्गुनी","उत्तराफाल्गुनी","हस्त","चित्रा","स्वाती","विशाखा","अनुराधा",
+    "ज्येष्ठा","मूल","पूर्वाषाढा","उत्तराषाढा","श्रवण","धनिष्ठा","शतभिषा","पूर्वभाद्रपद",
+    "उत्तरभाद्रपद","रेवती"
+  ];
+  const SECURE_TARA_NAMES=["जन्म","सम्पत्","विपत्","क्षेम","प्रत्यरि","साधक","निधन/वध","मित्र","परममित्र"];
+  const SECURE_TARA_GRADE={1:"medium",2:"good",3:"bad",4:"good",5:"bad",6:"good",7:"bad",8:"good",9:"good"};
+  const SECURE_TARA_EFFECT={
+    1:"मध्यम — सामान्य कार्य में अन्य बलों का विचार करें।",
+    2:"अनुकूल — लाभ, सम्पत्ति और वृद्धि-सम्बन्धी कार्य।",
+    3:"त्याज्य — विघ्न/हानि की आशंका; शुभारम्भ व यात्रा टालें।",
+    4:"अनुकूल — क्षेम, सुरक्षा, स्वास्थ्य और स्थिर प्रगति।",
+    5:"त्याज्य — विरोध/प्रतिबन्ध का संकेत; महत्त्वपूर्ण आरम्भ टालें।",
+    6:"अनुकूल — साधना, सिद्धि, लक्ष्य-पूर्ति और कार्यसाधन।",
+    7:"त्याज्य — निधन/वध तारा; शुभकार्य और यात्रा से बचें।",
+    8:"अनुकूल — मैत्री, संधि, सम्पर्क और सहयोग।",
+    9:"विशेष अनुकूल — परममैत्री, सौहार्द और सामान्य शुभकार्य।"
+  };
+  const SECURE_RASHI_INDEX={
+    "मेष":1,"वृष":2,"वृषभ":2,"मिथुन":3,"कर्क":4,"सिंह":5,"कन्या":6,
+    "तुला":7,"वृश्चिक":8,"धनु":9,"मकर":10,"कुम्भ":11,"कुंभ":11,"मीन":12
+  };
+  const SECURE_CHANDRAVAS_BY_RASHI={
+    1:"पूर्व",5:"पूर्व",9:"पूर्व",2:"दक्षिण",6:"दक्षिण",10:"दक्षिण",
+    3:"पश्चिम",7:"पश्चिम",11:"पश्चिम",4:"उत्तर",8:"उत्तर",12:"उत्तर"
+  };
+  const SECURE_DIR_ORDER=["पूर्व","दक्षिण","पश्चिम","उत्तर"];
+
+  function secureMod(n,m){ return ((n%m)+m)%m; }
+  function secureDev(v){ return asciiToDev(String(v)); }
+
+  function secureClockSec(clock){
+    const s=devToAscii(String(clock||""));
+    const m=s.match(/(\d{1,2}):(\d{2})/);
+    if(!m) return NaN;
+    return Number(m[1])*3600 + Number(m[2])*60;
+  }
+
+  function secureDayModel(d){
+    const s=d?.muhurta?.summary||{};
+    let S=secureClockSec(s.sunrise);
+    let A=secureClockSec(s.sunset);
+    let E=secureClockSec(s.next_sunrise);
+    if(!Number.isFinite(S)||!Number.isFinite(A)||!Number.isFinite(E)) return null;
+    while(A<S) A+=86400;
+    while(E<=A) E+=86400;
+    return {S,A,E,gb:isoToGB(d.date||""),data:d};
+  }
+
+  function secureLabelForPoint(sec,m,isEnd=false){
+    if(!m||!Number.isFinite(sec)) return "";
+    if(isEnd && Math.abs(sec-m.E)<90) return "सूर्योदयपर्यन्त";
+    const at=isEnd?sec-1:sec;
+    if(at>=m.S && at<m.A){
+      const fifth=(m.A-m.S)/5;
+      if(at<m.S+fifth) return "प्रातः";
+      if(at<m.S+2*fifth) return "पूर्वाह्न";
+      if(at<m.S+3*fifth) return "मध्याह्न";
+      if(at<m.S+4*fifth) return "अपराह्न";
+      return "सायं";
+    }
+    if(at>=m.A && at<m.E){
+      const fifth=(m.E-m.A)/5;
+      if(at<m.A+fifth) return "प्रदोष";
+      return "रात्रि";
+    }
+    return "";
+  }
+
+  function secureClockText(sec){
+    let x=((Math.round(sec/60)*60)%86400+86400)%86400;
+    const h=Math.floor(x/3600), mi=Math.floor((x%3600)/60);
+    return secureDev(`${String(h).padStart(2,"0")}:${String(mi).padStart(2,"0")}`);
+  }
+
+  function secureTimeRange(a,b,m){
+    const la=secureLabelForPoint(a,m,false), lb=secureLabelForPoint(b,m,true);
+    const ca=secureClockText(a), cb=secureClockText(b);
+    if(lb==="सूर्योदयपर्यन्त") return `${la?la+" ":""}${ca} – सूर्योदयपर्यन्त`;
+    if(la&&la===lb) return `${la} ${ca} – ${cb}`;
+    return `${la?la+" ":""}${ca} – ${lb?lb+" ":""}${cb}`;
+  }
+
+  function securePointFromClock(rawClock,label,m,minStart=null){
+    let sec=secureClockSec(rawClock);
+    if(!Number.isFinite(sec)) return NaN;
+    const lab=String(label||"").trim();
+    if(lab==="रात्रि"||lab==="रात्रिशेष"){
+      if(sec<m.A%86400) sec+=86400;
+      while(sec<m.A) sec+=86400;
+    }else if(lab==="प्रदोष"){
+      while(sec<m.A) sec+=86400;
+    }else if(["प्रातः","पूर्वाह्न","मध्याह्न","अपराह्न","सायं"].includes(lab)){
+      while(sec<m.S) sec+=86400;
+      if(sec>m.A+3600 && sec>=86400) sec-=86400;
+    }else if(Number.isFinite(minStart)){
+      while(sec<minStart) sec+=86400;
+    }else{
+      while(sec<m.S) sec+=86400;
+    }
+    if(Number.isFinite(minStart)) while(sec<minStart) sec+=86400;
+    return sec;
+  }
+
+  function secureParseRange(range,m){
+    const s=String(range||"").trim();
+    if(!s) return null;
+    if(s==="अहोरात्र") return {a:m.S,b:m.E,text:s};
+    const parts=s.split(/\s+[–—-]\s+/);
+    if(parts.length<2) return null;
+    const left=parts[0].trim(), right=parts.slice(1).join(" – ").trim();
+
+    const leftM=devToAscii(left).match(/(प्रातः|पूर्वाह्न|मध्याह्न|अपराह्न|सायं|प्रदोष|रात्रि|रात्रिशेष)?\s*(\d{1,2}:\d{2})/);
+    if(!leftM) return null;
+    const leftLabel=(left.match(/(प्रातः|पूर्वाह्न|मध्याह्न|अपराह्न|सायं|प्रदोष|रात्रि|रात्रिशेष)/)||[])[1]||"";
+    const a=securePointFromClock(leftM[2],leftLabel,m);
+    if(!Number.isFinite(a)) return null;
+
+    if(/सूर्योदयपर्यन्त/.test(right)) return {a,b:m.E,text:s};
+
+    const rightM=devToAscii(right).match(/(\d{1,2}:\d{2})/);
+    if(!rightM) return null;
+    const rightLabel=(right.match(/(प्रातः|पूर्वाह्न|मध्याह्न|अपराह्न|सायं|प्रदोष|रात्रि|रात्रिशेष)/)||[])[1]||leftLabel;
+    let b=securePointFromClock(rightM[1],rightLabel,m,a);
+    while(b<=a) b+=86400;
+    if(b>m.E+120) b=m.E;
+    return {a,b,text:s};
+  }
+
+  function secureNakIntervals(d,m){
+    const s=String(d?.daily_yoga?.travel?.nakshatra_nature||"").replace(/।\s*$/,"");
+    if(!s) return [];
+    const out=[];
+    for(const part0 of s.split(/\s*;\s*/)){
+      const part=part0.trim();
+      const mm=part.match(/^(.+?)\s+\(([^()]*)\)\s+(.+)$/);
+      if(!mm) continue;
+      const name=mm[1].trim(), nature=mm[2].trim(), range=secureParseRange(mm[3],m);
+      const i=SECURE_NAK.indexOf(name)+1;
+      if(i>0&&range) out.push({i,name,nature,a:range.a,b:range.b,rangeText:range.text});
+    }
+    return out;
+  }
+
+  function secureMoonIntervals(d,m){
+    const s=String(d?.daily_yoga?.travel?.moonvas||"").replace(/।\s*$/,"");
+    if(!s) return [];
+    const out=[];
+    for(const part0 of s.split(/\s*;\s*/)){
+      const part=part0.trim();
+      const mm=part.match(/^(.+?)\s*-\s*(पूर्व|दक्षिण|पश्चिम|उत्तर)\s+(.+)$/);
+      if(!mm) continue;
+      const rashi=mm[1].trim(), moonDir=mm[2], range=secureParseRange(mm[3],m);
+      const r=SECURE_RASHI_INDEX[rashi]||0;
+      if(range) out.push({r,rashi,moonDir,a:range.a,b:range.b,rangeText:range.text});
+    }
+    return out;
+  }
+
+  function secureAvoidIntervals(d,m){
+    const out=[];
+    for(const x of (d?.daily_yoga?.avoid||[])){
+      const p=secureParseRange(x?.time,m);
+      if(p) out.push({a:p.a,b:p.b});
+    }
+    return out;
+  }
+
+  function secureMerge(list){
+    const a=list.filter(x=>x&&x.b>x.a).sort((x,y)=>x.a-y.a),out=[];
+    for(const x of a){
+      const p=out[out.length-1];
+      if(p&&x.a<=p.b+1) p.b=Math.max(p.b,x.b);
+      else out.push({a:x.a,b:x.b});
+    }
+    return out;
+  }
+
+  function secureSubtract(base,blocks){
+    let parts=[{a:base.a,b:base.b}];
+    for(const z of secureMerge(blocks)){
+      const next=[];
+      for(const p of parts){
+        if(z.b<=p.a||z.a>=p.b){ next.push(p); continue; }
+        if(z.a>p.a) next.push({a:p.a,b:Math.min(z.a,p.b)});
+        if(z.b<p.b) next.push({a:Math.max(z.b,p.a),b:p.b});
+      }
+      parts=next;
+    }
+    return parts.filter(x=>x.b-x.a>=10*60);
+  }
+
+  function secureTaraFor(birth,day){
+    const count=secureMod(day-birth,27)+1, t=((count-1)%9)+1;
+    return {count,t,name:SECURE_TARA_NAMES[t-1],grade:SECURE_TARA_GRADE[t],effect:SECURE_TARA_EFFECT[t]};
+  }
+
+  function secureMoonTravelRelation(travelDir,moonDir){
+    const t=SECURE_DIR_ORDER.indexOf(travelDir), c=SECURE_DIR_ORDER.indexOf(moonDir);
+    if(t<0||c<0) return {grade:"bad",name:"अनिर्णीत"};
+    const d=secureMod(c-t,4);
+    if(d===0) return {grade:"good",name:"सम्मुख"};
+    if(d===1) return {grade:"good",name:"दाहिने"};
+    if(d===2) return {grade:"bad",name:"पृष्ठ"};
+    return {grade:"bad",name:"वाम"};
+  }
+
+  function secureDishashool(d){
+    return String(d?.daily_yoga?.travel?.dishashool||d?.panchanga?.dishashool||"")
+      .replace(/\s*दिशा\s*$/,"").trim();
+  }
+
+  function secureAbhijit(m){
+    const u=(m.A-m.S)/15;
+    return {a:m.S+7*u,b:m.S+8*u};
+  }
+
+  function secureTravelDecisionHtml(d,m,dir){
+    const disha=secureDishashool(d), hasShool=dir===disha;
+    const moon=secureMoonIntervals(d,m).map(x=>({...x,rel:secureMoonTravelRelation(dir,x.moonDir)}));
+    const rows=moon.map(x=>{
+      let msg;
+      if(hasShool&&x.rel.grade==="good") msg=`दिशाशूल विद्यमान है, किन्तु चन्द्रवास ${x.rel.name} होकर अनुकूल है। अत्यावश्यक यात्रा परिहार सहित विचारणीय; दिशाशूल को स्वतः भंग नहीं माना गया।`;
+      else if(hasShool) msg=`दिशाशूल और चन्द्रवास दोनों प्रतिकूल हैं; इस अंश में यात्रा स्थगित करना अधिक श्रेयस्कर।`;
+      else if(x.rel.grade==="good") msg=`दिशाशूल नहीं; चन्द्रवास ${x.rel.name} होकर अनुकूल है।`;
+      else msg=`दिशाशूल नहीं, पर चन्द्रवास ${x.rel.name} होकर प्रतिकूल है; अनुकूल चन्द्रवास की प्रतीक्षा श्रेयस्कर।`;
+      const cls=hasShool?(x.rel.grade==="good"?"mix":"bad"):(x.rel.grade==="good"?"good":"bad");
+      return `<div class="yd-travel-line ${cls}"><strong>${esc(x.rashi)} — चन्द्रवास ${esc(x.moonDir)} (${esc(x.rel.name)})</strong> · ${esc(x.rangeText)}<br>${esc(msg)}</div>`;
+    }).join("");
+
+    let ab="";
+    if(hasShool){
+      const weekday=String(d?.panchanga?.weekday||"");
+      if(/बुध/.test(weekday)){
+        ab='<div class="yd-abhijit"><strong>अभिजित्:</strong> बुधवार होने से यात्रा-परिहार के लिये इसका प्रयोग नहीं दिखाया गया है।</div>';
+      }else if(dir==="दक्षिण"){
+        ab='<div class="yd-abhijit"><strong>अभिजित्:</strong> दक्षिण-यात्रा हेतु इसका प्रयोग नहीं दिखाया गया है।</div>';
+      }else{
+        const a=secureAbhijit(m);
+        const goodMoon=moon.some(x=>x.rel.grade==="good"&&Math.max(x.a,a.a)<Math.min(x.b,a.b));
+        ab=`<div class="yd-abhijit"><strong>अत्यावश्यक दशा:</strong> अभिजित् ${esc(secureTimeRange(a.a,a.b,m))}${goodMoon?"; इस समय चन्द्रवास भी अनुकूल अंश में है।":"; चन्द्रवास की अनुकूलता पृथक् जाँचें।"}</div>`;
+      }
+    }
+    return `<div class="yd-travel-lines">${rows}</div>${ab}`;
+  }
+
+  function securePopulateNak(){
+    const s=$("ydBirthNak");
+    if(!s) return;
+    if(s.options.length<=1){
+      SECURE_NAK.forEach((n,i)=>{
+        const o=document.createElement("option");
+        o.value=String(i+1);
+        o.textContent=`${secureDev(i+1)}. ${n}`;
+        s.appendChild(o);
+      });
+    }
+  }
+
+  function secureSyncDirectionButtons(){
+    const val=$("ydTravelDirection")?.value||"";
+    document.querySelectorAll(".yd-dir-btn").forEach(b=>b.classList.toggle("active",b.dataset.dir===val));
+  }
+
+  function enableSecureInteractiveControls(d){
+    securePopulateNak();
+    ["ydBirthNak","ydPurpose","ydTravelDirection"].forEach(id=>{
+      const el=$(id);
+      if(el){ el.disabled=false; el.removeAttribute("title"); }
+    });
+    document.querySelectorAll(".yd-dir-btn").forEach(btn=>{
+      btn.disabled=false;
+      btn.removeAttribute("title");
+    });
+
+    const birth=$("ydBirthNak"), purpose=$("ydPurpose"), dirSelect=$("ydTravelDirection");
+    if(birth&&!birth.dataset.secureInteractiveBound){
+      birth.dataset.secureInteractiveBound="1";
+      birth.addEventListener("change",()=>renderSecureInteractive(secureDayData));
+    }
+    if(purpose&&!purpose.dataset.secureInteractiveBound){
+      purpose.dataset.secureInteractiveBound="1";
+      purpose.addEventListener("change",()=>renderSecureInteractive(secureDayData));
+    }
+    if(dirSelect&&!dirSelect.dataset.secureInteractiveBound){
+      dirSelect.dataset.secureInteractiveBound="1";
+      dirSelect.addEventListener("change",()=>{
+        secureSyncDirectionButtons();
+        renderSecureInteractive(secureDayData);
+      });
+    }
+    document.querySelectorAll(".yd-dir-btn").forEach(btn=>{
+      if(btn.dataset.secureInteractiveBound) return;
+      btn.dataset.secureInteractiveBound="1";
+      btn.addEventListener("click",()=>{
+        if(!dirSelect) return;
+        dirSelect.value=btn.dataset.dir||"";
+        secureSyncDirectionButtons();
+        renderSecureInteractive(secureDayData);
+      });
+    });
+    secureSyncDirectionButtons();
+  }
+
+  function renderSecureTravel(d,m){
+    const tr=d?.daily_yoga?.travel||{}, dir=$("ydTravelDirection")?.value||"";
+    const joint=dir?`<div class="yd-travel-joint">${secureTravelDecisionHtml(d,m,dir)}</div>`:
+      `<p>${esc(tr.direction_prompt||"यात्रा-दिशा: ऊपर दिशा चुनने पर दिशाशूल और चन्द्रवास का संयुक्त निर्णय यहीं दिखेगा।")}</p>`;
+    if($("ydTravel")){
+      $("ydTravel").innerHTML=
+        `<p><strong>दिशाशूल:</strong> ${esc(tr.dishashool||"")}।</p>`+
+        `<p><strong>चन्द्रवास:</strong> ${esc(tr.moonvas||"")}। ${esc(tr.moonvas_note||"")}</p>`+
+        joint+
+        `<p><strong>आज का नक्षत्र-स्वभाव:</strong> ${esc(tr.nakshatra_nature||"")}</p>`;
+    }
+  }
+
+  function renderSecureInteractive(d){
+    if(!d) return;
+    const m=secureDayModel(d), box=$("ydTaraResult");
+    if(!m||!box) return;
+
+    renderSecureTravel(d,m);
+
+    const birth=Number($("ydBirthNak")?.value||0);
+    const purpose=$("ydPurpose")?.value||"general";
+    const dir=$("ydTravelDirection")?.value||"";
+    const travelHtml=purpose==="travel"
+      ? (dir?secureTravelDecisionHtml(d,m,dir):'<div class="yd-empty">यात्रा-दिशा ऊपर यात्रा-विचार में चुनें।</div>')
+      : "";
+
+    if(!birth){
+      box.innerHTML=`${travelHtml}<div class="yd-empty" style="margin-top:${travelHtml?"8px":"0"}">${esc(d?.daily_yoga?.tara_default||"जन्म नक्षत्र चुनने पर चयनित दिन के नक्षत्रों से ताराबल तथा शुभ/अशुभ समय का विचार भी दिखाया जाएगा।")}</div>`;
+      return;
+    }
+
+    const nInts=secureNakIntervals(d,m);
+    const tRows=nInts.map(x=>({...x,tara:secureTaraFor(birth,x.i)}));
+    const goodT=tRows.filter(x=>x.tara.grade==="good");
+    const medium=tRows.filter(x=>x.tara.grade==="medium");
+    const disha=secureDishashool(d);
+    const dishaBlock=purpose==="travel"&&!!dir&&dir===disha;
+    const blocks=secureAvoidIntervals(d,m);
+
+    let candidate=[];
+    for(const x of goodT){
+      const base={a:Math.max(x.a,m.S),b:Math.min(x.b,m.A)};
+      if(base.b<=base.a) continue;
+      candidate.push(...secureSubtract(base,blocks));
+    }
+
+    if(purpose==="travel"&&dir){
+      const moonGood=secureMoonIntervals(d,m)
+        .filter(x=>secureMoonTravelRelation(dir,x.moonDir).grade==="good");
+      const refined=[];
+      for(const p of candidate){
+        for(const q of moonGood){
+          const a=Math.max(p.a,q.a), b=Math.min(p.b,q.b);
+          if(b-a>=10*60) refined.push({a,b});
+        }
+      }
+      candidate=refined;
+    }
+    candidate.sort((a,b)=>a.a-b.a);
+
+    const lines=tRows.map(x=>
+      `<div class="yd-tara-row ${x.tara.grade}"><strong>${esc(x.name)} — ${esc(x.tara.name)} तारा</strong><span>${esc(x.rangeText)} · ${esc(x.tara.effect)}</span></div>`
+    ).join("");
+
+    let summary=`जन्म नक्षत्र <strong>${esc(SECURE_NAK[birth-1])}</strong> के लिये इस दिन ${
+      goodT.length?`<strong>${secureDev(goodT.length)}</strong> अनुकूल नक्षत्र-अंश`:"कोई स्पष्ट अनुकूल नक्षत्र-अंश नहीं"
+    }${medium.length?` तथा ${secureDev(medium.length)} मध्यम अंश`:""} मिला।`;
+
+    if(purpose==="travel"){
+      summary+=dir
+        ? ` यात्रा-दिशा: <strong>${esc(dir)}</strong>${dishaBlock?` — इस दिशा में आज <strong>दिशाशूल</strong> है; ऊपर यात्रा-विचार में चन्द्रवास सहित संयुक्त निर्णय देखें।`:"।"}`
+        : " यात्रा-दिशा अभी नहीं चुनी गयी है।";
+    }
+
+    const winTitle=purpose==="travel"
+      ? (dishaBlock?"अत्यावश्यक यात्रा के लिये विचारणीय समय (दिशाशूल विद्यमान)":"यात्रा के लिये अनुकूल समय")
+      : "शुभ कार्य के लिये अनुकूल समय";
+
+    const wins=candidate.length
+      ? candidate.slice(0,6).map(x=>`<span class="yd-window">${esc(secureTimeRange(x.a,x.b,m))}</span>`).join("")
+      : '<span class="yd-window">स्पष्ट अनुकूल समय नहीं मिला</span>';
+
+    box.innerHTML=
+      `${travelHtml}`+
+      `<div class="yd-tara-summary" style="margin-top:${travelHtml?"8px":"0"}">${summary}</div>`+
+      `<div class="yd-tara-intervals">${lines}</div>`+
+      `<div class="yd-window-title">${esc(winTitle)}</div>`+
+      `<div class="yd-window-list">${wins}</div>`+
+      `<p class="yd-note">यह समय-चयन केवल ताराबल + इस निर्णय-पट्ट में निकले त्याज्यकालों पर आधारित है। ध्यान देने योग्य है कि पूर्ण मुहूर्त्त के लिये चन्द्रबल, लग्न, ग्रहबल, कार्यविशेष-संस्कार, यात्रादिशा के अन्य नियम आदि का पृथक् विचार अतिआवश्यक है, अतः विशेषज्ञ का परामर्श लेकर ही अन्तिम निर्णय लेना श्रेयस्कर है।</p>`;
   }
 
   function renderFestivals(d){
@@ -16024,7 +16421,7 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
     if(!host || $("secureApiTestBadge")) return;
     const badge=document.createElement("div");
     badge.id="secureApiTestBadge";
-    badge.textContent="SECURE API TEST v2 — selector enabled — raw XLSX loading disabled";
+    badge.textContent="SECURE API TEST v3 — interactive controls enabled — raw XLSX loading disabled";
     badge.style.cssText="margin:6px 0 10px;padding:6px 9px;border:1px solid #b7791f;border-radius:7px;background:#fff8df;color:#654700;font:700 12px/1.4 system-ui,sans-serif;text-align:center";
     host.prepend(badge);
   }
