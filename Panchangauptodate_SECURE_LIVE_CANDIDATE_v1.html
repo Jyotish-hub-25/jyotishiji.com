@@ -9,7 +9,7 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta content="श्रीसूर्यसिद्धान्तीय स्थानीय दैनिक पञ्चाङ्ग तथा भारतीय काल गणना के आधार।" name="description"/>
 <title>श्रीसूर्यसिद्धान्तीय स्थानीय पञ्चाङ्ग एवं भारतीय काल गणना</title>
-<meta name="panchanga-build" content="2026-09-23-secure-live-candidate-v3"/>
+<meta name="panchanga-build" content="2026-09-23-secure-live-candidate-v4"/>
 <meta name="panchanga-data-source" content="secure-api-day-public-v2"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -4254,6 +4254,220 @@ body.smart-select-lock{overflow:hidden}
 /* Devanagari visarga in this section: use Sans glyph to avoid the unwanted top stroke. */
 .sandhya-full-box{
   font-family:"Noto Sans Devanagari","Nirmala UI","Mangal",sans-serif !important;
+}
+</style>
+
+
+<style id="odayika-sandhya-visual-correction-v4-20260923">
+/* =========================================================
+   V4 visual correction:
+   - औदयिक title/date restored to readable size
+   - ग्रहस्पष्ट values use full row width up to right border
+   - legend stays on one line
+   - rise/set text readable, commas never orphan
+   - Sandhya second line distributed to the right border
+   - restore Serif Devanagari to avoid the unwanted visarga stroke
+   ========================================================= */
+
+/* ---------- औदयिक मुख्य शीर्षक और दिनाङ्क ---------- */
+.odayika-title{
+  font-size:1.20rem !important;
+  line-height:1.42 !important;
+  font-weight:700 !important;
+  white-space:normal !important;
+  overflow:visible !important;
+}
+.odayika-date-line{
+  font-size:1.02rem !important;
+  line-height:1.48 !important;
+  font-weight:700 !important;
+  white-space:normal !important;
+  overflow:visible !important;
+}
+
+/* ---------- ग्रहस्पष्ट: मान दाहिने border तक उपलब्ध width लें ---------- */
+#odayikaSpashta .odayika-sp-head,
+#odayikaSpashta .odayika-sp-row{
+  width:100% !important;
+  max-width:100% !important;
+}
+#odayikaSpashta .odayika-sp-row{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:flex-start !important;
+  gap:.08em !important;
+  padding-left:1px !important;
+  padding-right:1px !important;
+}
+#odayikaSpashta .odayika-sp-left{
+  flex:0 0 auto !important;
+}
+#odayikaSpashta .odayika-sp-value{
+  flex:0 0 auto !important;
+  margin-left:auto !important;
+  text-align:right !important;
+  letter-spacing:-.02em !important;
+}
+#odayikaSpashta .odayika-state,
+#odayikaSpashta .odayika-sp-state-right{
+  flex:0 0 auto !important;
+  margin-left:.12em !important;
+  padding-right:0 !important;
+}
+
+/* legend: "ग्रह/मौढ्य" को दूसरी पंक्ति में न तोड़ें */
+.odayika-legend-inside{
+  width:100% !important;
+  font-size:.76rem !important;
+  line-height:1.24 !important;
+  white-space:nowrap !important;
+  overflow:visible !important;
+  letter-spacing:-.012em !important;
+}
+
+/* ---------- दिशासहित ग्रहोदय-अस्त ---------- */
+#odayikaUdayastaTitle{
+  font-size:1.03rem !important;
+  line-height:1.42 !important;
+  font-weight:700 !important;
+  margin:0 0 7px !important;
+}
+#odayikaUdayastaGrid{
+  display:flex !important;
+  flex-wrap:wrap !important;
+  justify-content:center !important;
+  align-items:baseline !important;
+  column-gap:.55em !important;
+  row-gap:.28em !important;
+  width:100% !important;
+  max-width:100% !important;
+  min-width:0 !important;
+  padding:8px 10px !important;
+  font-size:.94rem !important;
+  line-height:1.48 !important;
+  text-align:center !important;
+  overflow:visible !important;
+}
+#odayikaUdayastaGrid .odayika-event-chip,
+#odayikaUdayastaGrid .odayika-event-chip.odayika-moon-chip,
+#odayikaUdayastaGrid .odayika-event-chip.odayika-planet-chip{
+  display:inline-block !important;
+  flex:0 0 auto !important;
+  width:auto !important;
+  min-width:0 !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:0 !important;
+  background:transparent !important;
+  white-space:nowrap !important;
+  font-size:inherit !important;
+  line-height:inherit !important;
+}
+#odayikaUdayastaGrid .odayika-event-chip:not(:last-child)::after{
+  content:",";
+  margin-left:.06em;
+}
+#odayikaUdayastaGrid .odayika-event-sep{
+  display:none !important;
+}
+
+/* ---------- त्रिकाल-सन्ध्योपासन ---------- */
+.sandhya-full-box{
+  font-family:"Noto Serif Devanagari","Nirmala UI","Mangal",serif !important;
+}
+.sandhya-full-box h3{
+  font-family:inherit !important;
+}
+.sandhya-compact-mainline,
+.sandhya-compact-gradeline{
+  font-family:inherit !important;
+}
+.sandhya-compact-mainline{
+  column-gap:.40em !important;
+  row-gap:.15em !important;
+}
+.sandhya-compact-gradeline{
+  display:flex !important;
+  flex-wrap:nowrap !important;
+  justify-content:space-between !important;
+  align-items:baseline !important;
+  gap:1.15em !important;
+  width:100% !important;
+  margin-top:3px !important;
+}
+.sandhya-grade-group{
+  flex:0 1 auto !important;
+  white-space:nowrap !important;
+}
+.sandhya-comma{
+  display:none !important;
+}
+
+/* ---------- Mobile ---------- */
+@media(max-width:600px){
+  .odayika-title{
+    font-size:1.10rem !important;
+    line-height:1.42 !important;
+  }
+  .odayika-date-line{
+    font-size:.94rem !important;
+    line-height:1.44 !important;
+  }
+
+  /* ग्रहस्पष्ट readable रहे, पर value दाहिने किनारे तक फैले */
+  #odayikaSpashta .odayika-sp-row{
+    gap:.03em !important;
+    padding-left:0 !important;
+    padding-right:0 !important;
+  }
+  #odayikaSpashta .odayika-sp-value{
+    margin-left:auto !important;
+    letter-spacing:-.035em !important;
+  }
+  .odayika-legend-inside{
+    font-size:clamp(.62rem,2.55vw,.73rem) !important;
+    white-space:nowrap !important;
+    letter-spacing:-.018em !important;
+  }
+
+  #odayikaUdayastaTitle{
+    font-size:1.00rem !important;
+    line-height:1.40 !important;
+  }
+  #odayikaUdayastaGrid{
+    justify-content:flex-start !important;
+    column-gap:.48em !important;
+    row-gap:.20em !important;
+    padding:7px 8px !important;
+    font-size:.91rem !important;
+    line-height:1.46 !important;
+    text-align:left !important;
+  }
+
+  .sandhya-full-box h3{
+    font-size:1.22rem !important;
+  }
+  .sandhya-compact-mainline{
+    font-size:1.00rem !important;
+    line-height:1.48 !important;
+  }
+  .sandhya-compact-gradeline{
+    font-size:.95rem !important;
+    line-height:1.46 !important;
+    gap:.75em !important;
+  }
+}
+
+/* Very narrow phones: preserve readability; only then allow grade line to wrap. */
+@media(max-width:390px){
+  .sandhya-compact-gradeline{
+    flex-wrap:wrap !important;
+    justify-content:flex-start !important;
+    gap:.18em .72em !important;
+  }
+  #odayikaUdayastaGrid{
+    font-size:.88rem !important;
+  }
 }
 </style>
 
@@ -16106,9 +16320,9 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
           <span class="sandhya-main-time"><strong>मुख्यकाल</strong> ${esc(mainText(x))}</span>
         </div>
         <div class="sandhya-compact-gradeline">
-          <span><strong>उत्तम</strong> ${esc(smallDash(x.uttama))}</span><span class="sandhya-comma">,</span>
-          <span><strong>मध्यम</strong> ${esc(smallDash(x.madhyama))}</span><span class="sandhya-comma">,</span>
-          <span><strong>अधम</strong> - ${esc(smallDash(x.adhama))}</span>
+          <span class="sandhya-grade-group"><strong>उत्तम</strong> ${esc(smallDash(x.uttama))},</span>
+          <span class="sandhya-grade-group"><strong>मध्यम</strong> ${esc(smallDash(x.madhyama))},</span>
+          <span class="sandhya-grade-group"><strong>अधम</strong> - ${esc(smallDash(x.adhama))}</span>
         </div>
       </div>`).join("");
   }
@@ -16149,7 +16363,7 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
         const state=String(p.state||"").replace(/^उदित\s+/,"उदय ");
         items.push(`<span class="odayika-event-chip odayika-planet-chip odayika-${k}-chip"><strong>${esc(p.name)}</strong> - ${esc(state)}</span>`);
       }
-      grid.innerHTML=items.join('<span class="odayika-event-sep" aria-hidden="true">, </span>');
+      grid.innerHTML=items.join("");
       if(box) box.hidden=!items.length;
     }
 
@@ -16696,28 +16910,9 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
 <script id="odayika-rise-set-two-line-fit-20260923">
 function fitOdayikaRiseSetTwoLines(){
   const el=document.getElementById("odayikaUdayastaGrid");
-  if(!el || el.hidden || el.clientWidth<=0) return;
-
-  const mobile=window.matchMedia("(max-width:600px)").matches;
-  const maxPx=mobile?13.2:16;
-  const minPx=mobile?9.2:12;
-  let size=maxPx;
-
-  el.style.fontSize=size+"px";
-
-  const fits=()=>{
-    const cs=getComputedStyle(el);
-    const lh=parseFloat(cs.lineHeight) || size*1.42;
-    return el.scrollHeight <= (lh*2 + 5);
-  };
-
-  while(size>minPx && !fits()){
-    size-=0.25;
-    el.style.fontSize=size.toFixed(2)+"px";
-  }
+  if(!el) return;
+  el.style.removeProperty("font-size");
 }
-window.addEventListener("resize",()=>requestAnimationFrame(fitOdayikaRiseSetTwoLines));
-window.addEventListener("orientationchange",()=>setTimeout(fitOdayikaRiseSetTwoLines,80));
 </script>
 
 </body>
