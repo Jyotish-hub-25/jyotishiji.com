@@ -15685,18 +15685,18 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
 </style>
 
 
-<script id="secure-api-migration-test-20260922">
+<script id="secure-api-migration-test-20260923">
 /* =========================================================
-   Jyotishiji Panchanga — SECURE API MIGRATION TEST
-   Scope: Kashi / 2026-09-22 only
-   Raw XLSX loading is deliberately disabled in this test copy.
+   Jyotishiji Panchanga — SECURE API MIGRATION TEST v2
+   Selector-enabled test copy. Raw XLSX loading remains disabled.
+   Known seeded fallback: Kashi / 2026-09-22.
    ========================================================= */
 (() => {
   "use strict";
 
   const SECURE_API_BASE = "https://jyotishiji-panchanga-api.jyotishsamvad.workers.dev";
-  const TEST_PLACE = "kashi";
-  const TEST_DATE = "2026-09-22";
+  const DEFAULT_PLACE = "kashi";
+  const DEFAULT_DATE = "2026-09-22";
   let secureDayData = null;
 
   const $ = id => document.getElementById(id);
@@ -15721,6 +15721,19 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
     return (option?.dataset?.place || "").trim().toLowerCase();
   }
 
+  function placeMetaSecure(placeKey){
+    try{
+      return (Array.isArray(PANCHANGA_PLACES) ? PANCHANGA_PLACES : []).find(p=>p.key===placeKey) || null;
+    }catch(_){ return null; }
+  }
+
+  function selectedPlaceNameSecure(placeKey){
+    const meta=placeMetaSecure(placeKey);
+    if(meta?.name) return meta.name;
+    const option=document.querySelector('#fileLink option:checked');
+    return (option?.dataset?.hiName || option?.textContent || placeKey || "").trim();
+  }
+
   function setTextSafe(id,value){
     const el=$(id);
     if(el) el.textContent=value ?? "";
@@ -15738,9 +15751,32 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
     return String(s||"").replace(/[०-९]/g,d=>map[d]||d);
   }
 
+  function asciiToDev(s){
+    const d="०१२३४५६७८९";
+    return String(s??"").replace(/\d/g,n=>d[Number(n)]);
+  }
+
+  function isoToGB(iso){
+    const m=String(iso||"").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    return m ? `${m[3]}/${m[2]}/${m[1]}` : String(iso||"");
+  }
+
+  function humanDate(iso){
+    const gb=isoToGB(iso);
+    try{
+      if(typeof indianDate==="function" && gb) return indianDate(gb);
+    }catch(_){ }
+    return asciiToDev(gb);
+  }
+
   function renderMainPanchanga(d){
     const p=d.panchanga || {};
-    setTextSafe("placeHeading","काशी");
+    const placeKey=(d.place || selectedPlaceKeySecure() || "").toLowerCase();
+    const meta=placeMetaSecure(placeKey);
+    const placeName=selectedPlaceNameSecure(placeKey);
+    const dateIso=d.date || $("datePicker")?.value || "";
+
+    setTextSafe("placeHeading",meta?.heading || (placeName ? `${placeName}स्थ पञ्चाङ्ग` : "पञ्चाङ्ग"));
     setTextSafe("maasPaksha",p.maas_paksha_display || `${p.maas||""}${p.paksha||""}`);
     setTextSafe("vaar",p.weekday);
     setTextSafe("tithi",p.tithi?.display || p.tithi?.name || "");
@@ -15762,15 +15798,12 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
 
     setTextSafe("vishesh","");
     if($("visheshRow")) $("visheshRow").hidden=true;
-
-    const gb="22/09/2026";
-    if(typeof indianDate==="function") setTextSafe("date",indianDate(gb));
-    else setTextSafe("date","२२ सितम्बर २०२६");
+    setTextSafe("date",humanDate(dateIso));
 
     if($("panchangaContent")) $("panchangaContent").hidden=false;
     if($("panchangaError")) $("panchangaError").hidden=true;
     if($("panchangaVerificationNotice")) $("panchangaVerificationNotice").hidden=true;
-    if($("availableRange")) $("availableRange").textContent="सुरक्षित API परीक्षण: काशी · २२ सितम्बर २०२६";
+    if($("availableRange")) $("availableRange").textContent=`सुरक्षित API: ${placeName} · ${asciiToDev(isoToGB(dateIso))}`;
   }
 
   function renderMuhurta(d){
@@ -15824,23 +15857,24 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
 
   function renderOdayika(d){
     const o=d.odayika || {};
+    const placeKey=(d.place || selectedPlaceKeySecure() || "").toLowerCase();
+    const placeName=selectedPlaceNameSecure(placeKey);
     setTextSafe("odayikaTitle",o.title||"");
     setTextSafe("odayikaDateLine",o.date_line||"");
 
     const sp=$("odayikaSpashta");
     if(sp){
-      sp.innerHTML='<div class="odayika-sp-head"><span class="odayika-sp-headtext">ग्रह -रा०।अं०।क०।वि०व०/अ०</span></div>'+
+      sp.innerHTML='<div class="odayika-sp-head"><span class="odayika-sp-headtext">ग्रह -रा०।अं०।क०।वि०व०/अ०</span></div>'+ 
         (o.graha_spashta||[]).map(p=>`<div class="odayika-sp-row ${p.state?"has-state":"no-state"}"><span class="odayika-sp-left">${esc(p.label)} -</span><span class="odayika-sp-value">${esc(p.value)}</span>${p.state?`<span class="odayika-state odayika-sp-state-right">${esc(p.state)}</span>`:""}</div>`).join("");
     }
 
-    // Rebuild the same chart using only the already-public rashi number in the derived output.
     try{
       const planets=(o.graha_spashta||[]).map(p=>{
         const first=Number(devToAscii(p.value).split("।")[0]);
         return {name:p.label,rashi0:first};
       }).filter(p=>Number.isFinite(p.rashi0));
       const sun=planets.find(p=>p.name==="सू०");
-      if(sun && typeof odayikaRenderChart==="function") odayikaRenderChart(planets,"काशी",sun.rashi0);
+      if(sun && typeof odayikaRenderChart==="function") odayikaRenderChart(planets,placeName,sun.rashi0);
     }catch(err){ console.warn("Secure API chart render:",err); }
 
     const rs=o.rise_set || {};
@@ -15886,7 +15920,6 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
     if($("ydTravel")) $("ydTravel").innerHTML=`<p><strong>दिशाशूल:</strong> ${esc(tr.dishashool||"")}।</p><p><strong>चन्द्रवास:</strong> ${esc(tr.moonvas||"")}। ${esc(tr.moonvas_note||"")}</p><p>${esc(tr.direction_prompt||"")}</p><p><strong>आज का नक्षत्र-स्वभाव:</strong> ${esc(tr.nakshatra_nature||"")}</p>`;
     if($("ydTaraResult")) $("ydTaraResult").innerHTML=`<div class="yd-empty">${esc(y.tara_default||"")}</div>`;
 
-    // Interactive personal inputs will get a server-side endpoint later.
     ["ydBirthNak","ydPurpose","ydTravelDirection"].forEach(id=>{ const el=$(id); if(el){el.disabled=true; el.title="Secure API test: interactive derived endpoint pending";} });
     document.querySelectorAll(".yd-dir-btn").forEach(btn=>{btn.disabled=true; btn.title="Secure API test: interactive derived endpoint pending";});
   }
@@ -15914,48 +15947,53 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
   function renderSecureDay(d){
     secureDayData=d;
     window.__SECURE_PANCHANGA_PUBLIC_DATA__=d;
+    const placeKey=(d.place || selectedPlaceKeySecure() || "").toLowerCase();
+    const placeName=selectedPlaceNameSecure(placeKey);
+    const dateIso=d.date || $("datePicker")?.value || "";
+
+    try{ currentPlaceKey=placeKey; currentPlaceName=placeName; }catch(_){ }
     renderMainPanchanga(d);
     renderMuhurta(d);
     renderSandhya(d);
     renderOdayika(d);
     renderDailyYoga(d);
     renderFestivals(d);
-    apiStatus("काशी - २२/०९/२०२६ का पञ्चाङ्ग Secure API (day-public-v2) से प्रदर्शित है।");
+    apiStatus(`${placeName} - ${asciiToDev(isoToGB(dateIso))} का पञ्चाङ्ग Secure API (day-public-v2) से प्रदर्शित है।`);
     try{ if(typeof updatePanchangaStickyPosition==="function") updatePanchangaStickyPosition(); }catch(_){ }
   }
 
-  async function loadSecureDay(place,date){
-    if(place!==TEST_PLACE || date!==TEST_DATE){
-      apiStatus("यह सुरक्षित migration-test अभी केवल काशी · 22-09-2026 के लिये सक्रिय है।",true);
-      if($("panchangaContent")) $("panchangaContent").hidden=true;
-      if($("dailyYogaDecisionPanel")) $("dailyYogaDecisionPanel").hidden=true;
-      if($("festivalDecisionBox")) $("festivalDecisionBox").hidden=true;
-      return false;
-    }
+  function hideSecurePanels(){
+    if($("panchangaContent")) $("panchangaContent").hidden=true;
+    if($("dailyYogaDecisionPanel")) $("dailyYogaDecisionPanel").hidden=true;
+    if($("festivalDecisionBox")) $("festivalDecisionBox").hidden=true;
+  }
 
+  async function loadSecureDay(place,date){
     apiStatus("Secure API से पञ्चाङ्ग प्राप्त किया जा रहा है...");
     const url=`${SECURE_API_BASE}/day?place=${encodeURIComponent(place)}&date=${encodeURIComponent(date)}`;
     try{
       const response=await fetch(url,{method:"GET",headers:{"Accept":"application/json"},cache:"no-store"});
-      if(!response.ok) throw new Error(`HTTP ${response.status}`);
+      if(!response.ok){
+        if(response.status===404) throw new Error("इस स्थान/दिनाङ्क का सुरक्षित public record अभी उपलब्ध नहीं है");
+        throw new Error(`HTTP ${response.status}`);
+      }
       const payload=await response.json();
       if(!payload?.ok || !payload?.data) throw new Error(payload?.error || "Invalid API response");
       if(payload.data.schema!=="day-public-v2") throw new Error(`Unexpected schema: ${payload.data.schema||"none"}`);
       renderSecureDay(payload.data);
-      // Restore after legacy daily-yoga's startup timer, which sees workbookData=null.
       setTimeout(()=>{ if(secureDayData) renderDailyYoga(secureDayData); },450);
       setTimeout(()=>{ if(secureDayData) renderDailyYoga(secureDayData); },1200);
       return true;
     }catch(err){
       console.error("Secure Panchanga API test:",err);
-      apiStatus("Secure API से पञ्चाङ्ग प्राप्त नहीं हुआ: "+(err?.message||err)+". यदि यह testing page jyotishiji.com origin पर नहीं है तो CORS origin जाँचें।",true);
-      if($("panchangaContent")) $("panchangaContent").hidden=true;
+      apiStatus("Secure API से पञ्चाङ्ग प्राप्त नहीं हुआ: "+(err?.message||err)+"।",true);
+      hideSecurePanels();
       if($("panchangaError")) $("panchangaError").hidden=false;
       return false;
     }
   }
 
-  // Deliberately block legacy XLSX network loading in this secure test copy.
+  // Raw XLSX network loading remains blocked in the secure test copy.
   window.fetchPanchangaFile = async function(){
     throw new Error("Legacy XLSX loading disabled in Secure API test copy");
   };
@@ -15965,28 +16003,28 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
     const date=$("datePicker")?.value || "";
     if(!place){ apiStatus("कृपया स्थान चुनें।",true); return; }
     if(!date){ apiStatus("कृपया दिनाङ्क चुनें।",true); return; }
-    try{ currentPlaceKey=place; currentPlaceName=(document.querySelector('#fileLink option:checked')?.dataset?.hiName||"काशी").trim(); }catch(_){ }
+    try{ currentPlaceKey=place; currentPlaceName=selectedPlaceNameSecure(place); }catch(_){ }
     await loadSecureDay(place,date);
   };
 
+  // Keep a known seeded record as startup fallback until the bulk migration is loaded.
   window.showDefaultKashiToday = async function(){
     const select=$("fileLink"), picker=$("datePicker");
     try{ localStorage.removeItem(PANCHANGA_LAST_PLACE_STORAGE_KEY); }catch(_){ }
-    try{ setSelectorMode("india",{initial:true}); populateIndiaPlaces("kashi"); }catch(_){ }
-    const option=Array.from(select?.options||[]).find(o=>o.dataset.place===TEST_PLACE);
+    try{ setSelectorMode("india",{initial:true}); populateIndiaPlaces(DEFAULT_PLACE); }catch(_){ }
+    const option=Array.from(select?.options||[]).find(o=>o.dataset.place===DEFAULT_PLACE);
     if(option) select.value=option.value;
-    if(picker) picker.value=TEST_DATE;
-    try{ currentPlaceKey=TEST_PLACE; currentPlaceName="काशी"; }catch(_){ }
-    return loadSecureDay(TEST_PLACE,TEST_DATE);
+    if(picker) picker.value=DEFAULT_DATE;
+    try{ currentPlaceKey=DEFAULT_PLACE; currentPlaceName=selectedPlaceNameSecure(DEFAULT_PLACE); }catch(_){ }
+    return loadSecureDay(DEFAULT_PLACE,DEFAULT_DATE);
   };
 
-  // A visible marker makes it impossible to mistake this copy for LIVE.
   function addSecureTestBadge(){
     const host=document.querySelector(".selector-panel-content") || document.querySelector(".panchanga-selector") || document.body;
     if(!host || $("secureApiTestBadge")) return;
     const badge=document.createElement("div");
     badge.id="secureApiTestBadge";
-    badge.textContent="SECURE API TEST — Kashi 22-09-2026 — XLSX loading disabled";
+    badge.textContent="SECURE API TEST v2 — selector enabled — raw XLSX loading disabled";
     badge.style.cssText="margin:6px 0 10px;padding:6px 9px;border:1px solid #b7791f;border-radius:7px;background:#fff8df;color:#654700;font:700 12px/1.4 system-ui,sans-serif;text-align:center";
     host.prepend(badge);
   }
