@@ -9,7 +9,7 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta content="श्रीसूर्यसिद्धान्तीय स्थानीय दैनिक पञ्चाङ्ग तथा भारतीय काल गणना के आधार।" name="description"/>
 <title>श्रीसूर्यसिद्धान्तीय स्थानीय पञ्चाङ्ग एवं भारतीय काल गणना</title>
-<meta name="panchanga-build" content="2026-09-24-secure-live-candidate-v8"/>
+<meta name="panchanga-build" content="2026-09-24-secure-live-candidate-v9"/>
 <meta name="panchanga-data-source" content="secure-api-day-public-v2"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -16949,7 +16949,7 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
       }
 
       for(const p of planets){
-        const state=String(p.state||"").replace(/^उदित\s+/,"उदय ");
+        const state=String(p.state||"");
         items.push(`<span class="odayika-event-chip odayika-planet-chip"><strong>${esc(p.name)}</strong> - ${esc(state)}</span>`);
       }
 
@@ -17456,6 +17456,13 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
       `<p class="yd-note">यह समय-चयन केवल ताराबल + इस निर्णय-पट्ट में निकले त्याज्यकालों पर आधारित है। ध्यान देने योग्य है कि पूर्ण मुहूर्त्त के लिये चन्द्रबल, लग्न, ग्रहबल, कार्यविशेष-संस्कार, यात्रादिशा के अन्य नियम आदि का पृथक् विचार अतिआवश्यक है, अतः विशेषज्ञ का परामर्श लेकर ही अन्तिम निर्णय लेना श्रेयस्कर है।</p>`;
   }
 
+  function secureSpecialTitle(raw){
+    const t=String(raw||"").trim();
+    const m=t.match(/^(.+?)\s*-\s*(शुक्ल पक्ष|कृष्ण पक्ष)$/);
+    if(m) return `${m[2]} ${m[1]}`;
+    return t;
+  }
+
   function renderFestivals(d){
     const list=Array.isArray(d.festivals)?d.festivals:[];
     const box=$("festivalDecisionBox"), today=$("festivalTodayRow");
@@ -17465,7 +17472,7 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
       return;
     }
     const first=list[0];
-    setTextSafe("festivalTodayText",list.map(x=>x.title).join(", ")+" आज");
+    setTextSafe("festivalTodayText",list.map(x=>secureSpecialTitle(x.title)).join(", ")+" आज");
     if(today) today.hidden=false;
     setTextSafe("festivalDecisionTitle",list.length===1?`${first.title} आज`:`आज के पर्व / श्राद्ध-निर्णय (${list.length})`);
     const summary=$("festivalDecisionSummary");
