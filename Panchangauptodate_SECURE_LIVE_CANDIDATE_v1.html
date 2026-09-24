@@ -9,7 +9,7 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta content="श्रीसूर्यसिद्धान्तीय स्थानीय दैनिक पञ्चाङ्ग तथा भारतीय काल गणना के आधार।" name="description"/>
 <title>श्रीसूर्यसिद्धान्तीय स्थानीय पञ्चाङ्ग एवं भारतीय काल गणना</title>
-<meta name="panchanga-build" content="2026-09-24-secure-live-candidate-v9"/>
+<meta name="panchanga-build" content="2026-09-24-secure-live-candidate-v10"/>
 <meta name="panchanga-data-source" content="secure-api-day-public-v2"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -16903,6 +16903,90 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
         `<div class="sandhya-clear-gradeline"><span>${z.grades[0]},</span><span>${z.grades[1]},</span><span>${z.grades[2]}</span></div>`+
         `</div>`;
     }).join("");
+    setTimeout(fitSandhyaGradeRows,60);
+  }
+
+
+  function fitOdayikaSpashtaValues(){
+    const host=$("odayikaSpashta");
+    if(!host) return;
+    const mobile=window.matchMedia("(max-width:600px)").matches;
+    const base=mobile?16.0:16.8;
+    const min=mobile?12.3:13.2;
+    host.querySelectorAll(".odayika-sp-value").forEach(el=>{
+      let size=base;
+      el.style.fontSize=size+"px";
+      while(size>min && el.scrollWidth>el.clientWidth+1){
+        size-=0.25;
+        el.style.fontSize=size.toFixed(2)+"px";
+      }
+    });
+  }
+
+  function layoutOdayikaRiseSetTwoRows(){
+    const grid=$("odayikaUdayastaGrid");
+    if(!grid) return;
+    const items=Array.from(grid.querySelectorAll(".odayika-event-chip"));
+    if(items.length<2) return;
+
+    items.forEach(x=>grid.appendChild(x));
+    grid.querySelectorAll(".odayika-rise-row").forEach(r=>r.remove());
+
+    const available=Math.max(1,grid.clientWidth-4);
+    const gap=10;
+    const mobile=window.matchMedia("(max-width:600px)").matches;
+    let fontSize=mobile?14.4:15.2;
+    const minSize=mobile?11.4:12.0;
+    grid.style.fontSize=fontSize+"px";
+
+    const widths=items.map(x=>Math.ceil(x.getBoundingClientRect().width));
+    let candidates=[];
+    for(let k=2;k<=items.length-2;k++){
+      const w1=widths.slice(0,k).reduce((a,b)=>a+b,0)+gap*(k-1);
+      const w2=widths.slice(k).reduce((a,b)=>a+b,0)+gap*(items.length-k-1);
+      const ratio=Math.max(w1/available,w2/available);
+      const balance=Math.abs(w1-w2)/available;
+      candidates.push({k,score:ratio+balance*.10});
+    }
+    candidates.sort((a,b)=>a.score-b.score);
+    const split=(candidates[0]||{k:Math.ceil(items.length/2)}).k;
+
+    const row1=document.createElement("div");
+    const row2=document.createElement("div");
+    row1.className="odayika-rise-row";
+    row2.className="odayika-rise-row";
+    items.slice(0,split).forEach(x=>row1.appendChild(x));
+    items.slice(split).forEach(x=>row2.appendChild(x));
+    grid.innerHTML="";
+    grid.append(row1,row2);
+
+    const fits=()=>[row1,row2].every(r=>r.scrollWidth<=r.clientWidth+1);
+    while(fontSize>minSize && !fits()){
+      fontSize-=0.25;
+      grid.style.fontSize=fontSize.toFixed(2)+"px";
+    }
+  }
+
+  function fitSandhyaGradeRows(){
+    const mobile=window.matchMedia("(max-width:600px)").matches;
+    const base=mobile?13.2:14.8;
+    const min=mobile?10.4:11.5;
+    document.querySelectorAll(".sandhya-clear-gradeline").forEach(line=>{
+      let size=base;
+      line.style.fontSize=size+"px";
+      const cells=Array.from(line.children);
+      const fits=()=>cells.every(cell=>cell.scrollWidth<=cell.clientWidth+1);
+      while(size>min && !fits()){
+        size-=0.20;
+        line.style.fontSize=size.toFixed(2)+"px";
+      }
+    });
+  }
+
+  function fitSecureResponsiveBlocks(){
+    try{ fitOdayikaSpashtaValues(); }catch(_){ }
+    try{ layoutOdayikaRiseSetTwoRows(); }catch(_){ }
+    try{ fitSandhyaGradeRows(); }catch(_){ }
   }
 
   function renderOdayika(d){
@@ -16971,7 +17055,9 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
           if(typeof odayikaFitSpashtaTypography==="function") odayikaFitSpashtaTypography();
           if(typeof odayikaFitHeadlineTypography==="function") odayikaFitHeadlineTypography();
         }catch(_){}
+        fitSecureResponsiveBlocks();
       },80);
+      setTimeout(fitSecureResponsiveBlocks,260);
     }catch(_){}
   }
 
@@ -17739,6 +17825,167 @@ function fitOdayikaRiseSetTwoLines(){
   }
 }
 </style>
+
+
+<style id="secure-live-v10-responsive-final-20260924">
+#odayikaSpashta .odayika-sp-row{
+  display:grid !important;
+  grid-template-columns:max-content minmax(0,1fr) max-content !important;
+  align-items:center !important;
+  column-gap:.12em !important;
+  width:100% !important;
+  min-width:0 !important;
+  overflow:visible !important;
+}
+#odayikaSpashta .odayika-sp-row.no-state{
+  grid-template-columns:max-content minmax(0,1fr) !important;
+}
+#odayikaSpashta .odayika-sp-left{
+  white-space:nowrap !important;
+  margin:0 !important;
+}
+#odayikaSpashta .odayika-sp-value{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-around !important;
+  justify-self:stretch !important;
+  width:100% !important;
+  min-width:0 !important;
+  max-width:none !important;
+  margin:0 !important;
+  padding:0 .08em !important;
+  white-space:nowrap !important;
+  overflow:visible !important;
+  letter-spacing:0 !important;
+  line-height:1.22 !important;
+}
+#odayikaSpashta .odayika-sp-row.has-state .odayika-sp-value{
+  width:100% !important;
+  min-width:0 !important;
+  max-width:none !important;
+}
+#odayikaSpashta .odayika-value-part,
+#odayikaSpashta .odayika-value-danda{ flex:0 0 auto !important; }
+#odayikaSpashta .odayika-state,
+#odayikaSpashta .odayika-sp-state-right{
+  white-space:nowrap !important;
+  margin:0 !important;
+  padding:0 !important;
+}
+
+#odayikaUdayastaGrid{
+  display:block !important;
+  grid-template-columns:none !important;
+  grid-template-rows:none !important;
+  width:100% !important;
+  min-width:0 !important;
+  max-width:100% !important;
+  padding:8px 10px !important;
+  overflow:visible !important;
+  text-align:justify !important;
+  text-align-last:justify !important;
+}
+#odayikaUdayastaGrid .odayika-rise-row{
+  display:flex !important;
+  flex-wrap:nowrap !important;
+  align-items:baseline !important;
+  justify-content:space-between !important;
+  gap:.45em !important;
+  width:100% !important;
+  min-width:0 !important;
+  white-space:nowrap !important;
+  line-height:1.50 !important;
+  text-align:justify !important;
+  text-align-last:justify !important;
+}
+#odayikaUdayastaGrid .odayika-rise-row + .odayika-rise-row{ margin-top:.34em !important; }
+#odayikaUdayastaGrid .odayika-event-chip,
+#odayikaUdayastaGrid .odayika-event-chip.odayika-moon-chip,
+#odayikaUdayastaGrid .odayika-event-chip.odayika-planet-chip,
+#odayikaUdayastaGrid .odayika-event-chip.odayika-guru-chip,
+#odayikaUdayastaGrid .odayika-event-chip.odayika-mangal-chip,
+#odayikaUdayastaGrid .odayika-event-chip.odayika-budha-chip,
+#odayikaUdayastaGrid .odayika-event-chip.odayika-shukra-chip,
+#odayikaUdayastaGrid .odayika-event-chip.odayika-shani-chip{
+  position:static !important;
+  display:inline-block !important;
+  grid-column:auto !important;
+  grid-row:auto !important;
+  flex:0 0 auto !important;
+  width:auto !important;
+  min-width:0 !important;
+  max-width:none !important;
+  height:auto !important;
+  min-height:0 !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:0 !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  transform:none !important;
+  white-space:nowrap !important;
+  overflow:visible !important;
+  font-size:inherit !important;
+  line-height:inherit !important;
+  text-align:left !important;
+}
+#odayikaUdayastaGrid .odayika-rise-row .odayika-event-chip:not(:last-child)::after{
+  content:"," !important;
+  margin-left:.03em !important;
+}
+#odayikaUdayastaGrid .odayika-rise-row .odayika-event-chip:last-child::after{ content:"" !important; }
+
+.sandhya-clear-gradeline{
+  display:grid !important;
+  grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+  align-items:baseline !important;
+  column-gap:.75em !important;
+  width:100% !important;
+  min-width:0 !important;
+  margin-top:4px !important;
+  white-space:nowrap !important;
+}
+.sandhya-clear-gradeline > span{
+  min-width:0 !important;
+  white-space:nowrap !important;
+  overflow:visible !important;
+}
+.sandhya-clear-gradeline > span:nth-child(1){ text-align:left !important; }
+.sandhya-clear-gradeline > span:nth-child(2){ text-align:center !important; }
+.sandhya-clear-gradeline > span:nth-child(3){ text-align:right !important; }
+
+@media(max-width:600px){
+  #odayikaSpashta .odayika-sp-row{ column-gap:.06em !important; }
+  #odayikaSpashta .odayika-sp-value{
+    padding:0 .02em !important;
+    justify-content:space-between !important;
+  }
+  #odayikaUdayastaGrid{ padding:7px 8px !important; }
+  #odayikaUdayastaGrid .odayika-rise-row{ gap:.26em !important; }
+  .sandhya-clear-gradeline{
+    grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+    column-gap:.30em !important;
+    white-space:nowrap !important;
+  }
+  .sandhya-clear-gradeline > span{ white-space:nowrap !important; }
+}
+</style>
+
+
+<script id="secure-live-v10-responsive-resize-20260924">
+(()=>{
+  let t=null;
+  const run=()=>{
+    clearTimeout(t);
+    t=setTimeout(()=>{
+      try{ if(typeof fitSecureResponsiveBlocks==="function") fitSecureResponsiveBlocks(); }catch(_){}
+    },80);
+  };
+  window.addEventListener("resize",run,{passive:true});
+  window.addEventListener("orientationchange",run,{passive:true});
+})();
+</script>
 
 </body>
 </html>
