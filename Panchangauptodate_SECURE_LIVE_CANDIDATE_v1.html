@@ -9,7 +9,7 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta content="श्रीसूर्यसिद्धान्तीय स्थानीय दैनिक पञ्चाङ्ग तथा भारतीय काल गणना के आधार।" name="description"/>
 <title>श्रीसूर्यसिद्धान्तीय स्थानीय पञ्चाङ्ग एवं भारतीय काल गणना</title>
-<meta name="panchanga-build" content="2026-09-24-secure-live-candidate-v12-proportion-test"/>
+<meta name="panchanga-build" content="2026-09-24-secure-live-candidate-v13-riseset-balanced"/>
 <meta name="panchanga-data-source" content="secure-api-day-public-v2"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -15976,6 +15976,16 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
   window.addEventListener("resize",scheduleSecureResponsiveFit,{passive:true});
   window.addEventListener("orientationchange",scheduleSecureResponsiveFit,{passive:true});
 
+  function formatMoonRiseSetBold(raw){
+    const txt=String(raw||"").trim();
+    if(!txt) return "";
+
+    // Preserve the exact times/qualifiers from API; bold only the two labels.
+    return esc(txt)
+      .replace(/^चन्द्रोदय(?=\s)/,"<strong>चन्द्रोदय</strong>")
+      .replace(/चन्द्रास्त(?=\s)/,"<strong>चन्द्रास्त</strong>");
+  }
+
   function renderOdayika(d){
     const o=d.odayika || {};
     const placeKey=(d.place || selectedPlaceKeySecure() || "").toLowerCase();
@@ -16008,7 +16018,7 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
       const items=[];
 
       if(rs.moon){
-        items.push(`<span class="odayika-event-chip odayika-moon-chip">${esc(rs.moon)}</span>`);
+        items.push(`<span class="odayika-event-chip odayika-moon-chip">${formatMoonRiseSetBold(rs.moon)}</span>`);
       }
 
       for(const p of planets){
@@ -16966,9 +16976,9 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
 
     const w=root.clientWidth;
     const mobile=matchMedia("(max-width:600px)").matches;
-    const normalTarget=clamp(w*(mobile?.108:.102), mobile?13.0:14.2, mobile?16.2:18.0);
-    const stateTarget=Math.max(mobile?12.0:13.0,normalTarget-.8);
-    const headTarget=Math.max(mobile?11.8:12.8,normalTarget-.9);
+    const normalTarget=clamp(w*(mobile?.114:.108), mobile?13.6:14.8, mobile?17.0:19.0);
+    const stateTarget=Math.max(mobile?12.6:13.6,normalTarget-.8);
+    const headTarget=Math.max(mobile?12.2:13.2,normalTarget-.9);
 
     const normal=[...root.querySelectorAll(".odayika-sp-row.no-state")];
     const state=[...root.querySelectorAll(".odayika-sp-row.has-state")];
@@ -16985,8 +16995,8 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
       rows.forEach(r=>r.style.fontSize=size.toFixed(2)+"px");
     };
 
-    fitGroup(normal,normalTarget,mobile?12.6:13.8);
-    fitGroup(state,stateTarget,mobile?11.5:12.5);
+    fitGroup(normal,normalTarget,mobile?13.0:14.2);
+    fitGroup(state,stateTarget,mobile?12.0:13.0);
 
     const head=root.querySelector(".odayika-sp-head");
     if(head){
@@ -17018,37 +17028,48 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
     if(items.length<2) return;
 
     const mobile=matchMedia("(max-width:600px)").matches;
-    const base=mobile?14.2:15.4;
-    const min=mobile?12.6:13.4;
+    const base=mobile?14.4:15.6;
+    const min=mobile?12.8:13.6;
     const gapPx=mobile?5:7;
 
+    // Measure at normal readable size first.
     grid.style.fontSize=base+"px";
     const available=Math.max(1,grid.clientWidth-20);
     const widths=items.map(x=>Math.ceil(x.getBoundingClientRect().width));
 
+    // 6 items -> consider 2+4, 3+3, 4+2.
+    // Prefer the split whose TWO intrinsic row widths are closest,
+    // provided both rows can fit with only modest reduction.
     const candidates=[];
     for(let k=2;k<=items.length-2;k++){
-      const a=widths.slice(0,k).reduce((x,y)=>x+y,0)+gapPx*(k-1);
-      const b=widths.slice(k).reduce((x,y)=>x+y,0)+gapPx*(items.length-k-1);
-      const maxRow=Math.max(a,b);
-      const needShrink=Math.min(1,available/maxRow);
-      const balance=Math.abs(a-b)/available;
-      candidates.push({k,score:needShrink-balance*.025,needShrink});
+      const row1=widths.slice(0,k).reduce((a,b)=>a+b,0)+gapPx*(k-1);
+      const row2=widths.slice(k).reduce((a,b)=>a+b,0)+gapPx*(items.length-k-1);
+      const maxRow=Math.max(row1,row2);
+      const needScale=Math.min(1,available/maxRow);
+      const imbalance=Math.abs(row1-row2)/Math.max(row1,row2,1);
+
+      // Balance is primary; excessive shrink is strongly penalised.
+      const shrinkPenalty=(1-needScale)*1.8;
+      const score=imbalance+shrinkPenalty;
+      candidates.push({k,row1,row2,needScale,score});
     }
-    candidates.sort((a,b)=>b.score-a.score);
-    const chosen=candidates[0]||{k:3,needShrink:1};
+
+    candidates.sort((a,b)=>a.score-b.score);
+    const chosen=candidates[0]||{k:3,needScale:1};
 
     const r1=document.createElement("div");
     const r2=document.createElement("div");
     r1.className="odayika-rise-row";
     r2.className="odayika-rise-row";
+
     items.slice(0,chosen.k).forEach(x=>r1.appendChild(x));
     items.slice(chosen.k).forEach(x=>r2.appendChild(x));
+
     grid.innerHTML="";
     grid.append(r1,r2);
 
-    // Only modest fallback shrink; layout split does the main work.
-    const size=Math.max(min,base*Math.min(1,chosen.needShrink*.99));
+    // Keep the font close to normal; layout does the main work.
+    const size=Math.max(min,base*Math.min(1,chosen.needScale*.995));
     grid.style.fontSize=size.toFixed(2)+"px";
   };
 
@@ -17081,6 +17102,77 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
   addEventListener("load",()=>setTimeout(window.scheduleSecureResponsiveFit,120),{once:true});
 })();
 </script>
+
+
+<style id="secure-live-v13-riseset-balanced-20260924">
+/* ---------- Rise/set title: normal centred heading, not stretched ---------- */
+#odayikaUdayastaTitle{
+  text-align:center !important;
+  text-align-last:auto !important;
+  font-size:1.04rem !important;
+  line-height:1.40 !important;
+  letter-spacing:0 !important;
+  word-spacing:normal !important;
+}
+
+/* ---------- Two equal-looking, naturally distributed rows ---------- */
+#odayikaUdayastaGrid .odayika-rise-row{
+  display:flex !important;
+  flex-wrap:nowrap !important;
+  align-items:baseline !important;
+  justify-content:space-between !important;
+  gap:.45em !important;
+  width:100% !important;
+  min-width:0 !important;
+  white-space:nowrap !important;
+  text-align:left !important;
+  text-align-last:auto !important;
+}
+
+/* No word may break inside a Moon/planet item. */
+#odayikaUdayastaGrid .odayika-event-chip,
+#odayikaUdayastaGrid .odayika-event-chip *{
+  white-space:nowrap !important;
+  word-break:keep-all !important;
+  overflow-wrap:normal !important;
+  hyphens:none !important;
+}
+
+/* Moon labels only are bold; times/qualifiers remain normal. */
+#odayikaUdayastaGrid .odayika-moon-chip strong{
+  font-weight:700 !important;
+  color:var(--heading) !important;
+}
+
+/* Planet names remain bold, state text normal. */
+#odayikaUdayastaGrid .odayika-planet-chip strong{
+  font-weight:700 !important;
+}
+
+/* ---------- Sandhya: use width rather than shrinking too quickly ---------- */
+#sandhyaMainTimes .sandhya-clear-card{
+  padding-left:8px !important;
+  padding-right:8px !important;
+}
+.sandhya-clear-gradeline{
+  justify-content:space-between !important;
+  width:100% !important;
+  min-width:0 !important;
+}
+.sandhya-clear-gradeline > span{
+  white-space:nowrap !important;
+}
+
+@media(max-width:600px){
+  #odayikaUdayastaGrid .odayika-rise-row{
+    gap:.25em !important;
+  }
+  #sandhyaMainTimes .sandhya-clear-card{
+    padding-left:7px !important;
+    padding-right:7px !important;
+  }
+}
+</style>
 
 </body>
 </html>
