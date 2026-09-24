@@ -9,7 +9,7 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta content="श्रीसूर्यसिद्धान्तीय स्थानीय दैनिक पञ्चाङ्ग तथा भारतीय काल गणना के आधार।" name="description"/>
 <title>श्रीसूर्यसिद्धान्तीय स्थानीय पञ्चाङ्ग एवं भारतीय काल गणना</title>
-<meta name="panchanga-build" content="2026-09-24-secure-live-candidate-v6"/>
+<meta name="panchanga-build" content="2026-09-24-secure-live-candidate-v6-rebuilt"/>
 <meta name="panchanga-data-source" content="secure-api-day-public-v2"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -4524,92 +4524,262 @@ body.smart-select-lock{overflow:hidden}
 </style>
 
 
-<style id="daily-yoga-odayika-flow-v6-20260924">
-/* दैनिक योग-मुहूर्त्त शीर्षक: heading + स्थान + पूर्ण दिनाङ्क + वार एक ही element में */
-.daily-yoga-decision .yd-head h2{
-  margin-bottom:8px !important;
-  font-size:clamp(1.02rem,1.55vw,1.24rem) !important;
-  line-height:1.48 !important;
+<style id="secure-live-v6-rebuilt-layout-20260924">
+/* ===== दैनिक योग-मुहूर्त्त : heading + natural flow cards ===== */
+#dailyYogaDecisionPanel .yd-head{
+  margin-bottom:10px !important;
 }
-.daily-yoga-decision #ydContext[hidden]{
+#dailyYogaDecisionPanel #ydMainHeading{
+  margin:0 !important;
+  font-size:clamp(.94rem,1.55vw,1.28rem) !important;
+  line-height:1.45 !important;
+  white-space:nowrap !important;
+  text-align:left !important;
+}
+#dailyYogaDecisionPanel #ydContext{
   display:none !important;
 }
-@media(min-width:900px){
-  .daily-yoga-decision .yd-head h2{
-    white-space:nowrap !important;
-  }
+#ydGoodList,
+#ydBadList{
+  display:grid !important;
+  grid-template-columns:1fr !important;
+  gap:6px !important;
+}
+#ydGoodList .yd-flow-card,
+#ydBadList .yd-flow-card{
+  display:block !important;
+  width:100% !important;
+  min-width:0 !important;
+  padding:7px 9px !important;
+  line-height:1.50 !important;
+  text-align:left !important;
+  white-space:normal !important;
+}
+.yd-flow-card .yd-flow-name,
+.yd-flow-card .yd-flow-time,
+.yd-flow-card .yd-flow-effect,
+.yd-flow-card .yd-flow-avoid,
+.yd-flow-card .yd-flow-sep{
+  display:inline !important;
+  margin:0 !important;
+  padding:0 !important;
+  white-space:normal !important;
+}
+.yd-flow-card .yd-flow-time{
+  color:#6b2f20;
+}
+.yd-flow-card.good .yd-flow-name{
+  color:#173f55;
+}
+.yd-flow-card.bad .yd-flow-name{
+  color:#173f55;
+}
+.yd-flow-card strong{
+  font-weight:700;
 }
 
-/* त्याज्य rows: उपलब्ध स्थान के अनुसार स्वाभाविक फैलाव/रैप */
-#ydBadList .yd-time-first-card{
+/* ===== औदयिक ग्रहस्पष्ट : चार अंश-समूह सहज रूप से फैलें ===== */
+#odayikaSpashta .odayika-sp-row{
+  display:grid !important;
+  grid-template-columns:max-content minmax(0,1fr) max-content !important;
+  align-items:center !important;
+  column-gap:.16em !important;
+  width:100% !important;
+  max-width:100% !important;
+  min-width:0 !important;
+  padding-left:1px !important;
+  padding-right:1px !important;
+}
+#odayikaSpashta .odayika-sp-row.no-state{
+  grid-template-columns:max-content minmax(0,1fr) !important;
+}
+#odayikaSpashta .odayika-sp-left{
+  margin:0 !important;
+  white-space:nowrap !important;
+}
+#odayikaSpashta .odayika-sp-value{
   display:flex !important;
-  flex-wrap:wrap !important;
-  align-items:baseline !important;
-  gap:3px 6px !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  gap:.06em !important;
+  width:100% !important;
+  min-width:0 !important;
+  margin:0 !important;
+  padding:0 .08em !important;
+  text-align:initial !important;
+  letter-spacing:0 !important;
+  white-space:nowrap !important;
 }
-#ydBadList .yd-time-first-card .yd-time,
-#ydBadList .yd-time-first-card .yd-name,
-#ydBadList .yd-time-first-card .yd-sep{
+#odayikaSpashta .odayika-value-part,
+#odayikaSpashta .odayika-value-danda{
   flex:0 0 auto !important;
-  white-space:normal !important;
 }
-#ydBadList .yd-time-first-card .yd-effect{
-  flex:1 1 300px !important;
-  min-width:180px !important;
-  white-space:normal !important;
+#odayikaSpashta .odayika-state,
+#odayikaSpashta .odayika-sp-state-right{
+  margin:0 !important;
+  padding:0 !important;
+  white-space:nowrap !important;
 }
-#ydBadList .yd-time-first-card .yd-avoid{
-  flex:1 1 230px !important;
-  min-width:150px !important;
-  white-space:normal !important;
+.odayika-legend-inside{
+  white-space:nowrap !important;
+  font-size:clamp(.70rem,1.0vw,.84rem) !important;
+  line-height:1.28 !important;
 }
 
-/* चन्द्रमा के बाद जितने ग्रह जगह में आ सकें, उसी पंक्ति में रहें; शेष स्वतः अगली पंक्ति में। */
+/* ===== चन्द्र एवं पञ्चतारा ग्रह - natural wrapping, no forced rows ===== */
+#odayikaUdayastaTitle{
+  font-size:1.05rem !important;
+  line-height:1.42 !important;
+  font-weight:700 !important;
+  margin:0 0 7px !important;
+}
 #odayikaUdayastaGrid{
   display:flex !important;
   flex-wrap:wrap !important;
-  justify-content:flex-start !important;
+  justify-content:space-between !important;
   align-items:baseline !important;
-  gap:.26em .72em !important;
+  column-gap:.85em !important;
+  row-gap:.36em !important;
+  width:100% !important;
+  max-width:100% !important;
+  min-width:0 !important;
+  padding:8px 10px !important;
+  font-size:.94rem !important;
+  line-height:1.48 !important;
+  overflow:visible !important;
 }
 #odayikaUdayastaGrid .odayika-event-chip,
 #odayikaUdayastaGrid .odayika-event-chip.odayika-moon-chip,
 #odayikaUdayastaGrid .odayika-event-chip.odayika-planet-chip{
+  display:inline-block !important;
   flex:0 0 auto !important;
-  grid-column:auto !important;
-  grid-row:auto !important;
   width:auto !important;
+  min-width:0 !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
   white-space:nowrap !important;
+  font-size:inherit !important;
+  line-height:inherit !important;
 }
-#odayikaUdayastaTitle{
-  font-size:1.03rem !important;
-  font-weight:700 !important;
-  line-height:1.42 !important;
-}
-
-/* separators को item के साथ ही रखें; अकेला comma अगली पंक्ति में न जाए */
 #odayikaUdayastaGrid .odayika-event-chip:not(:last-child)::after{
   content:",";
-  margin-left:.05em;
+  margin-left:.04em;
 }
 
-@media(max-width:600px){
-  .daily-yoga-decision .yd-head h2{
-    font-size:1.04rem !important;
-    line-height:1.50 !important;
+/* ===== त्रिकाल-सन्ध्योपासन : clear cards, detailed wording ===== */
+#sandhyaMainTimes{
+  display:grid !important;
+  grid-template-columns:1fr !important;
+  gap:9px !important;
+}
+#sandhyaMainTimes .sandhya-clear-card{
+  display:block !important;
+  width:100% !important;
+  min-width:0 !important;
+  margin:0 !important;
+  padding:10px 12px !important;
+  background:rgba(255,250,240,.74) !important;
+  border:1px solid rgba(23,63,85,.13) !important;
+  border-radius:8px !important;
+  box-shadow:none !important;
+}
+.sandhya-clear-mainline{
+  display:flex !important;
+  flex-wrap:wrap !important;
+  align-items:baseline !important;
+  gap:.18em .42em !important;
+  width:100% !important;
+  line-height:1.55 !important;
+}
+.sandhya-clear-mainline .sandhya-main-name{
+  color:#173f55 !important;
+  font-size:1.00rem !important;
+  font-weight:700 !important;
+}
+.sandhya-clear-mainline .sandhya-main-time{
+  color:#222 !important;
+  font-size:.97rem !important;
+  font-weight:400 !important;
+  white-space:normal !important;
+}
+.sandhya-clear-gradeline{
+  display:flex !important;
+  flex-wrap:wrap !important;
+  justify-content:space-between !important;
+  align-items:baseline !important;
+  gap:.24em 1.10em !important;
+  width:100% !important;
+  margin-top:4px !important;
+  font-size:.94rem !important;
+  line-height:1.52 !important;
+}
+.sandhya-clear-gradeline > span{
+  flex:0 1 auto !important;
+  white-space:nowrap !important;
+}
+.sandhya-clear-gradeline strong{
+  color:#173f55 !important;
+}
+
+/* Keep Devanagari typography consistent with the rest of the Panchanga. */
+.sandhya-full-box,
+.sandhya-full-box *{
+  font-family:"Noto Serif Devanagari","Nirmala UI","Mangal",serif !important;
+}
+
+@media(max-width:760px){
+  #dailyYogaDecisionPanel #ydMainHeading{
     white-space:normal !important;
+    font-size:1.05rem !important;
+    line-height:1.48 !important;
   }
-  #ydBadList .yd-time-first-card .yd-effect,
-  #ydBadList .yd-time-first-card .yd-avoid{
-    flex-basis:220px !important;
-    min-width:0 !important;
+
+  #odayikaSpashta .odayika-sp-row{
+    column-gap:.10em !important;
   }
-  #odayikaUdayastaGrid{
-    gap:.22em .58em !important;
-    font-size:.91rem !important;
+  #odayikaSpashta .odayika-sp-value{
+    gap:.035em !important;
+    padding:0 .04em !important;
   }
+
   #odayikaUdayastaTitle{
     font-size:1rem !important;
+  }
+  #odayikaUdayastaGrid{
+    justify-content:space-between !important;
+    column-gap:.55em !important;
+    row-gap:.30em !important;
+    padding:7px 8px !important;
+    font-size:.91rem !important;
+  }
+
+  #sandhyaMainTimes .sandhya-clear-card{
+    padding:9px 10px !important;
+  }
+  .sandhya-clear-mainline{
+    font-size:.98rem !important;
+    line-height:1.50 !important;
+  }
+  .sandhya-clear-gradeline{
+    justify-content:space-between !important;
+    gap:.22em .72em !important;
+    font-size:.92rem !important;
+  }
+}
+
+@media(max-width:390px){
+  #odayikaUdayastaGrid{
+    justify-content:flex-start !important;
+    font-size:.88rem !important;
+  }
+  .sandhya-clear-gradeline{
+    justify-content:flex-start !important;
+  }
+  .sandhya-clear-gradeline > span{
+    white-space:normal !important;
   }
 }
 </style>
@@ -5140,7 +5310,7 @@ body.smart-select-lock{overflow:hidden}
 
 <section class="daily-yoga-decision" id="dailyYogaDecisionPanel" hidden>
   <div class="yd-head">
-    <h2>दैनिक योग-मुहूर्त्त निर्णय</h2>
+    <h2 id="ydMainHeading">दैनिक योग-मुहूर्त्त निर्णय</h2>
   </div>
   <div class="yd-context" id="ydContext">चयनित पञ्चाङ्ग के अनुसार गणना की जा रही है…</div>
 
@@ -16289,28 +16459,6 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
 
   const yogaDash = value => String(value ?? "").replace(/[–—]/g,"-");
 
-  const SECURE_HI_MONTHS=[
-    "जनवरी","फरवरी","मार्च","अप्रैल","मई","जून",
-    "जुलाई","अगस्त","सितम्बर","अक्टूबर","नवम्बर","दिसम्बर"
-  ];
-
-  function secureHindiLongDate(dateIso){
-    const m=String(dateIso||"").match(/^(\d{4})-(\d{2})-(\d{2})$/);
-    if(!m) return asciiToDev(isoToGB(dateIso||""));
-    const year=asciiToDev(m[1]);
-    const month=SECURE_HI_MONTHS[Number(m[2])-1]||m[2];
-    const day=asciiToDev(String(Number(m[3])));
-    return `${day} ${month} ${year}`;
-  }
-
-  function secureDailyHeading(d){
-    const placeKey=(d?.place || selectedPlaceKeySecure() || "").toLowerCase();
-    const placeName=selectedPlaceNameSecure(placeKey);
-    const dateIso=d?.date || $("datePicker")?.value || "";
-    const weekday=d?.panchanga?.weekday || "";
-    return `दैनिक योग-मुहूर्त्त निर्णय - ${placeName} - ${secureHindiLongDate(dateIso)}, दिन ${weekday} ।`;
-  }
-
   function secureDailyContext(d){
     const placeKey=(d?.place || selectedPlaceKeySecure() || "").toLowerCase();
     const placeName=selectedPlaceNameSecure(placeKey);
@@ -16321,53 +16469,98 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
       .join(" · ");
   }
 
-  function normalizeAnandadiName(name){
-    const raw=yogaDash(name||"").trim();
-    const m=raw.match(/^आनन्दादि\s*-\s*(.+)$/);
-    if(!m) return raw;
-    const subtype=m[1].trim();
-    if(subtype==="वज्र" || subtype==="वज्र योग") return "आनन्दादि योग - वज्र योग";
-    return `आनन्दादि योग - ${subtype}`;
+  function secureLongIndianDate(iso){
+    const m=String(iso||"").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if(!m) return asciiToDev(isoToGB(iso));
+    const months=[
+      "जनवरी","फरवरी","मार्च","अप्रैल","मई","जून",
+      "जुलाई","अगस्त","सितम्बर","अक्टूबर","नवम्बर","दिसम्बर"
+    ];
+    return `${asciiToDev(String(Number(m[3])))} ${months[Number(m[2])-1]} ${asciiToDev(m[1])}`;
   }
 
-  function secureAvoidPresentation(x){
-    const rawName=normalizeAnandadiName(x?.name||"");
-    let time=yogaDash(x?.time||"").trim();
-    let name=rawName;
-    let effect=yogaDash(x?.effect||"").trim();
-    let avoid=yogaDash(x?.avoid||"").trim();
-    const all=[rawName,effect,avoid].join(" ");
+  function secureDailyHeading(d){
+    const placeKey=(d?.place || selectedPlaceKeySecure() || "").toLowerCase();
+    const placeName=selectedPlaceNameSecure(placeKey);
+    const dateIso=d?.date || $("datePicker")?.value || "";
+    const weekday=d?.panchanga?.weekday || "";
+    return `दैनिक योग-मुहूर्त्त निर्णय - ${placeName} - ${secureLongIndianDate(dateIso)}, दिन ${weekday} ।`;
+  }
 
-    // सामान्य पञ्चक; बाण-पञ्चक इसमें न आये।
-    if(/पञ्चक/.test(rawName) && !/बाण-पञ्चक/.test(rawName)){
-      return {
-        time:"अहोरात्र",
-        name:"पञ्चक",
-        effect:"विशेषतः दक्षिण-यात्रा, नवीन शय्या-निर्माण उपयोग, गृहाच्छादन अथव गृहसम्बन्धी आरम्भ, तृण-काष्ठ-संग्रह और मृतक संस्कार में वर्जन का विचारणीय। इन निर्दिष्ट कार्यों में सक्रिय पञ्चक-अंश का त्याग करना चाहिये।",
-        avoid:""
-      };
+  function normalizeDailyYogaName(raw){
+    let name=String(raw||"").replace(/[–—]/g,"-").trim();
+    const m=name.match(/^आनन्दादि\s*-\s*(.+)$/);
+    if(m){
+      let tail=m[1].trim();
+      if(tail==="वज्र") tail="वज्र योग";
+      return `आनन्दादि योग - ${tail}`;
+    }
+    if(/शूल/.test(name) && /वर्ज्यांश/.test(name)) return "शूल योग";
+    return name;
+  }
+
+  function normalizeDailyYogaTime(raw){
+    return String(raw||"")
+      .replace(/[–—]/g,"-")
+      .replace(/\bप्रदोष\s+(?=[०-९0-9])/g,"प्रदोषकाल ")
+      .replace(/\s*-\s*/g," - ")
+      .replace(/\s+/g," ")
+      .trim();
+  }
+
+  function dailyYogaGoodHtml(x){
+    const name=normalizeDailyYogaName(x?.name);
+    const time=normalizeDailyYogaTime(x?.time);
+    const effect=String(x?.effect||"").replace(/[–—]/g,"-").trim();
+
+    return `<div class="yd-item good yd-flow-card">`+
+      `<strong class="yd-flow-name">${esc(name)}</strong>`+
+      `${time?`<span class="yd-flow-time"> ${esc(time)}</span>`:""}`+
+      `${effect?`<span class="yd-flow-sep"> - </span><span class="yd-flow-effect">${esc(effect)}</span>`:""}`+
+      `</div>`;
+  }
+
+  function dailyYogaAvoidHtml(x){
+    const rawName=String(x?.name||"");
+    const time=normalizeDailyYogaTime(x?.time);
+    const name=normalizeDailyYogaName(rawName);
+
+    if(/पञ्चक/.test(rawName)){
+      return `<div class="yd-item bad yd-flow-card">`+
+        `<strong class="yd-flow-time">${esc(time||"अहोरात्र")}</strong>`+
+        `<span class="yd-flow-sep"> - </span><strong class="yd-flow-name">पञ्चक</strong>`+
+        `<span class="yd-flow-sep"> - </span>`+
+        `<span class="yd-flow-effect">विशेषतः दक्षिण-यात्रा, नवीन शय्या-निर्माण उपयोग, गृहाच्छादन अथव गृहसम्बन्धी आरम्भ, तृण-काष्ठ-संग्रह और मृतक संस्कार में वर्जन का विचारणीय। इन निर्दिष्ट कार्यों में सक्रिय पञ्चक-अंश का त्याग करना चाहिये।</span>`+
+        `</div>`;
     }
 
-    if(/^आनन्दादि योग - वज्र योग$/.test(rawName)){
-      return {
-        time,
-        name:"आनन्दादि योग - वज्र योग",
-        effect:"दोषप्रधान, नामवत् फल; वर्ज्यांश प्रथम ५ घटिका अर्थात २ घण्टा त्याग योग्य। शुभारम्भ का निषेध।",
-        avoid:""
-      };
+    if(/आनन्दादि/.test(rawName) && /वज्र/.test(rawName)){
+      return `<div class="yd-item bad yd-flow-card">`+
+        `<strong class="yd-flow-time">${esc(time)}</strong>`+
+        `<span class="yd-flow-sep"> - </span><strong class="yd-flow-name">आनन्दादि योग - वज्र योग</strong>`+
+        `<span class="yd-flow-sep"> - </span>`+
+        `<span class="yd-flow-effect">दोषप्रधान, नामवत् फल; वर्ज्यांश <strong>प्रथम ५ घटिका अर्थात २ घण्टा</strong> त्याग योग्य। <strong>शुभारम्भ का निषेध।</strong></span>`+
+        `</div>`;
     }
 
-    if(/शूल/.test(rawName) && /(वर्ज्यांश|नित्ययोग|दोषांश)/.test(all)){
-      time=time.replace(/\bप्रदोष\s+/,"प्रदोषकाल ");
-      return {
-        time,
-        name:"शूल योग",
-        effect:"नित्ययोग का शास्त्रोक्त दोषांश वर्ज्यांश प्रथम ५ घटिका अर्थात २ घण्टा त्याग योग्य। माङ्गलिक कार्यारम्भ, शुभारम्भ का निषेध।",
-        avoid:""
-      };
+    if(/शूल/.test(rawName)){
+      return `<div class="yd-item bad yd-flow-card">`+
+        `<strong class="yd-flow-time">${esc(time)}</strong>`+
+        `<span class="yd-flow-sep"> - </span><strong class="yd-flow-name">शूल योग</strong>`+
+        `<span class="yd-flow-sep"> - </span>`+
+        `<span class="yd-flow-effect">नित्ययोग का शास्त्रोक्त दोषांश <strong>वर्ज्यांश प्रथम ५ घटिका अर्थात २ घण्टा</strong> त्याग योग्य। <strong>माङ्गलिक कार्यारम्भ, शुभारम्भ का निषेध।</strong></span>`+
+        `</div>`;
     }
 
-    return {time,name,effect,avoid};
+    const effect=String(x?.effect||"").replace(/[–—]/g,"-").trim();
+    const avoid=String(x?.avoid||"").replace(/[–—]/g,"-").trim();
+
+    return `<div class="yd-item bad yd-flow-card">`+
+      `${time?`<strong class="yd-flow-time">${esc(time)}</strong><span class="yd-flow-sep"> - </span>`:""}`+
+      `<strong class="yd-flow-name">${esc(name)}</strong>`+
+      `${effect?`<span class="yd-flow-sep"> - </span><span class="yd-flow-effect">${esc(effect)}</span>`:""}`+
+      `${avoid?`<span class="yd-flow-sep"> - </span><span class="yd-flow-avoid">${esc(avoid)}</span>`:""}`+
+      `</div>`;
   }
 
   function apiStatus(message, isError=false){
@@ -16510,35 +16703,80 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
     const host=$("sandhyaMainTimes");
     if(!host) return;
 
-    const smallDash=v=>String(v??"").replace(/[–—]/g,"-").replace(/\s*-\s*/g," - ").trim();
+    const clean=v=>String(v??"")
+      .replace(/[–—]/g,"-")
+      .replace(/\s*-\s*/g," - ")
+      .replace(/\s+/g," ")
+      .trim();
 
-    function mainText(x){
-      const name=String(x?.name||"");
-      const raw=smallDash(x?.main||"");
-      const parts=raw.split(/\s+-\s+/).map(v=>v.trim()).filter(Boolean);
+    const firstClock=v=>{
+      const m=String(v||"").match(/[०-९0-9]{1,2}:[०-९0-9]{2}/);
+      return m?m[0]:"";
+    };
+    const clocks=v=>String(v||"").match(/[०-९0-9]{1,2}:[०-९0-9]{2}/g)||[];
 
-      if(/प्रातः/.test(name) && parts.length){
-        return `रात्रिशेष ${parts[0]} - सूर्योदयपर्यन्त`;
+    function build(x){
+      const name=String(x?.name||"").trim();
+      const main=clean(x?.main);
+      const ms=clocks(main);
+      const u=firstClock(x?.uttama);
+      const m=firstClock(x?.madhyama);
+      const a=firstClock(x?.adhama);
+
+      if(/प्रातः/.test(name)){
+        return {
+          name,
+          main:`मुख्यकाल रात्रिशेष ${ms[0]||u} बजे से सूर्योदयपर्यन्त`,
+          grades:[
+            `<strong>उत्तम</strong> रात्रिशेष ${esc(u)}`,
+            `<strong>मध्यम</strong> रात्रिशेष ${esc(m)}`,
+            `<strong>अधम</strong> - सूर्योदयपश्चात्`
+          ]
+        };
       }
-      if(/सायं|सायम्|सायंसन्ध्या/.test(name) && parts.length){
-        return `${parts[0]} - सूर्यास्तपर्यन्त`;
+
+      if(/मध्याह्न/.test(name)){
+        return {
+          name,
+          main:`मुख्यकाल पूर्वाह्न ${ms[0]||u} बजे से अपराह्न ${ms[1]||""} बजे तक`,
+          grades:[
+            `<strong>उत्तम</strong> पूर्वाह्न ${esc(u)} बजे से`,
+            `<strong>मध्यम</strong> मध्याह्न ${esc(m)} बजे से`,
+            `<strong>अधम</strong> - अपराह्न ${esc(a)} बजे से`
+          ]
+        };
       }
-      return raw;
+
+      if(/सायं|सायम्/.test(name)){
+        return {
+          name,
+          main:`मुख्यकाल सायं ${ms[0]||u} बजे से सूर्यास्तपर्यन्त`,
+          grades:[
+            `<strong>उत्तम</strong> सायं ${esc(u)} बजे से`,
+            `<strong>मध्यम</strong> सायं ${esc(m)} बजे से`,
+            `<strong>अधम</strong> - सूर्यास्तपश्चात्`
+          ]
+        };
+      }
+
+      return {
+        name,
+        main:`मुख्यकाल ${esc(main)}`,
+        grades:[
+          `<strong>उत्तम</strong> ${esc(clean(x?.uttama))}`,
+          `<strong>मध्यम</strong> ${esc(clean(x?.madhyama))}`,
+          `<strong>अधम</strong> - ${esc(clean(x?.adhama))}`
+        ]
+      };
     }
 
-    host.innerHTML=(d.sandhya||[]).map(x=>`
-      <div class="sandhya-main-item sandhya-compact-item">
-        <div class="sandhya-compact-mainline">
-          <strong class="sandhya-main-name">${esc(x.name)}</strong>
-          <span class="sandhya-compact-sep">-</span>
-          <span class="sandhya-main-time"><strong>मुख्यकाल</strong> ${esc(mainText(x))}</span>
-        </div>
-        <div class="sandhya-compact-gradeline">
-          <span class="sandhya-grade-group"><strong>उत्तम</strong> ${esc(smallDash(x.uttama))},</span>
-          <span class="sandhya-grade-group"><strong>मध्यम</strong> ${esc(smallDash(x.madhyama))},</span>
-          <span class="sandhya-grade-group"><strong>अधम</strong> - ${esc(smallDash(x.adhama))}</span>
-        </div>
-      </div>`).join("");
+    host.innerHTML=(d.sandhya||[]).map(x=>{
+      const z=build(x);
+      return `<div class="sandhya-main-item sandhya-clear-card">`+
+        `<div class="sandhya-clear-mainline"><strong class="sandhya-main-name">${esc(z.name)}</strong><span class="sandhya-clear-sep"> - </span><span class="sandhya-main-time">${z.main}</span></div>`+
+        `<div class="sandhya-clear-gradeline"><span>${z.grades[0]},</span><span>${z.grades[1]},</span><span>${z.grades[2]}</span></div>`+
+        `</div>`;
+    }).join("");
   }
 
   function renderOdayika(d){
@@ -16548,10 +16786,18 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
     setTextSafe("odayikaTitle",o.title||"");
     setTextSafe("odayikaDateLine",o.date_line||"");
 
+    function grahaValueHtml(raw){
+      const parts=String(raw||"").split("।");
+      if(parts.length<2) return `<span class="odayika-value-part">${esc(raw||"")}</span>`;
+      return parts.map((p,i)=>
+        `${i?'<span class="odayika-value-danda">।</span>':""}<span class="odayika-value-part">${esc(p)}</span>`
+      ).join("");
+    }
+
     const sp=$("odayikaSpashta");
     if(sp){
-      sp.innerHTML='<div class="odayika-sp-head"><span class="odayika-sp-headtext">ग्रह -रा०।अं०।क०।वि०व०/अ०</span></div>'+ 
-        (o.graha_spashta||[]).map(p=>`<div class="odayika-sp-row ${p.state?"has-state":"no-state"}"><span class="odayika-sp-left">${esc(p.label)} -</span><span class="odayika-sp-value">${esc(p.value)}</span>${p.state?`<span class="odayika-state odayika-sp-state-right">${esc(p.state)}</span>`:""}</div>`).join("");
+      sp.innerHTML='<div class="odayika-sp-head"><span class="odayika-sp-headtext">ग्रह -रा०।अं०।क०।वि०व०/अ०</span></div>'+
+        (o.graha_spashta||[]).map(p=>`<div class="odayika-sp-row ${p.state?"has-state":"no-state"}"><span class="odayika-sp-left">${esc(p.label)} -</span><span class="odayika-sp-value">${grahaValueHtml(p.value)}</span>${p.state?`<span class="odayika-state odayika-sp-state-right">${esc(p.state)}</span>`:""}</div>`).join("");
     }
 
     try{
@@ -16566,32 +16812,31 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
     const rs=o.rise_set || {};
     const grid=$("odayikaUdayastaGrid");
     const box=$("odayikaUdayasta");
+
     if(grid){
-      const planetClass={"बृहस्पति":"guru","मङ्गल":"mangal","बुध":"budha","शुक्र":"shukra","शनि":"shani"};
+      const order={"मङ्गल":1,"मंगल":1,"बुध":2,"बृहस्पति":3,"शुक्र":4,"शनि":5};
+      const planets=[...(rs.planets||[])].sort((a,b)=>(order[a.name]||99)-(order[b.name]||99));
       const items=[];
+
       if(rs.moon){
         items.push(`<span class="odayika-event-chip odayika-moon-chip">${esc(rs.moon)}</span>`);
       }
-      const planetOrder={"मङ्गल":1,"बुध":2,"बृहस्पति":3,"शुक्र":4,"शनि":5};
-      const orderedPlanets=[...(rs.planets||[])].sort(
-        (a,b)=>(planetOrder[a?.name]||99)-(planetOrder[b?.name]||99)
-      );
-      for(const p of orderedPlanets){
-        const k=planetClass[p.name]||"planet";
+
+      for(const p of planets){
         const state=String(p.state||"").replace(/^उदित\s+/,"उदय ");
-        items.push(`<span class="odayika-event-chip odayika-planet-chip odayika-${k}-chip"><strong>${esc(p.name)}</strong> - ${esc(state)}</span>`);
+        items.push(`<span class="odayika-event-chip odayika-planet-chip"><strong>${esc(p.name)}</strong> - ${esc(state)}</span>`);
       }
+
       grid.innerHTML=items.join("");
       if(box) box.hidden=!items.length;
     }
 
     const legend=document.querySelector(".odayika-legend-inside");
-    if(legend) legend.textContent="व० = वक्री · अ० = अस्त";
+    if(legend) legend.textContent="व० = वक्री, अ० = अस्त";
 
     setTextSafe("odayikaUdayastaTitle","चन्द्र एवं पञ्चतारा ग्रह - उदय / अस्त");
     if($("odayikaBox")) $("odayikaBox").hidden=false;
 
-    // Secure API renderer must also run the existing responsive fit routines.
     try{
       if(typeof odayikaScheduleSpashtaFit==="function") odayikaScheduleSpashtaFit();
       if(typeof odayikaScheduleHeadlineFit==="function") odayikaScheduleHeadlineFit();
@@ -16600,7 +16845,6 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
           if(typeof odayikaFitSpashtaTypography==="function") odayikaFitSpashtaTypography();
           if(typeof odayikaFitHeadlineTypography==="function") odayikaFitHeadlineTypography();
         }catch(_){}
-        try{ fitOdayikaRiseSetTwoLines(); }catch(_){}
       },80);
     }catch(_){}
   }
@@ -16610,10 +16854,11 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
     const panel=$("dailyYogaDecisionPanel");
     if(!panel) return;
     panel.hidden=false;
-    const heading=panel.querySelector(".yd-head h2");
-    if(heading) heading.textContent=secureDailyHeading(d);
-    const context=$("ydContext");
-    if(context) context.hidden=true;
+
+    const h=$("ydMainHeading");
+    if(h) h.textContent=secureDailyHeading(d);
+    const ctx=$("ydContext");
+    if(ctx) ctx.hidden=true;
 
     const good=Array.isArray(y.good)?y.good:[];
     const avoid=Array.isArray(y.avoid)?y.avoid:[];
@@ -16622,11 +16867,9 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
     if(bs) bs.hidden=!avoid.length;
     setTextSafe("ydGoodCount",good.length?String(good.length):"");
     setTextSafe("ydBadCount",avoid.length?String(avoid.length):"");
-    if($("ydGoodList")) $("ydGoodList").innerHTML=good.map(x=>`<div class="yd-item good"><div class="yd-item-head"><span class="yd-name">${esc(normalizeAnandadiName(x.name))}</span><span class="yd-time">${esc(yogaDash(x.time))}</span></div><p class="yd-effect">${esc(yogaDash(x.effect))}</p></div>`).join("");
-    if($("ydBadList")) $("ydBadList").innerHTML=avoid.map(x=>{
-      const v=secureAvoidPresentation(x);
-      return `<div class="yd-item bad yd-time-first-card"><span class="yd-time">${esc(v.time)}</span><span class="yd-sep">-</span><span class="yd-name">${esc(v.name)}</span>${v.effect?`<span class="yd-sep yd-sep-effect">-</span><span class="yd-effect">${esc(v.effect)}</span>`:""}${v.avoid?`<span class="yd-sep yd-sep-avoid">-</span><span class="yd-avoid">${esc(v.avoid)}</span>`:""}</div>`;
-    }).join("");
+
+    if($("ydGoodList")) $("ydGoodList").innerHTML=good.map(dailyYogaGoodHtml).join("");
+    if($("ydBadList")) $("ydBadList").innerHTML=avoid.map(dailyYogaAvoidHtml).join("");
 
     const kh=y.kalahora||[];
     if($("ydKalahoraSection")) $("ydKalahoraSection").hidden=!kh.length;
