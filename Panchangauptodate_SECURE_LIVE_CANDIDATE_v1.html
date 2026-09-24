@@ -9,7 +9,7 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta content="श्रीसूर्यसिद्धान्तीय स्थानीय दैनिक पञ्चाङ्ग तथा भारतीय काल गणना के आधार।" name="description"/>
 <title>श्रीसूर्यसिद्धान्तीय स्थानीय पञ्चाङ्ग एवं भारतीय काल गणना</title>
-<meta name="panchanga-build" content="2026-09-24-secure-live-candidate-v6-rebuilt"/>
+<meta name="panchanga-build" content="2026-09-24-secure-live-candidate-v7"/>
 <meta name="panchanga-data-source" content="secure-api-day-public-v2"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -4780,6 +4780,132 @@ body.smart-select-lock{overflow:hidden}
   }
   .sandhya-clear-gradeline > span{
     white-space:normal !important;
+  }
+}
+</style>
+
+
+<style id="secure-live-v7-odayika-correction-20260924">
+/* =========================================================
+   V7 - केवल औदयिक ग्रहस्पष्ट + चन्द्र/पञ्चतारा उदय-अस्त correction
+   ========================================================= */
+
+/* ग्रहस्पष्ट:
+   चार संख्यात्मक खण्ड थोड़ा फैलें, पर पूरे शेष cell में कृत्रिम रूप से न खिंचें। */
+#odayikaSpashta .odayika-sp-row{
+  display:grid !important;
+  grid-template-columns:max-content minmax(0,1fr) max-content !important;
+  align-items:center !important;
+  column-gap:.14em !important;
+  width:100% !important;
+  min-width:0 !important;
+}
+#odayikaSpashta .odayika-sp-row.no-state{
+  grid-template-columns:max-content minmax(0,1fr) !important;
+}
+#odayikaSpashta .odayika-sp-value{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  justify-self:end !important;
+  width:min(100%,7.6em) !important;
+  min-width:6.2em !important;
+  max-width:7.6em !important;
+  margin:0 !important;
+  padding:0 .04em !important;
+  white-space:nowrap !important;
+  letter-spacing:0 !important;
+}
+#odayikaSpashta .odayika-sp-row.has-state .odayika-sp-value{
+  width:min(100%,6.8em) !important;
+  min-width:5.7em !important;
+  max-width:6.8em !important;
+}
+#odayikaSpashta .odayika-value-part,
+#odayikaSpashta .odayika-value-danda{
+  flex:0 0 auto !important;
+}
+.odayika-legend-inside{
+  white-space:nowrap !important;
+}
+
+/* चन्द्र एवं पञ्चतारा:
+   कोई fixed row नहीं। जितनी जगह हो उतने items उसी पंक्ति में;
+   Moon के बाद 1 या 2 ग्रह भी आ सकते हैं। */
+#odayikaUdayastaGrid{
+  display:flex !important;
+  flex-wrap:wrap !important;
+  align-items:baseline !important;
+  justify-content:flex-start !important;
+  gap:.34em .72em !important;
+  width:100% !important;
+  min-width:0 !important;
+  padding:8px 10px !important;
+  font-size:.94rem !important;
+  line-height:1.48 !important;
+  overflow:visible !important;
+}
+#odayikaUdayastaGrid .odayika-event-chip,
+#odayikaUdayastaGrid .odayika-event-chip.odayika-moon-chip,
+#odayikaUdayastaGrid .odayika-event-chip.odayika-planet-chip{
+  position:static !important;
+  grid-column:auto !important;
+  grid-row:auto !important;
+  transform:none !important;
+  display:inline-block !important;
+  width:auto !important;
+  min-width:0 !important;
+  max-width:none !important;
+  height:auto !important;
+  min-height:0 !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:0 !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  white-space:nowrap !important;
+  font-size:inherit !important;
+  line-height:inherit !important;
+  text-align:left !important;
+  overflow:visible !important;
+}
+#odayikaUdayastaGrid .odayika-event-chip.odayika-moon-chip{
+  flex:1 1 16.5em !important;
+}
+#odayikaUdayastaGrid .odayika-event-chip.odayika-planet-chip{
+  flex:1 1 8.9em !important;
+}
+#odayikaUdayastaGrid .odayika-event-chip:not(:last-child)::after{
+  content:"," !important;
+  margin-left:.04em !important;
+}
+#odayikaUdayastaGrid .odayika-event-chip:last-child::after{
+  content:"" !important;
+}
+
+@media(max-width:600px){
+  #odayikaSpashta .odayika-sp-value{
+    width:min(100%,7.25em) !important;
+    min-width:5.9em !important;
+    max-width:7.25em !important;
+  }
+  #odayikaSpashta .odayika-sp-row.has-state .odayika-sp-value{
+    width:min(100%,6.4em) !important;
+    min-width:5.4em !important;
+    max-width:6.4em !important;
+  }
+
+  #odayikaUdayastaGrid{
+    gap:.28em .58em !important;
+    padding:7px 8px !important;
+    font-size:.90rem !important;
+  }
+  #odayikaUdayastaGrid .odayika-event-chip.odayika-moon-chip{
+    flex:1 1 15em !important;
+  }
+  #odayikaUdayastaGrid .odayika-event-chip.odayika-planet-chip{
+    flex:1 1 8.1em !important;
   }
 }
 </style>
@@ -16502,7 +16628,7 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
   function normalizeDailyYogaTime(raw){
     return String(raw||"")
       .replace(/[–—]/g,"-")
-      .replace(/\bप्रदोष\s+(?=[०-९0-9])/g,"प्रदोषकाल ")
+      .replace(/प्रदोष\s+(?=[०-९0-9])/g,"प्रदोषकाल ")
       .replace(/\s*-\s*/g," - ")
       .replace(/\s+/g," ")
       .trim();
@@ -16861,7 +16987,25 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
     if(ctx) ctx.hidden=true;
 
     const good=Array.isArray(y.good)?y.good:[];
-    const avoid=Array.isArray(y.avoid)?y.avoid:[];
+    const avoidRaw=Array.isArray(y.avoid)?y.avoid:[];
+    const hasAhoratraPanchak=avoidRaw.some(x =>
+      /पञ्चक/.test(String(x?.name||"")) && /अहोरात्र/.test(String(x?.time||""))
+    );
+    let panchakKept=false;
+    const avoid=avoidRaw.filter(x=>{
+      const isPanchak=/पञ्चक/.test(String(x?.name||""));
+      if(!isPanchak) return true;
+      if(hasAhoratraPanchak){
+        if(!/अहोरात्र/.test(String(x?.time||""))) return false;
+        if(panchakKept) return false;
+        panchakKept=true;
+        return true;
+      }
+      if(panchakKept) return false;
+      panchakKept=true;
+      return true;
+    });
+
     const gs=$("ydGoodSection"), bs=$("ydBadSection");
     if(gs) gs.hidden=!good.length;
     if(bs) bs.hidden=!avoid.length;
