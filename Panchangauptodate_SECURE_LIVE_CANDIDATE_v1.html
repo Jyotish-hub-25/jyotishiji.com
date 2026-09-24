@@ -9,7 +9,7 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta content="श्रीसूर्यसिद्धान्तीय स्थानीय दैनिक पञ्चाङ्ग तथा भारतीय काल गणना के आधार।" name="description"/>
 <title>श्रीसूर्यसिद्धान्तीय स्थानीय पञ्चाङ्ग एवं भारतीय काल गणना</title>
-<meta name="panchanga-build" content="2026-09-24-secure-live-candidate-v7"/>
+<meta name="panchanga-build" content="2026-09-24-secure-live-candidate-v8"/>
 <meta name="panchanga-data-source" content="secure-api-day-public-v2"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -5127,8 +5127,8 @@ body.smart-select-lock{overflow:hidden}
 </section>
 <section class="special-section" hidden id="festivalTodayRow">
 <div class="data-row">
-<span class="data-label">पर्व</span>
-<span class="dash">-</span>
+<span class="data-label">विशेष</span>
+<span class="dash">:</span>
 <span class="data-value"><strong id="festivalTodayText"></strong></span>
 </div>
 </section>
@@ -15999,7 +15999,7 @@ trigger.className="smart-select-trigger";
       else if(dir==="दक्षिण")ab='<div class="yd-abhijit"><strong>अभिजित्:</strong> दक्षिण-यात्रा हेतु इसका प्रयोग नहीं दिखाया गया है।</div>';
       else{const a=abhijitInterval(m);const goodMoon=moon.some(x=>x.rel.grade==="good"&&Math.max(x.a,a.a)<Math.min(x.b,a.b));ab=`<div class="yd-abhijit"><strong>अत्यावश्यक दशा:</strong> अभिजित् ${timeRange(a.a,a.b,m.gb,m)}${goodMoon?"; इस समय चन्द्रवास भी अनुकूल अंश में है।":"; चन्द्रवास की अनुकूलता पृथक् जाँचें।"}</div>`}
     }
-    return `<div class="yd-travel-lines">${rows}</div>${ab}`;
+    return `${secureTravelBlockersHtml(d,dir)}<div class="yd-travel-lines">${rows}</div>${ab}`;
   }
   function renderTara(){
     const m=lastModel,box=$("ydTaraResult");if(!m||!box)return;
@@ -17245,6 +17245,43 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
     return {a:m.S+7*u,b:m.S+8*u};
   }
 
+  function secureTravelBlockers(d,dir){
+    const out=[];
+    const seen=new Set();
+
+    for(const x of (d?.daily_yoga?.avoid||[])){
+      const name=normalizeDailyYogaName(x?.name||"");
+      const time=normalizeDailyYogaTime(x?.time||"");
+      const effect=String(x?.effect||"");
+      const avoid=String(x?.avoid||"");
+      const combined=`${name} ${effect} ${avoid}`;
+
+      // पञ्चक: इस पञ्चाङ्ग में विशेषतः दक्षिण-यात्रा के प्रसंग में दिखायें।
+      if(/पञ्चक/.test(name)){
+        if(dir!=="दक्षिण") continue;
+      }else{
+        // अन्य वही पूर्वोक्त योग/दुष्टकाल लें जिनके पाठ में यात्रा का स्पष्ट निषेध/त्याज्यता है।
+        if(!/यात्रा/.test(combined)) continue;
+      }
+
+      const key=`${name}|${time}`;
+      if(seen.has(key)) continue;
+      seen.add(key);
+      out.push({name,time});
+    }
+    return out;
+  }
+
+  function secureTravelBlockersHtml(d,dir){
+    if(!dir) return "";
+    const blockers=secureTravelBlockers(d,dir);
+    if(!blockers.length) return "";
+    const items=blockers.map(x=>
+      `<span class="yd-travel-blocker-chip"><strong>${esc(x.name)}</strong>${x.time?` - ${esc(x.time)}`:""}</span>`
+    ).join("");
+    return `<div class="yd-travel-blockers"><strong>पूर्वोक्त यात्रा-बाधक:</strong> ${items}</div>`;
+  }
+
   function secureTravelDecisionHtml(d,m,dir){
     const disha=secureDishashool(d), hasShool=dir===disha;
     const moon=secureMoonIntervals(d,m).map(x=>({...x,rel:secureMoonTravelRelation(dir,x.moonDir)}));
@@ -17525,6 +17562,176 @@ function fitOdayikaRiseSetTwoLines(){
   el.style.removeProperty("font-size");
 }
 </script>
+
+
+<style id="secure-live-v8-final-overrides-20260924">
+/* =========================================================
+   V8 authoritative final overrides
+   Placed at end of document so legacy fixed-grid CSS cannot override them.
+   ========================================================= */
+
+/* ---------- दैनिक योग-मुहूर्त्त : prose justified ---------- */
+#dailyYogaDecisionPanel .yd-flow-card,
+#dailyYogaDecisionPanel .yd-flow-effect,
+#dailyYogaDecisionPanel .yd-flow-avoid,
+#dailyYogaDecisionPanel .yd-travel,
+#dailyYogaDecisionPanel .yd-travel p,
+#dailyYogaDecisionPanel .yd-travel-line,
+#dailyYogaDecisionPanel .yd-tara-row span,
+#dailyYogaDecisionPanel .yd-note,
+#dailyYogaDecisionPanel .yd-disclaimer p{
+  text-align:justify !important;
+  text-align-last:left !important;
+  text-justify:inter-word !important;
+}
+
+/* Headings/times themselves remain normal, not stretched. */
+#dailyYogaDecisionPanel .yd-section-title,
+#dailyYogaDecisionPanel .yd-flow-name,
+#dailyYogaDecisionPanel .yd-flow-time,
+#dailyYogaDecisionPanel .yd-window-title{
+  text-align:left !important;
+  text-align-last:auto !important;
+}
+
+/* ---------- यात्रा में पूर्वोक्त बाधक ---------- */
+.yd-travel-blockers{
+  margin:7px 0 8px !important;
+  padding:7px 9px !important;
+  border:1px solid #dfc06b !important;
+  border-left:4px solid #b78324 !important;
+  border-radius:7px !important;
+  background:#fff8df !important;
+  color:#5c4700 !important;
+  line-height:1.52 !important;
+  text-align:justify !important;
+  text-align-last:left !important;
+}
+.yd-travel-blocker-chip{
+  display:inline !important;
+  margin-left:.35em !important;
+  white-space:normal !important;
+}
+.yd-travel-blocker-chip + .yd-travel-blocker-chip::before{
+  content:"; ";
+}
+
+/* ---------- चन्द्र एवं पञ्चतारा ग्रह - उदय / अस्त ---------- */
+#odayikaUdayastaTitle{
+  font-size:1.04rem !important;
+  line-height:1.42 !important;
+  font-weight:700 !important;
+  margin:0 0 7px !important;
+  text-align:center !important;
+}
+
+#odayikaUdayastaGrid{
+  display:flex !important;
+  flex-wrap:wrap !important;
+  grid-template-columns:none !important;
+  grid-template-rows:none !important;
+  grid-auto-flow:initial !important;
+  align-items:baseline !important;
+  justify-content:flex-start !important;
+  gap:.34em .80em !important;
+  width:100% !important;
+  max-width:100% !important;
+  min-width:0 !important;
+  padding:8px 10px !important;
+  border:1px solid rgba(23,63,85,.14) !important;
+  border-radius:7px !important;
+  background:rgba(255,255,255,.62) !important;
+  font-size:.94rem !important;
+  line-height:1.48 !important;
+  text-align:left !important;
+  overflow:visible !important;
+}
+
+#odayikaUdayastaGrid .odayika-event-chip,
+#odayikaUdayastaGrid .odayika-event-chip.odayika-moon-chip,
+#odayikaUdayastaGrid .odayika-event-chip.odayika-planet-chip,
+#odayikaUdayastaGrid .odayika-event-chip.odayika-guru-chip,
+#odayikaUdayastaGrid .odayika-event-chip.odayika-mangal-chip,
+#odayikaUdayastaGrid .odayika-event-chip.odayika-budha-chip,
+#odayikaUdayastaGrid .odayika-event-chip.odayika-shukra-chip,
+#odayikaUdayastaGrid .odayika-event-chip.odayika-shani-chip{
+  position:static !important;
+  display:inline-block !important;
+  grid-column:auto !important;
+  grid-row:auto !important;
+  flex:0 1 auto !important;
+  width:auto !important;
+  min-width:0 !important;
+  max-width:100% !important;
+  min-height:0 !important;
+  height:auto !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:0 !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  transform:none !important;
+  white-space:nowrap !important;
+  word-break:normal !important;
+  overflow-wrap:normal !important;
+  overflow:visible !important;
+  font-size:inherit !important;
+  line-height:inherit !important;
+  text-align:left !important;
+  justify-content:flex-start !important;
+}
+
+/* Moon can share its row with one/two planets if room exists; it does not force a full row. */
+#odayikaUdayastaGrid .odayika-event-chip.odayika-moon-chip{
+  flex:0 1 auto !important;
+  padding-left:0 !important;
+}
+
+/* Comma stays attached to the preceding item: no orphan comma. */
+#odayikaUdayastaGrid .odayika-event-chip:not(:last-child)::after{
+  content:"," !important;
+  display:inline !important;
+  margin-left:.04em !important;
+}
+#odayikaUdayastaGrid .odayika-event-chip:last-child::after{
+  content:"" !important;
+}
+
+/* ---------- औदयिक legend exact punctuation ---------- */
+.odayika-legend-inside{
+  white-space:nowrap !important;
+}
+
+/* ---------- Festival/special row ---------- */
+#festivalTodayRow .data-label{
+  white-space:nowrap !important;
+}
+
+@media(max-width:600px){
+  #odayikaUdayastaTitle{
+    font-size:1rem !important;
+  }
+  #odayikaUdayastaGrid{
+    gap:.28em .60em !important;
+    padding:7px 8px !important;
+    font-size:.90rem !important;
+    line-height:1.46 !important;
+  }
+  #odayikaUdayastaGrid .odayika-event-chip,
+  #odayikaUdayastaGrid .odayika-event-chip.odayika-moon-chip,
+  #odayikaUdayastaGrid .odayika-event-chip.odayika-planet-chip{
+    white-space:nowrap !important;
+    max-width:100% !important;
+  }
+
+  #dailyYogaDecisionPanel .yd-flow-card,
+  #dailyYogaDecisionPanel .yd-travel,
+  #dailyYogaDecisionPanel .yd-travel-line{
+    hyphens:none !important;
+  }
+}
+</style>
 
 </body>
 </html>
