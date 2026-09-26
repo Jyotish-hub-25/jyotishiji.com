@@ -7880,6 +7880,12 @@ function festivalKaal(gbDate,kind){
   if(kind==="aparahna") return {start:sunrise+3*day/5,end:sunrise+4*day/5};
   if(kind==="sayahna") return {start:sunrise+4*day/5,end:sunset};
   if(kind==="pradosha") return {start:sunset,end:sunset+144}; // त्रिमुहूर्त, १ मुहूर्त = ४८ मिनिट
+  if(kind==="arunodaya") return {start:sunrise-96,end:sunrise}; // सूर्योदयपूर्व २ मुहूर्त
+  if(kind==="moonrise"){
+    const mr=internalMoonriseForGB(gbDate);
+    if(mr && Number.isFinite(mr.absMinutes)) return {start:mr.absMinutes-.25,end:mr.absMinutes+.25,moonrise:mr};
+    return null;
+  }
   if(kind==="night" && tomorrow){
     const nsr = rawExcelMinutes(tomorrow.row[10]);
     if(Number.isFinite(nsr)) return {start:sunset,end:gbToOrdinalMinutes(addDaysGB(gbDate,1),nsr)};
@@ -9116,6 +9122,11 @@ function dailyFestivalDecisions(selectedGB){
   const sunRashi0=sun ? Math.floor((((sun.longitude%360)+360)%360)/30) : NaN;
   if((sunRashi0===5 || sunRashi0===6) && [...nums].some(n=>n===15 || n>=16)) add(decideMahalaya());
 
+  // अतिरिक्त lightweight rules भी इसी मूल daily flow में मिलें।
+  if(window.LightFestivalRuleRegistry && typeof window.LightFestivalRuleRegistry.runDaily==="function"){
+    for(const d of window.LightFestivalRuleRegistry.runDaily(selectedGB)) add(d);
+  }
+
   // Deduplicate computational duplicates, then retain only decisions active today.
   const unique=[];
   const seen=new Set();
@@ -9136,6 +9147,7 @@ function renderFestivalDecision(selectedGB){
     box.hidden=true;
     if(todayRow) todayRow.hidden=true;
     setText("festivalTodayText","");
+    if(window.renderVrataContext) window.renderVrataContext(selectedGB);
     return;
   }
   setText("festivalTodayText",active.map(x=>x.title).join(", ") + " आज");
@@ -9146,6 +9158,7 @@ function renderFestivalDecision(selectedGB){
   const details=document.getElementById("festivalDecisionDetails");
   if(details) details.innerHTML=active.map(x=>`<div class="festival-daily-item"><h4>${x.title}</h4>${x.details.map(y=>`<div>${y}</div>`).join("")}</div>`).join("");
   box.hidden=false;
+  if(window.renderVrataContext) window.renderVrataContext(selectedGB);
 }
 
 function auditDateText(d){
@@ -9446,6 +9459,9 @@ function annualDecisionJobs(){
   idx.tithi.filter(iv=>(iv.number===13 || iv.number===28) && intervalYearMatch(iv,year)).forEach(iv=>push(()=>decidePradoshaInterval(iv)));
   solarIngressIndex().filter(x=>{const p=gbDateParts(absMinutesToGBClock(x.t).gb);return p&&p.year===year;}).forEach(x=>push(()=>decideSankrantiIngress(x)));
   idx.tithi.filter(iv=>iv.number===30 && intervalYearMatch(iv,year)).forEach(iv=>push(()=>decideAmavasyaVratInterval(iv)));
+  if(window.LightFestivalRuleRegistry && typeof window.LightFestivalRuleRegistry.annualJobs==="function"){
+    jobs.push(...window.LightFestivalRuleRegistry.annualJobs());
+  }
   return jobs;
 }
 
@@ -10796,9 +10812,10 @@ if(document.readyState === "loading"){
     const rows=intervalDates(iv,1).map(gb=>{
       const srK=global.festivalKaal(gb,"sunrise");
       const sr=srK?(srK.start+srK.end)/2:NaN;
-      const after=Number.isFinite(sr)&&iv.end>sr?Math.max(0,iv.end-Math.max(iv.start,sr)):0;
+      const atSunrise=Number.isFinite(sr) && iv.start<=sr && sr<iv.end;
+      const after=atSunrise ? Math.max(0,iv.end-sr) : 0;
       const pur=global.festivalKaal(gb,"purvahna"), mid=global.festivalKaal(gb,"madhyahna");
-      return {gb,after,six:after>=143.99,four:after>=95.99,pur:!!(pur&&intervalsOverlap(iv,pur)),mid:!!(mid&&intervalsOverlap(iv,mid))};
+      return {gb,atSunrise,after,six:atSunrise&&after>=143.99,four:atSunrise&&after>=95.99,pur:!!(pur&&intervalsOverlap(iv,pur)),mid:!!(mid&&intervalsOverlap(iv,mid))};
     });
     let chosen=rows.find(x=>x.six), reason="सूर्योदय से ६ घटिका-व्याप्ति";
     if(!chosen){chosen=rows.find(x=>x.four);reason="६ घटिका न मिलने पर ४ घटिका-व्याप्ति";}
@@ -10857,15 +10874,6 @@ if(document.readyState === "loading"){
   }
   function annualJobs(){return rules.filter(r=>r.annual!==false).map(r=>()=>r.calculate({scope:"annual"}));}
 
-  const oldDaily=global.dailyFestivalDecisions;
-  global.dailyFestivalDecisions=function(selectedGB){
-    const all=[...(oldDaily?oldDaily(selectedGB):[]),...renderedForDaily(selectedGB)];
-    const seen=new Set();
-    return all.filter(x=>{const k=x.title||"";if(seen.has(k))return false;seen.add(k);return true;});
-  };
-
-  const oldAnnualJobs=global.annualDecisionJobs;
-  global.annualDecisionJobs=function(){return [...(oldAnnualJobs?oldAnnualJobs():[]),...annualJobs()];};
 
   function currentMonthPaksha(gb){
     const hit=workbookRowByGBDate(gb); if(!hit) return null;
@@ -10899,12 +10907,11 @@ if(document.readyState === "loading"){
     box.dataset.ready="1";
   }
 
-  const oldRender=global.renderFestivalDecision;
-  global.renderFestivalDecision=function(gb){if(oldRender)oldRender(gb);renderContext(gb);};
+  global.renderVrataContext=renderContext;
   const ref=document.getElementById("vrataReferenceDetails");
   if(ref) ref.addEventListener("toggle",()=>{if(ref.open)renderReferenceOnce();});
 
-  global.LightFestivalRuleRegistry=Object.freeze({register,get,list,runDaily:renderedForDaily,annualJobs,monthPakshaIndex:()=>MONTH_PAKSHA_INDEX.slice(),referenceCount:REFERENCE_INDEX.length});
+  global.LightFestivalRuleRegistry=Object.freeze({register,get,list,runDaily:rawForDaily,annualJobs,monthPakshaIndex:()=>MONTH_PAKSHA_INDEX.slice(),referenceCount:REFERENCE_INDEX.length});
 })(window);
 </script>
 
