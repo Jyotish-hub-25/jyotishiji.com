@@ -9180,7 +9180,7 @@ window.VratParichayDetails = window.VratParichayDetails || Object.create(null);
 
 function registerVratParichayDetail(id,data){
   if(!id || !data) return;
-  window.VratParichayDetails[id]=Object.freeze({
+  window.VratParichayDetails[id]=({
     source:"व्रत-परिचय, गीताप्रेस, गोरखपुर",
     sourcePage:"",
     introduction:"",
@@ -9261,7 +9261,7 @@ registerVratParichayDetail("phalguna-amavasya",{"title":"फाल्गुन�
 function enrichVratParichayDetail(id, extra){
   const prev = window.VratParichayDetails && window.VratParichayDetails[id];
   if(!prev) return;
-  window.VratParichayDetails[id] = Object.freeze(Object.assign({}, prev, extra));
+  window.VratParichayDetails[id] = Object.assign({}, prev, extra);
 }
 
 enrichVratParichayDetail("mahashivaratri",{"kala":"फाल्गुन कृष्ण चतुर्दशी; रात्रिकाल प्रधान।","upavasa":"उपवासपूर्वक रात्रि में शिवोपासना।","katha":"ग्रन्थ के अन्तिम कथा-विभाग में शिवरात्रिव्रत-कथा पृथक् दी गयी है।"});
