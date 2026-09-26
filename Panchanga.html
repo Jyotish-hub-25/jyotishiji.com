@@ -2762,7 +2762,8 @@ body{display:flex;flex-direction:column;min-height:100vh}
   <p class="festival-audit-intro" id="festivalAuditIntro"></p>
   <div class="festival-audit-list" id="festivalAuditList"></div>
 </section>
-    <!-- =========================================================
+
+<!-- =========================================================
      औदयिक ग्रहस्पष्ट एवं ग्रहचक्र
      स्थान/दिनाङ्क selector के बाद और muhurtaBox के पहले रखें
 ========================================================= -->
@@ -7865,6 +7866,12 @@ function festivalKaal(gbDate,kind){
   if(kind==="aparahna") return {start:sunrise+3*day/5,end:sunrise+4*day/5};
   if(kind==="sayahna") return {start:sunrise+4*day/5,end:sunset};
   if(kind==="pradosha") return {start:sunset,end:sunset+144}; // त्रिमुहूर्त, १ मुहूर्त = ४८ मिनिट
+  if(kind==="arunodaya") return {start:sunrise-96,end:sunrise}; // सूर्योदयपूर्व २ मुहूर्त
+  if(kind==="moonrise"){
+    const mr=internalMoonriseForGB(gbDate);
+    if(mr && Number.isFinite(mr.absMinutes)) return {start:mr.absMinutes-.25,end:mr.absMinutes+.25,moonrise:mr};
+    return null;
+  }
   if(kind==="night" && tomorrow){
     const nsr = rawExcelMinutes(tomorrow.row[10]);
     if(Number.isFinite(nsr)) return {start:sunset,end:gbToOrdinalMinutes(addDaysGB(gbDate,1),nsr)};
@@ -8463,6 +8470,8 @@ function decideSankrantiIngress(x){
       `संक्रमण - ${formatAbsForFestival(x.t)}`,
       `सन्निधि-पुण्यकाल - ${formatAbsForFestival(ps)} से ${formatAbsForFestival(pe)} तक`,
       `पुण्यघटी-विन्यास - ${spec.note}`,
+      "व्रत-परिचय में सङ्क्रान्ति-सम्बद्ध पृथक् प्रकार — संक्रान्तिव्रत · संक्रमणव्रत · महाजया-संक्रान्तिव्रत · धनसंक्रान्तिव्रत · धान्यसंक्रान्तिव्रत · भोगसंक्रान्तिव्रत · रूपसंक्रान्तिव्रत · तेजःसंक्रान्तिव्रत · आयुःसंक्रान्तिव्रत · मेषादिगतसूर्यव्रत।",
+      "इन पृथक् प्रकारों का विशेष प्रयोग जिस सङ्क्रान्ति/विधान पर लागू हो, वह उनके मूल पाठ के सत्यापन के अनुसार ही माना जाएगा; केवल नाम देखकर सभी को आज लागू नहीं माना गया है। स्रोत: व्रत-परिचय।",
       "रात्रि में पड़े पुण्यांश के स्नान-दान-प्रयोग में दिन-निर्णय पृथक् देखा जाता है; यहाँ संक्रमण का स्थानीय civil दिन दिखाया गया है।"
     ]
   });
@@ -9101,6 +9110,11 @@ function dailyFestivalDecisions(selectedGB){
   const sunRashi0=sun ? Math.floor((((sun.longitude%360)+360)%360)/30) : NaN;
   if((sunRashi0===5 || sunRashi0===6) && [...nums].some(n=>n===15 || n>=16)) add(decideMahalaya());
 
+  // अतिरिक्त lightweight rules भी इसी मूल daily flow में मिलें।
+  if(window.LightFestivalRuleRegistry && typeof window.LightFestivalRuleRegistry.runDaily==="function"){
+    for(const d of window.LightFestivalRuleRegistry.runDaily(selectedGB)) add(d);
+  }
+
   // Deduplicate computational duplicates, then retain only decisions active today.
   const unique=[];
   const seen=new Set();
@@ -9431,6 +9445,9 @@ function annualDecisionJobs(){
   idx.tithi.filter(iv=>(iv.number===13 || iv.number===28) && intervalYearMatch(iv,year)).forEach(iv=>push(()=>decidePradoshaInterval(iv)));
   solarIngressIndex().filter(x=>{const p=gbDateParts(absMinutesToGBClock(x.t).gb);return p&&p.year===year;}).forEach(x=>push(()=>decideSankrantiIngress(x)));
   idx.tithi.filter(iv=>iv.number===30 && intervalYearMatch(iv,year)).forEach(iv=>push(()=>decideAmavasyaVratInterval(iv)));
+  if(window.LightFestivalRuleRegistry && typeof window.LightFestivalRuleRegistry.annualJobs==="function"){
+    jobs.push(...window.LightFestivalRuleRegistry.annualJobs());
+  }
   return jobs;
 }
 
@@ -10702,6 +10719,197 @@ if(document.readyState === "loading"){
   }
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",bind); else bind();
 })();
+</script>
+
+
+
+<script id="vrataLightRegistryExtension">
+/* =========================================================
+   हल्का Festival Extension
+   - मुख्य Festival engine/दृश्य जस का तस।
+   - Registry में केवल executable rules।
+   - daily run में केवल निकटवर्ती तिथियों वाले rules evaluate होते हैं।
+   - मास/पक्ष की सामान्य संदर्भ-सूची UI से पूर्णतः हटायी गयी है; केवल executable/event-trigger entries रखी गयी हैं।
+========================================================= */
+(function(global){
+  "use strict";
+
+  // केवल स्पष्ट astronomical/event-trigger वाली परिशिष्ट entries.
+  // अधिमास, अयन, पक्ष, वार, तिथि-वार-नक्षत्र, प्रायश्चित्त, रोगनिवारक, कथा आदि display से बाहर।
+  const EVENT_TRIGGER_INDEX=Object.freeze({
+    sankranti:Object.freeze([
+      "संक्रान्तिव्रत","संक्रमणव्रत","महाजया-संक्रान्तिव्रत","धनसंक्रान्तिव्रत",
+      "धान्यसंक्रान्तिव्रत","भोगसंक्रान्तिव्रत","रूपसंक्रान्तिव्रत",
+      "तेजःसंक्रान्तिव्रत","आयुःसंक्रान्तिव्रत","मेषादिगतसूर्यव्रत"
+    ]),
+    eclipse:Object.freeze([
+      "मेघवर्धक ग्रहणव्रत","अग्निहोत्र ग्रहणव्रत"
+    ])
+  });
+
+  // केवल इस extension के नये executable नियम। Registry को corpus से पृथक् रखा गया है।
+  const rules=[];
+  const byId=new Map();
+  function register(rule){
+    if(!rule||!rule.id||typeof rule.calculate!=="function") throw new Error("Invalid light festival rule");
+    if(byId.has(rule.id)) throw new Error("Duplicate light festival rule: "+rule.id);
+    const r=Object.freeze({order:999,nearbyTithis:[],annual:true,...rule});
+    rules.push(r); byId.set(r.id,r); rules.sort((a,b)=>a.order-b.order);
+  }
+  function get(id){return byId.get(id)||null;}
+  function list(){return rules.slice();}
+
+  // आवश्यक काल-विस्तार; पुराने festivalKaal के अन्य सभी व्यवहार अपरिवर्तित।
+  const oldFestivalKaal=global.festivalKaal;
+  global.festivalKaal=function(gbDate,kind){
+    if(kind==="arunodaya"){
+      const sr=oldFestivalKaal(gbDate,"sunrise");
+      if(!sr) return null;
+      const sunrise=(sr.start+sr.end)/2;
+      return {start:sunrise-96,end:sunrise};
+    }
+    if(kind==="moonrise"){
+      const mr=typeof global.internalMoonriseForGB==="function"?global.internalMoonriseForGB(gbDate):null;
+      return mr&&Number.isFinite(mr.absMinutes)?{start:mr.absMinutes-.25,end:mr.absMinutes+.25,moonrise:mr}:null;
+    }
+    return oldFestivalKaal(gbDate,kind);
+  };
+
+  function simpleVP(id,title,month,tithi,prefer="later",source="व्रत-परिचय"){
+    const iv=tithiInterval(month,tithi); if(!iv) return null;
+    const c=chooseSunriseTithi(iv,prefer);
+    return makeDecision({id,title,observanceGB:c.gb,activeDates:[c.gb],
+      status:festivalStatus("औदयिक तिथि-निर्णय","verified"),source,
+      rule:`${month} ${tithi<=15?"शुक्ल":"कृष्ण"} पक्ष की निर्दिष्ट तिथि; उपलब्ध ग्रन्थ-विवरण के अनुसार स्थानीय तिथि-व्याप्ति से दिननिर्णय।`,
+      details:[`${title} - ${formatAbsForFestival(iv.start)} से ${formatAbsForFestival(iv.end)} तक`,`निर्णय - ${festivalDateLabel(c.gb)} (${c.reason})`]});
+  }
+
+  function byKaal(id,title,month,tithi,kind,kindHi,source="व्रत-परिचय"){
+    const iv=tithiInterval(month,tithi); if(!iv) return null;
+    const c=chooseByKaal(iv,kind,"later","later");
+    return makeDecision({id,title,observanceGB:c.gb,activeDates:[c.gb],
+      status:festivalStatus("काल-व्याप्ति नियम लागू","verified"),source,
+      rule:`${month} ${tithi<=15?"शुक्ल":"कृष्ण"} पक्ष; ${kindHi}-व्याप्ति प्रधान।`,
+      details:[`${title} की तिथि - ${formatAbsForFestival(iv.start)} से ${formatAbsForFestival(iv.end)} तक`,`${kindHi}-व्याप्ति - ${c.hits.map(x=>festivalDateLabel(x.gb)).join(", ")||"पूर्ण व्याप्ति नहीं"}`]});
+  }
+
+  function decideAnantaChaturdashiLight(){
+    const iv=tithiInterval("भाद्रपद",14); if(!iv) return null;
+    const rows=intervalDates(iv,1).map(gb=>{
+      const srK=global.festivalKaal(gb,"sunrise");
+      const sr=srK?(srK.start+srK.end)/2:NaN;
+      const atSunrise=Number.isFinite(sr) && iv.start<=sr && sr<iv.end;
+      const after=atSunrise ? Math.max(0,iv.end-sr) : 0;
+      const pur=global.festivalKaal(gb,"purvahna"), mid=global.festivalKaal(gb,"madhyahna");
+      return {gb,atSunrise,after,six:atSunrise&&after>=143.99,four:atSunrise&&after>=95.99,pur:!!(pur&&intervalsOverlap(iv,pur)),mid:!!(mid&&intervalsOverlap(iv,mid))};
+    });
+    let chosen=rows.find(x=>x.six), reason="सूर्योदय से ६ घटिका-व्याप्ति";
+    if(!chosen){chosen=rows.find(x=>x.four);reason="६ घटिका न मिलने पर ४ घटिका-व्याप्ति";}
+    if(!chosen){const startGB=absMinutesToGBClock(iv.start).gb;chosen=rows.find(x=>x.gb===startGB)||rows[0]||{gb:startGB,pur:false,mid:false};reason="द्वितीय दिन ४ घटिका से न्यून होने पर पूर्वदिन";}
+    const karma=chosen.pur?"पूर्वाह्ण":(chosen.mid?"मध्याह्न":"उपलब्ध तिथि-काल");
+    return makeDecision({id:"ananta-chaturdashi",title:"अनन्तचतुर्दशी (अनन्तव्रत)",observanceGB:chosen.gb,activeDates:[chosen.gb],
+      status:festivalStatus("नियम लागू","verified"),source:"धर्मसिन्धु; व्रत-परिचय",
+      rule:"भाद्रपद शुक्ल चतुर्दशी; सूर्योदय से ६ घटिका, अनुकल्पतः ४ घटिका व्याप्ति; न्यून होने पर पूर्वदिन। प्रधान कर्मकाल पूर्वाह्ण।",
+      details:[`चतुर्दशी - ${formatAbsForFestival(iv.start)} से ${formatAbsForFestival(iv.end)} तक`,`निर्णय - ${reason}; कर्मकाल - ${karma}`]});
+  }
+
+
+  function decideRishiPanchamiLight(){
+    const iv=tithiInterval("भाद्रपद",5); if(!iv) return null;
+
+    // ऋषिपञ्चमी पूजाव्रत है; मध्याह्नव्यापिनी पञ्चमी ग्राह्य।
+    // पुरुषार्थचिन्तामणि का स्पष्ट operational निर्णय:
+    // केवल परदिन मध्याह्नव्याप्ति हो तो परदिन;
+    // दोनों दिन मध्याह्नव्याप्ति हो अथवा दोनों दिन मध्याह्न-अव्याप्ति हो तो पूर्वदिन।
+    const c=chooseByKaal(iv,"madhyahna","earlier","earlier");
+
+    let decisionText="";
+    if(c.hits.length===1){
+      decisionText=`एकमात्र मध्याह्नव्याप्ति - ${festivalDateLabel(c.gb)}`;
+    }else if(c.hits.length>1){
+      decisionText=`दोनों दिनों के मध्याह्न में पञ्चमी - पूर्वदिन ग्राह्य (${festivalDateLabel(c.gb)})`;
+    }else{
+      decisionText=`दोनों दिनों के मध्याह्न में पञ्चमी-अव्याप्ति - पूर्वदिन ग्राह्य (${festivalDateLabel(c.gb)})`;
+    }
+
+    return makeDecision({
+      id:"rishi-panchami",
+      title:"ऋषिपञ्चमी",
+      observanceGB:c.gb,
+      activeDates:[c.gb],
+      status:festivalStatus("मध्याह्न-व्याप्ति नियम लागू","verified"),
+      source:"व्रत-परिचय; पुरुषार्थचिन्तामणि",
+      rule:"भाद्रपद शुक्ल पञ्चमी; मध्याह्नव्यापिनी पञ्चमी ग्राह्य। केवल परदिन मध्याह्नव्याप्ति हो तो परदिन; दोनों दिन मध्याह्नव्याप्ति अथवा दोनों दिन मध्याह्न-अव्याप्ति में पूर्वदिन।",
+      details:[
+        `पञ्चमी - ${formatAbsForFestival(iv.start)} से ${formatAbsForFestival(iv.end)} तक`,
+        `मध्याह्नव्याप्ति - ${c.hits.map(x=>festivalDateLabel(x.gb)).join(", ")||"किसी दिन नहीं"}`,
+        `निर्णय - ${decisionText}`
+      ]
+    });
+  }
+
+  function decideMoonriseVrata(id,title,month,tithi,source="व्रत-परिचय"){
+    const iv=tithiInterval(month,tithi); if(!iv) return null;
+    const hits=intervalDates(iv,1).map(gb=>({gb,k:global.festivalKaal(gb,"moonrise")})).filter(x=>x.k&&intervalsOverlap(iv,x.k));
+    if(!hits.length) return null;
+    const h=hits[hits.length-1];
+    return makeDecision({id,title,observanceGB:h.gb,activeDates:[h.gb],status:festivalStatus("चन्द्रोदय-व्याप्ति नियम लागू","verified"),source,
+      rule:`${month} ${tithi<=15?"शुक्ल":"कृष्ण"} पक्ष; चन्द्रोदयव्यापिनी तिथि प्रधान।`,
+      details:[`${title} की तिथि - ${formatAbsForFestival(iv.start)} से ${formatAbsForFestival(iv.end)} तक`,`चन्द्रोदय - ${formatAbsForFestival((h.k.start+h.k.end)/2)}`]});
+  }
+
+  // स्रोत-फाइल में स्पष्ट तिथि/काल-आधार उपलब्ध नये नियम।
+  register({id:"ananta-chaturdashi",order:10,nearbyTithis:[14],calculate:()=>decideAnantaChaturdashiLight()});
+  register({id:"rishi-panchami",order:15,nearbyTithis:[5],calculate:()=>decideRishiPanchamiLight()});
+  register({id:"narasimha-jayanti",order:20,nearbyTithis:[14],calculate:()=>byKaal("narasimha-jayanti","श्रीनृसिंहजयन्ती","वैशाख",14,"pradosha","प्रदोष")});
+  register({id:"karaka-chaturthi",order:30,nearbyTithis:[19],calculate:()=>decideMoonriseVrata("karaka-chaturthi","करकचतुर्थी","कार्तिक",19)});
+  register({id:"dhanatrayodashi",order:40,nearbyTithis:[28],calculate:()=>byKaal("dhanatrayodashi","धनत्रयोदशी / यमदीपदान","कार्तिक",28,"pradosha","प्रदोष")});
+  register({id:"naraka-chaturdashi",order:50,nearbyTithis:[29],calculate:()=>byKaal("naraka-chaturdashi","नरकचतुर्दशी / रूपचतुर्दशी","कार्तिक",29,"arunodaya","अरुणोदय")});
+  register({id:"kojagara",order:60,nearbyTithis:[15],calculate:()=>byKaal("kojagara","कोजागरव्रत / शरद्पूर्णिमा","आश्विन",15,"night","रात्रि")});
+  register({id:"bhairava-jayanti",order:70,nearbyTithis:[23],calculate:()=>byKaal("bhairava-jayanti","भैरवजयन्ती / कालाष्टमी","मार्गशीर्ष",23,"night","रात्रि")});
+  register({id:"sankashti-magha",order:80,nearbyTithis:[19],calculate:()=>decideMoonriseVrata("sankashti-magha","माघ वक्रतुण्ड / सङ्कष्टचतुर्थी","माघ",19)});
+
+  // स्रोत-फाइल में पहले से सत्यापित सरल तिथि-आधारित additions।
+  [
+    ["hanuman-jayanti",100,[15],()=>simpleVP("hanuman-jayanti","हनुमद्व्रत / हनुमज्जयन्ती","चैत्र",15)],
+    ["vaishakha-purnima",110,[15],()=>simpleVP("vaishakha-purnima","वैशाखी पूर्णिमा","वैशाख",15)],
+    ["ratha-yatra",120,[2],()=>simpleVP("ratha-yatra","रथयात्रा","आषाढ़",2)],
+    ["radhashtami",130,[8],()=>simpleVP("radhashtami","श्रीराधाष्टमी","भाद्रपद",8)],
+    ["govatsa-dvadashi",140,[27],()=>simpleVP("govatsa-dvadashi","गोवत्सद्वादशी","कार्तिक",27)],
+    ["skanda-shashthi-margashirsha",150,[6],()=>simpleVP("skanda-shashthi-margashirsha","स्कन्दषष्ठी","मार्गशीर्ष",6)],
+    ["bhishmashtami",160,[8],()=>simpleVP("bhishmashtami","भीष्माष्टमी","माघ",8)],
+    ["phalguna-amavasya",170,[30],()=>simpleVP("phalguna-amavasya","फाल्गुनी अमावास्या","फाल्गुन",30)]
+  ].forEach(([id,order,nearbyTithis,calculate])=>register({id,order,nearbyTithis,calculate}));
+
+  function rawForDaily(selectedGB){
+    if(!workbookData) return [];
+    const nearby=nearbyTithiIntervalsForDate(selectedGB,2), nums=new Set(nearby.map(x=>x.number)), out=[];
+    for(const r of rules){
+      if(r.nearbyTithis.length&&!r.nearbyTithis.some(n=>nums.has(n))) continue;
+      const x=r.calculate({scope:"daily",selectedGB,nearby,nums});
+      if(Array.isArray(x)) out.push(...x); else if(x) out.push(x);
+    }
+    return out;
+  }
+  function renderedForDaily(selectedGB){
+    return rawForDaily(selectedGB).map(d=>decisionForDate(d,selectedGB)).filter(Boolean);
+  }
+  function annualJobs(){return rules.filter(r=>r.annual!==false).map(r=>()=>r.calculate({scope:"annual"}));}
+
+
+  // ग्रहण-व्रत अभी स्वतः display नहीं किये जाते, क्योंकि इस page में
+  // विश्वसनीय ग्रहण-event/visibility engine नहीं है। भावी eclipse module इन्हें यहीं से ले सकेगा।
+  global.PanchangaEventVrataCatalog=Object.freeze({
+    sankranti:EVENT_TRIGGER_INDEX.sankranti,
+    eclipse:EVENT_TRIGGER_INDEX.eclipse
+  });
+
+
+  global.LightFestivalRuleRegistry=Object.freeze({
+    register,get,list,runDaily:rawForDaily,annualJobs,
+    eventVratasFor:type=>(EVENT_TRIGGER_INDEX[type]||[]).slice()
+  });
+})(window);
 </script>
 
 </body>
