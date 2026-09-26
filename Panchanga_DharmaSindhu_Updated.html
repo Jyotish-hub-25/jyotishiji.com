@@ -9515,6 +9515,7 @@ window.vratParichayCorpusAudit=function(){
 
 /* ===== व्रत-परिचय : उत्तरार्ध/कथा-विभाग, PDF 151–201 ===== */
 window.VratParichayLateBookCorpus=Object.freeze([{"id":"appendix-vrata-series","title":"परिशिष्ट के विविध व्रत-विधान","pdfRange":"151–167","printedRange":"लगभग २८१–३१४","summary":"परिशिष्ट में क्रमांकित अनेक काम्य, देवता-सम्बद्ध, फलविशिष्ट और विशेष प्रयोजनवाले व्रतों का क्रम जारी है। प्रत्येक प्रकरण में नाम के साथ काल/प्रयोजन, पूजन अथवा नियम और फल-विधान दिया गया है।","display":"reference"},{"id":"pancha-putra-vrata","title":"पाँच पुत्रव्रत","pdfRange":"168–169","printedRange":"लगभग ३१५–३१८","summary":"पुत्रकामना से सम्बन्धित पाँच व्रतों का पृथक् विभाग। इनका प्रयोग सामान्य दैनिक पर्व-सूची में नहीं, इच्छानुसार व्रत-सन्दर्भ में होगा।","display":"reference"},{"id":"vrata-katha-vatasavitri","title":"वटसावित्रीव्रत-कथा","pdfRange":"169–182","printedRange":"लगभग ३१८–३४३","summary":"वटसावित्री-व्रत से सम्बद्ध विस्तृत कथा-पाठ। इसे वटसावित्री के परिचय में ‘व्रतकथा देखें’ के अन्तर्गत जोड़ा जाएगा।","display":"story"},{"id":"vrata-katha-haritalika","title":"हरितालिकाव्रत-कथा","pdfRange":"183–186","printedRange":"लगभग ३४४–३५१","summary":"हरितालिका-व्रत की पृथक् कथा।","display":"story"},{"id":"vrata-katha-sankashti-bhadra","title":"भाद्रपद-कृष्ण सङ्कष्टचतुर्थी-कथा","pdfRange":"186–188","printedRange":"लगभग ३५१–३५५","summary":"भाद्रपद कृष्ण पक्ष की सङ्कष्टचतुर्थी से सम्बद्ध कथा।","display":"story"},{"id":"vrata-katha-rishi-panchami","title":"ऋषिपञ्चमीव्रत-कथा","pdfRange":"188–190","printedRange":"लगभग ३५५–३५९","summary":"ऋषिपञ्चमी-व्रत की कथा।","display":"story"},{"id":"vrata-katha-ananta","title":"अनन्तव्रत-कथा","pdfRange":"190–194","printedRange":"लगभग ३५९–३६७","summary":"अनन्तव्रत की विस्तृत कथा; अनन्तचतुर्दशी के परिचय से सम्बद्ध।","display":"story"},{"id":"vrata-katha-sankashti-margashirsha","title":"मार्गशीर्ष सङ्कष्टचतुर्थी-कथा","pdfRange":"194–198","printedRange":"अन्तिम कथा-विभाग","summary":"मार्गशीर्ष की सङ्कष्टचतुर्थी से सम्बद्ध कथा।","display":"story"},{"id":"vrata-katha-shivaratri","title":"शिवरात्रिव्रत-कथा","pdfRange":"198–201","printedRange":"अन्तिम मुद्रित पृष्ठ ३६८ तक","summary":"शिवरात्रि-व्रत की कथा; ग्रन्थ का मुख्य पाठ इसी विभाग के अन्त में समाप्त होता है।","display":"story"}]);
+window.VratParichayCorpusRecords = window.VratParichayCorpusRecords || Object.create(null);
 (function(){
   const arr=window.VratParichayLateBookCorpus||[];
   arr.forEach((x,i)=>{
@@ -11794,7 +11795,7 @@ global.VratParichayMonthwiseInventory = Object.freeze(items.slice());
 
 
 /* ===== सभी मासानुसार entries के लिए corpus record ===== */
-window.VratParichayCorpusRecords = Object.create(null);
+window.VratParichayCorpusRecords = window.VratParichayCorpusRecords || Object.create(null);
 (function(){
   const inv=window.VratParichayMonthwiseInventory||[];
   for(let i=0;i<inv.length;i++){
