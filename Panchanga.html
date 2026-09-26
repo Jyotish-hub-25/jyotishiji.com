@@ -7087,8 +7087,10 @@ function internalMoonsetForDate(rowIndex,row,selectedDate){
     sunrise0 === null || nextSunriseClock === null
   ) return null;
 
-  const west0 = odayikaNormalize360(moon0.longitude + 180);
-  const west1 = odayikaNormalize360(moon1.longitude + 180);
+  /* चन्द्रास्त: Moon के ठीक सप्तम-बिन्दु को बिना पूर्व-normalize किये solver को दें।
+     इससे 0°/360° सीमा पर पश्चिम-बिन्दु का continuity सुरक्षित रहता है। */
+  const west0 = moon0.longitude + 180;
+  const west1 = moon1.longitude + 180;
 
   const solved = grahaUdayaSolveLinear(
     sun0.longitude,
