@@ -7087,10 +7087,8 @@ function internalMoonsetForDate(rowIndex,row,selectedDate){
     sunrise0 === null || nextSunriseClock === null
   ) return null;
 
-  /* चन्द्रास्त: Moon के ठीक सप्तम-बिन्दु को बिना पूर्व-normalize किये solver को दें।
-     इससे 0°/360° सीमा पर पश्चिम-बिन्दु का continuity सुरक्षित रहता है। */
-  const west0 = moon0.longitude + 180;
-  const west1 = moon1.longitude + 180;
+  const west0 = odayikaNormalize360(moon0.longitude + 180);
+  const west1 = odayikaNormalize360(moon1.longitude + 180);
 
   const solved = grahaUdayaSolveLinear(
     sun0.longitude,
@@ -10618,9 +10616,29 @@ if(document.readyState === "loading"){
     const mr=typeof internalMoonriseForDate==="function"
       ? internalMoonriseForDate(rowIndex,row,gb)
       : null;
-    const ms=typeof internalMoonsetForDate==="function"
-      ? internalMoonsetForDate(rowIndex,row,gb)
-      : null;
+    /* चन्द्रास्त civil date के अनुसार लें: सूर्योदय से पहले का चन्द्रास्त
+       पिछली सावन-दिवस row में पड़ सकता है, अतः दोनों intervals जाँचें। */
+    let ms=null;
+    if(typeof internalMoonsetForDate==="function"){
+      const candidates=[];
+      const cur=internalMoonsetForDate(rowIndex,row,gb);
+      if(cur) candidates.push({event:cur,baseGB:gb});
+      if(rowIndex>1){
+        const prevRow=workbookData?.[rowIndex-1];
+        const prevGB=prevRow ? normalizeDate(prevRow[0]) : "";
+        if(prevRow && prevGB){
+          const prev=internalMoonsetForDate(rowIndex-1,prevRow,prevGB);
+          if(prev) candidates.push({event:prev,baseGB:prevGB});
+        }
+      }
+      const eventGB=(item)=>{
+        const txt=String(item?.event?.timeText||"");
+        const m=txt.match(/\((\d{2}\/\d{2}\/\d{4})\)\s*$/);
+        return m ? m[1] : item.baseGB;
+      };
+      const hit=candidates.find(item=>eventGB(item)===gb);
+      if(hit) ms=hit.event;
+    }
 
     function moonAsciiDigits(s){
       const map={"०":"0","१":"1","२":"2","३":"3","४":"4","५":"5","६":"6","७":"7","८":"8","९":"9"};
