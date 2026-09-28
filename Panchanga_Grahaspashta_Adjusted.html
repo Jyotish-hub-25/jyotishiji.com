@@ -2713,6 +2713,29 @@ body{display:flex;flex-direction:column;min-height:100vh}
   letter-spacing:0 !important;
 }
 </style>
+
+<style id="odayika-grahaspashta-v10-title-header-only">
+/* केवल तात्कालिक ग्रहस्पष्ट शीर्षक और ग्र० header की दृश्य-सुधार */
+.odayika-sp-box-title{
+  transform:translateY(2px) !important;
+  padding-top:1px !important;
+  overflow:visible !important;
+}
+.odayika-sp-head{
+  overflow:visible !important;
+}
+.odayika-sp-headtext{
+  display:block !important;
+  box-sizing:border-box !important;
+  width:100% !important;
+  max-width:100% !important;
+  padding:0 1px !important;
+  white-space:nowrap !important;
+  overflow:visible !important;
+  text-align:left !important;
+  line-height:1.12 !important;
+}
+</style>
 </head>
 <body>
 <header class="site-header">
@@ -6526,15 +6549,21 @@ function odayikaFitSpashtaTypography(){
   });
 
   if(header){
-    /* केवल शीर्ष-पंक्ति: ऊँचाई के कारण अनावश्यक रूप से सूक्ष्म न हो; उपलब्ध पूरी चौड़ाई तक fit हो। */
-    let lo=10, hi=20;
-    for(let i=0;i<20;i++){
+    /* ग्र० header: वास्तविक text-width मापकर box की पूरी उपलब्ध चौड़ाई में fit करें। */
+    const headBox = header.parentElement;
+    const available = Math.max(1,(headBox ? headBox.clientWidth : root.clientWidth)-2);
+    header.style.width="max-content";
+    header.style.maxWidth="none";
+    let lo=10, hi=22;
+    for(let i=0;i<22;i++){
       const mid=(lo+hi)/2;
       header.style.fontSize=`${mid}px`;
-      if(header.scrollWidth <= Math.max(1,header.clientWidth-1)) lo=mid;
+      if(header.getBoundingClientRect().width <= available) lo=mid;
       else hi=mid;
     }
-    header.style.fontSize=`${Math.max(10,lo-.06).toFixed(2)}px`;
+    header.style.fontSize=`${Math.max(10,lo-.08).toFixed(2)}px`;
+    header.style.width="100%";
+    header.style.maxWidth="100%";
   }
 }
 
