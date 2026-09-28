@@ -2697,6 +2697,22 @@ body{display:flex;flex-direction:column;min-height:100vh}
 .odayika-sp-row:last-child{padding-top:3px !important;padding-bottom:0 !important;}
 .odayika-legend-inside{flex:0 0 auto !important;margin:1px 0 0 !important;padding-top:1px !important;line-height:1.04 !important;}
 </style>
+
+<style id="odayika-grahaspashta-v9-header-only">
+/* केवल “ग्र० -रा०।अं०।क०।वि०व०/अ०” पंक्ति */
+.odayika-sp-head{flex:.88 1 0 !important;}
+.odayika-sp-headtext{
+  display:block !important;
+  width:100% !important;
+  max-width:100% !important;
+  white-space:nowrap !important;
+  overflow:visible !important;
+  text-align:left !important;
+  text-align-last:auto !important;
+  line-height:1.08 !important;
+  letter-spacing:0 !important;
+}
+</style>
 </head>
 <body>
 <header class="site-header">
@@ -6510,14 +6526,15 @@ function odayikaFitSpashtaTypography(){
   });
 
   if(header){
-    let lo=9, hi=18;
+    /* केवल शीर्ष-पंक्ति: ऊँचाई के कारण अनावश्यक रूप से सूक्ष्म न हो; उपलब्ध पूरी चौड़ाई तक fit हो। */
+    let lo=10, hi=20;
     for(let i=0;i<20;i++){
       const mid=(lo+hi)/2;
       header.style.fontSize=`${mid}px`;
-      if(header.scrollWidth <= header.clientWidth-1 && header.scrollHeight <= header.clientHeight+1) lo=mid;
+      if(header.scrollWidth <= Math.max(1,header.clientWidth-1)) lo=mid;
       else hi=mid;
     }
-    header.style.fontSize=`${Math.max(9,lo-.08).toFixed(2)}px`;
+    header.style.fontSize=`${Math.max(10,lo-.06).toFixed(2)}px`;
   }
 }
 
