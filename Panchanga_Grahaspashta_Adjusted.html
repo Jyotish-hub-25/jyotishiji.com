@@ -6546,22 +6546,35 @@ function odayikaFitSpashtaTypography(){
       if(fitsW && fitsH) lo=mid; else hi=mid;
     }
     row.style.fontSize=`${Math.max(11,lo-.10).toFixed(2)}px`;
+
+    /* चं०, गु०, शु०, श० की अभी ठीक fitting को ज्यों का त्यों रखें।
+       छोटी पंक्तियों को केवल क्षैतिज रूप से थोड़ा फैलने दें; ऊँचाई/row-size नहीं बदलती। */
+    line.style.transform="none";
+    line.style.transformOrigin="left center";
+    const label = (row.querySelector(".odayika-sp-left")?.textContent || "").trim();
+    const referenceRow = /^(चं०|गु०|शु०|श०)/.test(label);
+    if(!referenceRow){
+      const availableW = Math.max(1,row.clientWidth-2);
+      const naturalW = Math.max(1,line.getBoundingClientRect().width);
+      const scaleX = Math.min(1.16, availableW/naturalW);
+      if(scaleX > 1.005) line.style.transform=`scaleX(${scaleX.toFixed(3)})`;
+    }
   });
 
   if(header){
-    /* ग्र० header: वास्तविक text-width मापकर box की पूरी उपलब्ध चौड़ाई में fit करें। */
+    /* यह केवल इकाई-सूचक पंक्ति है; इसे ग्रह-पंक्तियों जितना बड़ा न करें। */
     const headBox = header.parentElement;
     const available = Math.max(1,(headBox ? headBox.clientWidth : root.clientWidth)-2);
     header.style.width="max-content";
     header.style.maxWidth="none";
-    let lo=10, hi=22;
+    let lo=8.5, hi=12.2;
     for(let i=0;i<22;i++){
       const mid=(lo+hi)/2;
       header.style.fontSize=`${mid}px`;
       if(header.getBoundingClientRect().width <= available) lo=mid;
       else hi=mid;
     }
-    header.style.fontSize=`${Math.max(10,lo-.08).toFixed(2)}px`;
+    header.style.fontSize=`${Math.max(8.5,lo-.05).toFixed(2)}px`;
     header.style.width="100%";
     header.style.maxWidth="100%";
   }
