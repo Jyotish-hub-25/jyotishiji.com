@@ -2611,6 +2611,66 @@ body{display:flex;flex-direction:column;min-height:100vh}
 /* अन्तिम केतु-पंक्ति को थोड़ा नीचे बैठाएँ ताकि के० की मात्रा को पूरा स्थान मिले। */
 .odayika-sp-row:last-child{transform:translateY(2px);padding-bottom:0 !important;}
 </style>
+
+<style id="odayika-grahaspashta-adaptive-v6">
+/* केवल तात्कालिक ग्रहस्पष्ट box: अक्षर/अंक actual content के अनुसार auto-fit */
+.odayika-spashta{padding:3px 3px 4px !important;}
+.odayika-sp-box-title{
+  margin:0 !important; padding:0 !important;
+  line-height:1.08 !important;
+  font-size:clamp(.94rem,1.48vw,1.14rem) !important;
+}
+#odayikaSpashta{margin:0 !important;padding:0 !important;min-height:0 !important;}
+.odayika-sp-head{
+  flex:.72 1 0 !important;
+  margin:0 !important; padding:0 1px 1px !important;
+  line-height:1.08 !important; overflow:hidden !important;
+}
+.odayika-sp-headtext{
+  display:block !important; width:100% !important;
+  text-align:justify !important; text-align-last:justify !important;
+  white-space:nowrap !important;
+}
+.odayika-sp-row{
+  flex:1 1 0 !important; min-height:0 !important;
+  padding:1px 1px 0 !important; gap:.03em !important;
+  line-height:1.18 !important; overflow:hidden !important;
+  align-items:center !important; transform:none !important;
+}
+.odayika-sp-left{
+  flex:0 0 auto !important; min-width:0 !important;
+  margin-right:.05em !important;
+}
+.odayika-sp-value{
+  flex:1 1 auto !important; min-width:0 !important;
+  display:grid !important; grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+  column-gap:0 !important; letter-spacing:0 !important;
+}
+.odayika-sp-num{min-width:0 !important;text-align:center !important;}
+.odayika-sp-num:not(:last-child)::after{margin:0 !important;}
+.odayika-state,.odayika-sp-state-right{
+  flex:0 0 auto !important; margin-left:.02em !important; padding-right:0 !important;
+}
+/* केतु में 'के०' की ऊपरी मात्रा के लिए अतिरिक्त breathing room; row नीचे की ओर हल्की बैठती है। */
+.odayika-sp-row:last-child{padding-top:2px !important;padding-bottom:0 !important;}
+.odayika-legend-inside{margin:2px 0 0 !important;padding-top:1px !important;line-height:1.05 !important;}
+</style>
+
+<style id="odayika-grahaspashta-v7-final-tune">
+/* केवल तात्कालिक ग्रहस्पष्ट box — अन्य settings अपरिवर्तित */
+.odayika-sp-box-title{
+  white-space:nowrap !important;
+  font-kerning:normal !important;
+  font-variant-ligatures:normal !important;
+  text-rendering:optimizeLegibility !important;
+}
+.odayika-sp-headtext{
+  white-space:nowrap !important;
+  overflow:hidden !important;
+}
+/* केतु की मात्रा के लिए अन्तिम row में थोड़ा अतिरिक्त ऊपरी अवकाश */
+.odayika-sp-row:last-child{padding-top:3px !important;}
+</style>
 </head>
 <body>
 <header class="site-header">
@@ -6304,8 +6364,13 @@ function odayikaPlanetState(grahaKey,rowIndex,col,grahaLon,sunLon){
     if(retro) state.push("व०");
   }
 
-  /* अ० अभी source AB की अस्तावस्था से ही। */
-  if(odayikaIsCombust(grahaKey,rowIndex)){
+  /* प्रदर्शन-नियम:
+     सूर्य: व०/अ० नहीं।
+     चन्द्र: व० कभी नहीं; source में अस्त होने पर अ० हो सकता है।
+     पाँच ताराग्रह: आवश्यकतानुसार व० और/या अ०।
+     राहु-केतु: नित्य वक्र होने से व० लिखने की आवश्यकता नहीं। */
+  if(["chandra","mangal","budha","guru","shukra","shani"].includes(grahaKey) &&
+     odayikaIsCombust(grahaKey,rowIndex)){
     state.push("अ०");
   }
 
@@ -6405,40 +6470,30 @@ function odayikaFitSpashtaTypography(){
   const header = root.querySelector(".odayika-sp-head");
   const rows = [...root.querySelectorAll(".odayika-sp-row")];
 
-  /* उपलब्ध चौड़ाई को लगभग border तक भरें; overflow न होने दें। */
-  function fitRow(row, minPx=10, maxPx=30){
-    const value = row.querySelector(".odayika-sp-value");
-    const oldFlex = value ? value.style.flex : "";
-    const oldGrid = value ? value.style.gridTemplateColumns : "";
-    if(value){
-      value.style.flex = "0 0 auto";
-      value.style.gridTemplateColumns = "repeat(4,max-content)";
-    }
-    let lo=minPx, hi=maxPx;
-    for(let i=0;i<20;i++){
+  /* हर पंक्ति अपने वास्तविक अंकों + व०/अ० के अनुसार स्वतः बड़ी/छोटी हो।
+     उपलब्ध चौड़ाई लगभग पूरी भरे, किन्तु border न काटे। */
+  function fitRow(row){
+    let lo=10, hi=30;
+    for(let i=0;i<22;i++){
       const mid=(lo+hi)/2;
       row.style.fontSize=`${mid}px`;
-      if(row.scrollWidth <= row.clientWidth + .25 && row.scrollHeight <= row.clientHeight + .25) lo=mid;
-      else hi=mid;
+      const fitsW = row.scrollWidth <= row.clientWidth - 1;
+      const fitsH = row.scrollHeight <= row.clientHeight + 1;
+      if(fitsW && fitsH) lo=mid; else hi=mid;
     }
-    row.style.fontSize=`${Math.max(minPx,lo-.08).toFixed(2)}px`;
-    if(value){
-      value.style.flex = oldFlex;
-      value.style.gridTemplateColumns = oldGrid;
-    }
+    row.style.fontSize=`${Math.max(10,lo-.15).toFixed(2)}px`;
   }
-
-  rows.forEach(row => fitRow(row, row.classList.contains("has-state") ? 9 : 10, 30));
+  rows.forEach(fitRow);
 
   if(header){
-    let lo=9, hi=23;
-    for(let i=0;i<18;i++){
+    let lo=9, hi=22;
+    for(let i=0;i<20;i++){
       const mid=(lo+hi)/2;
       header.style.fontSize=`${mid}px`;
-      if(header.scrollWidth <= header.clientWidth + .25 && header.scrollHeight <= header.clientHeight + .25) lo=mid;
+      if(header.scrollWidth <= header.clientWidth - 1 && header.scrollHeight <= header.clientHeight + 1) lo=mid;
       else hi=mid;
     }
-    header.style.fontSize=`${Math.max(9,lo-.08).toFixed(2)}px`;
+    header.style.fontSize=`${Math.max(9,lo-.12).toFixed(2)}px`;
   }
 }
 
