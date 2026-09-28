@@ -2754,6 +2754,14 @@ body{display:flex;flex-direction:column;min-height:100vh}
   line-height:1.08 !important;
 }
 </style>
+
+<style id="odayika-grahaspashta-v13-header-tiny-adjustment">
+/* केवल ग्र०-header: थोड़ा नीचे; शेष layout untouched */
+.odayika-sp-headtext{
+  position:relative !important;
+  top:2px !important;
+}
+</style>
 </head>
 <body>
 <header class="site-header">
@@ -6582,10 +6590,10 @@ function odayikaFitSpashtaTypography(){
   if(header){
     /* केवल ग्र०-header: !important width से स्वतंत्र वास्तविक text-width मापकर fit करें। */
     const headBox = header.parentElement;
-    const available = Math.max(1,(headBox ? headBox.clientWidth : root.clientWidth)-4);
+    const available = Math.max(1,(headBox ? headBox.clientWidth : root.clientWidth)-2);
     const range = document.createRange();
     range.selectNodeContents(header);
-    let lo=8.0, hi=13.0;
+    let lo=8.0, hi=14.2;
     for(let i=0;i<24;i++){
       const mid=(lo+hi)/2;
       header.style.fontSize=`${mid}px`;
@@ -6593,7 +6601,7 @@ function odayikaFitSpashtaTypography(){
       if(textWidth <= available) lo=mid;
       else hi=mid;
     }
-    header.style.fontSize=`${Math.max(8.0,lo-.08).toFixed(2)}px`;
+    header.style.fontSize=`${Math.max(8.0,lo-.03).toFixed(2)}px`;
   }
 }
 
