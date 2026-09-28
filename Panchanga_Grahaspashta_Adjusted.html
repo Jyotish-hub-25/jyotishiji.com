@@ -2565,6 +2565,47 @@ body{display:flex;flex-direction:column;min-height:100vh}
 
 </style>
 
+
+<style id="odayika-grahaspashta-auto-fit-v4">
+/* सभी ग्रह-पंक्तियों पर एक ही स्वतः-fit नियम; किसी ग्रह का hard-coded adjustment नहीं। */
+.odayika-sp-box-title{
+  flex:0 0 auto !important;
+  margin:0 !important;
+  padding:0 !important;
+  line-height:.94 !important;
+}
+#odayikaSpashta{
+  margin-top:0 !important;
+  padding-top:0 !important;
+}
+.odayika-sp-head{
+  flex:0 0 auto !important;
+  min-height:0 !important;
+  margin:0 !important;
+  padding:0 0 1px !important;
+  line-height:.92 !important;
+}
+.odayika-sp-row{
+  flex:1 1 0 !important;
+  min-height:0 !important;
+  gap:0 !important;
+  padding:0 !important;
+  line-height:1.02 !important;
+  letter-spacing:0 !important;
+}
+.odayika-sp-left{min-width:0 !important;margin-right:.04em !important;}
+.odayika-sp-value{column-gap:0 !important;letter-spacing:0 !important;}
+.odayika-sp-num:not(:last-child)::after{margin-left:.01em !important;}
+.odayika-state,.odayika-sp-state-right{margin-left:0 !important;padding-right:0 !important;}
+.odayika-legend-inside{
+  flex:0 0 auto !important;
+  margin:1px 0 0 !important;
+  padding-top:1px !important;
+  line-height:1 !important;
+}
+/* अन्तिम केतु-पंक्ति के अक्षर नीचे से न कटें। */
+.odayika-sp-row:last-child{padding-bottom:1px !important;}
+</style>
 </head>
 <body>
 <header class="site-header">
@@ -6342,7 +6383,12 @@ function odayikaFitPlainText(el,{minPx=10,maxPx=28,widthFill=.992}={}){
 
 function odayikaFitOuterTypography(){
   odayikaFitPlainText(document.getElementById("odayikaTitle"),{minPx:11,maxPx:26,widthFill:.993});
-  odayikaFitPlainText(document.getElementById("odayikaDateLine"),{minPx:10,maxPx:21,widthFill:.993});
+  const dateLine = document.getElementById("odayikaDateLine");
+  odayikaFitPlainText(dateLine,{minPx:10,maxPx:21,widthFill:.993});
+  const riseSetTitle = document.getElementById("odayikaUdayastaTitle");
+  if(dateLine && riseSetTitle){
+    riseSetTitle.style.fontSize = getComputedStyle(dateLine).fontSize;
+  }
   odayikaFitPlainText(document.querySelector(".odayika-sp-box-title"),{minPx:10,maxPx:20,widthFill:.985});
 }
 
