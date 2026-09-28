@@ -2671,6 +2671,32 @@ body{display:flex;flex-direction:column;min-height:100vh}
 /* केतु की मात्रा के लिए अन्तिम row में थोड़ा अतिरिक्त ऊपरी अवकाश */
 .odayika-sp-row:last-child{padding-top:3px !important;}
 </style>
+
+<style id="odayika-grahaspashta-v8-rebuild">
+/* केवल तात्कालिक ग्रहस्पष्ट presentation का पुनर्निर्माण */
+.odayika-spashta{padding:3px 3px 4px !important;}
+.odayika-sp-box-title{
+  margin:0 !important; padding:0 !important; line-height:1.02 !important;
+  font-size:clamp(1.02rem,1.62vw,1.24rem) !important; white-space:nowrap !important;
+}
+#odayikaSpashta{display:flex !important;flex-direction:column !important;min-height:0 !important;margin:0 !important;padding:0 !important;}
+.odayika-sp-head{
+  flex:.72 1 0 !important; min-height:0 !important; margin:0 !important; padding:0 1px 1px !important;
+  display:flex !important; align-items:center !important; overflow:hidden !important; line-height:1 !important;
+}
+.odayika-sp-headtext{display:block !important;width:100% !important;white-space:nowrap !important;text-align:justify !important;text-align-last:justify !important;}
+.odayika-sp-row{
+  flex:1 1 0 !important; min-height:0 !important; padding:0 1px !important; margin:0 !important;
+  display:flex !important; align-items:center !important; overflow:visible !important; line-height:1.16 !important;
+}
+.odayika-sp-line{display:inline-flex !important;align-items:center !important;flex:none !important;white-space:nowrap !important;width:max-content !important;max-width:none !important;}
+.odayika-sp-left,.odayika-sp-value,.odayika-state{display:inline !important;flex:none !important;white-space:nowrap !important;}
+.odayika-sp-left{margin-right:.16em !important;}
+.odayika-sp-value{letter-spacing:0 !important;}
+.odayika-state{margin-left:.08em !important;}
+.odayika-sp-row:last-child{padding-top:3px !important;padding-bottom:0 !important;}
+.odayika-legend-inside{flex:0 0 auto !important;margin:1px 0 0 !important;padding-top:1px !important;line-height:1.04 !important;}
+</style>
 </head>
 <body>
 <header class="site-header">
@@ -6466,34 +6492,32 @@ function odayikaFitSpashtaTypography(){
   odayikaFitOuterTypography();
   const root = document.getElementById("odayikaSpashta");
   if(!root || root.clientWidth <= 0) return;
-
-  const header = root.querySelector(".odayika-sp-head");
+  const header = root.querySelector(".odayika-sp-headtext");
   const rows = [...root.querySelectorAll(".odayika-sp-row")];
 
-  /* हर पंक्ति अपने वास्तविक अंकों + व०/अ० के अनुसार स्वतः बड़ी/छोटी हो।
-     उपलब्ध चौड़ाई लगभग पूरी भरे, किन्तु border न काटे। */
-  function fitRow(row){
-    let lo=10, hi=30;
+  rows.forEach(row => {
+    const line = row.querySelector(".odayika-sp-line");
+    if(!line) return;
+    let lo=11, hi=30;
     for(let i=0;i<22;i++){
       const mid=(lo+hi)/2;
       row.style.fontSize=`${mid}px`;
-      const fitsW = row.scrollWidth <= row.clientWidth - 1;
-      const fitsH = row.scrollHeight <= row.clientHeight + 1;
+      const fitsW = line.scrollWidth <= Math.max(1,row.clientWidth-2);
+      const fitsH = line.scrollHeight <= Math.max(1,row.clientHeight-1);
       if(fitsW && fitsH) lo=mid; else hi=mid;
     }
-    row.style.fontSize=`${Math.max(10,lo-.15).toFixed(2)}px`;
-  }
-  rows.forEach(fitRow);
+    row.style.fontSize=`${Math.max(11,lo-.10).toFixed(2)}px`;
+  });
 
   if(header){
-    let lo=9, hi=22;
+    let lo=9, hi=18;
     for(let i=0;i<20;i++){
       const mid=(lo+hi)/2;
       header.style.fontSize=`${mid}px`;
-      if(header.scrollWidth <= header.clientWidth - 1 && header.scrollHeight <= header.clientHeight + 1) lo=mid;
+      if(header.scrollWidth <= header.clientWidth-1 && header.scrollHeight <= header.clientHeight+1) lo=mid;
       else hi=mid;
     }
-    header.style.fontSize=`${Math.max(9,lo-.12).toFixed(2)}px`;
+    header.style.fontSize=`${Math.max(9,lo-.08).toFixed(2)}px`;
   }
 }
 
@@ -6547,18 +6571,12 @@ function odayikaSpashtaHeader(){
 }
 
 function odayikaSpashtaRow(name,state,parts){
-  const values = [
-    odayikaDisplayRashi(parts),
-    odayikaDisplayPart(parts?.degree),
-    odayikaDisplayPart(parts?.minute),
-    odayikaDisplayPart(parts?.second)
-  ];
-
+  const compactValue =
+    `${odayikaDisplayRashi(parts)}।${odayikaDisplayPart(parts?.degree)}।${odayikaDisplayPart(parts?.minute)}।${odayikaDisplayPart(parts?.second)}`;
+  const stateText = state ? `<span class="odayika-state odayika-sp-state-right">${state}</span>` : "";
   return `
     <div class="odayika-sp-row ${state ? "has-state" : "no-state"}">
-      <span class="odayika-sp-left">${name} -</span>
-      <span class="odayika-sp-value">${values.map(v => `<span class="odayika-sp-num">${v}</span>`).join("")}</span>
-      ${state ? `<span class="odayika-state odayika-sp-state-right">${state}</span>` : ""}
+      <span class="odayika-sp-line"><span class="odayika-sp-left">${name} -</span><span class="odayika-sp-value">${compactValue}</span>${stateText}</span>
     </div>
   `;
 }
