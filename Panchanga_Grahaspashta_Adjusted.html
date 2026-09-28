@@ -1589,6 +1589,22 @@ body{display:flex;flex-direction:column;min-height:100vh}
   .odayika-sp-headtext{letter-spacing:-.045em}
 }
 
+
+/* ===== 2026-09-28 : ग्रहस्पष्ट दृश्य-संशोधन — केवल इसी box तक सीमित ===== */
+.odayika-sp-box-title{
+  margin-bottom:0 !important;
+  padding-bottom:0 !important;
+  line-height:1.02 !important;
+  font-family:"Sanskrit Text","Noto Serif Devanagari","Nirmala UI","Mangal",serif;
+  font-variant-ligatures:normal;
+  text-rendering:optimizeLegibility;
+}
+#odayikaSpashta{margin-top:0 !important;padding-top:0 !important;}
+.odayika-sp-head{padding-top:0 !important;margin-top:0 !important;}
+.odayika-sp-row{gap:0 !important;padding-left:0 !important;padding-right:0 !important;}
+.odayika-sp-left{min-width:0 !important;margin-right:.08em;}
+.odayika-sp-value{column-gap:0 !important;}
+.odayika-sp-num:not(:last-child)::after{margin-left:.02em;}
 </style>
 
 <style id="refined-arunodaya-desktop-adjusted">
@@ -6336,58 +6352,42 @@ function odayikaFitSpashtaTypography(){
   if(!root || root.clientWidth <= 0) return;
 
   const header = root.querySelector(".odayika-sp-head");
-  const normalRows = [...root.querySelectorAll(".odayika-sp-row.no-state")];
-  const stateRows = [...root.querySelectorAll(".odayika-sp-row.has-state")];
+  const rows = [...root.querySelectorAll(".odayika-sp-row")];
 
-  /*
-    सभी सामान्य ग्रह एक समान बड़े font में रहें।
-    सबसे लम्बी सामान्य पंक्ति जितना समा सके, वही common size बनेगा।
-  */
-  if(normalRows.length){
-    const commonNormalSize = Math.min(
-      ...normalRows.map(row =>
-        odayikaCandidateFontSize(row,{
-          basePx:16,
-          minPx:10,
-          maxPx:24,
-          widthFill:.992,
-          heightFill:.80
-        })
-      )
-    );
-
-    normalRows.forEach(row => {
-      row.style.fontSize = `${commonNormalSize.toFixed(2)}px`;
-    });
+  /* उपलब्ध चौड़ाई को लगभग border तक भरें; overflow न होने दें। */
+  function fitRow(row, minPx=10, maxPx=30){
+    const value = row.querySelector(".odayika-sp-value");
+    const oldFlex = value ? value.style.flex : "";
+    const oldGrid = value ? value.style.gridTemplateColumns : "";
+    if(value){
+      value.style.flex = "0 0 auto";
+      value.style.gridTemplateColumns = "repeat(4,max-content)";
+    }
+    let lo=minPx, hi=maxPx;
+    for(let i=0;i<20;i++){
+      const mid=(lo+hi)/2;
+      row.style.fontSize=`${mid}px`;
+      if(row.scrollWidth <= row.clientWidth + .25 && row.scrollHeight <= row.clientHeight + .25) lo=mid;
+      else hi=mid;
+    }
+    row.style.fontSize=`${Math.max(minPx,lo-.08).toFixed(2)}px`;
+    if(value){
+      value.style.flex = oldFlex;
+      value.style.gridTemplateColumns = oldGrid;
+    }
   }
 
-  /*
-    व०/अ० वाली पंक्ति लम्बी है, इसलिए केवल वही आवश्यकता के अनुसार
-    स्वतः थोड़ी छोटी हो सकती है।
-  */
-  stateRows.forEach(row => {
-    const stateSize = odayikaCandidateFontSize(row,{
-      basePx:16,
-      minPx:9,
-      maxPx:22,
-      widthFill:.992,
-      heightFill:.78
-    });
+  rows.forEach(row => fitRow(row, row.classList.contains("has-state") ? 9 : 10, 30));
 
-    row.style.fontSize = `${stateSize.toFixed(2)}px`;
-  });
-
-  /* छोटा header भी border की उपलब्ध चौड़ाई का अधिकतम उपयोग करे। */
   if(header){
-    const headerSize = odayikaCandidateFontSize(header,{
-      basePx:16,
-      minPx:9,
-      maxPx:21,
-      widthFill:.995,
-      heightFill:.82
-    });
-
-    header.style.fontSize = `${headerSize.toFixed(2)}px`;
+    let lo=9, hi=23;
+    for(let i=0;i<18;i++){
+      const mid=(lo+hi)/2;
+      header.style.fontSize=`${mid}px`;
+      if(header.scrollWidth <= header.clientWidth + .25 && header.scrollHeight <= header.clientHeight + .25) lo=mid;
+      else hi=mid;
+    }
+    header.style.fontSize=`${Math.max(9,lo-.08).toFixed(2)}px`;
   }
 }
 
