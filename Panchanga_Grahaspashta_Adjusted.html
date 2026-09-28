@@ -2603,8 +2603,13 @@ body{display:flex;flex-direction:column;min-height:100vh}
   padding-top:1px !important;
   line-height:1 !important;
 }
-/* अन्तिम केतु-पंक्ति के अक्षर नीचे से न कटें। */
-.odayika-sp-row:last-child{padding-bottom:1px !important;}
+/* शीर्षक को उपलब्ध चौड़ाई का थोड़ा अधिक उपयोग; ग्रहस्पष्ट box की कुल चौड़ाई अपरिवर्तित। */
+.odayika-sp-box-title{font-size:clamp(.90rem,1.42vw,1.10rem) !important;}
+/* इकाई-header पूरी चौड़ाई में सुव्यवस्थित रहे। */
+.odayika-sp-head{width:100% !important;}
+.odayika-sp-headtext{display:block !important;width:100% !important;white-space:nowrap !important;text-align:justify !important;text-align-last:justify !important;}
+/* अन्तिम केतु-पंक्ति को थोड़ा नीचे बैठाएँ ताकि के० की मात्रा को पूरा स्थान मिले। */
+.odayika-sp-row:last-child{transform:translateY(2px);padding-bottom:0 !important;}
 </style>
 </head>
 <body>
@@ -6481,7 +6486,7 @@ window.addEventListener("orientationchange",odayikaScheduleHeadlineFit);
 function odayikaSpashtaHeader(){
   return `
     <div class="odayika-sp-head">
-      <span class="odayika-sp-headtext">ग्रह -रा०।अं०।क०।वि०व०/अ०</span>
+      <span class="odayika-sp-headtext">ग्र० -रा०।अं०।क०।वि०व०/अ०</span>
     </div>
   `;
 }
