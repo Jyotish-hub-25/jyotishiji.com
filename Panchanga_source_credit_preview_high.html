@@ -7231,7 +7231,11 @@ function odayikaFitSpashtaTypography(){
     });
   }
 
-  if(header){
+  if(
+  header &&
+  !(window.matchMedia &&
+    window.matchMedia("(max-width:700px)").matches)
+){
     const isMobile = window.matchMedia && window.matchMedia("(max-width:700px)").matches;
     const headBox = header.parentElement;
     const available = Math.max(1,(headBox ? headBox.clientWidth : root.clientWidth)-2);
