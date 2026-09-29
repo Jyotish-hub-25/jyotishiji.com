@@ -6718,26 +6718,43 @@ function odayikaFitSpashtaTypography(){
   }
 
   if(header){
-    /* ग्र०-header: mobile पर अक्षर थोड़ा सँकरे/ऊँचे रखकर पूरी उपलब्ध चौड़ाई का सन्तुलित उपयोग। */
+    /* ग्र०-header: mobile पर पूरा पाठ box के भीतर रहे।
+       font-size को स्पष्ट/ऊँचा रखते हुए केवल आवश्यक क्षैतिज compression लागू होता है। */
     const headBox = header.parentElement;
-    const available = Math.max(1,(headBox ? headBox.clientWidth : root.clientWidth)-3);
+    const available = Math.max(1,(headBox ? headBox.clientWidth : root.clientWidth)-4);
     const isMobile = window.matchMedia && window.matchMedia("(max-width:700px)").matches;
+
     header.style.transformOrigin="left center";
-    header.style.fontWeight=isMobile ? "600" : "";
-    header.style.letterSpacing=isMobile ? "-0.015em" : "";
-    header.style.transform=isMobile ? "scaleX(.92)" : "none";
-    header.style.width=isMobile ? "108.6%" : "100%";
-    const range = document.createRange();
-    range.selectNodeContents(header);
-    let lo=8.0, hi=isMobile ? 15.4 : 14.2;
-    for(let i=0;i<24;i++){
-      const mid=(lo+hi)/2;
-      header.style.fontSize=`${mid}px`;
-      const textWidth = range.getBoundingClientRect().width;
-      if(textWidth <= available) lo=mid;
-      else hi=mid;
+    header.style.width="100%";
+    header.style.maxWidth="100%";
+    header.style.whiteSpace="nowrap";
+    header.style.overflow="visible";
+
+    if(isMobile){
+      header.style.fontWeight="600";
+      header.style.letterSpacing="-0.025em";
+      header.style.fontSize="14.6px";
+      header.style.transform="none";
+
+      const range=document.createRange();
+      range.selectNodeContents(header);
+      const natural=Math.max(1,range.getBoundingClientRect().width);
+      const scale=Math.max(.78,Math.min(1,available/natural));
+      header.style.transform=`scaleX(${scale.toFixed(3)})`;
+    }else{
+      header.style.fontWeight="";
+      header.style.letterSpacing="";
+      header.style.transform="none";
+      let lo=8.0, hi=14.2;
+      const range=document.createRange();
+      range.selectNodeContents(header);
+      for(let i=0;i<24;i++){
+        const mid=(lo+hi)/2;
+        header.style.fontSize=`${mid}px`;
+        if(range.getBoundingClientRect().width <= available) lo=mid; else hi=mid;
+      }
+      header.style.fontSize=`${Math.max(8.0,lo-.03).toFixed(2)}px`;
     }
-    header.style.fontSize=`${Math.max(8.0,lo-.03).toFixed(2)}px`;
   }
 }
 
@@ -6880,9 +6897,9 @@ function odayikaPlanetFontSize(house,count){
      2+ ग्रहों में प्रारम्भिक आकार भी पर्याप्त बड़ा रहे; वास्तविक collision होने पर
      नीचे का mobile-fit function ही क्रमशः छोटा करेगा। */
   if(window.matchMedia && window.matchMedia("(max-width:700px)").matches){
-    if(count <= 1) size = Math.max(size,70);
-    else if(count === 2) size = Math.max(size,61);
-    else if(count === 3) size = Math.max(size,54);
+    if(count <= 1) size = Math.max(size,74);
+    else if(count === 2) size = Math.max(size,70);
+    else if(count === 3) size = Math.max(size,60);
   }
   return size;
 }
