@@ -3115,6 +3115,54 @@ body{display:flex;flex-direction:column;min-height:100vh}
 }
 </style>
 
+
+
+
+
+<style id="udayasta-balanced-stream-final-20260929">
+#odayikaUdayastaGrid{
+  display:block !important;
+  width:100% !important;
+}
+#odayikaUdayastaGrid .odayika-stream-source{display:none !important}
+#odayikaUdayastaGrid .odayika-flow-row{
+  display:flex !important;
+  flex-wrap:nowrap !important;
+  align-items:baseline !important;
+  justify-content:center !important;
+  width:100% !important;
+  min-width:0 !important;
+  white-space:nowrap !important;
+  line-height:1.45 !important;
+}
+#odayikaUdayastaGrid .odayika-flow-row + .odayika-flow-row{
+  margin-top:.20em !important;
+}
+#odayikaUdayastaGrid .odayika-event-chip{
+  display:inline !important;
+  position:static !important;
+  width:auto !important;
+  min-width:0 !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:0 !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+  background:transparent !important;
+  white-space:nowrap !important;
+  text-align:left !important;
+  line-height:inherit !important;
+  grid-column:auto !important;
+  grid-row:auto !important;
+}
+#odayikaUdayastaGrid .odayika-sep{
+  display:inline !important;
+  flex:0 0 auto !important;
+  margin:0 .42em 0 .12em !important;
+  font-weight:400 !important;
+}
+</style>
+
 </head>
 <body>
 <header class="site-header">
@@ -11549,27 +11597,22 @@ if(document.readyState === "loading"){
       return `${kaal} ${clock}`;
     }
 
-    let moonItem="";
-    if(mr?.timeText || ms?.timeText){
-      const parts=[];
-      if(mr?.timeText) parts.push(`<strong>चन्द्रोदय</strong> ${moonPanchangaTime(mr.timeText,gb)}`);
-      if(ms?.timeText) parts.push(`<strong>चन्द्रास्त</strong> ${moonPanchangaTime(ms.timeText,gb)}`);
-      moonItem=`<span class="odayika-event-chip odayika-moon-chip"><span>${parts.join(" · ")}</span></span>`;
-    }
-
-    /*
-      कुल दो पंक्तियाँ:
-      1: चन्द्रमा + मङ्गल + बुध
-      2: बृहस्पति + शुक्र + शनि
-    */
     const items=[];
-    if(moonItem) items.push(moonItem);
+    if(mr?.timeText){
+      items.push(`<span class="odayika-event-chip"><strong>चन्द्रोदय</strong> ${moonPanchangaTime(mr.timeText,gb)}</span>`);
+    }
+    if(ms?.timeText){
+      items.push(`<span class="odayika-event-chip"><strong>चन्द्रास्त</strong> ${moonPanchangaTime(ms.timeText,gb)}</span>`);
+    }
     ["mangal","budha","guru","shukra","shani"].forEach(key=>{
       if(planetItemsByKey[key]) items.push(planetItemsByKey[key]);
     });
 
     if(title) title.textContent="चन्द्रमा व पञ्चताराग्रह उदयास्त";
-    grid.innerHTML=items.join("");
+
+    /* चन्द्र से शनि तक एक ही क्रमबद्ध सामग्री; JS वास्तविक चौड़ाई देखकर
+       इसी क्रम को दो लगभग समान पंक्तियों में बाँटेगा। */
+    grid.innerHTML=`<div class="odayika-stream-source">${items.join("")}</div>`;
     box.hidden=!items.length;
   }
 
@@ -11790,33 +11833,82 @@ if(document.readyState === "loading"){
 
 <script id="udayasta-two-line-autofit-script-20260929">
 (function(){
+  function buildRow(items){
+    const row=document.createElement("div");
+    row.className="odayika-flow-row";
+    items.forEach((node,i)=>{
+      row.appendChild(node.cloneNode(true));
+      if(i<items.length-1){
+        const sep=document.createElement("span");
+        sep.className="odayika-sep";
+        sep.textContent=",";
+        sep.setAttribute("aria-hidden","true");
+        row.appendChild(sep);
+      }
+    });
+    return row;
+  }
+
   function arrangeAndFit(){
     const grid=document.getElementById("odayikaUdayastaGrid");
     if(!grid) return;
-    const chips=[...grid.querySelectorAll(".odayika-event-chip")];
-    if(!chips.length) return;
+    const source=grid.querySelector(".odayika-stream-source");
+    if(!source) return;
+    const items=[...source.querySelectorAll(".odayika-event-chip")];
+    if(items.length<2) return;
 
-    /* Renderer का क्रम:
-       चन्द्रमा | मङ्गल | बुध
-       बृहस्पति | शुक्र | शनि */
-    chips.forEach((el,i)=>{
-      el.style.setProperty("grid-column",String((i%3)+1),"important");
-      el.style.setProperty("grid-row",String(Math.floor(i/3)+1),"important");
-      el.style.setProperty("order",String(i+1),"important");
+    /* सभी सम्भव क्रम-सुरक्षित विभाजनों में सबसे सन्तुलित चुनें। */
+    const probe=document.createElement("div");
+    probe.style.cssText="position:absolute;left:-99999px;top:-99999px;visibility:hidden;white-space:nowrap;";
+    document.body.appendChild(probe);
+
+    const measurePx=18;
+    probe.style.fontSize=measurePx+"px";
+    let bestCut=1, bestMax=Infinity, bestDiff=Infinity;
+    for(let cut=1;cut<items.length;cut++){
+      const r1=buildRow(items.slice(0,cut));
+      const r2=buildRow(items.slice(cut));
+      probe.innerHTML="";
+      probe.append(r1,r2);
+      const w1=r1.scrollWidth, w2=r2.scrollWidth;
+      const mx=Math.max(w1,w2), diff=Math.abs(w1-w2);
+      if(mx<bestMax || (mx===bestMax && diff<bestDiff)){
+        bestCut=cut; bestMax=mx; bestDiff=diff;
+      }
+    }
+    probe.remove();
+
+    const row1=buildRow(items.slice(0,bestCut));
+    const row2=buildRow(items.slice(bestCut));
+    source.after(row1,row2);
+
+    /* पुराने rendered rows हटाएँ, source और नयी rows छोड़कर। */
+    [...grid.querySelectorAll(":scope > .odayika-flow-row")].forEach((r,i)=>{
+      if(r!==row1 && r!==row2) r.remove();
     });
-    grid.style.setProperty("grid-template-columns","repeat(3,minmax(0,1fr))","important");
 
-    /* तीनों समान खण्डों में जो सबसे बड़ा आकार सभी पाठ को समा सके वही चुनें */
-    const maxPx=window.innerWidth<=600 ? 20 : 22;
-    const minPx=window.innerWidth<=600 ? 10 : 11;
+    /* पूरे box की सीमा के भीतर सम्भव सबसे बड़ा font. */
+    const maxPx=window.innerWidth<=600 ? 18 : 20;
+    const minPx=window.innerWidth<=600 ? 11 : 12;
     let chosen=minPx;
     for(let px=maxPx;px>=minPx;px--){
-      chips.forEach(el=>el.style.setProperty("font-size",px+"px","important"));
+      row1.style.setProperty("font-size",px+"px","important");
+      row2.style.setProperty("font-size",px+"px","important");
       void grid.offsetWidth;
-      if(chips.every(el=>el.scrollWidth<=el.clientWidth+1)){chosen=px;break;}
+      if(row1.scrollWidth<=grid.clientWidth-2 && row2.scrollWidth<=grid.clientWidth-2){
+        chosen=px; break;
+      }
     }
-    chips.forEach(el=>el.style.setProperty("font-size",chosen+"px","important"));
+    [row1,row2].forEach(r=>r.style.setProperty("font-size",chosen+"px","important"));
+
+    const title=document.getElementById("odayikaUdayastaTitle");
+    if(title){
+      const titlePx=Math.min(21,Math.max(17,chosen+1));
+      title.style.setProperty("font-size",titlePx+"px","important");
+      title.style.setProperty("line-height","1.4","important");
+    }
   }
+
   let queued=false;
   function queue(){
     if(queued)return;
