@@ -12177,17 +12177,42 @@ if(document.readyState === "loading"){
     }
   }
 
-  function schedule(){ requestAnimationFrame(fitGrahaspashtaHeader); }
+  function fitUdayastaRows(){
+    if(!window.matchMedia || !window.matchMedia("(max-width:700px)").matches) return;
+    document.querySelectorAll("#odayikaUdayastaGrid .odayika-flow-row").forEach(function(row){
+      if(row.clientWidth<=0) return;
+      row.style.setProperty("transform","none","important");
+      row.style.setProperty("transform-origin","left center","important");
+      const available=Math.max(1,row.clientWidth-2);
+      const natural=Math.max(1,row.scrollWidth);
+      if(natural>row.clientWidth){
+        const scale=Math.min(1,(available*.99)/natural);
+        row.style.setProperty("transform","scaleX("+scale.toFixed(4)+")","important");
+      }
+    });
+  }
+
+  function fitMobileEdges(){
+    fitGrahaspashtaHeader();
+    fitUdayastaRows();
+  }
+
+  function schedule(){ requestAnimationFrame(fitMobileEdges); }
 
   document.addEventListener("DOMContentLoaded",schedule);
   window.addEventListener("load",schedule);
   window.addEventListener("resize",schedule);
   window.addEventListener("orientationchange",schedule);
+  if(document.fonts && document.fonts.ready){
+    document.fonts.ready.then(schedule).catch(function(){});
+  }
 
   const obs=new MutationObserver(schedule);
   document.addEventListener("DOMContentLoaded",function(){
     const root=document.getElementById("odayikaSpashta");
+    const grid=document.getElementById("odayikaUdayastaGrid");
     if(root) obs.observe(root,{childList:true,subtree:true,characterData:true});
+    if(grid) obs.observe(grid,{childList:true,subtree:true,characterData:true});
   });
 })();
 </script>
