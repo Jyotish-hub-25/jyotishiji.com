@@ -6749,7 +6749,7 @@ function odayikaFitSpashtaTypography(){
       const range=document.createRange();
       range.selectNodeContents(header);
       const natural=Math.max(1,range.getBoundingClientRect().width);
-      const scale=Math.max(.78,Math.min(1,available/natural));
+      const scale=Math.max(.64,Math.min(1,available/natural));
       header.style.transform=`scaleX(${scale.toFixed(3)})`;
     }else{
       /* केवल ग्र०-header: !important width से स्वतंत्र वास्तविक text-width मापकर fit करें। */
@@ -6851,7 +6851,7 @@ const ODAYIKA_HOUSE_LAYOUT = {
   8:  {type:"triangle", sign:[748,904], dir:[ 0,-1], spread:54},
   9:  {type:"triangle", sign:[904,748], dir:[-1, 0], spread:54},
   10: {type:"wide",     sign:[744,500], dir:[-1, 0], spread:70},
-  11: {type:"triangle", sign:[904,252], dir:[-1, 0], spread:54},
+  11: {type:"triangle", sign:[925,252], dir:[-1, 0], spread:54},
   12: {type:"triangle", sign:[748, 96], dir:[ 0, 1], spread:54}
 };
 
@@ -6873,7 +6873,7 @@ const ODAYIKA_HOUSE_LAYOUT_MOBILE = {
   8:  {type:"horizontal", sign:[748,904]},
   9:  {type:"vertical",   sign:[904,748]},
   10: {type:"center",     sign:[744,500]},
-  11: {type:"vertical",   sign:[904,252]},
+  11: {type:"vertical",   sign:[925,252]},
   12: {type:"horizontal", sign:[748, 96]}
 };
 
