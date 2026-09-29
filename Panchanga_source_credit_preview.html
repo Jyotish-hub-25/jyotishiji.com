@@ -3165,34 +3165,53 @@ body{display:flex;flex-direction:column;min-height:100vh}
 
 
 
-<style id="udayasta-v12-real-justification">
+
+<style id="udayasta-v13-fill-two-lines">
 #odayikaUdayastaGrid{
-  padding-left:.45em !important;
-  padding-right:.45em !important;
+  display:block !important;
+  width:100% !important;
+  padding-left:.35em !important;
+  padding-right:.35em !important;
 }
+#odayikaUdayastaGrid .odayika-stream-source{display:none !important}
 #odayikaUdayastaGrid .odayika-flow-row{
   display:flex !important;
-  width:100% !important;
-  justify-content:space-between !important;
+  flex-wrap:nowrap !important;
   align-items:baseline !important;
-  gap:0 !important;
+  justify-content:space-between !important;
+  width:100% !important;
+  min-width:0 !important;
   white-space:nowrap !important;
+  line-height:1.42 !important;
+}
+#odayikaUdayastaGrid .odayika-flow-row + .odayika-flow-row{
+  margin-top:.16em !important;
 }
 #odayikaUdayastaGrid .odayika-event-chip{
+  display:inline-block !important;
   flex:0 0 auto !important;
   width:auto !important;
-  font-size:inherit !important;
+  min-width:0 !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  white-space:nowrap !important;
+  line-height:inherit !important;
 }
 #odayikaUdayastaGrid .odayika-sep{
+  display:inline-block !important;
   flex:0 0 auto !important;
-  margin:0 .34em !important;
+  margin:0 .18em !important;
+  padding:0 !important;
   font-size:inherit !important;
 }
 #odayikaUdayastaTitle{
-  font-size:inherit;
   font-weight:700 !important;
+  text-align:center !important;
   line-height:1.35 !important;
-  margin-bottom:.38em !important;
+  margin-bottom:.34em !important;
 }
 </style>
 
@@ -11882,17 +11901,10 @@ if(document.readyState === "loading"){
     return row;
   }
 
-  function naturalWidth(row, px){
+  function naturalWidth(row,px){
     const probe=row.cloneNode(true);
-    probe.style.setProperty("position","absolute","important");
-    probe.style.setProperty("left","-100000px","important");
-    probe.style.setProperty("top","0","important");
-    probe.style.setProperty("width","max-content","important");
-    probe.style.setProperty("min-width","0","important");
-    probe.style.setProperty("max-width","none","important");
-    probe.style.setProperty("justify-content","flex-start","important");
+    probe.style.cssText="position:absolute!important;left:-100000px!important;top:0!important;visibility:hidden!important;width:max-content!important;min-width:0!important;max-width:none!important;justify-content:flex-start!important;gap:0!important;white-space:nowrap!important;";
     probe.style.setProperty("font-size",px+"px","important");
-    probe.style.setProperty("visibility","hidden","important");
     document.body.appendChild(probe);
     const w=probe.getBoundingClientRect().width;
     probe.remove();
@@ -11901,69 +11913,64 @@ if(document.readyState === "loading"){
 
   function arrangeAndFit(){
     const grid=document.getElementById("odayikaUdayastaGrid");
-    if(!grid) return;
+    if(!grid)return;
     const source=grid.querySelector(".odayika-stream-source");
-    if(!source) return;
+    if(!source)return;
     const items=[...source.querySelectorAll(".odayika-event-chip")];
-    if(items.length<2) return;
+    if(items.length<2)return;
 
-    /* पहले पुराने rendered rows हटाएँ। */
     [...grid.querySelectorAll(":scope > .odayika-flow-row")].forEach(r=>r.remove());
 
-    /* 16px पर natural widths मापकर ऐसा क्रम-सुरक्षित split चुनें
-       जिसमें दोनों पंक्तियों की अधिकतम चौड़ाई न्यूनतम हो। */
-    let bestCut=1, bestMax=Infinity, bestDiff=Infinity;
+    /* क्रम सुरक्षित रखते हुए ऐसा cut चुनें जिससे दोनों पंक्तियाँ
+       बड़े अक्षरों में सर्वाधिक समान रूप से भर सकें। */
+    const available=Math.max(1,grid.clientWidth-2);
+    let best=null;
     for(let cut=1;cut<items.length;cut++){
-      const a=buildRow(items.slice(0,cut));
-      const b=buildRow(items.slice(cut));
-      const wa=naturalWidth(a,16), wb=naturalWidth(b,16);
-      const mx=Math.max(wa,wb), diff=Math.abs(wa-wb);
-      if(mx<bestMax || (Math.abs(mx-bestMax)<.5 && diff<bestDiff)){
-        bestCut=cut; bestMax=mx; bestDiff=diff;
-      }
+      const r1=buildRow(items.slice(0,cut));
+      const r2=buildRow(items.slice(cut));
+      const w1=naturalWidth(r1,20), w2=naturalWidth(r2,20);
+      const scale=Math.min(available/w1,available/w2);
+      const fill1=(w1*scale)/available, fill2=(w2*scale)/available;
+      const score=Math.min(fill1,fill2) - Math.abs(fill1-fill2)*0.35;
+      if(!best || score>best.score) best={cut,score};
     }
 
-    const row1=buildRow(items.slice(0,bestCut));
-    const row2=buildRow(items.slice(bestCut));
+    const row1=buildRow(items.slice(0,best.cut));
+    const row2=buildRow(items.slice(best.cut));
     source.after(row1,row2);
 
-    /* उपलब्ध चौड़ाई से सीधे सुरक्षित अधिकतम font निकालें। */
-    const available=Math.max(1,grid.clientWidth-4);
-    const w1=naturalWidth(row1,16), w2=naturalWidth(row2,16);
-    const widest=Math.max(w1,w2);
-    const theoretical=16*available/widest;
-
-    const ceiling=window.innerWidth<=600 ? 19 : 21;
-    const floor=window.innerWidth<=600 ? 13 : 14;
-    const chosen=Math.max(floor,Math.min(ceiling,Math.floor(theoretical*0.96*10)/10));
-
+    /* सबसे बड़ा सम्भव अक्षर आकार: सीमा केवल overflow है। */
+    const ceiling=window.innerWidth<=600 ? 30 : 32;
+    const floor=14;
+    let chosen=floor;
+    for(let px=ceiling;px>=floor;px-=0.25){
+      if(naturalWidth(row1,px)<=available && naturalWidth(row2,px)<=available){
+        chosen=px; break;
+      }
+    }
     [row1,row2].forEach(r=>r.style.setProperty("font-size",chosen+"px","important"));
 
-    /* यदि font metrics के कारण दशमलव-अन्तर से overflow हो तो सूक्ष्म correction. */
-    let safe=chosen;
-    while(safe>floor && (naturalWidth(row1,safe)>available || naturalWidth(row2,safe)>available)){
-      safe=Math.round((safe-.2)*10)/10;
-    }
-    [row1,row2].forEach(r=>r.style.setProperty("font-size",safe+"px","important"));
+    /* शेष चौड़ाई entries के बीच स्वतः बाँटे — दोनों पंक्तियाँ पूरी चौड़ाई भरें। */
+    row1.style.setProperty("justify-content","space-between","important");
+    row2.style.setProperty("justify-content","space-between","important");
 
     const title=document.getElementById("odayikaUdayastaTitle");
     if(title){
-      const titlePx=Math.min(24,Math.max(19,safe+2));
+      const titlePx=Math.min(32,Math.max(21,chosen+2));
       title.style.setProperty("font-size",titlePx+"px","important");
     }
   }
 
-  let queued=false, busy=false;
+  let queued=false,busy=false;
   function queue(){
     if(queued||busy)return;
     queued=true;
     requestAnimationFrame(()=>{
-      queued=false; busy=true;
+      queued=false;busy=true;
       arrangeAndFit();
       busy=false;
     });
   }
-
   document.addEventListener("DOMContentLoaded",function(){
     const grid=document.getElementById("odayikaUdayastaGrid");
     if(grid)new MutationObserver(queue).observe(grid,{childList:true,subtree:true,characterData:true});
