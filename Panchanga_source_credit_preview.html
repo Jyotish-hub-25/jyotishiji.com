@@ -3037,6 +3037,84 @@ body{display:flex;flex-direction:column;min-height:100vh}
 }
 </style>
 
+
+<style id="balanced-final-layout-20260929">
+/* ===== उदयास्त : दोनों पंक्तियों में 3-3 समान खण्ड ===== */
+#odayikaUdayastaGrid{
+  display:grid !important;
+  grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+  grid-template-rows:auto auto !important;
+  width:100% !important;
+  gap:0 !important;
+  align-items:center !important;
+}
+#odayikaUdayastaGrid .odayika-event-chip{
+  width:100% !important;
+  min-width:0 !important;
+  padding:.28em .34em !important;
+  margin:0 !important;
+  border:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  white-space:nowrap !important;
+  text-align:center !important;
+  justify-content:center !important;
+}
+#odayikaUdayastaGrid .odayika-moon-chip{
+  grid-column:1 !important; grid-row:1 !important;
+  justify-content:center !important;
+  padding-left:.34em !important;
+}
+#odayikaUdayastaGrid .odayika-mangal-chip{grid-column:2 !important;grid-row:1 !important}
+#odayikaUdayastaGrid .odayika-budha-chip{grid-column:3 !important;grid-row:1 !important}
+#odayikaUdayastaGrid .odayika-guru-chip{grid-column:1 !important;grid-row:2 !important}
+#odayikaUdayastaGrid .odayika-shukra-chip{grid-column:2 !important;grid-row:2 !important}
+#odayikaUdayastaGrid .odayika-shani-chip{grid-column:3 !important;grid-row:2 !important}
+
+/* ===== श्रेय-पट्टी : दिया हुआ क्रम =====
+   1 गणितकर्त्ता  2 विस्तृत परिचय  3 सॉफ्टवेयर  4 वेब-संयोजन */
+.source-credit-card{
+  display:grid !important;
+  grid-template-areas:"calculator details software web" !important;
+  grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+  gap:6px 14px !important;
+  align-items:center !important;
+}
+.source-credit-calculator{grid-area:calculator !important;text-align:left !important}
+.source-credit-details{grid-area:details !important;text-align:center !important}
+.source-credit-software{grid-area:software !important;text-align:center !important}
+.source-credit-web{grid-area:web !important;text-align:right !important}
+.source-credit-item{
+  min-width:0 !important;
+  line-height:1.42 !important;
+}
+.source-credit-item a{
+  text-underline-offset:3px;
+}
+
+/* मोबाइल में उसी क्रम को 2 × 2 में बाँटना:
+   ऊपर: गणितकर्त्ता | विस्तृत परिचय
+   नीचे: सॉफ्टवेयर | वेब-संयोजन */
+@media(max-width:600px){
+  .source-credit-card{
+    grid-template-areas:
+      "calculator details"
+      "software web" !important;
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:5px 12px !important;
+  }
+  .source-credit-calculator,.source-credit-software{text-align:left !important}
+  .source-credit-details,.source-credit-web{text-align:right !important}
+  .source-credit-item{
+    font-size:clamp(.70rem,2.65vw,.84rem) !important;
+  }
+  .source-credit-link{
+    font-size:inherit !important;
+    white-space:normal !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <header class="site-header">
@@ -11718,16 +11796,19 @@ if(document.readyState === "loading"){
     const chips=[...grid.querySelectorAll(".odayika-event-chip")];
     if(!chips.length) return;
 
-    /* Renderer order is now exactly:
-       चन्द्रमा, मङ्गल, बुध / बृहस्पति, शुक्र, शनि */
+    /* Renderer का क्रम:
+       चन्द्रमा | मङ्गल | बुध
+       बृहस्पति | शुक्र | शनि */
     chips.forEach((el,i)=>{
       el.style.setProperty("grid-column",String((i%3)+1),"important");
       el.style.setProperty("grid-row",String(Math.floor(i/3)+1),"important");
       el.style.setProperty("order",String(i+1),"important");
     });
+    grid.style.setProperty("grid-template-columns","repeat(3,minmax(0,1fr))","important");
 
+    /* तीनों समान खण्डों में जो सबसे बड़ा आकार सभी पाठ को समा सके वही चुनें */
     const maxPx=window.innerWidth<=600 ? 20 : 22;
-    const minPx=window.innerWidth<=600 ? 11 : 12;
+    const minPx=window.innerWidth<=600 ? 10 : 11;
     let chosen=minPx;
     for(let px=maxPx;px>=minPx;px--){
       chips.forEach(el=>el.style.setProperty("font-size",px+"px","important"));
@@ -11736,7 +11817,6 @@ if(document.readyState === "loading"){
     }
     chips.forEach(el=>el.style.setProperty("font-size",chosen+"px","important"));
   }
-
   let queued=false;
   function queue(){
     if(queued)return;
