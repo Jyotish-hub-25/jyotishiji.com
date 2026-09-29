@@ -3379,6 +3379,63 @@ body{display:flex;flex-direction:column;min-height:100vh}
 }
 </style>
 
+
+<style id="responsive-header-credit-integration-v2">
+/* ===== Wide-screen refinement v2 =====
+   केवल presentation: header typography + credit strip integration.
+   Calculation/data/JS untouched. */
+
+/* बड़े/मध्यम desktop पर शीर्षक और navigation स्क्रीन के साथ सीमित रूप से बढ़ें। */
+@media (min-width:701px){
+  .site-header h1{
+    font-size:clamp(1.85rem,2.05vw,2.55rem) !important;
+    margin-bottom:clamp(8px,.7vw,14px) !important;
+  }
+  .site-nav{
+    gap:clamp(6px,.55vw,10px) clamp(18px,1.55vw,30px) !important;
+  }
+  .site-nav a{
+    font-size:clamp(1.02rem,1.12vw,1.28rem) !important;
+    line-height:1.45 !important;
+  }
+}
+
+/* छोटे स्क्रीन पर वृद्धि सीमित रहे। */
+@media (max-width:700px){
+  .site-header h1{
+    font-size:clamp(1.48rem,6.2vw,1.85rem) !important;
+  }
+  .site-nav a{
+    font-size:clamp(.90rem,3.8vw,1rem) !important;
+  }
+}
+
+/* Credit line को अलग floating card न दिखाकर नीचे की content-area का आरम्भ बनाना। */
+.source-credit-card{
+  width:min(calc(100% - 44px),1720px) !important;
+  margin:0 auto !important;
+  padding:8px 14px 7px !important;
+  background:transparent !important;
+  border:0 !important;
+  border-bottom:1px solid rgba(139,90,22,.24) !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+  font-size:clamp(.76rem,.82vw,.90rem) !important;
+  line-height:1.42 !important;
+}
+.source-credit-card + .page-shell{
+  padding-top:10px !important;
+}
+
+@media(max-width:600px){
+  .source-credit-card{
+    width:calc(100% - 16px) !important;
+    padding:6px 2px 5px !important;
+    font-size:.79rem !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <header class="site-header">
