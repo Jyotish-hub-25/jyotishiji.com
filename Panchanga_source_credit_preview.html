@@ -11481,13 +11481,12 @@ if(document.readyState === "loading"){
 
     /*
       कुल दो पंक्तियाँ:
-      1: चन्द्रमा + बृहस्पति
-      2: मङ्गल + बुध + शुक्र + शनि
+      1: चन्द्रमा + मङ्गल + बुध
+      2: बृहस्पति + शुक्र + शनि
     */
     const items=[];
     if(moonItem) items.push(moonItem);
-    if(planetItemsByKey.guru) items.push(planetItemsByKey.guru);
-    ["mangal","budha","shukra","shani"].forEach(key=>{
+    ["mangal","budha","guru","shukra","shani"].forEach(key=>{
       if(planetItemsByKey[key]) items.push(planetItemsByKey[key]);
     });
 
@@ -11713,13 +11712,20 @@ if(document.readyState === "loading"){
 
 <script id="udayasta-two-line-autofit-script-20260929">
 (function(){
-  function fitUdayastaTwoLines(){
+  function arrangeAndFit(){
     const grid=document.getElementById("odayikaUdayastaGrid");
     if(!grid) return;
     const chips=[...grid.querySelectorAll(".odayika-event-chip")];
     if(!chips.length) return;
 
-    /* कम सामग्री = बड़े अक्षर; आवश्यकता होने पर क्रमशः छोटे */
+    /* Renderer order is now exactly:
+       चन्द्रमा, मङ्गल, बुध / बृहस्पति, शुक्र, शनि */
+    chips.forEach((el,i)=>{
+      el.style.setProperty("grid-column",String((i%3)+1),"important");
+      el.style.setProperty("grid-row",String(Math.floor(i/3)+1),"important");
+      el.style.setProperty("order",String(i+1),"important");
+    });
+
     const maxPx=window.innerWidth<=600 ? 20 : 22;
     const minPx=window.innerWidth<=600 ? 11 : 12;
     let chosen=minPx;
@@ -11730,18 +11736,19 @@ if(document.readyState === "loading"){
     }
     chips.forEach(el=>el.style.setProperty("font-size",chosen+"px","important"));
   }
+
   let queued=false;
-  function queueFit(){
+  function queue(){
     if(queued)return;
     queued=true;
-    requestAnimationFrame(()=>{queued=false;fitUdayastaTwoLines();});
+    requestAnimationFrame(()=>{queued=false;arrangeAndFit();});
   }
   document.addEventListener("DOMContentLoaded",function(){
     const grid=document.getElementById("odayikaUdayastaGrid");
-    if(grid)new MutationObserver(queueFit).observe(grid,{childList:true,subtree:true,characterData:true});
-    queueFit();
+    if(grid)new MutationObserver(queue).observe(grid,{childList:true,subtree:true,characterData:true});
+    queue();
   });
-  window.addEventListener("resize",queueFit);
+  window.addEventListener("resize",queue);
 })();
 </script>
 
