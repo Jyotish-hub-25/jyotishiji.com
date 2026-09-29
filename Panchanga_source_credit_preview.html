@@ -3166,12 +3166,14 @@ body{display:flex;flex-direction:column;min-height:100vh}
 
 
 
-<style id="udayasta-v13-fill-two-lines">
+
+<style id="udayasta-v14-large-selectable">
 #odayikaUdayastaGrid{
   display:block !important;
   width:100% !important;
-  padding-left:.35em !important;
-  padding-right:.35em !important;
+  padding:0 .18em !important;
+  user-select:text !important;
+  -webkit-user-select:text !important;
 }
 #odayikaUdayastaGrid .odayika-stream-source{display:none !important}
 #odayikaUdayastaGrid .odayika-flow-row{
@@ -3182,14 +3184,23 @@ body{display:flex;flex-direction:column;min-height:100vh}
   width:100% !important;
   min-width:0 !important;
   white-space:nowrap !important;
-  line-height:1.42 !important;
+  line-height:1.38 !important;
+  user-select:text !important;
+  -webkit-user-select:text !important;
 }
 #odayikaUdayastaGrid .odayika-flow-row + .odayika-flow-row{
-  margin-top:.16em !important;
+  margin-top:.14em !important;
+}
+#odayikaUdayastaGrid .odayika-flow-entry{
+  display:inline-flex !important;
+  flex:0 0 auto !important;
+  align-items:baseline !important;
+  white-space:nowrap !important;
+  user-select:text !important;
+  -webkit-user-select:text !important;
 }
 #odayikaUdayastaGrid .odayika-event-chip{
-  display:inline-block !important;
-  flex:0 0 auto !important;
+  display:inline !important;
   width:auto !important;
   min-width:0 !important;
   margin:0 !important;
@@ -3199,19 +3210,24 @@ body{display:flex;flex-direction:column;min-height:100vh}
   box-shadow:none !important;
   white-space:nowrap !important;
   line-height:inherit !important;
+  user-select:text !important;
+  -webkit-user-select:text !important;
 }
 #odayikaUdayastaGrid .odayika-sep{
-  display:inline-block !important;
-  flex:0 0 auto !important;
-  margin:0 .18em !important;
+  display:inline !important;
+  margin-left:.10em !important;
   padding:0 !important;
   font-size:inherit !important;
+  user-select:text !important;
+  -webkit-user-select:text !important;
 }
 #odayikaUdayastaTitle{
   font-weight:700 !important;
   text-align:center !important;
-  line-height:1.35 !important;
-  margin-bottom:.34em !important;
+  line-height:1.32 !important;
+  margin-bottom:.30em !important;
+  user-select:text !important;
+  -webkit-user-select:text !important;
 }
 </style>
 
@@ -11885,18 +11901,22 @@ if(document.readyState === "loading"){
 
 <script id="udayasta-two-line-autofit-script-20260929">
 (function(){
+  let lastSignature="";
+
   function buildRow(items){
     const row=document.createElement("div");
     row.className="odayika-flow-row";
     items.forEach((node,i)=>{
-      row.appendChild(node.cloneNode(true));
+      const entry=document.createElement("span");
+      entry.className="odayika-flow-entry";
+      entry.appendChild(node.cloneNode(true));
       if(i<items.length-1){
         const sep=document.createElement("span");
         sep.className="odayika-sep";
         sep.textContent=",";
-        sep.setAttribute("aria-hidden","true");
-        row.appendChild(sep);
+        entry.appendChild(sep);
       }
+      row.appendChild(entry);
     });
     return row;
   }
@@ -11911,7 +11931,7 @@ if(document.readyState === "loading"){
     return w;
   }
 
-  function arrangeAndFit(){
+  function arrangeAndFit(force){
     const grid=document.getElementById("odayikaUdayastaGrid");
     if(!grid)return;
     const source=grid.querySelector(".odayika-stream-source");
@@ -11919,64 +11939,74 @@ if(document.readyState === "loading"){
     const items=[...source.querySelectorAll(".odayika-event-chip")];
     if(items.length<2)return;
 
+    const signature=source.textContent+"|"+grid.clientWidth;
+    if(!force && signature===lastSignature)return;
+    lastSignature=signature;
+
     [...grid.querySelectorAll(":scope > .odayika-flow-row")].forEach(r=>r.remove());
 
-    /* क्रम सुरक्षित रखते हुए ऐसा cut चुनें जिससे दोनों पंक्तियाँ
-       बड़े अक्षरों में सर्वाधिक समान रूप से भर सकें। */
     const available=Math.max(1,grid.clientWidth-2);
+
+    /* क्रम सुरक्षित; दोनों पंक्तियों में वास्तविक पाठ-चौड़ाई सर्वाधिक सन्तुलित। */
     let best=null;
     for(let cut=1;cut<items.length;cut++){
-      const r1=buildRow(items.slice(0,cut));
-      const r2=buildRow(items.slice(cut));
-      const w1=naturalWidth(r1,20), w2=naturalWidth(r2,20);
-      const scale=Math.min(available/w1,available/w2);
-      const fill1=(w1*scale)/available, fill2=(w2*scale)/available;
-      const score=Math.min(fill1,fill2) - Math.abs(fill1-fill2)*0.35;
-      if(!best || score>best.score) best={cut,score};
+      const a=buildRow(items.slice(0,cut));
+      const b=buildRow(items.slice(cut));
+      const wa=naturalWidth(a,20), wb=naturalWidth(b,20);
+      const widest=Math.max(wa,wb);
+      const diff=Math.abs(wa-wb);
+      const score=widest + diff*.18;
+      if(!best || score<best.score)best={cut,score};
     }
 
     const row1=buildRow(items.slice(0,best.cut));
     const row2=buildRow(items.slice(best.cut));
     source.after(row1,row2);
 
-    /* सबसे बड़ा सम्भव अक्षर आकार: सीमा केवल overflow है। */
-    const ceiling=window.innerWidth<=600 ? 30 : 32;
+    /* अक्षर यथासम्भव बड़े: box से बाहर न निकलना ही वास्तविक सीमा। */
+    const ceiling=36;
     const floor=14;
     let chosen=floor;
     for(let px=ceiling;px>=floor;px-=0.25){
       if(naturalWidth(row1,px)<=available && naturalWidth(row2,px)<=available){
-        chosen=px; break;
+        chosen=px;break;
       }
     }
     [row1,row2].forEach(r=>r.style.setProperty("font-size",chosen+"px","important"));
 
-    /* शेष चौड़ाई entries के बीच स्वतः बाँटे — दोनों पंक्तियाँ पूरी चौड़ाई भरें। */
-    row1.style.setProperty("justify-content","space-between","important");
-    row2.style.setProperty("justify-content","space-between","important");
-
     const title=document.getElementById("odayikaUdayastaTitle");
     if(title){
-      const titlePx=Math.min(32,Math.max(21,chosen+2));
+      const titlePx=Math.min(36,Math.max(22,chosen+2));
       title.style.setProperty("font-size",titlePx+"px","important");
     }
   }
 
-  let queued=false,busy=false;
-  function queue(){
-    if(queued||busy)return;
+  let queued=false;
+  function queue(force){
+    if(queued)return;
     queued=true;
     requestAnimationFrame(()=>{
-      queued=false;busy=true;
-      arrangeAndFit();
-      busy=false;
+      queued=false;
+      arrangeAndFit(!!force);
     });
   }
+
   document.addEventListener("DOMContentLoaded",function(){
     const grid=document.getElementById("odayikaUdayastaGrid");
-    if(grid)new MutationObserver(queue).observe(grid,{childList:true,subtree:true,characterData:true});
-    queue();
+    if(grid){
+      /* केवल source बदलने पर पुनः बनायें; अपने rendered rows पर loop नहीं। */
+      new MutationObserver(function(mutations){
+        if(mutations.some(m=>{
+          const n=m.target.nodeType===1 ? m.target : m.target.parentElement;
+          return n && (n.classList?.contains("odayika-stream-source") || n.closest?.(".odayika-stream-source"));
+        })) queue(false);
+        else if(grid.querySelector(".odayika-stream-source") &&
+                !grid.querySelector(".odayika-flow-row")) queue(false);
+      }).observe(grid,{childList:true,subtree:true,characterData:true});
+    }
+    queue(true);
   });
-  window.addEventListener("resize",queue);
+  window.addEventListener("resize",()=>queue(true));
 })();
 </script>
 
