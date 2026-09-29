@@ -2949,11 +2949,11 @@ body{display:flex;flex-direction:column;min-height:100vh}
 </style>
 
 <style id="udayasta-two-line-autofit-20260929">
-/* चन्द्रमा व पञ्चताराग्रह उदयास्त : दो पंक्तियाँ, बिना आन्तरिक विभाजक */
+/* उदयास्त : क्रम सुरक्षित, ठीक दो पंक्तियाँ, कोई आन्तरिक विभाजक नहीं */
 #odayikaUdayastaGrid{
   display:grid !important;
-  grid-template-columns:repeat(5,minmax(0,1fr)) !important;
-  grid-template-rows:repeat(2,auto) !important;
+  grid-template-columns:minmax(0,2.05fr) minmax(0,1fr) minmax(0,1fr) !important;
+  grid-template-rows:auto auto !important;
   gap:0 !important;
   align-items:center !important;
   width:100% !important;
@@ -2961,21 +2961,19 @@ body{display:flex;flex-direction:column;min-height:100vh}
 #odayikaUdayastaGrid .odayika-event-chip{
   min-width:0 !important;
   margin:0 !important;
-  padding:.32em .28em !important;
+  padding:.24em .32em !important;
   border:0 !important;
-  border-left:0 !important;
-  border-right:0 !important;
-  border-top:0 !important;
-  border-bottom:0 !important;
   border-radius:0 !important;
   box-shadow:none !important;
   background:transparent !important;
   white-space:nowrap !important;
   text-align:center !important;
   line-height:1.35 !important;
+  overflow:visible !important;
 }
 #odayikaUdayastaGrid .odayika-moon-chip{
-  grid-column:1 / -1 !important;
+  justify-content:flex-start !important;
+  padding-left:.55em !important;
 }
 </style>
 
@@ -11662,37 +11660,64 @@ if(document.readyState === "loading"){
 
 <script id="udayasta-two-line-autofit-script-20260929">
 (function(){
+  const rank = {
+    "odayika-moon-chip":1,
+    "odayika-mangal-chip":2,
+    "odayika-budha-chip":3,
+    "odayika-guru-chip":4,
+    "odayika-shukra-chip":5,
+    "odayika-shani-chip":6
+  };
+
+  function getRank(el){
+    for(const c in rank) if(el.classList.contains(c)) return rank[c];
+    return 99;
+  }
+
   function fitUdayastaTwoLines(){
     const grid=document.getElementById("odayikaUdayastaGrid");
     if(!grid) return;
     const chips=[...grid.querySelectorAll(".odayika-event-chip")];
     if(!chips.length) return;
 
-    /* पहली पंक्ति चन्द्रमा; दूसरी पंक्ति उपलब्ध ताराग्रह — संख्या के अनुसार समान चौड़ाई */
-    const moon=chips.find(el=>el.classList.contains("odayika-moon-chip")) || chips[0];
-    const planets=chips.filter(el=>el!==moon);
-    grid.style.gridTemplateColumns="repeat(" + Math.max(1,planets.length) + ",minmax(0,1fr))";
-    moon.style.gridColumn="1 / -1";
+    /* स्पष्ट क्रम: चन्द्रमा → मङ्गल → बुध → बृहस्पति → शुक्र → शनि */
+    chips.sort((a,b)=>getRank(a)-getRank(b)).forEach((el,i)=>{
+      el.style.order=String(i+1);
+      el.style.gridColumn=String((i%3)+1);
+      el.style.gridRow=String(Math.floor(i/3)+1);
+    });
 
-    /* वास्तविक सामग्री के अनुसार सबसे बड़ा सम्भव सन्तुलित अक्षर-आकार */
-    const maxPx = window.innerWidth <= 600 ? 17 : 18;
-    const minPx = window.innerWidth <= 600 ? 10 : 11;
-    chips.forEach(el=>el.style.fontSize=maxPx+"px");
+    /* सामग्री कम हो तो अक्षर बड़े; बढ़े तो केवल आवश्यकता भर छोटे */
+    const maxPx = window.innerWidth <= 600 ? 20 : 22;
+    const minPx = window.innerWidth <= 600 ? 11 : 12;
+    let chosen=minPx;
 
     for(let px=maxPx; px>=minPx; px--){
-      chips.forEach(el=>el.style.fontSize=px+"px");
-      const fits=chips.every(el=>el.scrollWidth<=el.clientWidth+1);
-      if(fits) break;
+      chips.forEach(el=>el.style.setProperty("font-size",px+"px","important"));
+      void grid.offsetWidth;
+      if(chips.every(el=>el.scrollWidth<=el.clientWidth+1)){
+        chosen=px;
+        break;
+      }
     }
+    chips.forEach(el=>el.style.setProperty("font-size",chosen+"px","important"));
   }
 
-  const observer=new MutationObserver(()=>requestAnimationFrame(fitUdayastaTwoLines));
+  let queued=false;
+  function queueFit(){
+    if(queued) return;
+    queued=true;
+    requestAnimationFrame(()=>{queued=false;fitUdayastaTwoLines();});
+  }
+
   document.addEventListener("DOMContentLoaded",function(){
     const grid=document.getElementById("odayikaUdayastaGrid");
-    if(grid) observer.observe(grid,{childList:true,subtree:true,characterData:true});
-    requestAnimationFrame(fitUdayastaTwoLines);
+    if(grid){
+      new MutationObserver(queueFit).observe(grid,{childList:true,subtree:true,characterData:true});
+    }
+    queueFit();
   });
-  window.addEventListener("resize",()=>requestAnimationFrame(fitUdayastaTwoLines));
+  window.addEventListener("resize",queueFit);
 })();
 </script>
 
