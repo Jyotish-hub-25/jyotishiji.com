@@ -3164,19 +3164,35 @@ body{display:flex;flex-direction:column;min-height:100vh}
 </style>
 
 
-<style id="udayasta-larger-justified-20260929">
+
+<style id="udayasta-v12-real-justification">
+#odayikaUdayastaGrid{
+  padding-left:.45em !important;
+  padding-right:.45em !important;
+}
 #odayikaUdayastaGrid .odayika-flow-row{
+  display:flex !important;
+  width:100% !important;
   justify-content:space-between !important;
-  text-align:justify !important;
-  text-align-last:justify !important;
-  column-gap:.30em !important;
+  align-items:baseline !important;
+  gap:0 !important;
+  white-space:nowrap !important;
+}
+#odayikaUdayastaGrid .odayika-event-chip{
+  flex:0 0 auto !important;
+  width:auto !important;
+  font-size:inherit !important;
 }
 #odayikaUdayastaGrid .odayika-sep{
-  margin:0 .24em !important;
+  flex:0 0 auto !important;
+  margin:0 .34em !important;
+  font-size:inherit !important;
 }
 #odayikaUdayastaTitle{
+  font-size:inherit;
   font-weight:700 !important;
-  text-align:center !important;
+  line-height:1.35 !important;
+  margin-bottom:.38em !important;
 }
 </style>
 
@@ -11866,6 +11882,23 @@ if(document.readyState === "loading"){
     return row;
   }
 
+  function naturalWidth(row, px){
+    const probe=row.cloneNode(true);
+    probe.style.setProperty("position","absolute","important");
+    probe.style.setProperty("left","-100000px","important");
+    probe.style.setProperty("top","0","important");
+    probe.style.setProperty("width","max-content","important");
+    probe.style.setProperty("min-width","0","important");
+    probe.style.setProperty("max-width","none","important");
+    probe.style.setProperty("justify-content","flex-start","important");
+    probe.style.setProperty("font-size",px+"px","important");
+    probe.style.setProperty("visibility","hidden","important");
+    document.body.appendChild(probe);
+    const w=probe.getBoundingClientRect().width;
+    probe.remove();
+    return w;
+  }
+
   function arrangeAndFit(){
     const grid=document.getElementById("odayikaUdayastaGrid");
     if(!grid) return;
@@ -11874,64 +11907,63 @@ if(document.readyState === "loading"){
     const items=[...source.querySelectorAll(".odayika-event-chip")];
     if(items.length<2) return;
 
-    /* सभी सम्भव क्रम-सुरक्षित विभाजनों में सबसे सन्तुलित चुनें। */
-    const probe=document.createElement("div");
-    probe.style.cssText="position:absolute;left:-99999px;top:-99999px;visibility:hidden;white-space:nowrap;";
-    document.body.appendChild(probe);
+    /* पहले पुराने rendered rows हटाएँ। */
+    [...grid.querySelectorAll(":scope > .odayika-flow-row")].forEach(r=>r.remove());
 
-    const measurePx=18;
-    probe.style.fontSize=measurePx+"px";
+    /* 16px पर natural widths मापकर ऐसा क्रम-सुरक्षित split चुनें
+       जिसमें दोनों पंक्तियों की अधिकतम चौड़ाई न्यूनतम हो। */
     let bestCut=1, bestMax=Infinity, bestDiff=Infinity;
     for(let cut=1;cut<items.length;cut++){
-      const r1=buildRow(items.slice(0,cut));
-      const r2=buildRow(items.slice(cut));
-      probe.innerHTML="";
-      probe.append(r1,r2);
-      const w1=r1.scrollWidth, w2=r2.scrollWidth;
-      const mx=Math.max(w1,w2), diff=Math.abs(w1-w2);
-      if(mx<bestMax || (mx===bestMax && diff<bestDiff)){
+      const a=buildRow(items.slice(0,cut));
+      const b=buildRow(items.slice(cut));
+      const wa=naturalWidth(a,16), wb=naturalWidth(b,16);
+      const mx=Math.max(wa,wb), diff=Math.abs(wa-wb);
+      if(mx<bestMax || (Math.abs(mx-bestMax)<.5 && diff<bestDiff)){
         bestCut=cut; bestMax=mx; bestDiff=diff;
       }
     }
-    probe.remove();
 
     const row1=buildRow(items.slice(0,bestCut));
     const row2=buildRow(items.slice(bestCut));
     source.after(row1,row2);
 
-    /* पुराने rendered rows हटाएँ, source और नयी rows छोड़कर। */
-    [...grid.querySelectorAll(":scope > .odayika-flow-row")].forEach((r,i)=>{
-      if(r!==row1 && r!==row2) r.remove();
-    });
+    /* उपलब्ध चौड़ाई से सीधे सुरक्षित अधिकतम font निकालें। */
+    const available=Math.max(1,grid.clientWidth-4);
+    const w1=naturalWidth(row1,16), w2=naturalWidth(row2,16);
+    const widest=Math.max(w1,w2);
+    const theoretical=16*available/widest;
 
-    /* पूरे box की सीमा के भीतर सम्भव सबसे बड़ा font. */
-    const maxPx=window.innerWidth<=600 ? 21 : 23;
-    const minPx=window.innerWidth<=600 ? 12 : 13;
-    let chosen=minPx;
-    for(let px=maxPx;px>=minPx;px--){
-      row1.style.setProperty("font-size",px+"px","important");
-      row2.style.setProperty("font-size",px+"px","important");
-      void grid.offsetWidth;
-      if(row1.scrollWidth<=grid.clientWidth-2 && row2.scrollWidth<=grid.clientWidth-2){
-        chosen=px; break;
-      }
-    }
+    const ceiling=window.innerWidth<=600 ? 19 : 21;
+    const floor=window.innerWidth<=600 ? 13 : 14;
+    const chosen=Math.max(floor,Math.min(ceiling,Math.floor(theoretical*0.96*10)/10));
+
     [row1,row2].forEach(r=>r.style.setProperty("font-size",chosen+"px","important"));
+
+    /* यदि font metrics के कारण दशमलव-अन्तर से overflow हो तो सूक्ष्म correction. */
+    let safe=chosen;
+    while(safe>floor && (naturalWidth(row1,safe)>available || naturalWidth(row2,safe)>available)){
+      safe=Math.round((safe-.2)*10)/10;
+    }
+    [row1,row2].forEach(r=>r.style.setProperty("font-size",safe+"px","important"));
 
     const title=document.getElementById("odayikaUdayastaTitle");
     if(title){
-      const titlePx=Math.min(25,Math.max(20,chosen+2));
+      const titlePx=Math.min(24,Math.max(19,safe+2));
       title.style.setProperty("font-size",titlePx+"px","important");
-      title.style.setProperty("line-height","1.4","important");
     }
   }
 
-  let queued=false;
+  let queued=false, busy=false;
   function queue(){
-    if(queued)return;
+    if(queued||busy)return;
     queued=true;
-    requestAnimationFrame(()=>{queued=false;arrangeAndFit();});
+    requestAnimationFrame(()=>{
+      queued=false; busy=true;
+      arrangeAndFit();
+      busy=false;
+    });
   }
+
   document.addEventListener("DOMContentLoaded",function(){
     const grid=document.getElementById("odayikaUdayastaGrid");
     if(grid)new MutationObserver(queue).observe(grid,{childList:true,subtree:true,characterData:true});
