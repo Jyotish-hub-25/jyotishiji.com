@@ -7248,7 +7248,7 @@ function odayikaFitSpashtaTypography(){
       const range=document.createRange();
       range.selectNodeContents(header);
       const natural=Math.max(1,range.getBoundingClientRect().width);
-      const scale=Math.min(1,available/natural);
+      const scale=Math.max(.64,Math.min(1,available/natural));
       header.style.transform=`scaleX(${scale.toFixed(3)})`;
     }else{
       /* केवल ग्र०-header: !important width से स्वतंत्र वास्तविक text-width मापकर fit करें। */
