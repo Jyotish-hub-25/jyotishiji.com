@@ -3236,6 +3236,35 @@ body{display:flex;flex-direction:column;min-height:100vh}
 }
 </style>
 
+
+
+<style id="udayasta-v17-no-clipping">
+#odayikaUdayastaGrid{
+  box-sizing:border-box !important;
+}
+#odayikaUdayastaGrid .odayika-flow-row{
+  box-sizing:border-box !important;
+  max-width:100% !important;
+}
+#odayikaUdayastaGrid .odayika-flow-row:first-of-type{
+  font-size:clamp(14px,2.35vw,18px) !important;
+}
+#odayikaUdayastaGrid .odayika-flow-row:last-of-type{
+  font-size:clamp(13px,2.15vw,17px) !important;
+}
+@media(max-width:600px){
+  #odayikaUdayastaGrid .odayika-flow-row:first-of-type{
+    font-size:clamp(13px,3.15vw,17px) !important;
+  }
+  #odayikaUdayastaGrid .odayika-flow-row:last-of-type{
+    font-size:clamp(12px,2.95vw,16px) !important;
+  }
+  #odayikaUdayastaTitle{
+    font-size:clamp(22px,4.8vw,26px) !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <header class="site-header">
@@ -11670,12 +11699,34 @@ if(document.readyState === "loading"){
       return `${kaal} ${clock}`;
     }
 
+    /*
+      यदि event time में bracket वाली GB date base पञ्चाङ्ग-date से आगे की है,
+      तो काल-संज्ञा के पहले "आगामी" लगाएँ। गणना/data नहीं बदलता; केवल display स्पष्ट करता है।
+    */
+    function moonPanchangaTimeWithDayRef(t,baseGB){
+      const plain=moonPanchangaTime(t,baseGB);
+      const a=moonAsciiDigits(t).trim();
+      const m=a.match(/^\d{1,2}:\d{2}(?::\d{2})?(?:\s*\((\d{2}\/\d{2}\/\d{4})\))?$/);
+      if(!m?.[1]) return plain;
+
+      const parseGB=s=>{
+        const p=String(s||"").match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+        if(!p) return NaN;
+        return Date.UTC(Number(p[3]),Number(p[2])-1,Number(p[1]));
+      };
+      const eventDay=parseGB(m[1]);
+      const baseDay=parseGB(baseGB);
+      return Number.isFinite(eventDay) && Number.isFinite(baseDay) && eventDay>baseDay
+        ? `आगामी ${plain}`
+        : plain;
+    }
+
     const items=[];
     if(mr?.timeText){
-      items.push(`<span class="odayika-event-chip"><strong>चन्द्रोदय</strong> ${moonPanchangaTime(mr.timeText,gb)}</span>`);
+      items.push(`<span class="odayika-event-chip"><strong>चन्द्रोदय</strong> ${moonPanchangaTime(mr.timeText,gb)} बजे</span>`);
     }
     if(ms?.timeText){
-      items.push(`<span class="odayika-event-chip"><strong>चन्द्रास्त</strong> ${moonPanchangaTime(ms.timeText,gb)}</span>`);
+      items.push(`<span class="odayika-event-chip"><strong>चन्द्रास्त</strong> ${moonPanchangaTimeWithDayRef(ms.timeText,gb)} बजे</span>`);
     }
     ["mangal","budha","guru","shukra","shani"].forEach(key=>{
       if(planetItemsByKey[key]) items.push(planetItemsByKey[key]);
@@ -11685,7 +11736,7 @@ if(document.readyState === "loading"){
 
     /* चन्द्र से शनि तक selectable HTML text; दो स्थिर, सन्तुलित पंक्तियाँ।
        चन्द्रोदय, चन्द्रास्त, मङ्गल, बुध / बृहस्पति, शुक्र, शनि */
-    const cut=Math.min(4,items.length);
+    const cut=Math.min(3,items.length);
     const makeRow=rowItems=>rowItems.map((item,i)=>
       `<span class="odayika-flow-entry">${item}${i<rowItems.length-1 ? '<span class="odayika-sep">,</span>' : ''}</span>`
     ).join("");
