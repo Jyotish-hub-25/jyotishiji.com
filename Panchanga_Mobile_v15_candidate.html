@@ -6695,7 +6695,7 @@ function odayikaFitSpashtaTypography(){
       const row=byLabel[key], line=row?.querySelector(".odayika-sp-line");
       if(!row||!line) return;
       const current=parseFloat(row.style.fontSize)||11;
-      row.style.fontSize=`${(current*1.055).toFixed(2)}px`;
+      row.style.fontSize=`${(current*1.10).toFixed(2)}px`;
       line.style.transform="none";
       line.style.transformOrigin="left center";
       const availableW=Math.max(1,row.clientWidth-2);
@@ -6837,18 +6837,24 @@ function odayikaSpashtaRow(name,state,parts){
   ग्रह उसी मध्य के आसपास, उस खाने की दिशा/आकृति के अनुसार स्वतः व्यवस्थित होते हैं।
 */
 const ODAYIKA_HOUSE_LAYOUT = {
-  1:  {type:"wide",     sign:[500,256], dir:[ 0, 1], spread:70},
-  2:  {type:"triangle", sign:[252, 96], dir:[ 0, 1], spread:54},
-  3:  {type:"triangle", sign:[ 96,252], dir:[ 1, 0], spread:54},
-  4:  {type:"wide",     sign:[256,500], dir:[ 1, 0], spread:70},
-  5:  {type:"triangle", sign:[ 96,748], dir:[ 1, 0], spread:54},
-  6:  {type:"triangle", sign:[252,904], dir:[ 0,-1], spread:54},
-  7:  {type:"wide",     sign:[500,744], dir:[ 0,-1], spread:70},
-  8:  {type:"triangle", sign:[748,904], dir:[ 0,-1], spread:54},
-  9:  {type:"triangle", sign:[904,748], dir:[-1, 0], spread:54},
-  10: {type:"wide",     sign:[744,500], dir:[-1, 0], spread:70},
-  11: {type:"triangle", sign:[904,252], dir:[-1, 0], spread:54},
-  12: {type:"triangle", sign:[748, 96], dir:[ 0, 1], spread:54}
+  /*
+    भाव-ज्यामिति (screen-size से स्वतंत्र):
+    1,4,7,10 = केन्द्र/चौड़े भाव — राशि-अंक मध्य में, ग्रह चारों ओर।
+    2,6,8,12 = vertical triangles — ग्रह पहले ऊपर-नीचे।
+    3,5,9,11 = horizontal triangles — ग्रह पहले दाएँ-बाएँ।
+  */
+  1:  {type:"center",     sign:[500,256]},
+  2:  {type:"vertical",   sign:[252, 96]},
+  3:  {type:"horizontal", sign:[ 96,252]},
+  4:  {type:"center",     sign:[256,500]},
+  5:  {type:"horizontal", sign:[ 96,748]},
+  6:  {type:"vertical",   sign:[252,904]},
+  7:  {type:"center",     sign:[500,744]},
+  8:  {type:"vertical",   sign:[748,904]},
+  9:  {type:"horizontal", sign:[904,748]},
+  10: {type:"center",     sign:[744,500]},
+  11: {type:"horizontal", sign:[904,252]},
+  12: {type:"vertical",   sign:[748, 96]}
 };
 
 function odayikaChartBaseFontUserUnits(){
@@ -6878,39 +6884,28 @@ function odayikaChartBaseFontUserUnits(){
 }
 
 function odayikaPlanetFontSize(house,count){
-  const type = ODAYIKA_HOUSE_LAYOUT[house]?.type || "triangle";
   const base = odayikaChartBaseFontUserUnits();
+  let factor = 1;
 
-  let factor;
+  if(count <= 1) factor = 1.00;
+  else if(count === 2) factor = .96;
+  else if(count === 3) factor = .88;
+  else if(count === 4) factor = .80;
+  else if(count === 5) factor = .72;
+  else factor = .65;
 
-  if(type === "wide"){
-    if(count <= 1) factor = 1.00;
-    else if(count === 2) factor = .94;
-    else if(count === 3) factor = .84;
-    else if(count === 4) factor = .76;
-    else if(count === 5) factor = .69;
-    else factor = .62;
-  }else{
-    if(count <= 1) factor = .95;
-    else if(count === 2) factor = .87;
-    else if(count === 3) factor = .78;
-    else if(count === 4) factor = .70;
-    else if(count === 5) factor = .63;
-    else factor = .57;
-  }
+  let size = Math.max(32,Math.min(105,base * factor));
 
-  let size = Math.max(30,Math.min(105,base * factor));
-
-  /* Mobile: अकेला ग्रह सू०/रा०/के०-जैसे स्पष्ट बड़े आकार में रहे।
-     2+ ग्रहों में प्रारम्भिक आकार भी पर्याप्त बड़ा रहे; वास्तविक collision होने पर
-     नीचे का mobile-fit function ही क्रमशः छोटा करेगा। */
+  /* अकेला ग्रह सू०/रा०/के०-जैसे स्पष्ट बड़े आकार में रहे।
+     बहुग्रह होने पर भी पहले बड़ा आकार; वास्तविक collision पर ही नीचे fit घटाएगा। */
   if(window.matchMedia && window.matchMedia("(max-width:700px)").matches){
-    if(count <= 1) size = Math.max(size,82);
-    else if(count === 2) size = Math.max(size,78);
-    else if(count === 3) size = Math.max(size,68);
+    if(count <= 1) size = Math.max(size,84);
+    else if(count === 2) size = Math.max(size,80);
+    else if(count === 3) size = Math.max(size,72);
   }
   return size;
 }
+
 
 /*
   ग्रह-समूह को राशि-संख्या के चारों ओर इस तरह रखा जाता है कि
@@ -6921,122 +6916,202 @@ function odayikaPlanetPositions(house,count){
   const [cx,cy] = layout.sign;
   if(count <= 0) return [];
 
-  const mobile = window.matchMedia && window.matchMedia("(max-width:700px)").matches;
+  /* राशि-अंक को उसके स्थान पर स्थिर रखकर ग्रह उसके चारों ओर रखे जाते हैं। */
+  const V = 72;   // vertical offset
+  const H = 86;   // horizontal offset
 
-  /*
-    Mobile geometry (उत्तरभारतीय चक्र):
-    1,4,7,10 = केन्द्र/हीरक — राशि-अंक बीच में, ग्रह उसके चारों ओर।
-    2,6,8,12 = जिन त्रिकोणों में ऊर्ध्वाधर अवकाश अधिक है — ग्रह पहले दाएँ-बाएँ।
-    3,5,9,11 = जिन त्रिकोणों में क्षैतिज अवकाश अधिक है — ग्रह पहले ऊपर-नीचे।
-    इससे किसी राशि-विशेष के बजाय भाव की वास्तविक आकृति व्यवस्था तय करती है।
-  */
-  if(mobile){
-    const centreHouses = new Set([1,4,7,10]);
-    const sideBySideHouses = new Set([2,6,8,12]);
-    const stackedHouses = new Set([3,5,9,11]);
-
-    const aroundCentre = [
-      [0,-92], [0,92], [-118,0], [118,0],
-      [-92,-72], [92,-72], [-92,72], [92,72]
-    ];
-    const sideBySide = [
-      [-78,0], [78,0], [-78,-66], [78,-66],
-      [-78,66], [78,66], [0,-102], [0,102]
-    ];
-    const stacked = [
-      [0,-78], [0,78], [-72,-78], [-72,78],
-      [72,-78], [72,78], [-108,0], [108,0]
-    ];
-
-    let pattern;
-    if(centreHouses.has(house)) pattern=aroundCentre;
-    else if(sideBySideHouses.has(house)) pattern=sideBySide;
-    else pattern=stacked;
-
-    if(count===1){
-      /* अकेला ग्रह राशि-अंक से स्पष्ट दूरी पर, पर भाव के खुले भाग में। */
-      const [ox,oy]=pattern[0];
-      return [[cx+ox,cy+oy]];
-    }
-
+  if(layout.type === "vertical"){
+    const patterns = {
+      1:[[0, V]],
+      2:[[0,-V],[0, V]],
+      3:[[0,-92],[0,66],[0,132]],
+      4:[[-42,-76],[42,-76],[-42,76],[42,76]],
+      5:[[0,-108],[-44,-50],[44,-50],[-44,76],[44,76]]
+    };
+    const p=patterns[Math.min(count,5)] || patterns[5];
     return Array.from({length:count},(_,i)=>{
-      const q=pattern[i] || pattern[i % pattern.length];
-      const ring=Math.floor(i/pattern.length);
-      return [cx+q[0]*(1+ring*.18), cy+q[1]*(1+ring*.18)];
+      if(i<p.length) return [cx+p[i][0],cy+p[i][1]];
+      const k=i-p.length;
+      return [cx+((k%2)?38:-38), cy+126+Math.floor(k/2)*48];
     });
   }
 
-  /* Desktop: पूर्ववत् layout. */
-  const [dx,dy] = layout.dir;
-  const px = -dy, py = dx;
-  const spread = layout.spread || 56;
-  const point = (along,across) => [
-    cx + dx * along + px * across,
-    cy + dy * along + py * across
-  ];
-
-  if(layout.type === "wide"){
-    if(count === 1) return [point(78,0)];
-    if(count === 2) return [point(-62,0),point(78,0)];
-    if(count === 3) return [point(-62,0),point(76,-spread*.62),point(76,spread*.62)];
-    if(count === 4) return [point(-58,-spread*.50),point(-58,spread*.50),point(76,-spread*.50),point(76,spread*.50)];
-    if(count === 5) return [point(-62,0),point(72,-spread*.72),point(72,spread*.72),point(126,-spread*.38),point(126,spread*.38)];
-    const widePattern=[[-60,-spread*.55],[-60,spread*.55],[68,-spread*.72],[68,0],[68,spread*.72],[124,-spread*.42],[124,spread*.42]];
+  if(layout.type === "horizontal"){
+    const patterns = {
+      1:[[H,0]],
+      2:[[-H,0],[H,0]],
+      3:[[-104,0],[62,-42],[62,42]],
+      4:[[-88,-40],[-88,40],[88,-40],[88,40]],
+      5:[[-112,0],[-54,-48],[-54,48],[82,-48],[82,48]]
+    };
+    const p=patterns[Math.min(count,5)] || patterns[5];
     return Array.from({length:count},(_,i)=>{
-      const q=widePattern[i];
-      if(q) return point(q[0],q[1]);
-      const extra=i-widePattern.length,row=Math.floor(extra/3),col=extra%3;
-      return point(172+row*44,[-spread*.66,0,spread*.66][col]);
+      if(i<p.length) return [cx+p[i][0],cy+p[i][1]];
+      const k=i-p.length;
+      return [cx+128+Math.floor(k/2)*48,cy+((k%2)?36:-36)];
     });
   }
 
-  if(count === 1) return [point(58,0)];
-  if(count === 2) return [point(-42,0),point(58,0)];
-  if(count === 3) return [point(-38,0),point(54,-spread*.45),point(54,spread*.45)];
-  if(count === 4) return [point(-38,-spread*.34),point(-38,spread*.34),point(56,-spread*.38),point(56,spread*.38)];
-  if(count === 5) return [point(-40,0),point(50,-spread*.46),point(50,spread*.46),point(94,-spread*.25),point(94,spread*.25)];
-  const triPattern=[[-40,-spread*.30],[-40,spread*.30],[48,-spread*.48],[48,0],[48,spread*.48],[92,-spread*.26],[92,spread*.26]];
+  /* केन्द्र भाव: पर्याप्त स्थान; राशि-अंक बीच में, ग्रह चार दिशाओं में। */
+  const patterns = {
+    1:[[0,82]],
+    2:[[-92,0],[92,0]],
+    3:[[0,-82],[-92,48],[92,48]],
+    4:[[0,-88],[92,0],[0,88],[-92,0]],
+    5:[[0,-92],[88,-22],[62,78],[-62,78],[-88,-22]]
+  };
+  const p=patterns[Math.min(count,5)] || patterns[5];
   return Array.from({length:count},(_,i)=>{
-    const q=triPattern[i];
-    if(q) return point(q[0],q[1]);
-    const extra=i-triPattern.length,row=Math.floor(extra/3),col=extra%3;
-    return point(132+row*38,[-spread*.50,0,spread*.50][col]);
+    if(i<p.length) return [cx+p[i][0],cy+p[i][1]];
+    const k=i-p.length, a=(k%4)*Math.PI/2;
+    const r=132+Math.floor(k/4)*42;
+    return [cx+Math.cos(a)*r,cy+Math.sin(a)*r];
   });
 }
 
-/* Mobile-only: ग्रहों को पहले भाव की geometry के अनुसार रखा जा चुका है।
-   अब font केवल वास्तविक ग्रह-ग्रह या ग्रह-राशि collision पर घटेगा।
-   अकेला ग्रह कभी shrink नहीं होगा। */
+
+
+let ODAYIKA_LAST_CHART_STATE = null;
+let ODAYIKA_CHART_RESIZE_TIMER = null;
+
+function odayikaRememberChartState(planets,placeName,lagnaRashi0){
+  ODAYIKA_LAST_CHART_STATE = {
+    planets: planets.map(p => ({...p})),
+    placeName,
+    lagnaRashi0
+  };
+}
+
+function odayikaRefreshChartAfterResize(){
+  if(!ODAYIKA_LAST_CHART_STATE) return;
+
+  clearTimeout(ODAYIKA_CHART_RESIZE_TIMER);
+  ODAYIKA_CHART_RESIZE_TIMER = setTimeout(() => {
+    const s = ODAYIKA_LAST_CHART_STATE;
+    odayikaRenderChart(s.planets,s.placeName,s.lagnaRashi0,false);
+  },120);
+}
+
+window.addEventListener("resize",odayikaRefreshChartAfterResize);
+window.addEventListener("orientationchange",odayikaRefreshChartAfterResize);
+
+function odayikaRenderChart(planets,placeName,lagnaRashi0,rememberState=true){
+  const signLayer = document.getElementById("odayikaSignLayer");
+  const planetLayer = document.getElementById("odayikaPlanetLayer");
+  const title = document.getElementById("odayikaChartTitle");
+  const desc = document.getElementById("odayikaChartDesc");
+
+  if(!signLayer || !planetLayer || !Number.isFinite(lagnaRashi0)) return;
+
+  if(rememberState){
+    odayikaRememberChartState(planets,placeName,lagnaRashi0);
+  }
+
+  signLayer.innerHTML = "";
+  planetLayer.innerHTML = "";
+
+  if(title){
+    title.textContent = `${placeName} का सूर्योदयकालीन ग्रहचक्र`;
+  }
+
+  if(desc){
+    desc.textContent =
+      `${placeName} में चयनित दिनाङ्क के स्थानीय सूर्योदयकालीन ग्रहों का राशिचक्र`;
+  }
+
+  const ns = "http://www.w3.org/2000/svg";
+
+  /*
+    प्रथम भाव में सूर्य की राशि।
+    राशि-संख्या अपने खाने के लगभग ज्यामितीय मध्य में।
+  */
+  for(let house=1; house<=12; house++){
+    const signNumber = ((lagnaRashi0 + house - 1) % 12) + 1;
+    const [x,y] = ODAYIKA_HOUSE_LAYOUT[house].sign;
+
+    const node = document.createElementNS(ns,"text");
+    node.setAttribute("class","odayika-num");
+    node.setAttribute("data-house",String(house));
+    node.setAttribute("x",x);
+    node.setAttribute("y",y);
+    node.style.fontSize =
+      `${Math.max(31,Math.min(98,odayikaChartBaseFontUserUnits() * .90))}px`;
+    node.textContent = toDev(signNumber);
+
+    signLayer.appendChild(node);
+  }
+
+  const byHouse = {};
+
+  for(const p of planets){
+    const house = ((p.rashi0 - lagnaRashi0 + 12) % 12) + 1;
+    if(!byHouse[house]) byHouse[house] = [];
+    byHouse[house].push(p);
+  }
+
+  Object.keys(byHouse).forEach(key => {
+    const house = Number(key);
+    const list = byHouse[house];
+    const positions = odayikaPlanetPositions(house,list.length);
+    const fontSize = odayikaPlanetFontSize(house,list.length);
+
+    list.forEach((p,index) => {
+      const [x,y] = positions[index];
+
+      const node = document.createElementNS(ns,"text");
+      node.setAttribute("class","odayika-pl");
+      node.setAttribute("data-house",String(house));
+      node.setAttribute("x",x);
+      node.setAttribute("y",y);
+      node.style.fontSize = `${fontSize}px`;
+      node.textContent = p.name;
+
+      planetLayer.appendChild(node);
+    });
+  });
+
+  odayikaMobileFitChartHouses();
+}
+
+/* Mobile-only: प्रत्येक भाव में ग्रहों को उपलब्ध स्थान के अनुसार स्वतः छोटा करता है।
+   Desktop पर यह function तुरन्त लौट जाता है; वहाँ की वर्तमान setting अक्षुण्ण रहती है। */
 function odayikaMobileFitChartHouses(){
   if(!window.matchMedia || !window.matchMedia("(max-width:700px)").matches) return;
+
   const planetLayer=document.getElementById("odayikaPlanetLayer");
   const signLayer=document.getElementById("odayikaSignLayer");
   if(!planetLayer || !signLayer) return;
 
-  const intersects=(a,b,pad=8)=>!(
+  const intersects=(a,b,pad=7)=>!(
     a.x+a.width+pad < b.x || b.x+b.width+pad < a.x ||
     a.y+a.height+pad < b.y || b.y+b.height+pad < a.y
   );
 
   for(let house=1;house<=12;house++){
     const nodes=[...planetLayer.querySelectorAll(`.odayika-pl[data-house="${house}"]`)];
-    if(nodes.length<=1) continue;
     const sign=signLayer.querySelector(`.odayika-num[data-house="${house}"]`);
 
-    for(let pass=0;pass<12;pass++){
+    /* एक ग्रह को कभी auto-shrink न करें। */
+    if(nodes.length<=1) continue;
+
+    /* 2+ ग्रह: पहले मूल positions/font रखें; केवल वास्तविक collision पर धीरे-धीरे घटाएँ। */
+    for(let pass=0;pass<9;pass++){
+      let collision=false;
       const boxes=nodes.map(n=>n.getBBox());
       const sb=sign ? sign.getBBox() : null;
-      let collision=false;
-      for(let i=0;i<boxes.length && !collision;i++){
-        if(sb && intersects(boxes[i],sb,7)) collision=true;
-        for(let j=i+1;j<boxes.length && !collision;j++){
-          if(intersects(boxes[i],boxes[j],9)) collision=true;
+
+      for(let i=0;i<boxes.length;i++){
+        if(sb && intersects(boxes[i],sb,5)){ collision=true; break; }
+        for(let j=i+1;j<boxes.length;j++){
+          if(intersects(boxes[i],boxes[j],7)){ collision=true; break; }
         }
+        if(collision) break;
       }
       if(!collision) break;
+
       nodes.forEach(n=>{
-        const fs=parseFloat(n.style.fontSize)||82;
-        n.style.fontSize=`${Math.max(58,fs*.965)}px`;
+        const fs=parseFloat(n.style.fontSize)||56;
+        n.style.fontSize=`${Math.max(54,fs*.97)}px`;
       });
     }
   }
