@@ -3163,6 +3163,23 @@ body{display:flex;flex-direction:column;min-height:100vh}
 }
 </style>
 
+
+<style id="udayasta-larger-justified-20260929">
+#odayikaUdayastaGrid .odayika-flow-row{
+  justify-content:space-between !important;
+  text-align:justify !important;
+  text-align-last:justify !important;
+  column-gap:.30em !important;
+}
+#odayikaUdayastaGrid .odayika-sep{
+  margin:0 .24em !important;
+}
+#odayikaUdayastaTitle{
+  font-weight:700 !important;
+  text-align:center !important;
+}
+</style>
+
 </head>
 <body>
 <header class="site-header">
@@ -11888,8 +11905,8 @@ if(document.readyState === "loading"){
     });
 
     /* पूरे box की सीमा के भीतर सम्भव सबसे बड़ा font. */
-    const maxPx=window.innerWidth<=600 ? 18 : 20;
-    const minPx=window.innerWidth<=600 ? 11 : 12;
+    const maxPx=window.innerWidth<=600 ? 21 : 23;
+    const minPx=window.innerWidth<=600 ? 12 : 13;
     let chosen=minPx;
     for(let px=maxPx;px>=minPx;px--){
       row1.style.setProperty("font-size",px+"px","important");
@@ -11903,7 +11920,7 @@ if(document.readyState === "loading"){
 
     const title=document.getElementById("odayikaUdayastaTitle");
     if(title){
-      const titlePx=Math.min(21,Math.max(17,chosen+1));
+      const titlePx=Math.min(25,Math.max(20,chosen+2));
       title.style.setProperty("font-size",titlePx+"px","important");
       title.style.setProperty("line-height","1.4","important");
     }
