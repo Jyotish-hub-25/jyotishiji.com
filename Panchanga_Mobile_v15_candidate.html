@@ -6840,21 +6840,22 @@ const ODAYIKA_HOUSE_LAYOUT = {
   /*
     भाव-ज्यामिति (screen-size से स्वतंत्र):
     1,4,7,10 = केन्द्र/चौड़े भाव — राशि-अंक मध्य में, ग्रह चारों ओर।
-    2,6,8,12 = vertical triangles — ग्रह पहले ऊपर-नीचे।
-    3,5,9,11 = horizontal triangles — ग्रह पहले दाएँ-बाएँ।
+    2,6,8,12 = ऊपर/नीचे के चौड़े त्रिकोण — ग्रह पहले दाएँ-बाएँ।
+    3,5,9,11 = दाएँ/बाएँ के ऊँचे त्रिकोण — ग्रह पहले ऊपर-नीचे।
+    ध्यान: type ग्रह-समूह की placement-direction बताता है, भाव-संख्या/राशि-संख्या नहीं।
   */
   1:  {type:"center",     sign:[500,256]},
-  2:  {type:"vertical",   sign:[252, 96]},
-  3:  {type:"horizontal", sign:[ 96,252]},
+  2:  {type:"horizontal", sign:[252, 96]},
+  3:  {type:"vertical",   sign:[ 96,252]},
   4:  {type:"center",     sign:[256,500]},
-  5:  {type:"horizontal", sign:[ 96,748]},
-  6:  {type:"vertical",   sign:[252,904]},
+  5:  {type:"vertical",   sign:[ 96,748]},
+  6:  {type:"horizontal", sign:[252,904]},
   7:  {type:"center",     sign:[500,744]},
-  8:  {type:"vertical",   sign:[748,904]},
-  9:  {type:"horizontal", sign:[904,748]},
+  8:  {type:"horizontal", sign:[748,904]},
+  9:  {type:"vertical",   sign:[904,748]},
   10: {type:"center",     sign:[744,500]},
-  11: {type:"horizontal", sign:[904,252]},
-  12: {type:"vertical",   sign:[748, 96]}
+  11: {type:"vertical",   sign:[904,252]},
+  12: {type:"horizontal", sign:[748, 96]}
 };
 
 function odayikaChartBaseFontUserUnits(){
