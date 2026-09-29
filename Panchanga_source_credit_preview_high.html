@@ -3339,7 +3339,7 @@ body{display:flex;flex-direction:column;min-height:100vh}
 
 /* 2. ग्रहचक्र: राशि-संख्याएँ ग्रहाक्षरों के तुल्य दृश्य-आकार में। */
 .odayika-chart .odayika-num{
-  font-size:56px !important;
+  font-size:62px !important;
   font-weight:700 !important;
 }
 .odayika-chart .odayika-pl{
@@ -3361,7 +3361,7 @@ body{display:flex;flex-direction:column;min-height:100vh}
   /* SVG user-unit font sizes scale with the chart itself; same rule therefore
      preserves the ग्रह/संख्या proportion on mobile without a separate tiny number rule. */
   .odayika-chart .odayika-num{
-    font-size:56px !important;
+    font-size:64px !important;
   }
 }
 </style>
@@ -7417,9 +7417,9 @@ function odayikaPlanetFontSize(house,count){
   /* अकेला ग्रह सू०/रा०/के०-जैसे स्पष्ट बड़े आकार में रहे।
      बहुग्रह होने पर भी पहले बड़ा आकार; वास्तविक collision पर ही नीचे fit घटाएगा। */
   if(window.matchMedia && window.matchMedia("(max-width:700px)").matches){
-    if(count <= 1) size = Math.max(size,84);
-    else if(count === 2) size = Math.max(size,80);
-    else if(count === 3) size = Math.max(size,72);
+    if(count <= 1) size = Math.max(size,78);
+    else if(count === 2) size = Math.max(size,74);
+    else if(count === 3) size = Math.max(size,68);
   }
   return size;
 
