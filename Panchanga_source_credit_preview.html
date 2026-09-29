@@ -9,7 +9,7 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta content="श्रीसूर्यसिद्धान्तीय स्थानीय दैनिक पञ्चाङ्ग तथा भारतीय काल गणना के आधार।" name="description"/>
 <title>श्रीसूर्यसिद्धान्तीय स्थानीय पञ्चाङ्ग एवं भारतीय काल गणना</title>
-<meta name="panchanga-build" content="2026-09-22-source-credit-preview"/>
+<meta name="panchanga-build" content="2026-09-21-live-merge-75-ghent-odayika"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Devanagari:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
@@ -142,22 +142,6 @@ a{overflow-wrap:anywhere}
         0 1px 0 rgba(4,55,55,.42),
         0 2px 2px rgba(11,85,85,.28),
         0 4px 7px rgba(24,62,58,.16);
-    }
-
-    /* स्रोत-सन्दर्भ लिंक दृश्य रूप में मूल पाठ जैसे ही रहें */
-    .source-text-link,
-    .source-text-link:visited,
-    .source-text-link:hover,
-    .source-text-link:active {
-      color: inherit;
-      font: inherit;
-      font-weight: inherit;
-      text-decoration: none;
-    }
-
-    .source-text-link:focus-visible {
-      outline: 1px dotted currentColor;
-      outline-offset: 2px;
     }
 
     .panchanga-section {
@@ -1094,6 +1078,9 @@ body{display:flex;flex-direction:column;min-height:100vh}
   line-height:1.20;
   text-align:center;
   white-space:nowrap;
+  letter-spacing:0;
+  font-kerning:normal;
+  font-variant-ligatures:normal;
 }
 
 /* Header और ९ ग्रह-पंक्तियाँ box की पूरी बची हुई ऊँचाई भरें */
@@ -1174,18 +1161,31 @@ body{display:flex;flex-direction:column;min-height:100vh}
 
 .odayika-sp-left{
   flex:0 0 auto;
+  min-width:2.65em;
   color:var(--heading);
   font-weight:700;
   white-space:nowrap;
 }
 
 .odayika-sp-value{
-  flex:0 0 auto;
+  flex:1 1 auto;
   min-width:0;
   white-space:nowrap;
-  letter-spacing:-0.025em;
+  letter-spacing:0;
   word-spacing:0;
   font-variant-numeric:tabular-nums;
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  align-items:center;
+} 
+.odayika-sp-num{
+  min-width:0;
+  text-align:center;
+  white-space:nowrap;
+}
+.odayika-sp-num:not(:last-child)::after{
+  content:"।";
+  float:right;
 }
 
 .odayika-state,
@@ -1555,7 +1555,7 @@ body{display:flex;flex-direction:column;min-height:100vh}
   padding-right:0;
 }
 .odayika-sp-left{margin-left:0}
-.odayika-sp-value{letter-spacing:-.035em}
+.odayika-sp-value{letter-spacing:0}
 .odayika-state,.odayika-sp-state-right{margin-left:0;padding-right:0}
 
 @media(max-width:980px){
@@ -1589,6 +1589,22 @@ body{display:flex;flex-direction:column;min-height:100vh}
   .odayika-sp-headtext{letter-spacing:-.045em}
 }
 
+
+/* ===== 2026-09-28 : ग्रहस्पष्ट दृश्य-संशोधन — केवल इसी box तक सीमित ===== */
+.odayika-sp-box-title{
+  margin-bottom:0 !important;
+  padding-bottom:0 !important;
+  line-height:1.02 !important;
+  font-family:"Sanskrit Text","Noto Serif Devanagari","Nirmala UI","Mangal",serif;
+  font-variant-ligatures:normal;
+  text-rendering:optimizeLegibility;
+}
+#odayikaSpashta{margin-top:0 !important;padding-top:0 !important;}
+.odayika-sp-head{padding-top:0 !important;margin-top:0 !important;}
+.odayika-sp-row{gap:0 !important;padding-left:0 !important;padding-right:0 !important;}
+.odayika-sp-left{min-width:0 !important;margin-right:.08em;}
+.odayika-sp-value{column-gap:0 !important;}
+.odayika-sp-num:not(:last-child)::after{margin-left:.02em;}
 </style>
 
 <style id="refined-arunodaya-desktop-adjusted">
@@ -2549,6 +2565,296 @@ body{display:flex;flex-direction:column;min-height:100vh}
 
 </style>
 
+
+<style id="odayika-grahaspashta-auto-fit-v4">
+/* सभी ग्रह-पंक्तियों पर एक ही स्वतः-fit नियम; किसी ग्रह का hard-coded adjustment नहीं। */
+.odayika-sp-box-title{
+  flex:0 0 auto !important;
+  margin:0 !important;
+  padding:0 !important;
+  line-height:.94 !important;
+}
+#odayikaSpashta{
+  margin-top:0 !important;
+  padding-top:0 !important;
+}
+.odayika-sp-head{
+  flex:0 0 auto !important;
+  min-height:0 !important;
+  margin:0 !important;
+  padding:0 0 1px !important;
+  line-height:.92 !important;
+}
+.odayika-sp-row{
+  flex:1 1 0 !important;
+  min-height:0 !important;
+  gap:0 !important;
+  padding:0 !important;
+  line-height:1.02 !important;
+  letter-spacing:0 !important;
+}
+.odayika-sp-left{min-width:0 !important;margin-right:.04em !important;}
+.odayika-sp-value{column-gap:0 !important;letter-spacing:0 !important;}
+.odayika-sp-num:not(:last-child)::after{margin-left:.01em !important;}
+.odayika-state,.odayika-sp-state-right{margin-left:0 !important;padding-right:0 !important;}
+.odayika-legend-inside{
+  flex:0 0 auto !important;
+  margin:1px 0 0 !important;
+  padding-top:1px !important;
+  line-height:1 !important;
+}
+/* शीर्षक को उपलब्ध चौड़ाई का थोड़ा अधिक उपयोग; ग्रहस्पष्ट box की कुल चौड़ाई अपरिवर्तित। */
+.odayika-sp-box-title{font-size:clamp(.90rem,1.42vw,1.10rem) !important;}
+/* इकाई-header पूरी चौड़ाई में सुव्यवस्थित रहे। */
+.odayika-sp-head{width:100% !important;}
+.odayika-sp-headtext{display:block !important;width:100% !important;white-space:nowrap !important;text-align:justify !important;text-align-last:justify !important;}
+/* अन्तिम केतु-पंक्ति को थोड़ा नीचे बैठाएँ ताकि के० की मात्रा को पूरा स्थान मिले। */
+.odayika-sp-row:last-child{transform:translateY(2px);padding-bottom:0 !important;}
+</style>
+
+<style id="odayika-grahaspashta-adaptive-v6">
+/* केवल तात्कालिक ग्रहस्पष्ट box: अक्षर/अंक actual content के अनुसार auto-fit */
+.odayika-spashta{padding:3px 3px 4px !important;}
+.odayika-sp-box-title{
+  margin:0 !important; padding:0 !important;
+  line-height:1.08 !important;
+  font-size:clamp(.94rem,1.48vw,1.14rem) !important;
+}
+#odayikaSpashta{margin:0 !important;padding:0 !important;min-height:0 !important;}
+.odayika-sp-head{
+  flex:.72 1 0 !important;
+  margin:0 !important; padding:0 1px 1px !important;
+  line-height:1.08 !important; overflow:hidden !important;
+}
+.odayika-sp-headtext{
+  display:block !important; width:100% !important;
+  text-align:justify !important; text-align-last:justify !important;
+  white-space:nowrap !important;
+}
+.odayika-sp-row{
+  flex:1 1 0 !important; min-height:0 !important;
+  padding:1px 1px 0 !important; gap:.03em !important;
+  line-height:1.18 !important; overflow:hidden !important;
+  align-items:center !important; transform:none !important;
+}
+.odayika-sp-left{
+  flex:0 0 auto !important; min-width:0 !important;
+  margin-right:.05em !important;
+}
+.odayika-sp-value{
+  flex:1 1 auto !important; min-width:0 !important;
+  display:grid !important; grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+  column-gap:0 !important; letter-spacing:0 !important;
+}
+.odayika-sp-num{min-width:0 !important;text-align:center !important;}
+.odayika-sp-num:not(:last-child)::after{margin:0 !important;}
+.odayika-state,.odayika-sp-state-right{
+  flex:0 0 auto !important; margin-left:.02em !important; padding-right:0 !important;
+}
+/* केतु में 'के०' की ऊपरी मात्रा के लिए अतिरिक्त breathing room; row नीचे की ओर हल्की बैठती है। */
+.odayika-sp-row:last-child{padding-top:2px !important;padding-bottom:0 !important;}
+.odayika-legend-inside{margin:2px 0 0 !important;padding-top:1px !important;line-height:1.05 !important;}
+</style>
+
+<style id="odayika-grahaspashta-v7-final-tune">
+/* केवल तात्कालिक ग्रहस्पष्ट box — अन्य settings अपरिवर्तित */
+.odayika-sp-box-title{
+  white-space:nowrap !important;
+  font-kerning:normal !important;
+  font-variant-ligatures:normal !important;
+  text-rendering:optimizeLegibility !important;
+}
+.odayika-sp-headtext{
+  white-space:nowrap !important;
+  overflow:hidden !important;
+}
+/* केतु की मात्रा के लिए अन्तिम row में थोड़ा अतिरिक्त ऊपरी अवकाश */
+.odayika-sp-row:last-child{padding-top:3px !important;}
+</style>
+
+<style id="odayika-grahaspashta-v8-rebuild">
+/* केवल तात्कालिक ग्रहस्पष्ट presentation का पुनर्निर्माण */
+.odayika-spashta{padding:3px 3px 4px !important;}
+.odayika-sp-box-title{
+  margin:0 !important; padding:0 !important; line-height:1.02 !important;
+  font-size:clamp(1.02rem,1.62vw,1.24rem) !important; white-space:nowrap !important;
+}
+#odayikaSpashta{display:flex !important;flex-direction:column !important;min-height:0 !important;margin:0 !important;padding:0 !important;}
+.odayika-sp-head{
+  flex:.72 1 0 !important; min-height:0 !important; margin:0 !important; padding:0 1px 1px !important;
+  display:flex !important; align-items:center !important; overflow:hidden !important; line-height:1 !important;
+}
+.odayika-sp-headtext{display:block !important;width:100% !important;white-space:nowrap !important;text-align:justify !important;text-align-last:justify !important;}
+.odayika-sp-row{
+  flex:1 1 0 !important; min-height:0 !important; padding:0 1px !important; margin:0 !important;
+  display:flex !important; align-items:center !important; overflow:visible !important; line-height:1.16 !important;
+}
+.odayika-sp-line{display:inline-flex !important;align-items:center !important;flex:none !important;white-space:nowrap !important;width:max-content !important;max-width:none !important;}
+.odayika-sp-left,.odayika-sp-value,.odayika-state{display:inline !important;flex:none !important;white-space:nowrap !important;}
+.odayika-sp-left{margin-right:.16em !important;}
+.odayika-sp-value{letter-spacing:0 !important;}
+.odayika-state{margin-left:.08em !important;}
+.odayika-sp-row:last-child{padding-top:3px !important;padding-bottom:0 !important;}
+.odayika-legend-inside{flex:0 0 auto !important;margin:1px 0 0 !important;padding-top:1px !important;line-height:1.04 !important;}
+</style>
+
+<style id="odayika-grahaspashta-v9-header-only">
+/* केवल “ग्र० -रा०।अं०।क०।वि०व०/अ०” पंक्ति */
+.odayika-sp-head{flex:.88 1 0 !important;}
+.odayika-sp-headtext{
+  display:block !important;
+  width:100% !important;
+  max-width:100% !important;
+  white-space:nowrap !important;
+  overflow:visible !important;
+  text-align:left !important;
+  text-align-last:auto !important;
+  line-height:1.08 !important;
+  letter-spacing:0 !important;
+}
+</style>
+
+<style id="odayika-grahaspashta-v10-title-header-only">
+/* केवल तात्कालिक ग्रहस्पष्ट शीर्षक और ग्र० header की दृश्य-सुधार */
+.odayika-sp-box-title{
+  transform:translateY(2px) !important;
+  padding-top:1px !important;
+  overflow:visible !important;
+}
+.odayika-sp-head{
+  overflow:visible !important;
+}
+.odayika-sp-headtext{
+  display:block !important;
+  box-sizing:border-box !important;
+  width:100% !important;
+  max-width:100% !important;
+  padding:0 1px !important;
+  white-space:nowrap !important;
+  overflow:visible !important;
+  text-align:left !important;
+  line-height:1.12 !important;
+}
+</style>
+
+<style id="odayika-grahaspashta-v12-header-only">
+/* केवल ग्र० -रा०।अं०।क०।वि०व०/अ० */
+.odayika-sp-head{
+  overflow:visible !important;
+  min-height:20px !important;
+  line-height:1.35 !important;
+  align-items:center !important;
+}
+.odayika-sp-headtext{
+  display:block !important;
+  width:100% !important;
+  max-width:100% !important;
+  box-sizing:border-box !important;
+  padding:0 1px !important;
+  white-space:nowrap !important;
+  overflow:visible !important;
+  text-align:left !important;
+  text-align-last:auto !important;
+  letter-spacing:0 !important;
+  line-height:1.25 !important;
+}
+</style>
+
+<style id="odayika-grahaspashta-v13-header-tiny-adjustment">
+/* केवल ग्र०-header: थोड़ा नीचे; शेष layout untouched */
+.odayika-sp-headtext{
+  position:relative !important;
+  top:4px !important;
+  font-size:14px !important;
+}
+</style>
+
+<style id="odayika-mobile-balanced-20260928">
+/* केवल मोबाइल दृश्य-सन्तुलन; desktop और गणना untouched */
+@media (max-width:700px){
+  /* ग्रहस्पष्ट को पर्याप्त चौड़ाई, ग्रहचक्र को शेष स्थान */
+  .odayika-dual{
+    grid-template-columns:minmax(0,.72fr) minmax(0,1.28fr) !important;
+    gap:3px !important;
+    align-items:stretch !important;
+  }
+  .odayika-spashta{
+    padding:3px 3px 4px !important;
+  }
+  .odayika-sp-box-title{
+    font-size:clamp(.90rem,3.75vw,1.08rem) !important;
+    line-height:1.12 !important;
+  }
+  .odayika-sp-head{
+    min-height:20px !important;
+    overflow:visible !important;
+  }
+  .odayika-sp-headtext{
+    font-size:clamp(12px,3.05vw,14px) !important;
+    top:3px !important;
+    overflow:visible !important;
+  }
+  /* ग्रह-पंक्तियों का मौजूदा independent auto-fit यथावत् */
+  .odayika-sp-row{overflow:visible !important;}
+
+  /* उदयास्त की चार ताराग्रह-पट्टियाँ मोबाइल पर एक पंक्ति में रहें */
+  #odayikaUdayastaGrid .odayika-event-chip{
+    padding:5px 4px !important;
+    font-size:clamp(.76rem,2.75vw,.88rem) !important;
+    line-height:1.22 !important;
+  }
+}
+@media (max-width:390px){
+  .odayika-dual{
+    grid-template-columns:minmax(0,.76fr) minmax(0,1.24fr) !important;
+  }
+  .odayika-sp-headtext{font-size:clamp(11px,3vw,13px) !important;}
+}
+</style>
+
+
+<style id="odayika-mobile-v16-minimal">
+/* v16: केवल mobile; desktop settings untouched */
+@media (max-width:700px){
+  /* v14 का उपयोगी लगभग 1:2 अनुपात बनाए रखें; किसी एक phone-width पर hard-code नहीं। */
+  .odayika-dual{
+    grid-template-columns:minmax(0,.64fr) minmax(0,1.36fr) !important;
+    gap:2px !important;
+    align-items:stretch !important;
+  }
+  .odayika-left,.odayika-spashta,.odayika-chart-box{min-width:0 !important;}
+  .odayika-chart{width:100% !important;height:auto !important;aspect-ratio:1/1 !important;}
+
+  /* उदयास्त: पहली पंक्ति 2 boxes, दूसरी 4; उपलब्ध screen-width के साथ fluid typography. */
+  #odayikaUdayastaGrid{gap:4px !important;}
+  #odayikaUdayastaGrid .odayika-event-chip{
+    padding:4px 3px !important;
+    font-size:clamp(11px,2.75vw,14px) !important;
+    line-height:1.18 !important;
+  }
+  #odayikaUdayastaGrid .odayika-event-chip.odayika-moon-chip{grid-column:1 / span 8 !important;}
+  #odayikaUdayastaGrid .odayika-event-chip.odayika-guru-chip{grid-column:9 / span 4 !important;}
+  #odayikaUdayastaGrid .odayika-event-chip.odayika-mangal-chip{grid-column:1 / span 3 !important;}
+  #odayikaUdayastaGrid .odayika-event-chip.odayika-budha-chip{grid-column:4 / span 3 !important;}
+  #odayikaUdayastaGrid .odayika-event-chip.odayika-shukra-chip{grid-column:7 / span 3 !important;}
+  #odayikaUdayastaGrid .odayika-event-chip.odayika-shani-chip{grid-column:10 / span 3 !important;}
+}
+@media (max-width:370px){
+  #odayikaUdayastaGrid .odayika-event-chip{font-size:clamp(10px,2.7vw,12px) !important;padding-inline:2px !important;}
+}
+</style>
+
+
+<style id="odayika-mobile-v18-visual-balance">
+/* v18: केवल mobile ग्रहस्पष्ट-header और ग्रहचक्र typography; उदयास्त/desktop untouched */
+@media (max-width:700px){
+  .odayika-sp-headtext{
+    overflow:visible !important;
+    white-space:nowrap !important;
+  }
+}
+</style>
+
 <style>
 /* ===== गणना-स्रोत एवं कर्तृत्व : संक्षिप्त पट्टी ===== */
 .source-credit-card{
@@ -2634,23 +2940,19 @@ body{display:flex;flex-direction:column;min-height:100vh}
 <a href="index.html">मुख्यपृष्ठ</a>
 <a href="articles.html">लेख</a>
 <a href="Panchanga.html">पञ्चाङ्ग</a>
-<a href="panchanga-source.html">स्रोत एवं कर्तृत्व</a>
 <a href="Grahashanti.htm">ग्रहशान्ति</a>
 <a href="contact.html">सम्पर्क</a>
 </nav></header>
-
 <section class="source-credit-card" aria-label="पञ्चाङ्ग का गणना-स्रोत एवं प्रस्तुति">
   <div class="source-credit-side source-credit-side-left">
     <span class="source-credit-entry"><strong>पञ्चाङ्गगणितकर्त्ता :</strong> श्री विनय झा</span>
     <span class="source-credit-separator" aria-hidden="true">•</span>
-    <span class="source-credit-entry"><strong>मूल सॉफ्टवेयर :</strong> <a href="https://vedicastrology.wikidot.com/kundalee-software-download" rel="noopener noreferrer" target="_blank"><strong>“Kundalee”</strong></a></span>
+    <span class="source-credit-entry"><strong>प्रयुक्त सॉफ्टवेयर :</strong> <a href="https://vedicastrology.wikidot.com/kundalee-software-download" rel="noopener noreferrer" target="_blank"><strong>“Kundalee”</strong></a></span>
   </div>
   <div class="source-credit-actions">
-    <a class="source-credit-link" href="panchanga-source.html">विस्तृत परिचय एवं उपयोग-मर्यादा देखें</a>
+    <a class="source-credit-link" href="panchanga-source.html">विस्तृत परिचय व पञ्चाङ्ग उपयोग सीमा</a>
   </div>
   <div class="source-credit-side source-credit-side-right">
-    <span class="source-credit-entry"><strong>मूल वेबसाइट :</strong> <a href="https://jyotishiji.com/"><strong>jyotishiji.com</strong></a></span>
-    <span class="source-credit-separator" aria-hidden="true">•</span>
     <span class="source-credit-entry"><strong>वेब-संयोजन एवं प्रस्तुति :</strong> गोविन्द द्विवेदी</span>
   </div>
 </section>
@@ -2872,7 +3174,8 @@ body{display:flex;flex-direction:column;min-height:100vh}
   <p class="festival-audit-intro" id="festivalAuditIntro"></p>
   <div class="festival-audit-list" id="festivalAuditList"></div>
 </section>
-    <!-- =========================================================
+
+<!-- =========================================================
      औदयिक ग्रहस्पष्ट एवं ग्रहचक्र
      स्थान/दिनाङ्क selector के बाद और muhurtaBox के पहले रखें
 ========================================================= -->
@@ -2886,7 +3189,7 @@ body{display:flex;flex-direction:column;min-height:100vh}
       <div class="odayika-spashta" aria-label="औदयिक ग्रहस्पष्ट">
       <div class="odayika-sp-box-title">तात्कालिक ग्रहस्पष्ट</div>
       <div id="odayikaSpashta"></div>
-      <p class="odayika-legend odayika-legend-inside">व० = वक्री · अ० = अस्तग्रह</p>
+      <p class="odayika-legend odayika-legend-inside">व० = वक्री, अ० = अस्त</p>
     </div>
     </div>
 
@@ -6335,8 +6638,13 @@ function odayikaPlanetState(grahaKey,rowIndex,col,grahaLon,sunLon){
     if(retro) state.push("व०");
   }
 
-  /* अ० अभी source AB की अस्तावस्था से ही। */
-  if(odayikaIsCombust(grahaKey,rowIndex)){
+  /* प्रदर्शन-नियम:
+     सूर्य: व०/अ० नहीं।
+     चन्द्र: व० कभी नहीं; source में अस्त होने पर अ० हो सकता है।
+     पाँच ताराग्रह: आवश्यकतानुसार व० और/या अ०।
+     राहु-केतु: नित्य वक्र होने से व० लिखने की आवश्यकता नहीं। */
+  if(["chandra","mangal","budha","guru","shukra","shani"].includes(grahaKey) &&
+     odayikaIsCombust(grahaKey,rowIndex)){
     state.push("अ०");
   }
 
@@ -6419,7 +6727,12 @@ function odayikaFitPlainText(el,{minPx=10,maxPx=28,widthFill=.992}={}){
 
 function odayikaFitOuterTypography(){
   odayikaFitPlainText(document.getElementById("odayikaTitle"),{minPx:11,maxPx:26,widthFill:.993});
-  odayikaFitPlainText(document.getElementById("odayikaDateLine"),{minPx:10,maxPx:21,widthFill:.993});
+  const dateLine = document.getElementById("odayikaDateLine");
+  odayikaFitPlainText(dateLine,{minPx:10,maxPx:21,widthFill:.993});
+  const riseSetTitle = document.getElementById("odayikaUdayastaTitle");
+  if(dateLine && riseSetTitle){
+    riseSetTitle.style.fontSize = getComputedStyle(dateLine).fontSize;
+  }
   odayikaFitPlainText(document.querySelector(".odayika-sp-box-title"),{minPx:10,maxPx:20,widthFill:.985});
 }
 
@@ -6427,60 +6740,123 @@ function odayikaFitSpashtaTypography(){
   odayikaFitOuterTypography();
   const root = document.getElementById("odayikaSpashta");
   if(!root || root.clientWidth <= 0) return;
+  const header = root.querySelector(".odayika-sp-headtext");
+  const rows = [...root.querySelectorAll(".odayika-sp-row")];
 
-  const header = root.querySelector(".odayika-sp-head");
-  const normalRows = [...root.querySelectorAll(".odayika-sp-row.no-state")];
-  const stateRows = [...root.querySelectorAll(".odayika-sp-row.has-state")];
+  rows.forEach(row => {
+    const line = row.querySelector(".odayika-sp-line");
+    if(!line) return;
+    let lo=11, hi=30;
+    for(let i=0;i<22;i++){
+      const mid=(lo+hi)/2;
+      row.style.fontSize=`${mid}px`;
+      const fitsW = line.scrollWidth <= Math.max(1,row.clientWidth-2);
+      const fitsH = line.scrollHeight <= Math.max(1,row.clientHeight-1);
+      if(fitsW && fitsH) lo=mid; else hi=mid;
+    }
+    row.style.fontSize=`${Math.max(11,lo-.10).toFixed(2)}px`;
 
-  /*
-    सभी सामान्य ग्रह एक समान बड़े font में रहें।
-    सबसे लम्बी सामान्य पंक्ति जितना समा सके, वही common size बनेगा।
-  */
-  if(normalRows.length){
-    const commonNormalSize = Math.min(
-      ...normalRows.map(row =>
-        odayikaCandidateFontSize(row,{
-          basePx:16,
-          minPx:10,
-          maxPx:24,
-          widthFill:.992,
-          heightFill:.80
-        })
-      )
-    );
+    /* चं०, गु०, शु०, श० की अभी ठीक fitting को ज्यों का त्यों रखें।
+       छोटी पंक्तियों को केवल क्षैतिज रूप से थोड़ा फैलने दें; ऊँचाई/row-size नहीं बदलती। */
+    line.style.transform="none";
+    line.style.transformOrigin="left center";
+    const label = (row.querySelector(".odayika-sp-left")?.textContent || "").trim();
+    const referenceRow = /^(चं०|गु०|शु०|श०)/.test(label);
+    if(!referenceRow){
+      const availableW = Math.max(1,row.clientWidth-2);
+      const naturalW = Math.max(1,line.getBoundingClientRect().width);
+      const scaleX = Math.min(1.16, availableW/naturalW);
+      if(scaleX > 1.005) line.style.transform=`scaleX(${scaleX.toFixed(3)})`;
+    }
+  });
 
-    normalRows.forEach(row => {
-      row.style.fontSize = `${commonNormalSize.toFixed(2)}px`;
+  /* Mobile fine-balance: केवल ग्रहस्पष्ट की दृश्य-समानता; desktop untouched. */
+  if(window.matchMedia && window.matchMedia("(max-width:700px)").matches){
+    const byLabel = {};
+    rows.forEach(row=>{
+      const label=(row.querySelector(".odayika-sp-left")?.textContent||"").trim();
+      const key=(label.match(/^(सू०|चं०|मं०|बु०|गु०|शु०|श०|रा०|के०)/)||[])[1];
+      if(key) byLabel[key]=row;
+    });
+
+    /* v24 mobile ग्रहस्पष्ट balance:
+       चन्द्र, बुध, गुरु को थोड़ा बड़ा रखें और उपलब्ध चौड़ाई का संतुलित उपयोग कराएँ।
+       row-height/box-height नहीं बदलती; केवल text का क्षैतिज fit होता है। */
+    ["चं०","बु०","गु०"].forEach(key=>{
+      const row=byLabel[key], line=row?.querySelector(".odayika-sp-line");
+      if(!row||!line) return;
+      const current=parseFloat(row.style.fontSize)||11;
+      row.style.fontSize=`${(current*1.075).toFixed(2)}px`;
+      line.style.transform="none";
+      line.style.transformOrigin="left center";
+      const availableW=Math.max(1,row.clientWidth-2);
+      const naturalW=Math.max(1,line.getBoundingClientRect().width);
+      const scaleX=Math.max(.93,Math.min(1.10,availableW/naturalW));
+      line.style.transform=`scaleX(${scaleX.toFixed(3)})`;
+    });
+
+    /* राहु और केतु का वास्तविक font-size समान। सूर्य भी उसी reference-size पर।
+       तीनों छोटी/लम्बी पंक्तियाँ अपने उपलब्ध box-width को लगभग समान रूप से भरें। */
+    const ketu=byLabel["के०"];
+    if(ketu){
+      const ketuSize=parseFloat(ketu.style.fontSize)||11;
+      ["के०","रा०","सू०"].forEach(key=>{
+        const row=byLabel[key], line=row?.querySelector(".odayika-sp-line");
+        if(!row||!line) return;
+        row.style.fontSize=`${ketuSize.toFixed(2)}px`;
+        line.style.transform="none";
+        line.style.transformOrigin="left center";
+        const availableW=Math.max(1,row.clientWidth-2);
+        const naturalW=Math.max(1,line.getBoundingClientRect().width);
+        const scaleX=Math.max(.92,Math.min(1.16,availableW/naturalW));
+        line.style.transform=`scaleX(${scaleX.toFixed(3)})`;
+      });
+    }
+
+    /* v25 final balance: सूर्य और केतु को फिर थोड़ा चौड़ा करें;
+       बुध की पंक्ति का दृश्य right-edge भी उन्हीं के लगभग बराबर रहे।
+       font-height/row-height/header/अन्य ग्रह untouched. */
+    ["सू०","बु०","के०"].forEach(key=>{
+      const row=byLabel[key], line=row?.querySelector(".odayika-sp-line");
+      if(!row||!line) return;
+      line.style.transform="none";
+      line.style.transformOrigin="left center";
+      const targetW=Math.max(1,(row.clientWidth-2)*.985);
+      const naturalW=Math.max(1,line.getBoundingClientRect().width);
+      const scaleX=Math.max(1,Math.min(1.22,targetW/naturalW));
+      line.style.transform=`scaleX(${scaleX.toFixed(3)})`;
     });
   }
 
-  /*
-    व०/अ० वाली पंक्ति लम्बी है, इसलिए केवल वही आवश्यकता के अनुसार
-    स्वतः थोड़ी छोटी हो सकती है।
-  */
-  stateRows.forEach(row => {
-    const stateSize = odayikaCandidateFontSize(row,{
-      basePx:16,
-      minPx:9,
-      maxPx:22,
-      widthFill:.992,
-      heightFill:.78
-    });
-
-    row.style.fontSize = `${stateSize.toFixed(2)}px`;
-  });
-
-  /* छोटा header भी border की उपलब्ध चौड़ाई का अधिकतम उपयोग करे। */
   if(header){
-    const headerSize = odayikaCandidateFontSize(header,{
-      basePx:16,
-      minPx:9,
-      maxPx:21,
-      widthFill:.995,
-      heightFill:.82
-    });
+    const isMobile = window.matchMedia && window.matchMedia("(max-width:700px)").matches;
+    if(isMobile){
+      header.style.fontWeight="600";
+      header.style.letterSpacing="-0.025em";
+      header.style.fontSize="14.6px";
+      header.style.transform="none";
 
-    header.style.fontSize = `${headerSize.toFixed(2)}px`;
+      const range=document.createRange();
+      range.selectNodeContents(header);
+      const natural=Math.max(1,range.getBoundingClientRect().width);
+      const scale=Math.max(.64,Math.min(1,available/natural));
+      header.style.transform=`scaleX(${scale.toFixed(3)})`;
+    }else{
+      /* केवल ग्र०-header: !important width से स्वतंत्र वास्तविक text-width मापकर fit करें। */
+      const headBox = header.parentElement;
+      const available = Math.max(1,(headBox ? headBox.clientWidth : root.clientWidth)-2);
+      const range = document.createRange();
+      range.selectNodeContents(header);
+      let lo=8.0, hi=14.2;
+      for(let i=0;i<24;i++){
+        const mid=(lo+hi)/2;
+        header.style.setProperty("font-size",`${mid}px`,"important");
+        const textWidth = range.getBoundingClientRect().width;
+        if(textWidth <= available) lo=mid;
+        else hi=mid;
+      }
+      header.style.setProperty("font-size",`${Math.max(8.0,lo-.03).toFixed(2)}px`,"important");
+    }
   }
 }
 
@@ -6528,7 +6904,7 @@ window.addEventListener("orientationchange",odayikaScheduleHeadlineFit);
 function odayikaSpashtaHeader(){
   return `
     <div class="odayika-sp-head">
-      <span class="odayika-sp-headtext">ग्रह -रा०।अं०।क०।वि०व०/अ०</span>
+      <span class="odayika-sp-headtext">ग्र० -रा०।अं०।क०।वि०व०/अ०</span>
     </div>
   `;
 }
@@ -6536,12 +6912,10 @@ function odayikaSpashtaHeader(){
 function odayikaSpashtaRow(name,state,parts){
   const compactValue =
     `${odayikaDisplayRashi(parts)}।${odayikaDisplayPart(parts?.degree)}।${odayikaDisplayPart(parts?.minute)}।${odayikaDisplayPart(parts?.second)}`;
-
+  const stateText = state ? `<span class="odayika-state odayika-sp-state-right">${state}</span>` : "";
   return `
     <div class="odayika-sp-row ${state ? "has-state" : "no-state"}">
-      <span class="odayika-sp-left">${name} -</span>
-      <span class="odayika-sp-value">${compactValue}</span>
-      ${state ? `<span class="odayika-state odayika-sp-state-right">${state}</span>` : ""}
+      <span class="odayika-sp-line"><span class="odayika-sp-left">${name} -</span><span class="odayika-sp-value">${compactValue}</span>${stateText}</span>
     </div>
   `;
 }
@@ -6567,8 +6941,30 @@ const ODAYIKA_HOUSE_LAYOUT = {
   8:  {type:"triangle", sign:[748,904], dir:[ 0,-1], spread:54},
   9:  {type:"triangle", sign:[904,748], dir:[-1, 0], spread:54},
   10: {type:"wide",     sign:[744,500], dir:[-1, 0], spread:70},
-  11: {type:"triangle", sign:[904,252], dir:[-1, 0], spread:54},
+  11: {type:"triangle", sign:[925,252], dir:[-1, 0], spread:54},
   12: {type:"triangle", sign:[748, 96], dir:[ 0, 1], spread:54}
+};
+
+const ODAYIKA_HOUSE_LAYOUT_MOBILE = {
+  /*
+    भाव-ज्यामिति (screen-size से स्वतंत्र):
+    1,4,7,10 = केन्द्र/चौड़े भाव — राशि-अंक मध्य में, ग्रह चारों ओर।
+    2,6,8,12 = ऊपर/नीचे के चौड़े त्रिकोण — ग्रह पहले दाएँ-बाएँ।
+    3,5,9,11 = दाएँ/बाएँ के ऊँचे त्रिकोण — ग्रह पहले ऊपर-नीचे।
+    ध्यान: type ग्रह-समूह की placement-direction बताता है, भाव-संख्या/राशि-संख्या नहीं।
+  */
+  1:  {type:"center",     sign:[500,256]},
+  2:  {type:"horizontal", sign:[252, 96]},
+  3:  {type:"vertical",   sign:[ 96,252]},
+  4:  {type:"center",     sign:[256,500]},
+  5:  {type:"vertical",   sign:[ 96,748]},
+  6:  {type:"horizontal", sign:[252,904]},
+  7:  {type:"center",     sign:[500,744]},
+  8:  {type:"horizontal", sign:[748,904]},
+  9:  {type:"vertical",   sign:[904,748]},
+  10: {type:"center",     sign:[744,500]},
+  11: {type:"vertical",   sign:[925,252]},
+  12: {type:"horizontal", sign:[748, 96]}
 };
 
 function odayikaChartBaseFontUserUnits(){
@@ -6589,12 +6985,50 @@ function odayikaChartBaseFontUserUnits(){
     SVG user-units में बदलते हैं। इससे desktop और mobile दोनों में
     ग्रह/राशि लगभग उसी दृश्य आकार में रहते हैं।
   */
-  return panchangaPx * 1000 / Math.max(renderedWidth,160);
+  const calculated = panchangaPx * 1000 / Math.max(renderedWidth,160);
+  /* Mobile पर SVG के भीतर ग्रह अनावश्यक रूप से सूक्ष्म न हों; desktop यथावत। */
+  if(window.matchMedia && window.matchMedia("(max-width:700px)").matches){
+    return Math.max(56,calculated);
+  }
+  return calculated;
 }
 
 function odayikaPlanetFontSize(house,count){
-  const type = ODAYIKA_HOUSE_LAYOUT[house]?.type || "triangle";
+  if(window.matchMedia && window.matchMedia("(max-width:700px)").matches){
   const base = odayikaChartBaseFontUserUnits();
+  let factor = 1;
+
+  if(count <= 1) factor = 1.00;
+  else if(count === 2) factor = .96;
+  else if(count === 3) factor = .88;
+  else if(count === 4) factor = .80;
+  else if(count === 5) factor = .72;
+  else factor = .65;
+
+  let size = Math.max(32,Math.min(105,base * factor));
+
+  /* अकेला ग्रह सू०/रा०/के०-जैसे स्पष्ट बड़े आकार में रहे।
+     बहुग्रह होने पर भी पहले बड़ा आकार; वास्तविक collision पर ही नीचे fit घटाएगा। */
+  if(window.matchMedia && window.matchMedia("(max-width:700px)").matches){
+    if(count <= 1) size = Math.max(size,84);
+    else if(count === 2) size = Math.max(size,80);
+    else if(count === 3) size = Math.max(size,72);
+  }
+  return size;
+
+  }
+
+  const type = ODAYIKA_HOUSE_LAYOUT[house]?.type || "triangle";
+  let base = odayikaChartBaseFontUserUnits();
+
+  /* Desktop: चक्र के ग्रह ग्रहस्पष्ट की ग्रह-पंक्ति से दृश्यतः छोटे न हों। */
+  const chart = document.querySelector(".odayika-chart");
+  const spRow = document.querySelector(".odayika-sp-row");
+  if(chart && spRow){
+    const cw = Math.max(160,chart.getBoundingClientRect().width || 0);
+    const spPx = parseFloat(getComputedStyle(spRow).fontSize) || 0;
+    if(spPx>0) base = Math.max(base,spPx*1000/cw);
+  }
 
   let factor;
 
@@ -6615,15 +7049,100 @@ function odayikaPlanetFontSize(house,count){
   }
 
   return Math.max(30,Math.min(105,base * factor));
+
 }
+
 
 /*
   ग्रह-समूह को राशि-संख्या के चारों ओर इस तरह रखा जाता है कि
   राशि-संख्या केन्द्र में रहे और ग्रह उपलब्ध चौड़े भाग की ओर फैलें।
 */
 function odayikaPlanetPositions(house,count){
-  const layout = ODAYIKA_HOUSE_LAYOUT[house];
+  if(window.matchMedia && window.matchMedia("(max-width:700px)").matches){
+  const layout = ODAYIKA_HOUSE_LAYOUT_MOBILE[house];
   const [cx,cy] = layout.sign;
+  if(count <= 0) return [];
+
+  /* राशि-अंक को उसके स्थान पर स्थिर रखकर ग्रह उसके चारों ओर रखे जाते हैं। */
+  const V = 72;   // vertical offset
+  const H = 86;   // horizontal offset
+
+  if(layout.type === "vertical"){
+    const patterns = {
+      1:[[0, V]],
+      2:[[0,-V],[0, V]],
+      3:[[0,-92],[0,66],[0,132]],
+      4:[[-42,-76],[42,-76],[-42,76],[42,76]],
+      5:[[0,-108],[-44,-50],[44,-50],[-44,76],[44,76]]
+    };
+    const p=patterns[Math.min(count,5)] || patterns[5];
+    return Array.from({length:count},(_,i)=>{
+      if(i<p.length) return [cx+p[i][0],cy+p[i][1]];
+      const k=i-p.length;
+      return [cx+((k%2)?38:-38), cy+126+Math.floor(k/2)*48];
+    });
+  }
+
+  if(layout.type === "horizontal"){
+    const patterns = {
+      1:[[H,0]],
+      2:[[-H,0],[H,0]],
+      3:[[-104,0],[62,-42],[62,42]],
+      4:[[-88,-40],[-88,40],[88,-40],[88,40]],
+      5:[[-112,0],[-54,-48],[-54,48],[82,-48],[82,48]]
+    };
+    const p=patterns[Math.min(count,5)] || patterns[5];
+    return Array.from({length:count},(_,i)=>{
+      if(i<p.length) return [cx+p[i][0],cy+p[i][1]];
+      const k=i-p.length;
+      return [cx+128+Math.floor(k/2)*48,cy+((k%2)?36:-36)];
+    });
+  }
+
+  /* केन्द्र भाव: पर्याप्त स्थान; राशि-अंक बीच में, ग्रह चार दिशाओं में। */
+  const patterns = {
+    1:[[0,82]],
+    2:[[-92,0],[92,0]],
+    3:[[0,-82],[-92,48],[92,48]],
+    4:[[0,-88],[92,0],[0,88],[-92,0]],
+    5:[[0,-92],[88,-22],[62,78],[-62,78],[-88,-22]]
+  };
+  const p=patterns[Math.min(count,5)] || patterns[5];
+  return Array.from({length:count},(_,i)=>{
+    if(i<p.length) return [cx+p[i][0],cy+p[i][1]];
+    const k=i-p.length, a=(k%4)*Math.PI/2;
+    const r=132+Math.floor(k/4)*42;
+    return [cx+Math.cos(a)*r,cy+Math.sin(a)*r];
+  });
+
+  }
+
+  /* Desktop पर भी वही भाव-ज्यामिति: चौड़े त्रिकोण दाएँ-बाएँ,
+     ऊँचे त्रिकोण ऊपर-नीचे, केन्द्र भाव राशि-अंक के चारों ओर। */
+  const geo = ODAYIKA_HOUSE_LAYOUT_MOBILE[house];
+  const [cx,cy] = geo.sign;
+  if(count <= 0) return [];
+  const V=72, H=86;
+  if(geo.type === "vertical"){
+    const patterns={1:[[0,V]],2:[[0,-V],[0,V]],3:[[0,-92],[0,66],[0,132]],4:[[-42,-76],[42,-76],[-42,76],[42,76]],5:[[0,-108],[-44,-50],[44,-50],[-44,76],[44,76]]};
+    const a=patterns[Math.min(count,5)]||patterns[5];
+    return Array.from({length:count},(_,i)=>i<a.length?[cx+a[i][0],cy+a[i][1]]:[cx+((i-a.length)%2?38:-38),cy+126+Math.floor((i-a.length)/2)*48]);
+  }
+  if(geo.type === "horizontal"){
+    const patterns={1:[[H,0]],2:[[-H,0],[H,0]],3:[[-104,0],[62,-42],[62,42]],4:[[-88,-40],[-88,40],[88,-40],[88,40]],5:[[-112,0],[-54,-48],[-54,48],[82,-48],[82,48]]};
+    const a=patterns[Math.min(count,5)]||patterns[5];
+    return Array.from({length:count},(_,i)=>i<a.length?[cx+a[i][0],cy+a[i][1]]:[cx+128+Math.floor((i-a.length)/2)*48,cy+(((i-a.length)%2)?36:-36)]);
+  }
+  const centerPatterns={1:[[0,82]],2:[[-92,0],[92,0]],3:[[0,-82],[-92,48],[92,48]],4:[[0,-88],[92,0],[0,88],[-92,0]],5:[[0,-92],[88,-22],[62,78],[-62,78],[-88,-22]]};
+  const ca=centerPatterns[Math.min(count,5)]||centerPatterns[5];
+  return Array.from({length:count},(_,i)=>{
+    if(i<ca.length) return [cx+ca[i][0],cy+ca[i][1]];
+    const k=i-ca.length,a=(k%4)*Math.PI/2,r=132+Math.floor(k/4)*42;
+    return [cx+Math.cos(a)*r,cy+Math.sin(a)*r];
+  });
+
+  /* पुराना desktop placement code नीचे reference के रूप में unreachable रखा गया है। */
+  const layout = ODAYIKA_HOUSE_LAYOUT[house];
   const [dx,dy] = layout.dir;
 
   /* perpendicular direction */
@@ -6758,7 +7277,9 @@ function odayikaPlanetPositions(house,count){
     const extra = i - triPattern.length;
     return point(130 + extra*28,0);
   });
+
 }
+
 
 
 let ODAYIKA_LAST_CHART_STATE = null;
@@ -6821,6 +7342,7 @@ function odayikaRenderChart(planets,placeName,lagnaRashi0,rememberState=true){
 
     const node = document.createElementNS(ns,"text");
     node.setAttribute("class","odayika-num");
+    node.setAttribute("data-house",String(house));
     node.setAttribute("x",x);
     node.setAttribute("y",y);
     node.style.fontSize =
@@ -6849,6 +7371,7 @@ function odayikaRenderChart(planets,placeName,lagnaRashi0,rememberState=true){
 
       const node = document.createElementNS(ns,"text");
       node.setAttribute("class","odayika-pl");
+      node.setAttribute("data-house",String(house));
       node.setAttribute("x",x);
       node.setAttribute("y",y);
       node.style.fontSize = `${fontSize}px`;
@@ -6857,6 +7380,52 @@ function odayikaRenderChart(planets,placeName,lagnaRashi0,rememberState=true){
       planetLayer.appendChild(node);
     });
   });
+
+  odayikaMobileFitChartHouses();
+}
+
+/* Mobile-only: प्रत्येक भाव में ग्रहों को उपलब्ध स्थान के अनुसार स्वतः छोटा करता है।
+   Desktop पर यह function तुरन्त लौट जाता है; वहाँ की वर्तमान setting अक्षुण्ण रहती है। */
+function odayikaMobileFitChartHouses(){
+  if(!window.matchMedia || !window.matchMedia("(max-width:700px)").matches) return;
+
+  const planetLayer=document.getElementById("odayikaPlanetLayer");
+  const signLayer=document.getElementById("odayikaSignLayer");
+  if(!planetLayer || !signLayer) return;
+
+  const intersects=(a,b,pad=7)=>!(
+    a.x+a.width+pad < b.x || b.x+b.width+pad < a.x ||
+    a.y+a.height+pad < b.y || b.y+b.height+pad < a.y
+  );
+
+  for(let house=1;house<=12;house++){
+    const nodes=[...planetLayer.querySelectorAll(`.odayika-pl[data-house="${house}"]`)];
+    const sign=signLayer.querySelector(`.odayika-num[data-house="${house}"]`);
+
+    /* एक ग्रह को कभी auto-shrink न करें। */
+    if(nodes.length<=1) continue;
+
+    /* 2+ ग्रह: पहले मूल positions/font रखें; केवल वास्तविक collision पर धीरे-धीरे घटाएँ। */
+    for(let pass=0;pass<9;pass++){
+      let collision=false;
+      const boxes=nodes.map(n=>n.getBBox());
+      const sb=sign ? sign.getBBox() : null;
+
+      for(let i=0;i<boxes.length;i++){
+        if(sb && intersects(boxes[i],sb,5)){ collision=true; break; }
+        for(let j=i+1;j<boxes.length;j++){
+          if(intersects(boxes[i],boxes[j],7)){ collision=true; break; }
+        }
+        if(collision) break;
+      }
+      if(!collision) break;
+
+      nodes.forEach(n=>{
+        const fs=parseFloat(n.style.fontSize)||56;
+        n.style.fontSize=`${Math.max(54,fs*.97)}px`;
+      });
+    }
+  }
 }
 
 /*
@@ -7975,6 +8544,12 @@ function festivalKaal(gbDate,kind){
   if(kind==="aparahna") return {start:sunrise+3*day/5,end:sunrise+4*day/5};
   if(kind==="sayahna") return {start:sunrise+4*day/5,end:sunset};
   if(kind==="pradosha") return {start:sunset,end:sunset+144}; // त्रिमुहूर्त, १ मुहूर्त = ४८ मिनिट
+  if(kind==="arunodaya") return {start:sunrise-96,end:sunrise}; // सूर्योदयपूर्व २ मुहूर्त
+  if(kind==="moonrise"){
+    const mr=internalMoonriseForGB(gbDate);
+    if(mr && Number.isFinite(mr.absMinutes)) return {start:mr.absMinutes-.25,end:mr.absMinutes+.25,moonrise:mr};
+    return null;
+  }
   if(kind==="night" && tomorrow){
     const nsr = rawExcelMinutes(tomorrow.row[10]);
     if(Number.isFinite(nsr)) return {start:sunset,end:gbToOrdinalMinutes(addDaysGB(gbDate,1),nsr)};
@@ -8573,6 +9148,8 @@ function decideSankrantiIngress(x){
       `संक्रमण - ${formatAbsForFestival(x.t)}`,
       `सन्निधि-पुण्यकाल - ${formatAbsForFestival(ps)} से ${formatAbsForFestival(pe)} तक`,
       `पुण्यघटी-विन्यास - ${spec.note}`,
+      "व्रत-परिचय में सङ्क्रान्ति-सम्बद्ध पृथक् प्रकार — संक्रान्तिव्रत · संक्रमणव्रत · महाजया-संक्रान्तिव्रत · धनसंक्रान्तिव्रत · धान्यसंक्रान्तिव्रत · भोगसंक्रान्तिव्रत · रूपसंक्रान्तिव्रत · तेजःसंक्रान्तिव्रत · आयुःसंक्रान्तिव्रत · मेषादिगतसूर्यव्रत।",
+      "इन पृथक् प्रकारों का विशेष प्रयोग जिस सङ्क्रान्ति/विधान पर लागू हो, वह उनके मूल पाठ के सत्यापन के अनुसार ही माना जाएगा; केवल नाम देखकर सभी को आज लागू नहीं माना गया है। स्रोत: व्रत-परिचय।",
       "रात्रि में पड़े पुण्यांश के स्नान-दान-प्रयोग में दिन-निर्णय पृथक् देखा जाता है; यहाँ संक्रमण का स्थानीय civil दिन दिखाया गया है।"
     ]
   });
@@ -9211,6 +9788,11 @@ function dailyFestivalDecisions(selectedGB){
   const sunRashi0=sun ? Math.floor((((sun.longitude%360)+360)%360)/30) : NaN;
   if((sunRashi0===5 || sunRashi0===6) && [...nums].some(n=>n===15 || n>=16)) add(decideMahalaya());
 
+  // अतिरिक्त lightweight rules भी इसी मूल daily flow में मिलें।
+  if(window.LightFestivalRuleRegistry && typeof window.LightFestivalRuleRegistry.runDaily==="function"){
+    for(const d of window.LightFestivalRuleRegistry.runDaily(selectedGB)) add(d);
+  }
+
   // Deduplicate computational duplicates, then retain only decisions active today.
   const unique=[];
   const seen=new Set();
@@ -9541,6 +10123,9 @@ function annualDecisionJobs(){
   idx.tithi.filter(iv=>(iv.number===13 || iv.number===28) && intervalYearMatch(iv,year)).forEach(iv=>push(()=>decidePradoshaInterval(iv)));
   solarIngressIndex().filter(x=>{const p=gbDateParts(absMinutesToGBClock(x.t).gb);return p&&p.year===year;}).forEach(x=>push(()=>decideSankrantiIngress(x)));
   idx.tithi.filter(iv=>iv.number===30 && intervalYearMatch(iv,year)).forEach(iv=>push(()=>decideAmavasyaVratInterval(iv)));
+  if(window.LightFestivalRuleRegistry && typeof window.LightFestivalRuleRegistry.annualJobs==="function"){
+    jobs.push(...window.LightFestivalRuleRegistry.annualJobs());
+  }
   return jobs;
 }
 
@@ -10709,9 +11294,29 @@ if(document.readyState === "loading"){
     const mr=typeof internalMoonriseForDate==="function"
       ? internalMoonriseForDate(rowIndex,row,gb)
       : null;
-    const ms=typeof internalMoonsetForDate==="function"
-      ? internalMoonsetForDate(rowIndex,row,gb)
-      : null;
+    /* चन्द्रास्त civil date के अनुसार लें: सूर्योदय से पहले का चन्द्रास्त
+       पिछली सावन-दिवस row में पड़ सकता है, अतः दोनों intervals जाँचें। */
+    let ms=null;
+    if(typeof internalMoonsetForDate==="function"){
+      const candidates=[];
+      const cur=internalMoonsetForDate(rowIndex,row,gb);
+      if(cur) candidates.push({event:cur,baseGB:gb});
+      if(rowIndex>1){
+        const prevRow=workbookData?.[rowIndex-1];
+        const prevGB=prevRow ? normalizeDate(prevRow[0]) : "";
+        if(prevRow && prevGB){
+          const prev=internalMoonsetForDate(rowIndex-1,prevRow,prevGB);
+          if(prev) candidates.push({event:prev,baseGB:prevGB});
+        }
+      }
+      const eventGB=(item)=>{
+        const txt=String(item?.event?.timeText||"");
+        const m=txt.match(/\((\d{2}\/\d{2}\/\d{4})\)\s*$/);
+        return m ? m[1] : item.baseGB;
+      };
+      const hit=candidates.find(item=>eventGB(item)===gb);
+      if(hit) ms=hit.event;
+    }
 
     function moonAsciiDigits(s){
       const map={"०":"0","१":"1","२":"2","३":"3","४":"4","५":"5","६":"6","७":"7","८":"8","९":"9"};
@@ -10812,6 +11417,197 @@ if(document.readyState === "loading"){
   }
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",bind); else bind();
 })();
+</script>
+
+
+
+<script id="vrataLightRegistryExtension">
+/* =========================================================
+   हल्का Festival Extension
+   - मुख्य Festival engine/दृश्य जस का तस।
+   - Registry में केवल executable rules।
+   - daily run में केवल निकटवर्ती तिथियों वाले rules evaluate होते हैं।
+   - मास/पक्ष की सामान्य संदर्भ-सूची UI से पूर्णतः हटायी गयी है; केवल executable/event-trigger entries रखी गयी हैं।
+========================================================= */
+(function(global){
+  "use strict";
+
+  // केवल स्पष्ट astronomical/event-trigger वाली परिशिष्ट entries.
+  // अधिमास, अयन, पक्ष, वार, तिथि-वार-नक्षत्र, प्रायश्चित्त, रोगनिवारक, कथा आदि display से बाहर।
+  const EVENT_TRIGGER_INDEX=Object.freeze({
+    sankranti:Object.freeze([
+      "संक्रान्तिव्रत","संक्रमणव्रत","महाजया-संक्रान्तिव्रत","धनसंक्रान्तिव्रत",
+      "धान्यसंक्रान्तिव्रत","भोगसंक्रान्तिव्रत","रूपसंक्रान्तिव्रत",
+      "तेजःसंक्रान्तिव्रत","आयुःसंक्रान्तिव्रत","मेषादिगतसूर्यव्रत"
+    ]),
+    eclipse:Object.freeze([
+      "मेघवर्धक ग्रहणव्रत","अग्निहोत्र ग्रहणव्रत"
+    ])
+  });
+
+  // केवल इस extension के नये executable नियम। Registry को corpus से पृथक् रखा गया है।
+  const rules=[];
+  const byId=new Map();
+  function register(rule){
+    if(!rule||!rule.id||typeof rule.calculate!=="function") throw new Error("Invalid light festival rule");
+    if(byId.has(rule.id)) throw new Error("Duplicate light festival rule: "+rule.id);
+    const r=Object.freeze({order:999,nearbyTithis:[],annual:true,...rule});
+    rules.push(r); byId.set(r.id,r); rules.sort((a,b)=>a.order-b.order);
+  }
+  function get(id){return byId.get(id)||null;}
+  function list(){return rules.slice();}
+
+  // आवश्यक काल-विस्तार; पुराने festivalKaal के अन्य सभी व्यवहार अपरिवर्तित।
+  const oldFestivalKaal=global.festivalKaal;
+  global.festivalKaal=function(gbDate,kind){
+    if(kind==="arunodaya"){
+      const sr=oldFestivalKaal(gbDate,"sunrise");
+      if(!sr) return null;
+      const sunrise=(sr.start+sr.end)/2;
+      return {start:sunrise-96,end:sunrise};
+    }
+    if(kind==="moonrise"){
+      const mr=typeof global.internalMoonriseForGB==="function"?global.internalMoonriseForGB(gbDate):null;
+      return mr&&Number.isFinite(mr.absMinutes)?{start:mr.absMinutes-.25,end:mr.absMinutes+.25,moonrise:mr}:null;
+    }
+    return oldFestivalKaal(gbDate,kind);
+  };
+
+  function simpleVP(id,title,month,tithi,prefer="later",source="व्रत-परिचय"){
+    const iv=tithiInterval(month,tithi); if(!iv) return null;
+    const c=chooseSunriseTithi(iv,prefer);
+    return makeDecision({id,title,observanceGB:c.gb,activeDates:[c.gb],
+      status:festivalStatus("औदयिक तिथि-निर्णय","verified"),source,
+      rule:`${month} ${tithi<=15?"शुक्ल":"कृष्ण"} पक्ष की निर्दिष्ट तिथि; उपलब्ध ग्रन्थ-विवरण के अनुसार स्थानीय तिथि-व्याप्ति से दिननिर्णय।`,
+      details:[`${title} - ${formatAbsForFestival(iv.start)} से ${formatAbsForFestival(iv.end)} तक`,`निर्णय - ${festivalDateLabel(c.gb)} (${c.reason})`]});
+  }
+
+  function byKaal(id,title,month,tithi,kind,kindHi,source="व्रत-परिचय"){
+    const iv=tithiInterval(month,tithi); if(!iv) return null;
+    const c=chooseByKaal(iv,kind,"later","later");
+    return makeDecision({id,title,observanceGB:c.gb,activeDates:[c.gb],
+      status:festivalStatus("काल-व्याप्ति नियम लागू","verified"),source,
+      rule:`${month} ${tithi<=15?"शुक्ल":"कृष्ण"} पक्ष; ${kindHi}-व्याप्ति प्रधान।`,
+      details:[`${title} की तिथि - ${formatAbsForFestival(iv.start)} से ${formatAbsForFestival(iv.end)} तक`,`${kindHi}-व्याप्ति - ${c.hits.map(x=>festivalDateLabel(x.gb)).join(", ")||"पूर्ण व्याप्ति नहीं"}`]});
+  }
+
+  function decideAnantaChaturdashiLight(){
+    const iv=tithiInterval("भाद्रपद",14); if(!iv) return null;
+    const rows=intervalDates(iv,1).map(gb=>{
+      const srK=global.festivalKaal(gb,"sunrise");
+      const sr=srK?(srK.start+srK.end)/2:NaN;
+      const atSunrise=Number.isFinite(sr) && iv.start<=sr && sr<iv.end;
+      const after=atSunrise ? Math.max(0,iv.end-sr) : 0;
+      const pur=global.festivalKaal(gb,"purvahna"), mid=global.festivalKaal(gb,"madhyahna");
+      return {gb,atSunrise,after,six:atSunrise&&after>=143.99,four:atSunrise&&after>=95.99,pur:!!(pur&&intervalsOverlap(iv,pur)),mid:!!(mid&&intervalsOverlap(iv,mid))};
+    });
+    let chosen=rows.find(x=>x.six), reason="सूर्योदय से ६ घटिका-व्याप्ति";
+    if(!chosen){chosen=rows.find(x=>x.four);reason="६ घटिका न मिलने पर ४ घटिका-व्याप्ति";}
+    if(!chosen){const startGB=absMinutesToGBClock(iv.start).gb;chosen=rows.find(x=>x.gb===startGB)||rows[0]||{gb:startGB,pur:false,mid:false};reason="द्वितीय दिन ४ घटिका से न्यून होने पर पूर्वदिन";}
+    const karma=chosen.pur?"पूर्वाह्ण":(chosen.mid?"मध्याह्न":"उपलब्ध तिथि-काल");
+    return makeDecision({id:"ananta-chaturdashi",title:"अनन्तचतुर्दशी (अनन्तव्रत)",observanceGB:chosen.gb,activeDates:[chosen.gb],
+      status:festivalStatus("नियम लागू","verified"),source:"धर्मसिन्धु; व्रत-परिचय",
+      rule:"भाद्रपद शुक्ल चतुर्दशी; सूर्योदय से ६ घटिका, अनुकल्पतः ४ घटिका व्याप्ति; न्यून होने पर पूर्वदिन। प्रधान कर्मकाल पूर्वाह्ण।",
+      details:[`चतुर्दशी - ${formatAbsForFestival(iv.start)} से ${formatAbsForFestival(iv.end)} तक`,`निर्णय - ${reason}; कर्मकाल - ${karma}`]});
+  }
+
+
+  function decideRishiPanchamiLight(){
+    const iv=tithiInterval("भाद्रपद",5); if(!iv) return null;
+
+    // ऋषिपञ्चमी पूजाव्रत है; मध्याह्नव्यापिनी पञ्चमी ग्राह्य।
+    // पुरुषार्थचिन्तामणि का स्पष्ट operational निर्णय:
+    // केवल परदिन मध्याह्नव्याप्ति हो तो परदिन;
+    // दोनों दिन मध्याह्नव्याप्ति हो अथवा दोनों दिन मध्याह्न-अव्याप्ति हो तो पूर्वदिन।
+    const c=chooseByKaal(iv,"madhyahna","earlier","earlier");
+
+    let decisionText="";
+    if(c.hits.length===1){
+      decisionText=`एकमात्र मध्याह्नव्याप्ति - ${festivalDateLabel(c.gb)}`;
+    }else if(c.hits.length>1){
+      decisionText=`दोनों दिनों के मध्याह्न में पञ्चमी - पूर्वदिन ग्राह्य (${festivalDateLabel(c.gb)})`;
+    }else{
+      decisionText=`दोनों दिनों के मध्याह्न में पञ्चमी-अव्याप्ति - पूर्वदिन ग्राह्य (${festivalDateLabel(c.gb)})`;
+    }
+
+    return makeDecision({
+      id:"rishi-panchami",
+      title:"ऋषिपञ्चमी",
+      observanceGB:c.gb,
+      activeDates:[c.gb],
+      status:festivalStatus("मध्याह्न-व्याप्ति नियम लागू","verified"),
+      source:"व्रत-परिचय; पुरुषार्थचिन्तामणि",
+      rule:"भाद्रपद शुक्ल पञ्चमी; मध्याह्नव्यापिनी पञ्चमी ग्राह्य। केवल परदिन मध्याह्नव्याप्ति हो तो परदिन; दोनों दिन मध्याह्नव्याप्ति अथवा दोनों दिन मध्याह्न-अव्याप्ति में पूर्वदिन।",
+      details:[
+        `पञ्चमी - ${formatAbsForFestival(iv.start)} से ${formatAbsForFestival(iv.end)} तक`,
+        `मध्याह्नव्याप्ति - ${c.hits.map(x=>festivalDateLabel(x.gb)).join(", ")||"किसी दिन नहीं"}`,
+        `निर्णय - ${decisionText}`
+      ]
+    });
+  }
+
+  function decideMoonriseVrata(id,title,month,tithi,source="व्रत-परिचय"){
+    const iv=tithiInterval(month,tithi); if(!iv) return null;
+    const hits=intervalDates(iv,1).map(gb=>({gb,k:global.festivalKaal(gb,"moonrise")})).filter(x=>x.k&&intervalsOverlap(iv,x.k));
+    if(!hits.length) return null;
+    const h=hits[hits.length-1];
+    return makeDecision({id,title,observanceGB:h.gb,activeDates:[h.gb],status:festivalStatus("चन्द्रोदय-व्याप्ति नियम लागू","verified"),source,
+      rule:`${month} ${tithi<=15?"शुक्ल":"कृष्ण"} पक्ष; चन्द्रोदयव्यापिनी तिथि प्रधान।`,
+      details:[`${title} की तिथि - ${formatAbsForFestival(iv.start)} से ${formatAbsForFestival(iv.end)} तक`,`चन्द्रोदय - ${formatAbsForFestival((h.k.start+h.k.end)/2)}`]});
+  }
+
+  // स्रोत-फाइल में स्पष्ट तिथि/काल-आधार उपलब्ध नये नियम।
+  register({id:"ananta-chaturdashi",order:10,nearbyTithis:[14],calculate:()=>decideAnantaChaturdashiLight()});
+  register({id:"rishi-panchami",order:15,nearbyTithis:[5],calculate:()=>decideRishiPanchamiLight()});
+  register({id:"narasimha-jayanti",order:20,nearbyTithis:[14],calculate:()=>byKaal("narasimha-jayanti","श्रीनृसिंहजयन्ती","वैशाख",14,"pradosha","प्रदोष")});
+  register({id:"karaka-chaturthi",order:30,nearbyTithis:[19],calculate:()=>decideMoonriseVrata("karaka-chaturthi","करकचतुर्थी","कार्तिक",19)});
+  register({id:"dhanatrayodashi",order:40,nearbyTithis:[28],calculate:()=>byKaal("dhanatrayodashi","धनत्रयोदशी / यमदीपदान","कार्तिक",28,"pradosha","प्रदोष")});
+  register({id:"naraka-chaturdashi",order:50,nearbyTithis:[29],calculate:()=>byKaal("naraka-chaturdashi","नरकचतुर्दशी / रूपचतुर्दशी","कार्तिक",29,"arunodaya","अरुणोदय")});
+  register({id:"kojagara",order:60,nearbyTithis:[15],calculate:()=>byKaal("kojagara","कोजागरव्रत / शरद्पूर्णिमा","आश्विन",15,"night","रात्रि")});
+  register({id:"bhairava-jayanti",order:70,nearbyTithis:[23],calculate:()=>byKaal("bhairava-jayanti","भैरवजयन्ती / कालाष्टमी","मार्गशीर्ष",23,"night","रात्रि")});
+  register({id:"sankashti-magha",order:80,nearbyTithis:[19],calculate:()=>decideMoonriseVrata("sankashti-magha","माघ वक्रतुण्ड / सङ्कष्टचतुर्थी","माघ",19)});
+
+  // स्रोत-फाइल में पहले से सत्यापित सरल तिथि-आधारित additions।
+  [
+    ["hanuman-jayanti",100,[15],()=>simpleVP("hanuman-jayanti","हनुमद्व्रत / हनुमज्जयन्ती","चैत्र",15)],
+    ["vaishakha-purnima",110,[15],()=>simpleVP("vaishakha-purnima","वैशाखी पूर्णिमा","वैशाख",15)],
+    ["ratha-yatra",120,[2],()=>simpleVP("ratha-yatra","रथयात्रा","आषाढ़",2)],
+    ["radhashtami",130,[8],()=>simpleVP("radhashtami","श्रीराधाष्टमी","भाद्रपद",8)],
+    ["govatsa-dvadashi",140,[27],()=>simpleVP("govatsa-dvadashi","गोवत्सद्वादशी","कार्तिक",27)],
+    ["skanda-shashthi-margashirsha",150,[6],()=>simpleVP("skanda-shashthi-margashirsha","स्कन्दषष्ठी","मार्गशीर्ष",6)],
+    ["bhishmashtami",160,[8],()=>simpleVP("bhishmashtami","भीष्माष्टमी","माघ",8)],
+    ["phalguna-amavasya",170,[30],()=>simpleVP("phalguna-amavasya","फाल्गुनी अमावास्या","फाल्गुन",30)]
+  ].forEach(([id,order,nearbyTithis,calculate])=>register({id,order,nearbyTithis,calculate}));
+
+  function rawForDaily(selectedGB){
+    if(!workbookData) return [];
+    const nearby=nearbyTithiIntervalsForDate(selectedGB,2), nums=new Set(nearby.map(x=>x.number)), out=[];
+    for(const r of rules){
+      if(r.nearbyTithis.length&&!r.nearbyTithis.some(n=>nums.has(n))) continue;
+      const x=r.calculate({scope:"daily",selectedGB,nearby,nums});
+      if(Array.isArray(x)) out.push(...x); else if(x) out.push(x);
+    }
+    return out;
+  }
+  function renderedForDaily(selectedGB){
+    return rawForDaily(selectedGB).map(d=>decisionForDate(d,selectedGB)).filter(Boolean);
+  }
+  function annualJobs(){return rules.filter(r=>r.annual!==false).map(r=>()=>r.calculate({scope:"annual"}));}
+
+
+  // ग्रहण-व्रत अभी स्वतः display नहीं किये जाते, क्योंकि इस page में
+  // विश्वसनीय ग्रहण-event/visibility engine नहीं है। भावी eclipse module इन्हें यहीं से ले सकेगा।
+  global.PanchangaEventVrataCatalog=Object.freeze({
+    sankranti:EVENT_TRIGGER_INDEX.sankranti,
+    eclipse:EVENT_TRIGGER_INDEX.eclipse
+  });
+
+
+  global.LightFestivalRuleRegistry=Object.freeze({
+    register,get,list,runDaily:rawForDaily,annualJobs,
+    eventVratasFor:type=>(EVENT_TRIGGER_INDEX[type]||[]).slice()
+  });
+})(window);
 </script>
 
 </body>
