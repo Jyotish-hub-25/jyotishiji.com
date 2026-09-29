@@ -6689,29 +6689,37 @@ function odayikaFitSpashtaTypography(){
       if(key) byLabel[key]=row;
     });
 
-    /* चन्द्र, बुध, गुरु: उपलब्ध box के भीतर लगभग 5% वृद्धि। */
+    /* v20 mobile balance: चन्द्र, बुध, गुरु को वास्तव में थोड़ा बड़ा रखें।
+       चौड़ाई कम पड़े तो font-size वापस घटाने के बजाय केवल क्षैतिज fit करें। */
     ["चं०","बु०","गु०"].forEach(key=>{
       const row=byLabel[key], line=row?.querySelector(".odayika-sp-line");
       if(!row||!line) return;
       const current=parseFloat(row.style.fontSize)||11;
-      const target=current*1.05;
-      row.style.fontSize=`${target.toFixed(2)}px`;
-      if(line.scrollWidth>Math.max(1,row.clientWidth-2) || line.scrollHeight>Math.max(1,row.clientHeight-1)){
-        row.style.fontSize=`${current.toFixed(2)}px`;
+      row.style.fontSize=`${(current*1.055).toFixed(2)}px`;
+      line.style.transform="none";
+      line.style.transformOrigin="left center";
+      const availableW=Math.max(1,row.clientWidth-2);
+      const naturalW=Math.max(1,line.getBoundingClientRect().width);
+      if(naturalW>availableW){
+        line.style.transform=`scaleX(${Math.max(.94,availableW/naturalW).toFixed(3)})`;
       }
     });
 
-    /* राहु और केतु समान font-size; सूर्य भी केतु के आकार के अनुसार। */
+    /* राहु और केतु समान वास्तविक font-size; सूर्य भी उसी reference-size पर।
+       यदि किसी पंक्ति में चौड़ाई कम हो तो केवल X-fit हो, font-size असमान न हो। */
     const ketu=byLabel["के०"];
     if(ketu){
       const ketuSize=parseFloat(ketu.style.fontSize)||11;
-      ["रा०","सू०"].forEach(key=>{
+      ["के०","रा०","सू०"].forEach(key=>{
         const row=byLabel[key], line=row?.querySelector(".odayika-sp-line");
         if(!row||!line) return;
-        const oldSize=parseFloat(row.style.fontSize)||11;
         row.style.fontSize=`${ketuSize.toFixed(2)}px`;
-        if(line.scrollWidth>Math.max(1,row.clientWidth-2) || line.scrollHeight>Math.max(1,row.clientHeight-1)){
-          row.style.fontSize=`${Math.min(oldSize,ketuSize).toFixed(2)}px`;
+        line.style.transform="none";
+        line.style.transformOrigin="left center";
+        const availableW=Math.max(1,row.clientWidth-2);
+        const naturalW=Math.max(1,line.getBoundingClientRect().width);
+        if(naturalW>availableW){
+          line.style.transform=`scaleX(${Math.max(.92,availableW/naturalW).toFixed(3)})`;
         }
       });
     }
@@ -6897,9 +6905,9 @@ function odayikaPlanetFontSize(house,count){
      2+ ग्रहों में प्रारम्भिक आकार भी पर्याप्त बड़ा रहे; वास्तविक collision होने पर
      नीचे का mobile-fit function ही क्रमशः छोटा करेगा। */
   if(window.matchMedia && window.matchMedia("(max-width:700px)").matches){
-    if(count <= 1) size = Math.max(size,74);
-    else if(count === 2) size = Math.max(size,70);
-    else if(count === 3) size = Math.max(size,60);
+    if(count <= 1) size = Math.max(size,82);
+    else if(count === 2) size = Math.max(size,78);
+    else if(count === 3) size = Math.max(size,68);
   }
   return size;
 }
@@ -6999,6 +7007,14 @@ function odayikaPlanetPositions(house,count){
   }
 
   if(count === 2){
+    /* Mobile में दो ग्रह पहले राशि-अंक से पर्याप्त दूर रखे जाएँ;
+       तभी font घटाने की आवश्यकता पड़े जब वास्तविक collision शेष हो। */
+    if(window.matchMedia && window.matchMedia("(max-width:700px)").matches){
+      return [
+        point(-68,0),
+        point(76,0)
+      ];
+    }
     return [
       point(-42,0),
       point(58,0)
@@ -7188,7 +7204,7 @@ function odayikaMobileFitChartHouses(){
 
       nodes.forEach(n=>{
         const fs=parseFloat(n.style.fontSize)||56;
-        n.style.fontSize=`${Math.max(38,fs*.95)}px`;
+        n.style.fontSize=`${Math.max(54,fs*.97)}px`;
       });
     }
   }
