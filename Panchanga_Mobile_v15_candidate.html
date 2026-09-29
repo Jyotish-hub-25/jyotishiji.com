@@ -6722,6 +6722,20 @@ function odayikaFitSpashtaTypography(){
         line.style.transform=`scaleX(${scaleX.toFixed(3)})`;
       });
     }
+
+    /* v25 final balance: सूर्य और केतु को फिर थोड़ा चौड़ा करें;
+       बुध की पंक्ति का दृश्य right-edge भी उन्हीं के लगभग बराबर रहे।
+       font-height/row-height/header/अन्य ग्रह untouched. */
+    ["सू०","बु०","के०"].forEach(key=>{
+      const row=byLabel[key], line=row?.querySelector(".odayika-sp-line");
+      if(!row||!line) return;
+      line.style.transform="none";
+      line.style.transformOrigin="left center";
+      const targetW=Math.max(1,(row.clientWidth-2)*.985);
+      const naturalW=Math.max(1,line.getBoundingClientRect().width);
+      const scaleX=Math.max(1,Math.min(1.22,targetW/naturalW));
+      line.style.transform=`scaleX(${scaleX.toFixed(3)})`;
+    });
   }
 
   if(header){
