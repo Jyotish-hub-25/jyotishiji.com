@@ -3167,30 +3167,27 @@ body{display:flex;flex-direction:column;min-height:100vh}
 
 
 
-<style id="udayasta-v14-large-selectable">
+<style id="udayasta-v15-stable-large-selectable">
 #odayikaUdayastaGrid{
   display:block !important;
   width:100% !important;
-  padding:0 .18em !important;
+  padding:0 .20em !important;
   user-select:text !important;
   -webkit-user-select:text !important;
 }
-#odayikaUdayastaGrid .odayika-stream-source{display:none !important}
 #odayikaUdayastaGrid .odayika-flow-row{
   display:flex !important;
   flex-wrap:nowrap !important;
   align-items:baseline !important;
   justify-content:space-between !important;
   width:100% !important;
-  min-width:0 !important;
   white-space:nowrap !important;
-  line-height:1.38 !important;
+  font-size:clamp(15px,2.75vw,20px) !important;
+  line-height:1.40 !important;
   user-select:text !important;
   -webkit-user-select:text !important;
 }
-#odayikaUdayastaGrid .odayika-flow-row + .odayika-flow-row{
-  margin-top:.14em !important;
-}
+#odayikaUdayastaGrid .odayika-flow-row + .odayika-flow-row{margin-top:.16em !important}
 #odayikaUdayastaGrid .odayika-flow-entry{
   display:inline-flex !important;
   flex:0 0 auto !important;
@@ -3206,28 +3203,36 @@ body{display:flex;flex-direction:column;min-height:100vh}
   margin:0 !important;
   padding:0 !important;
   border:0 !important;
-  background:transparent !important;
+  border-radius:0 !important;
   box-shadow:none !important;
+  background:transparent !important;
   white-space:nowrap !important;
   line-height:inherit !important;
+  font-size:inherit !important;
   user-select:text !important;
   -webkit-user-select:text !important;
 }
 #odayikaUdayastaGrid .odayika-sep{
   display:inline !important;
   margin-left:.10em !important;
-  padding:0 !important;
   font-size:inherit !important;
-  user-select:text !important;
-  -webkit-user-select:text !important;
 }
 #odayikaUdayastaTitle{
+  font-size:clamp(21px,3.25vw,25px) !important;
+  line-height:1.32 !important;
   font-weight:700 !important;
   text-align:center !important;
-  line-height:1.32 !important;
   margin-bottom:.30em !important;
   user-select:text !important;
   -webkit-user-select:text !important;
+}
+@media(max-width:600px){
+  #odayikaUdayastaGrid .odayika-flow-row{
+    font-size:clamp(14px,3.45vw,18px) !important;
+  }
+  #odayikaUdayastaTitle{
+    font-size:clamp(20px,4.2vw,24px) !important;
+  }
 }
 </style>
 
@@ -11678,9 +11683,17 @@ if(document.readyState === "loading"){
 
     if(title) title.textContent="चन्द्रमा व पञ्चताराग्रह उदयास्त";
 
-    /* चन्द्र से शनि तक एक ही क्रमबद्ध सामग्री; JS वास्तविक चौड़ाई देखकर
-       इसी क्रम को दो लगभग समान पंक्तियों में बाँटेगा। */
-    grid.innerHTML=`<div class="odayika-stream-source">${items.join("")}</div>`;
+    /* चन्द्र से शनि तक selectable HTML text; दो स्थिर, सन्तुलित पंक्तियाँ।
+       चन्द्रोदय, चन्द्रास्त, मङ्गल, बुध / बृहस्पति, शुक्र, शनि */
+    const cut=Math.min(4,items.length);
+    const makeRow=rowItems=>rowItems.map((item,i)=>
+      `<span class="odayika-flow-entry">${item}${i<rowItems.length-1 ? '<span class="odayika-sep">,</span>' : ''}</span>`
+    ).join("");
+    const firstRow=items.slice(0,cut);
+    const secondRow=items.slice(cut);
+    grid.innerHTML=
+      `<div class="odayika-flow-row">${makeRow(firstRow)}</div>`+
+      (secondRow.length ? `<div class="odayika-flow-row">${makeRow(secondRow)}</div>` : "");
     box.hidden=!items.length;
   }
 
@@ -11898,117 +11911,6 @@ if(document.readyState === "loading"){
 })(window);
 </script>
 
-
-<script id="udayasta-two-line-autofit-script-20260929">
-(function(){
-  let lastSignature="";
-
-  function buildRow(items){
-    const row=document.createElement("div");
-    row.className="odayika-flow-row";
-    items.forEach((node,i)=>{
-      const entry=document.createElement("span");
-      entry.className="odayika-flow-entry";
-      entry.appendChild(node.cloneNode(true));
-      if(i<items.length-1){
-        const sep=document.createElement("span");
-        sep.className="odayika-sep";
-        sep.textContent=",";
-        entry.appendChild(sep);
-      }
-      row.appendChild(entry);
-    });
-    return row;
-  }
-
-  function naturalWidth(row,px){
-    const probe=row.cloneNode(true);
-    probe.style.cssText="position:absolute!important;left:-100000px!important;top:0!important;visibility:hidden!important;width:max-content!important;min-width:0!important;max-width:none!important;justify-content:flex-start!important;gap:0!important;white-space:nowrap!important;";
-    probe.style.setProperty("font-size",px+"px","important");
-    document.body.appendChild(probe);
-    const w=probe.getBoundingClientRect().width;
-    probe.remove();
-    return w;
-  }
-
-  function arrangeAndFit(force){
-    const grid=document.getElementById("odayikaUdayastaGrid");
-    if(!grid)return;
-    const source=grid.querySelector(".odayika-stream-source");
-    if(!source)return;
-    const items=[...source.querySelectorAll(".odayika-event-chip")];
-    if(items.length<2)return;
-
-    const signature=source.textContent+"|"+grid.clientWidth;
-    if(!force && signature===lastSignature)return;
-    lastSignature=signature;
-
-    [...grid.querySelectorAll(":scope > .odayika-flow-row")].forEach(r=>r.remove());
-
-    const available=Math.max(1,grid.clientWidth-2);
-
-    /* क्रम सुरक्षित; दोनों पंक्तियों में वास्तविक पाठ-चौड़ाई सर्वाधिक सन्तुलित। */
-    let best=null;
-    for(let cut=1;cut<items.length;cut++){
-      const a=buildRow(items.slice(0,cut));
-      const b=buildRow(items.slice(cut));
-      const wa=naturalWidth(a,20), wb=naturalWidth(b,20);
-      const widest=Math.max(wa,wb);
-      const diff=Math.abs(wa-wb);
-      const score=widest + diff*.18;
-      if(!best || score<best.score)best={cut,score};
-    }
-
-    const row1=buildRow(items.slice(0,best.cut));
-    const row2=buildRow(items.slice(best.cut));
-    source.after(row1,row2);
-
-    /* अक्षर यथासम्भव बड़े: box से बाहर न निकलना ही वास्तविक सीमा। */
-    const ceiling=36;
-    const floor=14;
-    let chosen=floor;
-    for(let px=ceiling;px>=floor;px-=0.25){
-      if(naturalWidth(row1,px)<=available && naturalWidth(row2,px)<=available){
-        chosen=px;break;
-      }
-    }
-    [row1,row2].forEach(r=>r.style.setProperty("font-size",chosen+"px","important"));
-
-    const title=document.getElementById("odayikaUdayastaTitle");
-    if(title){
-      const titlePx=Math.min(36,Math.max(22,chosen+2));
-      title.style.setProperty("font-size",titlePx+"px","important");
-    }
-  }
-
-  let queued=false;
-  function queue(force){
-    if(queued)return;
-    queued=true;
-    requestAnimationFrame(()=>{
-      queued=false;
-      arrangeAndFit(!!force);
-    });
-  }
-
-  document.addEventListener("DOMContentLoaded",function(){
-    const grid=document.getElementById("odayikaUdayastaGrid");
-    if(grid){
-      /* केवल source बदलने पर पुनः बनायें; अपने rendered rows पर loop नहीं। */
-      new MutationObserver(function(mutations){
-        if(mutations.some(m=>{
-          const n=m.target.nodeType===1 ? m.target : m.target.parentElement;
-          return n && (n.classList?.contains("odayika-stream-source") || n.closest?.(".odayika-stream-source"));
-        })) queue(false);
-        else if(grid.querySelector(".odayika-stream-source") &&
-                !grid.querySelector(".odayika-flow-row")) queue(false);
-      }).observe(grid,{childList:true,subtree:true,characterData:true});
-    }
-    queue(true);
-  });
-  window.addEventListener("resize",()=>queue(true));
-})();
-</script>
 
 </body>
 </html>
