@@ -6689,24 +6689,24 @@ function odayikaFitSpashtaTypography(){
       if(key) byLabel[key]=row;
     });
 
-    /* v20 mobile balance: चन्द्र, बुध, गुरु को वास्तव में थोड़ा बड़ा रखें।
-       चौड़ाई कम पड़े तो font-size वापस घटाने के बजाय केवल क्षैतिज fit करें। */
+    /* v24 mobile ग्रहस्पष्ट balance:
+       चन्द्र, बुध, गुरु को थोड़ा बड़ा रखें और उपलब्ध चौड़ाई का संतुलित उपयोग कराएँ।
+       row-height/box-height नहीं बदलती; केवल text का क्षैतिज fit होता है। */
     ["चं०","बु०","गु०"].forEach(key=>{
       const row=byLabel[key], line=row?.querySelector(".odayika-sp-line");
       if(!row||!line) return;
       const current=parseFloat(row.style.fontSize)||11;
-      row.style.fontSize=`${(current*1.10).toFixed(2)}px`;
+      row.style.fontSize=`${(current*1.075).toFixed(2)}px`;
       line.style.transform="none";
       line.style.transformOrigin="left center";
       const availableW=Math.max(1,row.clientWidth-2);
       const naturalW=Math.max(1,line.getBoundingClientRect().width);
-      if(naturalW>availableW){
-        line.style.transform=`scaleX(${Math.max(.94,availableW/naturalW).toFixed(3)})`;
-      }
+      const scaleX=Math.max(.93,Math.min(1.10,availableW/naturalW));
+      line.style.transform=`scaleX(${scaleX.toFixed(3)})`;
     });
 
-    /* राहु और केतु समान वास्तविक font-size; सूर्य भी उसी reference-size पर।
-       यदि किसी पंक्ति में चौड़ाई कम हो तो केवल X-fit हो, font-size असमान न हो। */
+    /* राहु और केतु का वास्तविक font-size समान। सूर्य भी उसी reference-size पर।
+       तीनों छोटी/लम्बी पंक्तियाँ अपने उपलब्ध box-width को लगभग समान रूप से भरें। */
     const ketu=byLabel["के०"];
     if(ketu){
       const ketuSize=parseFloat(ketu.style.fontSize)||11;
@@ -6718,9 +6718,8 @@ function odayikaFitSpashtaTypography(){
         line.style.transformOrigin="left center";
         const availableW=Math.max(1,row.clientWidth-2);
         const naturalW=Math.max(1,line.getBoundingClientRect().width);
-        if(naturalW>availableW){
-          line.style.transform=`scaleX(${Math.max(.92,availableW/naturalW).toFixed(3)})`;
-        }
+        const scaleX=Math.max(.92,Math.min(1.16,availableW/naturalW));
+        line.style.transform=`scaleX(${scaleX.toFixed(3)})`;
       });
     }
   }
