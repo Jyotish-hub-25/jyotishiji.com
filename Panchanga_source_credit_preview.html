@@ -3266,16 +3266,6 @@ body{display:flex;flex-direction:column;min-height:100vh}
 </style>
 
 
-<style id="udayasta-v22-desktop-first-row-safe">
-@media(min-width:601px){
-  #odayikaUdayastaGrid .odayika-flow-row:first-of-type{
-    font-size:clamp(16px, 2.18vw, 18px) !important;
-  }
-}
-</style>
-
-
-
 <style id="udayasta-v21-mobile-first-row-only">
 @media(max-width:600px){
   #odayikaUdayastaGrid{
@@ -11756,19 +11746,33 @@ if(document.readyState === "loading"){
       यदि event time में bracket वाली GB date base पञ्चाङ्ग-date से आगे की है,
       तो काल-संज्ञा के पहले "आगामी" लगाएँ। गणना/data नहीं बदलता; केवल display स्पष्ट करता है।
     */
-    function moonPanchangaTimeWithDayRef(t,baseGB){
+    function moonPanchangaTimeWithDayRef(t,baseGB,eventObj){
       const plain=moonPanchangaTime(t,baseGB);
-      const a=moonAsciiDigits(t).trim();
-      const m=a.match(/^\d{1,2}:\d{2}(?::\d{2})?(?:\s*\((\d{2}\/\d{2}\/\d{4})\))?$/);
-      if(!m?.[1]) return plain;
 
       const parseGB=s=>{
         const p=String(s||"").match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
         if(!p) return NaN;
         return Date.UTC(Number(p[3]),Number(p[2])-1,Number(p[1]));
       };
-      const eventDay=parseGB(m[1]);
       const baseDay=parseGB(baseGB);
+
+      /* प्राथमिक आधार: event का वास्तविक Date object */
+      let eventDay=NaN;
+      if(eventObj?.date instanceof Date && !Number.isNaN(eventObj.date.getTime())){
+        eventDay=Date.UTC(
+          eventObj.date.getFullYear(),
+          eventObj.date.getMonth(),
+          eventObj.date.getDate()
+        );
+      }
+
+      /* fallback: timeText में bracket date हो तो उससे */
+      if(!Number.isFinite(eventDay)){
+        const a=moonAsciiDigits(t).trim();
+        const m=a.match(/^\d{1,2}:\d{2}(?::\d{2})?(?:\s*\((\d{2}\/\d{2}\/\d{4})\))?$/);
+        if(m?.[1]) eventDay=parseGB(m[1]);
+      }
+
       return Number.isFinite(eventDay) && Number.isFinite(baseDay) && eventDay>baseDay
         ? `आगामी ${plain}`
         : plain;
@@ -11779,7 +11783,7 @@ if(document.readyState === "loading"){
       items.push(`<span class="odayika-event-chip"><strong>चन्द्रोदय</strong> ${moonPanchangaTime(mr.timeText,gb)} बजे</span>`);
     }
     if(ms?.timeText){
-      items.push(`<span class="odayika-event-chip"><strong>चन्द्रास्त</strong> ${moonPanchangaTimeWithDayRef(ms.timeText,gb)} बजे</span>`);
+      items.push(`<span class="odayika-event-chip"><strong>चन्द्रास्त</strong> ${moonPanchangaTimeWithDayRef(ms.timeText,gb,ms)} बजे</span>`);
     }
     ["mangal","budha","guru","shukra","shani"].forEach(key=>{
       if(planetItemsByKey[key]) items.push(planetItemsByKey[key]);
@@ -12114,6 +12118,54 @@ if(document.readyState === "loading"){
 
   window.addEventListener("resize",schedule);
   window.addEventListener("orientationchange",schedule);
+})();
+</script>
+
+
+<style id="v26-desktop-udayasta-containment">
+@media(min-width:701px){
+  #odayikaUdayastaGrid{
+    width:100% !important;
+    max-width:100% !important;
+    box-sizing:border-box !important;
+    padding-left:.18em !important;
+    padding-right:.18em !important;
+  }
+  #odayikaUdayastaGrid .odayika-flow-row{
+    width:100% !important;
+    max-width:100% !important;
+    box-sizing:border-box !important;
+    white-space:nowrap !important;
+  }
+}
+</style>
+<script id="v26-desktop-udayasta-autofit">
+(function(){
+  let raf=0;
+  function fitDesktop(){
+    raf=0;
+    if(!window.matchMedia("(min-width:701px)").matches) return;
+    document.querySelectorAll("#odayikaUdayastaGrid .odayika-flow-row").forEach(function(row,index){
+      const max=index===0 ? 20 : 18;
+      const min=11;
+      let size=max;
+      row.style.setProperty("font-size",size+"px","important");
+      while(size>min && row.scrollWidth>row.clientWidth+1){
+        size-=0.25;
+        row.style.setProperty("font-size",size+"px","important");
+      }
+    });
+  }
+  function schedule(){
+    cancelAnimationFrame(raf);
+    raf=requestAnimationFrame(fitDesktop);
+  }
+  document.addEventListener("DOMContentLoaded",function(){
+    const grid=document.getElementById("odayikaUdayastaGrid");
+    if(grid) new MutationObserver(schedule).observe(grid,{childList:true,subtree:true,characterData:true});
+    schedule();
+  });
+  window.addEventListener("resize",schedule);
 })();
 </script>
 
