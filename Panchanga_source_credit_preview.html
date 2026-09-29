@@ -3315,6 +3315,67 @@ body{display:flex;flex-direction:column;min-height:100vh}
 }
 </style>
 
+
+<style id="odayika-v23-final-visible-header-and-chart-numbers">
+/* 1. ग्र० -रा०।अं०।क०।वि०व०/अ० : कटाव समाप्त।
+   पुरानी flex-height/overflow/relative-top settings को निर्णायक रूप से override करें। */
+.odayika-sp-head{
+  flex:0 0 27px !important;
+  min-height:27px !important;
+  height:27px !important;
+  box-sizing:border-box !important;
+  margin:0 !important;
+  padding:2px 1px 3px !important;
+  overflow:visible !important;
+  display:flex !important;
+  align-items:center !important;
+  line-height:1.25 !important;
+}
+.odayika-sp-headtext{
+  position:static !important;
+  top:auto !important;
+  transform:none !important;
+  display:block !important;
+  width:100% !important;
+  max-width:100% !important;
+  box-sizing:border-box !important;
+  margin:0 !important;
+  padding:0 !important;
+  white-space:nowrap !important;
+  overflow:visible !important;
+  line-height:1.25 !important;
+  letter-spacing:-.02em !important;
+}
+
+/* 2. ग्रहचक्र: राशि-संख्याएँ ग्रहाक्षरों के तुल्य दृश्य-आकार में। */
+.odayika-chart .odayika-num{
+  font-size:56px !important;
+  font-weight:700 !important;
+}
+.odayika-chart .odayika-pl{
+  font-size:56px;
+  font-weight:700 !important;
+}
+
+@media(max-width:700px){
+  .odayika-sp-head{
+    flex-basis:28px !important;
+    min-height:28px !important;
+    height:28px !important;
+    padding:2px 1px 4px !important;
+  }
+  .odayika-sp-headtext{
+    font-size:clamp(12px,3.05vw,14px) !important;
+    line-height:1.30 !important;
+  }
+  /* SVG user-unit font sizes scale with the chart itself; same rule therefore
+     preserves the ग्रह/संख्या proportion on mobile without a separate tiny number rule. */
+  .odayika-chart .odayika-num{
+    font-size:56px !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <header class="site-header">
