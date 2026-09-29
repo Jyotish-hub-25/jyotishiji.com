@@ -7244,7 +7244,7 @@ function odayikaFitSpashtaTypography(){
       const range=document.createRange();
       range.selectNodeContents(header);
       const natural=Math.max(1,range.getBoundingClientRect().width);
-      const scale=Math.max(.64,Math.min(1,available/natural));
+      const scale=Math.min(1,available/natural);
       header.style.transform=`scaleX(${scale.toFixed(3)})`;
     }else{
       /* केवल ग्र०-header: !important width से स्वतंत्र वास्तविक text-width मापकर fit करें। */
@@ -12178,19 +12178,41 @@ if(document.readyState === "loading"){
   }
 
   function fitUdayastaRows(){
-    if(!window.matchMedia || !window.matchMedia("(max-width:700px)").matches) return;
-    document.querySelectorAll("#odayikaUdayastaGrid .odayika-flow-row").forEach(function(row){
-      if(row.clientWidth<=0) return;
-      row.style.setProperty("transform","none","important");
-      row.style.setProperty("transform-origin","left center","important");
-      const available=Math.max(1,row.clientWidth-2);
-      const natural=Math.max(1,row.scrollWidth);
-      if(natural>row.clientWidth){
-        const scale=Math.min(1,(available*.99)/natural);
-        row.style.setProperty("transform","scaleX("+scale.toFixed(4)+")","important");
-      }
-    });
-  }
+  if(!window.matchMedia || !window.matchMedia("(max-width:700px)").matches) return;
+
+  document.querySelectorAll(
+    "#odayikaUdayastaGrid .odayika-flow-row"
+  ).forEach(function(row){
+
+    if(row.clientWidth<=0) return;
+
+    /* पुराने horizontal transform का प्रभाव समाप्त */
+    row.style.removeProperty("transform");
+    row.style.removeProperty("transform-origin");
+
+    /* CSS द्वारा निर्धारित मूल font-size से हर बार नयी fitting */
+    row.style.removeProperty("font-size");
+
+    let size=parseFloat(getComputedStyle(row).fontSize) || 16;
+    const available=Math.max(1,row.clientWidth-3);
+
+    row.style.setProperty(
+      "font-size",
+      size+"px",
+      "important"
+    );
+
+    /* केवल दाहिने कटने पर अक्षर क्रमशः थोड़ा छोटा करें */
+    while(size>9 && row.scrollWidth>available){
+      size-=0.25;
+      row.style.setProperty(
+        "font-size",
+        size.toFixed(2)+"px",
+        "important"
+      );
+    }
+  });
+}
 
   function fitMobileEdges(){
     fitGrahaspashtaHeader();
