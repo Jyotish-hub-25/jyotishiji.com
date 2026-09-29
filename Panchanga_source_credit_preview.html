@@ -12131,5 +12131,66 @@ if(document.readyState === "loading"){
 })();
 </script>
 
+
+<style id="final-mobile-grahaspashta-header-fit">
+@media(max-width:700px){
+  .odayika-sp-head{
+    box-sizing:border-box !important;
+    width:100% !important;
+    min-width:0 !important;
+    padding-left:1px !important;
+    padding-right:1px !important;
+    overflow:hidden !important;
+  }
+  .odayika-sp-headtext{
+    position:static !important;
+    display:block !important;
+    width:max-content !important;
+    max-width:none !important;
+    min-width:0 !important;
+    margin:0 !important;
+    padding:0 !important;
+    white-space:nowrap !important;
+    line-height:1.25 !important;
+    transform-origin:left center !important;
+  }
+}
+</style>
+
+<script id="final-mobile-grahaspashta-header-autofit">
+(function(){
+  function fitGrahaspashtaHeader(){
+    if(!window.matchMedia || !window.matchMedia("(max-width:700px)").matches) return;
+    const head=document.querySelector(".odayika-sp-head");
+    const text=document.querySelector(".odayika-sp-headtext");
+    if(!head || !text || head.clientWidth<=0) return;
+
+    text.style.setProperty("transform","none","important");
+    text.style.setProperty("font-size","14px","important");
+
+    const available=Math.max(1,head.clientWidth-2);
+    const natural=Math.max(1,text.scrollWidth);
+
+    if(natural>available){
+      const scale=Math.max(.70,available/natural);
+      text.style.setProperty("transform","scaleX("+scale.toFixed(4)+")","important");
+    }
+  }
+
+  function schedule(){ requestAnimationFrame(fitGrahaspashtaHeader); }
+
+  document.addEventListener("DOMContentLoaded",schedule);
+  window.addEventListener("load",schedule);
+  window.addEventListener("resize",schedule);
+  window.addEventListener("orientationchange",schedule);
+
+  const obs=new MutationObserver(schedule);
+  document.addEventListener("DOMContentLoaded",function(){
+    const root=document.getElementById("odayikaSpashta");
+    if(root) obs.observe(root,{childList:true,subtree:true,characterData:true});
+  });
+})();
+</script>
+
 </body>
 </html>
