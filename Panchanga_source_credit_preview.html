@@ -2977,6 +2977,66 @@ body{display:flex;flex-direction:column;min-height:100vh}
 }
 </style>
 
+
+<style id="requested-final-layout-20260929">
+/* उदयास्त — अक्षरशः क्रम:
+   पंक्ति 1: चन्द्रमा | मङ्गल | बुध
+   पंक्ति 2: बृहस्पति | शुक्र | शनि */
+#odayikaUdayastaGrid{
+  display:grid !important;
+  grid-template-columns:minmax(0,2.15fr) minmax(0,1fr) minmax(0,1fr) !important;
+  grid-template-rows:auto auto !important;
+  gap:0 !important;
+}
+#odayikaUdayastaGrid .odayika-moon-chip{
+  grid-column:1 !important; grid-row:1 !important;
+  justify-content:flex-start !important;
+}
+#odayikaUdayastaGrid .odayika-mangal-chip{grid-column:2 !important;grid-row:1 !important}
+#odayikaUdayastaGrid .odayika-budha-chip{grid-column:3 !important;grid-row:1 !important}
+#odayikaUdayastaGrid .odayika-guru-chip{grid-column:1 !important;grid-row:2 !important}
+#odayikaUdayastaGrid .odayika-shukra-chip{grid-column:2 !important;grid-row:2 !important}
+#odayikaUdayastaGrid .odayika-shani-chip{grid-column:3 !important;grid-row:2 !important}
+
+/* Credit strip — desktop में सन्तुलित एक पंक्ति */
+.source-credit-card{
+  grid-template-areas:"calculator software details web" !important;
+  grid-template-columns:auto auto 1fr auto !important;
+  gap:6px 18px !important;
+}
+.source-credit-item{min-width:0}
+.source-credit-calculator{grid-area:calculator}
+.source-credit-software{grid-area:software}
+.source-credit-details{grid-area:details;text-align:center}
+.source-credit-web{grid-area:web;text-align:right}
+.source-credit-item a{color:#0b5555;text-decoration-thickness:1px;text-underline-offset:3px}
+.source-credit-details .source-credit-link{color:#7b1008}
+
+/* Mobile — ठीक दो पंक्तियाँ:
+   ऊपर: गणितकर्त्ता | विस्तृत परिचय...
+   नीचे: प्रयुक्त सॉफ्टवेयर | वेब-संयोजन... */
+@media(max-width:600px){
+  .source-credit-card{
+    grid-template-areas:
+      "calculator details"
+      "software web" !important;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
+    gap:4px 10px !important;
+    align-items:center !important;
+  }
+  .source-credit-calculator,.source-credit-software{text-align:left}
+  .source-credit-details,.source-credit-web{text-align:right}
+  .source-credit-item{
+    font-size:clamp(.68rem,2.55vw,.82rem);
+    line-height:1.42;
+  }
+  .source-credit-link{
+    font-size:inherit !important;
+    white-space:normal !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <header class="site-header">
@@ -2991,17 +3051,10 @@ body{display:flex;flex-direction:column;min-height:100vh}
 <a href="contact.html">सम्पर्क</a>
 </nav></header>
 <section class="source-credit-card" aria-label="पञ्चाङ्ग का गणना-स्रोत एवं प्रस्तुति">
-  <div class="source-credit-side source-credit-side-left">
-    <span class="source-credit-entry"><strong>पञ्चाङ्गगणितकर्त्ता :</strong> <a href="https://www.facebook.com/vinay.jha.906" rel="noopener noreferrer" target="_blank">श्री विनय झा</a></span>
-    <span class="source-credit-separator" aria-hidden="true">•</span>
-    <span class="source-credit-entry"><strong>प्रयुक्त सॉफ्टवेयर :</strong> <a href="https://vedicastrology.wikidot.com/kundalee-software-download" rel="noopener noreferrer" target="_blank"><strong>“Kundalee”</strong></a></span>
-  </div>
-  <div class="source-credit-actions">
-    <a class="source-credit-link" href="panchanga-source.html">विस्तृत परिचय व पञ्चाङ्ग उपयोग सीमा</a>
-  </div>
-  <div class="source-credit-side source-credit-side-right">
-    <span class="source-credit-entry"><strong>वेब-संयोजन एवं प्रस्तुति :</strong> गोविन्द द्विवेदी</span>
-  </div>
+  <div class="source-credit-item source-credit-calculator"><strong>पञ्चाङ्गगणितकर्त्ता :</strong> <a href="https://www.facebook.com/vinay.jha.906" rel="noopener noreferrer" target="_blank">श्री विनय झा</a></div>
+  <div class="source-credit-item source-credit-details"><a class="source-credit-link" href="panchanga-source.html">विस्तृत परिचय व पञ्चाङ्ग उपयोग सीमा</a></div>
+  <div class="source-credit-item source-credit-software"><strong>प्रयुक्त सॉफ्टवेयर :</strong> <a href="https://vedicastrology.wikidot.com/kundalee-software-download" rel="noopener noreferrer" target="_blank"><strong>“Kundalee”</strong></a></div>
+  <div class="source-credit-item source-credit-web"><strong>वेब-संयोजन एवं प्रस्तुति :</strong> गोविन्द द्विवेदी</div>
 </section>
 
 <main class="page-shell">
@@ -11660,61 +11713,32 @@ if(document.readyState === "loading"){
 
 <script id="udayasta-two-line-autofit-script-20260929">
 (function(){
-  const rank = {
-    "odayika-moon-chip":1,
-    "odayika-mangal-chip":2,
-    "odayika-budha-chip":3,
-    "odayika-guru-chip":4,
-    "odayika-shukra-chip":5,
-    "odayika-shani-chip":6
-  };
-
-  function getRank(el){
-    for(const c in rank) if(el.classList.contains(c)) return rank[c];
-    return 99;
-  }
-
   function fitUdayastaTwoLines(){
     const grid=document.getElementById("odayikaUdayastaGrid");
     if(!grid) return;
     const chips=[...grid.querySelectorAll(".odayika-event-chip")];
     if(!chips.length) return;
 
-    /* स्पष्ट क्रम: चन्द्रमा → मङ्गल → बुध → बृहस्पति → शुक्र → शनि */
-    chips.sort((a,b)=>getRank(a)-getRank(b)).forEach((el,i)=>{
-      el.style.order=String(i+1);
-      el.style.gridColumn=String((i%3)+1);
-      el.style.gridRow=String(Math.floor(i/3)+1);
-    });
-
-    /* सामग्री कम हो तो अक्षर बड़े; बढ़े तो केवल आवश्यकता भर छोटे */
-    const maxPx = window.innerWidth <= 600 ? 20 : 22;
-    const minPx = window.innerWidth <= 600 ? 11 : 12;
+    /* कम सामग्री = बड़े अक्षर; आवश्यकता होने पर क्रमशः छोटे */
+    const maxPx=window.innerWidth<=600 ? 20 : 22;
+    const minPx=window.innerWidth<=600 ? 11 : 12;
     let chosen=minPx;
-
-    for(let px=maxPx; px>=minPx; px--){
+    for(let px=maxPx;px>=minPx;px--){
       chips.forEach(el=>el.style.setProperty("font-size",px+"px","important"));
       void grid.offsetWidth;
-      if(chips.every(el=>el.scrollWidth<=el.clientWidth+1)){
-        chosen=px;
-        break;
-      }
+      if(chips.every(el=>el.scrollWidth<=el.clientWidth+1)){chosen=px;break;}
     }
     chips.forEach(el=>el.style.setProperty("font-size",chosen+"px","important"));
   }
-
   let queued=false;
   function queueFit(){
-    if(queued) return;
+    if(queued)return;
     queued=true;
     requestAnimationFrame(()=>{queued=false;fitUdayastaTwoLines();});
   }
-
   document.addEventListener("DOMContentLoaded",function(){
     const grid=document.getElementById("odayikaUdayastaGrid");
-    if(grid){
-      new MutationObserver(queueFit).observe(grid,{childList:true,subtree:true,characterData:true});
-    }
+    if(grid)new MutationObserver(queueFit).observe(grid,{childList:true,subtree:true,characterData:true});
     queueFit();
   });
   window.addEventListener("resize",queueFit);
