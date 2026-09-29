@@ -2844,6 +2844,17 @@ body{display:flex;flex-direction:column;min-height:100vh}
 }
 </style>
 
+
+<style id="odayika-mobile-v18-visual-balance">
+/* v18: केवल mobile ग्रहस्पष्ट-header और ग्रहचक्र typography; उदयास्त/desktop untouched */
+@media (max-width:700px){
+  .odayika-sp-headtext{
+    overflow:visible !important;
+    white-space:nowrap !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <header class="site-header">
@@ -6707,12 +6718,18 @@ function odayikaFitSpashtaTypography(){
   }
 
   if(header){
-    /* केवल ग्र०-header: !important width से स्वतंत्र वास्तविक text-width मापकर fit करें। */
+    /* ग्र०-header: mobile पर अक्षर थोड़ा सँकरे/ऊँचे रखकर पूरी उपलब्ध चौड़ाई का सन्तुलित उपयोग। */
     const headBox = header.parentElement;
-    const available = Math.max(1,(headBox ? headBox.clientWidth : root.clientWidth)-2);
+    const available = Math.max(1,(headBox ? headBox.clientWidth : root.clientWidth)-3);
+    const isMobile = window.matchMedia && window.matchMedia("(max-width:700px)").matches;
+    header.style.transformOrigin="left center";
+    header.style.fontWeight=isMobile ? "600" : "";
+    header.style.letterSpacing=isMobile ? "-0.015em" : "";
+    header.style.transform=isMobile ? "scaleX(.92)" : "none";
+    header.style.width=isMobile ? "108.6%" : "100%";
     const range = document.createRange();
     range.selectNodeContents(header);
-    let lo=8.0, hi=14.2;
+    let lo=8.0, hi=isMobile ? 15.4 : 14.2;
     for(let i=0;i<24;i++){
       const mid=(lo+hi)/2;
       header.style.fontSize=`${mid}px`;
@@ -6857,7 +6874,17 @@ function odayikaPlanetFontSize(house,count){
     else factor = .57;
   }
 
-  return Math.max(30,Math.min(105,base * factor));
+  let size = Math.max(30,Math.min(105,base * factor));
+
+  /* Mobile: अकेला ग्रह सू०/रा०/के०-जैसे स्पष्ट बड़े आकार में रहे।
+     2+ ग्रहों में प्रारम्भिक आकार भी पर्याप्त बड़ा रहे; वास्तविक collision होने पर
+     नीचे का mobile-fit function ही क्रमशः छोटा करेगा। */
+  if(window.matchMedia && window.matchMedia("(max-width:700px)").matches){
+    if(count <= 1) size = Math.max(size,70);
+    else if(count === 2) size = Math.max(size,61);
+    else if(count === 3) size = Math.max(size,54);
+  }
+  return size;
 }
 
 /*
