@@ -12017,40 +12017,103 @@ if(document.readyState === "loading"){
 
 
 
-<style id="udayasta-v24-mobile-auto-fit-only">
+
+<style id="v25-mobile-only-final-fixes">
 @media(max-width:700px){
+
+  /* ग्रहस्पष्ट उपशीर्षक: पर्याप्त वास्तविक ऊँचाई, कोई clipping नहीं */
+  .odayika-sp-head{
+    flex:0 0 31px !important;
+    height:31px !important;
+    min-height:31px !important;
+    padding:3px 1px 4px !important;
+    overflow:visible !important;
+    box-sizing:border-box !important;
+    align-items:center !important;
+  }
+  .odayika-sp-headtext{
+    position:static !important;
+    top:auto !important;
+    transform:none !important;
+    width:100% !important;
+    max-width:100% !important;
+    font-size:13px !important;
+    line-height:1.25 !important;
+    white-space:nowrap !important;
+    overflow:visible !important;
+  }
+
+  /* ग्रहस्पष्ट की हर पंक्ति उपलब्ध चौड़ाई उपयोग करे */
+  .odayika-sp-row{
+    overflow:visible !important;
+  }
+  .odayika-sp-line{
+    display:block !important;
+    width:max-content !important;
+    max-width:none !important;
+    transform-origin:left center !important;
+  }
+
+  /* उदयास्त: केवल mobile में content के अनुसार JS font-size देगा */
   #odayikaUdayastaGrid .odayika-flow-row{
     width:100% !important;
     max-width:100% !important;
     box-sizing:border-box !important;
-    overflow:visible !important;
+    white-space:nowrap !important;
   }
 }
 </style>
-<script id="udayasta-v24-mobile-row-autofit">
+
+<script id="v25-mobile-fit-once-per-change">
 (function(){
-  function fitMobileUdayasta(){
-    if(!window.matchMedia || !window.matchMedia("(max-width:700px)").matches) return;
-    const rows=[...document.querySelectorAll("#odayikaUdayastaGrid .odayika-flow-row")];
-    rows.forEach((row,idx)=>{
-      row.style.removeProperty("font-size");
-      let lo=11, hi=(idx===0?18:17);
-      for(let i=0;i<22;i++){
-        const mid=(lo+hi)/2;
-        row.style.setProperty("font-size",mid+"px","important");
-        if(row.scrollWidth <= row.clientWidth+1) lo=mid; else hi=mid;
+  let raf=0;
+
+  function fit(){
+    raf=0;
+    if(!window.matchMedia("(max-width:700px)").matches) return;
+
+    /* ग्रहस्पष्ट rows: सभी rows को उपलब्ध width तक horizontal scale */
+    document.querySelectorAll(".odayika-sp-row").forEach(function(row){
+      const line=row.querySelector(".odayika-sp-line");
+      if(!line) return;
+      line.style.transform="none";
+      const avail=Math.max(1,row.clientWidth-2);
+      const natural=Math.max(1,line.scrollWidth);
+      const sx=Math.min(1.28, Math.max(.94, avail/natural));
+      line.style.transform="scaleX("+sx.toFixed(3)+")";
+    });
+
+    /* उदयास्त: actual text width के अनुसार सबसे बड़ा सुरक्षित font */
+    document.querySelectorAll("#odayikaUdayastaGrid .odayika-flow-row").forEach(function(row,index){
+      const max=index===0 ? 18 : 17;
+      const min=11;
+      let size=max;
+      row.style.setProperty("font-size",size+"px","important");
+      while(size>min && row.scrollWidth>row.clientWidth+1){
+        size-=0.25;
+        row.style.setProperty("font-size",size+"px","important");
       }
-      row.style.setProperty("font-size",Math.max(11,lo-.12).toFixed(2)+"px","important");
     });
   }
-  const obs=new MutationObserver(()=>requestAnimationFrame(fitMobileUdayasta));
-  document.addEventListener("DOMContentLoaded",()=>{
-    const grid=document.getElementById("odayikaUdayastaGrid");
-    if(grid) obs.observe(grid,{childList:true,subtree:true,characterData:true});
-    requestAnimationFrame(fitMobileUdayasta);
+
+  function schedule(){
+    cancelAnimationFrame(raf);
+    raf=requestAnimationFrame(fit);
+  }
+
+  document.addEventListener("DOMContentLoaded",function(){
+    schedule();
+
+    /* केवल content replacement देखें; attributes/styles नहीं, अतः self-loop नहीं */
+    const g=document.getElementById("odayikaUdayastaGrid");
+    if(g) new MutationObserver(schedule).observe(g,{childList:true,subtree:true,characterData:true});
+
+    const sp=document.querySelector(".odayika-sp-table");
+    if(sp) new MutationObserver(schedule).observe(sp,{childList:true,subtree:true,characterData:true});
   });
-  window.addEventListener("resize",()=>requestAnimationFrame(fitMobileUdayasta));
-  window.addEventListener("orientationchange",()=>requestAnimationFrame(fitMobileUdayasta));
+
+  window.addEventListener("resize",schedule);
+  window.addEventListener("orientationchange",schedule);
 })();
 </script>
 
