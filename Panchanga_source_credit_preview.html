@@ -11799,7 +11799,7 @@ if(document.readyState === "loading"){
       items.push(`<span class="odayika-event-chip"><strong>चन्द्रोदय</strong> ${moonPanchangaTime(mr.timeText,gb)} बजे</span>`);
     }
     if(ms?.timeText){
-      items.push(`<span class="odayika-event-chip"><strong>चन्द्रास्त</strong> ${moonPanchangaTimeWithDayRef(ms.timeText,gb,ms)} बजे</span>`);
+      items.push(`<span class="odayika-event-chip"><strong>चन्द्रास्त</strong> ${(() => { const x=moonPanchangaTime(ms.timeText,gb); return x.startsWith("आगामी ") ? x : "आगामी "+x; })()} बजे</span>`);
     }
     ["mangal","budha","guru","shukra","shani"].forEach(key=>{
       if(planetItemsByKey[key]) items.push(planetItemsByKey[key]);
