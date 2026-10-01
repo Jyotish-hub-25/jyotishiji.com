@@ -7431,6 +7431,18 @@ const ODAYIKA_HOUSE_LAYOUT_MOBILE = {
   12: {type:"horizontal", sign:[748, 96]}
 };
 
+function odayikaChartUsesCompactTypography(){
+  const chart = document.querySelector(".odayika-chart");
+  const width = chart?.getBoundingClientRect().width || 0;
+
+  /*
+    यह निर्णय browser viewport से नहीं, स्वयं ग्रहचक्र की वास्तविक चौड़ाई से होगा।
+    Desktop के संकरे Panchanga-column में भी chart लगभग mobile-जितना संकरा हो सकता है;
+    ऐसी स्थिति में अकेले/कम ग्रहों को उपलब्ध स्थान के अनुसार बड़ा दिखना चाहिए।
+  */
+  return width > 0 && width <= 520;
+}
+
 function odayikaChartBaseFontUserUnits(){
   const chart = document.querySelector(".odayika-chart");
   const panchangaReference =
@@ -7450,15 +7462,15 @@ function odayikaChartBaseFontUserUnits(){
     ग्रह/राशि लगभग उसी दृश्य आकार में रहते हैं।
   */
   const calculated = panchangaPx * 1000 / Math.max(renderedWidth,160);
-  /* Mobile पर SVG के भीतर ग्रह अनावश्यक रूप से सूक्ष्म न हों; desktop यथावत। */
-  if(window.matchMedia && window.matchMedia("(max-width:700px)").matches){
+  /* संकरे chart में SVG के भीतर ग्रह अनावश्यक रूप से सूक्ष्म न हों। */
+  if(odayikaChartUsesCompactTypography()){
     return Math.max(56,calculated);
   }
   return calculated;
 }
 
 function odayikaPlanetFontSize(house,count){
-  if(window.matchMedia && window.matchMedia("(max-width:700px)").matches){
+  if(odayikaChartUsesCompactTypography()){
   const base = odayikaChartBaseFontUserUnits();
   let factor = 1;
 
@@ -7473,7 +7485,7 @@ function odayikaPlanetFontSize(house,count){
 
   /* अकेला ग्रह सू०/रा०/के०-जैसे स्पष्ट बड़े आकार में रहे।
      बहुग्रह होने पर भी पहले बड़ा आकार; वास्तविक collision पर ही नीचे fit घटाएगा। */
-  if(window.matchMedia && window.matchMedia("(max-width:700px)").matches){
+  if(odayikaChartUsesCompactTypography()){
     if(count <= 1) size = Math.max(size,78);
     else if(count === 2) size = Math.max(size,74);
     else if(count === 3) size = Math.max(size,68);
@@ -7522,7 +7534,7 @@ function odayikaPlanetFontSize(house,count){
   राशि-संख्या केन्द्र में रहे और ग्रह उपलब्ध चौड़े भाग की ओर फैलें।
 */
 function odayikaPlanetPositions(house,count){
-  if(window.matchMedia && window.matchMedia("(max-width:700px)").matches){
+  if(odayikaChartUsesCompactTypography()){
   const layout = ODAYIKA_HOUSE_LAYOUT_MOBILE[house];
   const [cx,cy] = layout.sign;
   if(count <= 0) return [];
@@ -7848,10 +7860,10 @@ function odayikaRenderChart(planets,placeName,lagnaRashi0,rememberState=true){
   odayikaMobileFitChartHouses();
 }
 
-/* Mobile-only: प्रत्येक भाव में ग्रहों को उपलब्ध स्थान के अनुसार स्वतः छोटा करता है।
-   Desktop पर यह function तुरन्त लौट जाता है; वहाँ की वर्तमान setting अक्षुण्ण रहती है। */
+/* संकरे ग्रहचक्र में प्रत्येक भाव के ग्रह उपलब्ध स्थान के अनुसार स्वतः fit होते हैं।
+   निर्णय viewport से नहीं, chart की वास्तविक rendered width से होता है। */
 function odayikaMobileFitChartHouses(){
-  if(!window.matchMedia || !window.matchMedia("(max-width:700px)").matches) return;
+  if(!odayikaChartUsesCompactTypography()) return;
 
   const planetLayer=document.getElementById("odayikaPlanetLayer");
   const signLayer=document.getElementById("odayikaSignLayer");
@@ -12285,5 +12297,7 @@ if(document.readyState === "loading"){
 })();
 </script>
 
+
+<!-- ODAYIKA CHART TYPOGRAPHY FIX 2026-10-01 v3: container-width driven auto-enlarge/fit -->
 </body>
 </html>

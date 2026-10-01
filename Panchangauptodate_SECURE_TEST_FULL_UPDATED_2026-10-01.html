@@ -10583,6 +10583,18 @@ const ODAYIKA_HOUSE_LAYOUT_MOBILE = {
   12: {type:"horizontal", sign:[748, 96]}
 };
 
+function odayikaChartUsesCompactTypography(){
+  const chart = document.querySelector(".odayika-chart");
+  const width = chart?.getBoundingClientRect().width || 0;
+
+  /*
+    viewport नहीं, स्वयं ग्रहचक्र की वास्तविक rendered-width निर्णायक है।
+    Desktop के संकरे Panchanga-column में भी अकेले/कम ग्रहों को उपलब्ध स्थान के अनुसार
+    बड़ा दिखना चाहिए।
+  */
+  return width > 0 && width <= 520;
+}
+
 function odayikaChartBaseFontUserUnits(){
   const chart = document.querySelector(".odayika-chart");
   const panchangaReference =
@@ -10602,15 +10614,15 @@ function odayikaChartBaseFontUserUnits(){
     ग्रह/राशि लगभग उसी दृश्य आकार में रहते हैं।
   */
   const calculated = panchangaPx * 1000 / Math.max(renderedWidth,160);
-  /* Mobile पर SVG के भीतर ग्रह अनावश्यक रूप से सूक्ष्म न हों; desktop यथावत। */
-  if(window.matchMedia && window.matchMedia("(max-width:700px)").matches){
+  /* संकरे chart में SVG के भीतर ग्रह अनावश्यक रूप से सूक्ष्म न हों। */
+  if(odayikaChartUsesCompactTypography()){
     return Math.max(56,calculated);
   }
   return calculated;
 }
 
 function odayikaPlanetFontSize(house,count){
-  if(window.matchMedia && window.matchMedia("(max-width:700px)").matches){
+  if(odayikaChartUsesCompactTypography()){
   const base = odayikaChartBaseFontUserUnits();
   let factor = 1;
 
@@ -10625,7 +10637,7 @@ function odayikaPlanetFontSize(house,count){
 
   /* अकेला ग्रह सू०/रा०/के०-जैसे स्पष्ट बड़े आकार में रहे।
      बहुग्रह होने पर भी पहले बड़ा आकार; वास्तविक collision पर ही नीचे fit घटाएगा। */
-  if(window.matchMedia && window.matchMedia("(max-width:700px)").matches){
+  if(odayikaChartUsesCompactTypography()){
     if(count <= 1) size = Math.max(size,78);
     else if(count === 2) size = Math.max(size,74);
     else if(count === 3) size = Math.max(size,68);
@@ -10673,7 +10685,7 @@ function odayikaPlanetFontSize(house,count){
   राशि-संख्या केन्द्र में रहे और ग्रह उपलब्ध चौड़े भाग की ओर फैलें।
 */
 function odayikaPlanetPositions(house,count){
-  if(window.matchMedia && window.matchMedia("(max-width:700px)").matches){
+  if(odayikaChartUsesCompactTypography()){
   const layout = ODAYIKA_HOUSE_LAYOUT_MOBILE[house];
   const [cx,cy] = layout.sign;
   if(count <= 0) return [];
@@ -10996,6 +11008,48 @@ function odayikaRenderChart(planets,placeName,lagnaRashi0,rememberState=true){
   });
 
   odayikaMobileFitChartHouses();
+}
+
+/* संकरे ग्रहचक्र में 2+ ग्रहों को केवल वास्तविक collision होने पर धीरे-धीरे छोटा करें।
+   अकेला ग्रह कभी auto-shrink नहीं होगा। */
+function odayikaMobileFitChartHouses(){
+  if(!odayikaChartUsesCompactTypography()) return;
+
+  const planetLayer=document.getElementById("odayikaPlanetLayer");
+  const signLayer=document.getElementById("odayikaSignLayer");
+  if(!planetLayer || !signLayer) return;
+
+  const intersects=(a,b,pad=7)=>(!(
+    a.x+a.width+pad < b.x || b.x+b.width+pad < a.x ||
+    a.y+a.height+pad < b.y || b.y+b.height+pad < a.y
+  ));
+
+  for(let house=1;house<=12;house++){
+    const nodes=[...planetLayer.querySelectorAll(`.odayika-pl[data-house="${house}"]`)];
+    const sign=signLayer.querySelector(`.odayika-num[data-house="${house}"]`);
+
+    if(nodes.length<=1) continue;
+
+    for(let pass=0;pass<9;pass++){
+      let collision=false;
+      const boxes=nodes.map(n=>n.getBBox());
+      const sb=sign ? sign.getBBox() : null;
+
+      for(let i=0;i<boxes.length;i++){
+        if(sb && intersects(boxes[i],sb,5)){ collision=true; break; }
+        for(let j=i+1;j<boxes.length;j++){
+          if(intersects(boxes[i],boxes[j],7)){ collision=true; break; }
+        }
+        if(collision) break;
+      }
+      if(!collision) break;
+
+      nodes.forEach(n=>{
+        const fs=parseFloat(n.style.fontSize)||56;
+        n.style.fontSize=`${Math.max(54,fs*.97)}px`;
+      });
+    }
+  }
 }
 
 /*
@@ -18652,5 +18706,7 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
   });
 })();
 </script>
+
+<!-- ODAYIKA CHART TYPOGRAPHY FIX 2026-10-01 v3: container-width driven auto-enlarge/fit -->
 </body>
 </html>
