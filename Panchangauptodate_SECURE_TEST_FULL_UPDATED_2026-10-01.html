@@ -10289,8 +10289,13 @@ function odayikaPlanetState(grahaKey,rowIndex,col,grahaLon,sunLon){
     if(retro) state.push("व०");
   }
 
-  /* अ० अभी source AB की अस्तावस्था से ही। */
-  if(odayikaIsCombust(grahaKey,rowIndex)){
+  /* प्रदर्शन-नियम:
+     सूर्य: व०/अ० नहीं।
+     चन्द्र: व० कभी नहीं; source में अस्त होने पर अ० हो सकता है।
+     पाँच ताराग्रह: आवश्यकतानुसार व० और/या अ०।
+     राहु-केतु: नित्य वक्र होने से व० लिखने की आवश्यकता नहीं। */
+  if(["chandra","mangal","budha","guru","shukra","shani"].includes(grahaKey) &&
+     odayikaIsCombust(grahaKey,rowIndex)){
     state.push("अ०");
   }
 
@@ -10373,7 +10378,12 @@ function odayikaFitPlainText(el,{minPx=10,maxPx=28,widthFill=.992}={}){
 
 function odayikaFitOuterTypography(){
   odayikaFitPlainText(document.getElementById("odayikaTitle"),{minPx:11,maxPx:26,widthFill:.993});
-  odayikaFitPlainText(document.getElementById("odayikaDateLine"),{minPx:10,maxPx:21,widthFill:.993});
+  const dateLine = document.getElementById("odayikaDateLine");
+  odayikaFitPlainText(dateLine,{minPx:10,maxPx:21,widthFill:.993});
+  const riseSetTitle = document.getElementById("odayikaUdayastaTitle");
+  if(dateLine && riseSetTitle){
+    riseSetTitle.style.fontSize = getComputedStyle(dateLine).fontSize;
+  }
   odayikaFitPlainText(document.querySelector(".odayika-sp-box-title"),{minPx:10,maxPx:20,widthFill:.985});
 }
 
@@ -10381,60 +10391,88 @@ function odayikaFitSpashtaTypography(){
   odayikaFitOuterTypography();
   const root = document.getElementById("odayikaSpashta");
   if(!root || root.clientWidth <= 0) return;
+  const header = root.querySelector(".odayika-sp-headtext");
+  const rows = [...root.querySelectorAll(".odayika-sp-row")];
 
-  const header = root.querySelector(".odayika-sp-head");
-  const normalRows = [...root.querySelectorAll(".odayika-sp-row.no-state")];
-  const stateRows = [...root.querySelectorAll(".odayika-sp-row.has-state")];
+  rows.forEach(row => {
+    const line = row.querySelector(".odayika-sp-line");
+    if(!line) return;
+    let lo=11, hi=30;
+    for(let i=0;i<22;i++){
+      const mid=(lo+hi)/2;
+      row.style.fontSize=`${mid}px`;
+      const fitsW = line.scrollWidth <= Math.max(1,row.clientWidth-2);
+      const fitsH = line.scrollHeight <= Math.max(1,row.clientHeight-1);
+      if(fitsW && fitsH) lo=mid; else hi=mid;
+    }
+    row.style.fontSize=`${Math.max(11,lo-.10).toFixed(2)}px`;
 
-  /*
-    सभी सामान्य ग्रह एक समान बड़े font में रहें।
-    सबसे लम्बी सामान्य पंक्ति जितना समा सके, वही common size बनेगा।
-  */
-  if(normalRows.length){
-    const commonNormalSize = Math.min(
-      ...normalRows.map(row =>
-        odayikaCandidateFontSize(row,{
-          basePx:16,
-          minPx:10,
-          maxPx:24,
-          widthFill:.992,
-          heightFill:.80
-        })
-      )
-    );
+    /* चं०, गु०, शु०, श० की अभी ठीक fitting को ज्यों का त्यों रखें।
+       छोटी पंक्तियों को केवल क्षैतिज रूप से थोड़ा फैलने दें; ऊँचाई/row-size नहीं बदलती। */
+    line.style.transform="none";
+    line.style.transformOrigin="left center";
+    const label = (row.querySelector(".odayika-sp-left")?.textContent || "").trim();
+    const referenceRow = /^(चं०|गु०|शु०|श०)/.test(label);
+    if(!referenceRow){
+      const availableW = Math.max(1,row.clientWidth-2);
+      const naturalW = Math.max(1,line.getBoundingClientRect().width);
+      const scaleX = Math.min(1.16, availableW/naturalW);
+      if(scaleX > 1.005) line.style.transform=`scaleX(${scaleX.toFixed(3)})`;
+    }
+  });
 
-    normalRows.forEach(row => {
-      row.style.fontSize = `${commonNormalSize.toFixed(2)}px`;
+  /* Mobile only: ग्रहस्पष्ट की प्रत्येक पंक्ति को उसके दाहिने border तक
+     वास्तविक उपलब्ध चौड़ाई में fit करें। कोई arbitrary expansion-cap नहीं। */
+  if(window.matchMedia && window.matchMedia("(max-width:700px)").matches){
+    rows.forEach(row=>{
+      const line=row.querySelector(".odayika-sp-line");
+      if(!line) return;
+
+      line.style.transform="none";
+      line.style.transformOrigin="left center";
+
+      const availableW=Math.max(1,row.clientWidth-1);
+      const naturalW=Math.max(1,line.getBoundingClientRect().width);
+      const scaleX=availableW/naturalW;
+
+      /* exact horizontal fit: मं०, बु० आदि के अंश भी दाहिने किनारे तक पहुँचें */
+      line.style.transform=`scaleX(${scaleX.toFixed(4)})`;
     });
   }
 
-  /*
-    व०/अ० वाली पंक्ति लम्बी है, इसलिए केवल वही आवश्यकता के अनुसार
-    स्वतः थोड़ी छोटी हो सकती है।
-  */
-  stateRows.forEach(row => {
-    const stateSize = odayikaCandidateFontSize(row,{
-      basePx:16,
-      minPx:9,
-      maxPx:22,
-      widthFill:.992,
-      heightFill:.78
-    });
+  if(
+  header &&
+  !(window.matchMedia &&
+    window.matchMedia("(max-width:700px)").matches)
+){
+    const isMobile = window.matchMedia && window.matchMedia("(max-width:700px)").matches;
+    const headBox = header.parentElement;
+    const available = Math.max(1,(headBox ? headBox.clientWidth : root.clientWidth)-2);
+    if(isMobile){
+      header.style.fontWeight="600";
+      header.style.letterSpacing="-0.025em";
+      header.style.fontSize="14.6px";
+      header.style.transform="none";
 
-    row.style.fontSize = `${stateSize.toFixed(2)}px`;
-  });
-
-  /* छोटा header भी border की उपलब्ध चौड़ाई का अधिकतम उपयोग करे। */
-  if(header){
-    const headerSize = odayikaCandidateFontSize(header,{
-      basePx:16,
-      minPx:9,
-      maxPx:21,
-      widthFill:.995,
-      heightFill:.82
-    });
-
-    header.style.fontSize = `${headerSize.toFixed(2)}px`;
+      const range=document.createRange();
+      range.selectNodeContents(header);
+      const natural=Math.max(1,range.getBoundingClientRect().width);
+      const scale=Math.max(.64,Math.min(1,available/natural));
+      header.style.transform=`scaleX(${scale.toFixed(3)})`;
+    }else{
+      /* केवल ग्र०-header: !important width से स्वतंत्र वास्तविक text-width मापकर fit करें। */
+      const range = document.createRange();
+      range.selectNodeContents(header);
+      let lo=8.0, hi=14.2;
+      for(let i=0;i<24;i++){
+        const mid=(lo+hi)/2;
+        header.style.setProperty("font-size",`${mid}px`,"important");
+        const textWidth = range.getBoundingClientRect().width;
+        if(textWidth <= available) lo=mid;
+        else hi=mid;
+      }
+      header.style.setProperty("font-size",`${Math.max(8.0,lo-.03).toFixed(2)}px`,"important");
+    }
   }
 }
 
@@ -10482,7 +10520,7 @@ window.addEventListener("orientationchange",odayikaScheduleHeadlineFit);
 function odayikaSpashtaHeader(){
   return `
     <div class="odayika-sp-head">
-      <span class="odayika-sp-headtext">ग्रह -रा०।अं०।क०।वि०व०/अ०</span>
+      <span class="odayika-sp-headtext">ग्र० -रा०।अं०।क०।वि०व०/अ०</span>
     </div>
   `;
 }
@@ -10490,12 +10528,10 @@ function odayikaSpashtaHeader(){
 function odayikaSpashtaRow(name,state,parts){
   const compactValue =
     `${odayikaDisplayRashi(parts)}।${odayikaDisplayPart(parts?.degree)}।${odayikaDisplayPart(parts?.minute)}।${odayikaDisplayPart(parts?.second)}`;
-
+  const stateText = state ? `<span class="odayika-state odayika-sp-state-right">${state}</span>` : "";
   return `
     <div class="odayika-sp-row ${state ? "has-state" : "no-state"}">
-      <span class="odayika-sp-left">${name} -</span>
-      <span class="odayika-sp-value">${compactValue}</span>
-      ${state ? `<span class="odayika-state odayika-sp-state-right">${state}</span>` : ""}
+      <span class="odayika-sp-line"><span class="odayika-sp-left">${name} -</span><span class="odayika-sp-value">${compactValue}</span>${stateText}</span>
     </div>
   `;
 }
@@ -10521,8 +10557,30 @@ const ODAYIKA_HOUSE_LAYOUT = {
   8:  {type:"triangle", sign:[748,904], dir:[ 0,-1], spread:54},
   9:  {type:"triangle", sign:[904,748], dir:[-1, 0], spread:54},
   10: {type:"wide",     sign:[744,500], dir:[-1, 0], spread:70},
-  11: {type:"triangle", sign:[904,252], dir:[-1, 0], spread:54},
+  11: {type:"triangle", sign:[925,252], dir:[-1, 0], spread:54},
   12: {type:"triangle", sign:[748, 96], dir:[ 0, 1], spread:54}
+};
+
+const ODAYIKA_HOUSE_LAYOUT_MOBILE = {
+  /*
+    भाव-ज्यामिति (screen-size से स्वतंत्र):
+    1,4,7,10 = केन्द्र/चौड़े भाव — राशि-अंक मध्य में, ग्रह चारों ओर।
+    2,6,8,12 = ऊपर/नीचे के चौड़े त्रिकोण — ग्रह पहले दाएँ-बाएँ।
+    3,5,9,11 = दाएँ/बाएँ के ऊँचे त्रिकोण — ग्रह पहले ऊपर-नीचे।
+    ध्यान: type ग्रह-समूह की placement-direction बताता है, भाव-संख्या/राशि-संख्या नहीं।
+  */
+  1:  {type:"center",     sign:[500,256]},
+  2:  {type:"horizontal", sign:[252, 96]},
+  3:  {type:"vertical",   sign:[ 96,252]},
+  4:  {type:"center",     sign:[256,500]},
+  5:  {type:"vertical",   sign:[ 96,748]},
+  6:  {type:"horizontal", sign:[252,904]},
+  7:  {type:"center",     sign:[500,744]},
+  8:  {type:"horizontal", sign:[748,904]},
+  9:  {type:"vertical",   sign:[904,748]},
+  10: {type:"center",     sign:[744,500]},
+  11: {type:"vertical",   sign:[925,252]},
+  12: {type:"horizontal", sign:[748, 96]}
 };
 
 function odayikaChartBaseFontUserUnits(){
@@ -10543,12 +10601,50 @@ function odayikaChartBaseFontUserUnits(){
     SVG user-units में बदलते हैं। इससे desktop और mobile दोनों में
     ग्रह/राशि लगभग उसी दृश्य आकार में रहते हैं।
   */
-  return panchangaPx * 1000 / Math.max(renderedWidth,160);
+  const calculated = panchangaPx * 1000 / Math.max(renderedWidth,160);
+  /* Mobile पर SVG के भीतर ग्रह अनावश्यक रूप से सूक्ष्म न हों; desktop यथावत। */
+  if(window.matchMedia && window.matchMedia("(max-width:700px)").matches){
+    return Math.max(56,calculated);
+  }
+  return calculated;
 }
 
 function odayikaPlanetFontSize(house,count){
-  const type = ODAYIKA_HOUSE_LAYOUT[house]?.type || "triangle";
+  if(window.matchMedia && window.matchMedia("(max-width:700px)").matches){
   const base = odayikaChartBaseFontUserUnits();
+  let factor = 1;
+
+  if(count <= 1) factor = 1.00;
+  else if(count === 2) factor = .96;
+  else if(count === 3) factor = .88;
+  else if(count === 4) factor = .80;
+  else if(count === 5) factor = .72;
+  else factor = .65;
+
+  let size = Math.max(32,Math.min(105,base * factor));
+
+  /* अकेला ग्रह सू०/रा०/के०-जैसे स्पष्ट बड़े आकार में रहे।
+     बहुग्रह होने पर भी पहले बड़ा आकार; वास्तविक collision पर ही नीचे fit घटाएगा। */
+  if(window.matchMedia && window.matchMedia("(max-width:700px)").matches){
+    if(count <= 1) size = Math.max(size,78);
+    else if(count === 2) size = Math.max(size,74);
+    else if(count === 3) size = Math.max(size,68);
+  }
+  return size;
+
+  }
+
+  const type = ODAYIKA_HOUSE_LAYOUT[house]?.type || "triangle";
+  let base = odayikaChartBaseFontUserUnits();
+
+  /* Desktop: चक्र के ग्रह ग्रहस्पष्ट की ग्रह-पंक्ति से दृश्यतः छोटे न हों। */
+  const chart = document.querySelector(".odayika-chart");
+  const spRow = document.querySelector(".odayika-sp-row");
+  if(chart && spRow){
+    const cw = Math.max(160,chart.getBoundingClientRect().width || 0);
+    const spPx = parseFloat(getComputedStyle(spRow).fontSize) || 0;
+    if(spPx>0) base = Math.max(base,spPx*1000/cw);
+  }
 
   let factor;
 
@@ -10569,6 +10665,7 @@ function odayikaPlanetFontSize(house,count){
   }
 
   return Math.max(30,Math.min(105,base * factor));
+
 }
 
 /*
@@ -10576,8 +10673,91 @@ function odayikaPlanetFontSize(house,count){
   राशि-संख्या केन्द्र में रहे और ग्रह उपलब्ध चौड़े भाग की ओर फैलें।
 */
 function odayikaPlanetPositions(house,count){
-  const layout = ODAYIKA_HOUSE_LAYOUT[house];
+  if(window.matchMedia && window.matchMedia("(max-width:700px)").matches){
+  const layout = ODAYIKA_HOUSE_LAYOUT_MOBILE[house];
   const [cx,cy] = layout.sign;
+  if(count <= 0) return [];
+
+  /* राशि-अंक को उसके स्थान पर स्थिर रखकर ग्रह उसके चारों ओर रखे जाते हैं। */
+  const V = 72;   // vertical offset
+  const H = 86;   // horizontal offset
+
+  if(layout.type === "vertical"){
+    const patterns = {
+      1:[[0, V]],
+      2:[[0,-V],[0, V]],
+      3:[[0,-92],[0,66],[0,132]],
+      4:[[-42,-76],[42,-76],[-42,76],[42,76]],
+      5:[[0,-108],[-44,-50],[44,-50],[-44,76],[44,76]]
+    };
+    const p=patterns[Math.min(count,5)] || patterns[5];
+    return Array.from({length:count},(_,i)=>{
+      if(i<p.length) return [cx+p[i][0],cy+p[i][1]];
+      const k=i-p.length;
+      return [cx+((k%2)?38:-38), cy+126+Math.floor(k/2)*48];
+    });
+  }
+
+  if(layout.type === "horizontal"){
+    const patterns = {
+      1:[[H,0]],
+      2:[[-H,0],[H,0]],
+      3:[[-104,0],[62,-42],[62,42]],
+      4:[[-88,-40],[-88,40],[88,-40],[88,40]],
+      5:[[-112,0],[-54,-48],[-54,48],[82,-48],[82,48]]
+    };
+    const p=patterns[Math.min(count,5)] || patterns[5];
+    return Array.from({length:count},(_,i)=>{
+      if(i<p.length) return [cx+p[i][0],cy+p[i][1]];
+      const k=i-p.length;
+      return [cx+128+Math.floor(k/2)*48,cy+((k%2)?36:-36)];
+    });
+  }
+
+  /* केन्द्र भाव: पर्याप्त स्थान; राशि-अंक बीच में, ग्रह चार दिशाओं में। */
+  const patterns = {
+    1:[[0,82]],
+    2:[[-92,0],[92,0]],
+    3:[[0,-82],[-92,48],[92,48]],
+    4:[[0,-88],[92,0],[0,88],[-92,0]],
+    5:[[0,-92],[88,-22],[62,78],[-62,78],[-88,-22]]
+  };
+  const p=patterns[Math.min(count,5)] || patterns[5];
+  return Array.from({length:count},(_,i)=>{
+    if(i<p.length) return [cx+p[i][0],cy+p[i][1]];
+    const k=i-p.length, a=(k%4)*Math.PI/2;
+    const r=132+Math.floor(k/4)*42;
+    return [cx+Math.cos(a)*r,cy+Math.sin(a)*r];
+  });
+
+  }
+
+  /* Desktop पर भी वही भाव-ज्यामिति: चौड़े त्रिकोण दाएँ-बाएँ,
+     ऊँचे त्रिकोण ऊपर-नीचे, केन्द्र भाव राशि-अंक के चारों ओर। */
+  const geo = ODAYIKA_HOUSE_LAYOUT_MOBILE[house];
+  const [cx,cy] = geo.sign;
+  if(count <= 0) return [];
+  const V=72, H=86;
+  if(geo.type === "vertical"){
+    const patterns={1:[[0,V]],2:[[0,-V],[0,V]],3:[[0,-92],[0,66],[0,132]],4:[[-42,-76],[42,-76],[-42,76],[42,76]],5:[[0,-108],[-44,-50],[44,-50],[-44,76],[44,76]]};
+    const a=patterns[Math.min(count,5)]||patterns[5];
+    return Array.from({length:count},(_,i)=>i<a.length?[cx+a[i][0],cy+a[i][1]]:[cx+((i-a.length)%2?38:-38),cy+126+Math.floor((i-a.length)/2)*48]);
+  }
+  if(geo.type === "horizontal"){
+    const patterns={1:[[H,0]],2:[[-H,0],[H,0]],3:[[-104,0],[62,-42],[62,42]],4:[[-88,-40],[-88,40],[88,-40],[88,40]],5:[[-112,0],[-54,-48],[-54,48],[82,-48],[82,48]]};
+    const a=patterns[Math.min(count,5)]||patterns[5];
+    return Array.from({length:count},(_,i)=>i<a.length?[cx+a[i][0],cy+a[i][1]]:[cx+128+Math.floor((i-a.length)/2)*48,cy+(((i-a.length)%2)?36:-36)]);
+  }
+  const centerPatterns={1:[[0,82]],2:[[-92,0],[92,0]],3:[[0,-82],[-92,48],[92,48]],4:[[0,-88],[92,0],[0,88],[-92,0]],5:[[0,-92],[88,-22],[62,78],[-62,78],[-88,-22]]};
+  const ca=centerPatterns[Math.min(count,5)]||centerPatterns[5];
+  return Array.from({length:count},(_,i)=>{
+    if(i<ca.length) return [cx+ca[i][0],cy+ca[i][1]];
+    const k=i-ca.length,a=(k%4)*Math.PI/2,r=132+Math.floor(k/4)*42;
+    return [cx+Math.cos(a)*r,cy+Math.sin(a)*r];
+  });
+
+  /* पुराना desktop placement code नीचे reference के रूप में unreachable रखा गया है। */
+  const layout = ODAYIKA_HOUSE_LAYOUT[house];
   const [dx,dy] = layout.dir;
 
   /* perpendicular direction */
@@ -10711,7 +10891,8 @@ function odayikaPlanetPositions(house,count){
 
     const extra = i - triPattern.length;
     return point(130 + extra*28,0);
-});
+  });
+
 }
 
 
@@ -10775,6 +10956,7 @@ function odayikaRenderChart(planets,placeName,lagnaRashi0,rememberState=true){
 
     const node = document.createElementNS(ns,"text");
     node.setAttribute("class","odayika-num");
+    node.setAttribute("data-house",String(house));
     node.setAttribute("x",x);
     node.setAttribute("y",y);
     node.style.fontSize =
@@ -10803,6 +10985,7 @@ function odayikaRenderChart(planets,placeName,lagnaRashi0,rememberState=true){
 
       const node = document.createElementNS(ns,"text");
       node.setAttribute("class","odayika-pl");
+      node.setAttribute("data-house",String(house));
       node.setAttribute("x",x);
       node.setAttribute("y",y);
       node.style.fontSize = `${fontSize}px`;
@@ -10811,6 +10994,8 @@ function odayikaRenderChart(planets,placeName,lagnaRashi0,rememberState=true){
       planetLayer.appendChild(node);
     });
   });
+
+  odayikaMobileFitChartHouses();
 }
 
 /*
@@ -12525,6 +12710,8 @@ function decideSankrantiIngress(x){
       `संक्रमण - ${formatAbsForFestival(x.t)}`,
       `सन्निधि-पुण्यकाल - ${formatAbsForFestival(ps)} से ${formatAbsForFestival(pe)} तक`,
       `पुण्यघटी-विन्यास - ${spec.note}`,
+      "व्रत-परिचय में सङ्क्रान्ति-सम्बद्ध पृथक् प्रकार — संक्रान्तिव्रत · संक्रमणव्रत · महाजया-संक्रान्तिव्रत · धनसंक्रान्तिव्रत · धान्यसंक्रान्तिव्रत · भोगसंक्रान्तिव्रत · रूपसंक्रान्तिव्रत · तेजःसंक्रान्तिव्रत · आयुःसंक्रान्तिव्रत · मेषादिगतसूर्यव्रत।",
+      "इन पृथक् प्रकारों का विशेष प्रयोग जिस सङ्क्रान्ति/विधान पर लागू हो, वह उनके मूल पाठ के सत्यापन के अनुसार ही माना जाएगा; केवल नाम देखकर सभी को आज लागू नहीं माना गया है। स्रोत: व्रत-परिचय।",
       "रात्रि में पड़े पुण्यांश के स्नान-दान-प्रयोग में दिन-निर्णय पृथक् देखा जाता है; यहाँ संक्रमण का स्थानीय civil दिन दिखाया गया है।"
     ]
   });
@@ -15367,6 +15554,8 @@ trigger.className="smart-select-trigger";
     const mr=typeof internalMoonriseForDate==="function"
       ? internalMoonriseForDate(rowIndex,row,gb)
       : null;
+    /* चयनित औदयिक पञ्चाङ्ग-row का चन्द्रास्त ही लें।
+       यदि उसका civil date अगला है तो नीचे display helper स्वतः "आगामी" जोड़ेगा। */
     const ms=typeof internalMoonsetForDate==="function"
       ? internalMoonsetForDate(rowIndex,row,gb)
       : null;
@@ -15424,28 +15613,68 @@ trigger.className="smart-select-trigger";
       return `${kaal} ${clock}`;
     }
 
-    let moonItem="";
-    if(mr?.timeText || ms?.timeText){
-      const parts=[];
-      if(mr?.timeText) parts.push(`<strong>चन्द्रोदय</strong> ${moonPanchangaTime(mr.timeText,gb)}`);
-      if(ms?.timeText) parts.push(`<strong>चन्द्रास्त</strong> ${moonPanchangaTime(ms.timeText,gb)}`);
-      moonItem=`<span class="odayika-event-chip odayika-moon-chip"><span>${parts.join(" · ")}</span></span>`;
+    /*
+      यदि event time में bracket वाली GB date base पञ्चाङ्ग-date से आगे की है,
+      तो काल-संज्ञा के पहले "आगामी" लगाएँ। गणना/data नहीं बदलता; केवल display स्पष्ट करता है।
+    */
+    function moonPanchangaTimeWithDayRef(t,baseGB,eventObj){
+      const plain=moonPanchangaTime(t,baseGB);
+
+      const parseGB=s=>{
+        const p=String(s||"").match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+        if(!p) return NaN;
+        return Date.UTC(Number(p[3]),Number(p[2])-1,Number(p[1]));
+      };
+      const baseDay=parseGB(baseGB);
+
+      /* प्राथमिक आधार: event का वास्तविक Date object */
+      let eventDay=NaN;
+      if(eventObj?.date instanceof Date && !Number.isNaN(eventObj.date.getTime())){
+        eventDay=Date.UTC(
+          eventObj.date.getFullYear(),
+          eventObj.date.getMonth(),
+          eventObj.date.getDate()
+        );
+      }
+
+      /* fallback: timeText में bracket date हो तो उससे */
+      if(!Number.isFinite(eventDay)){
+        const a=moonAsciiDigits(t).trim();
+        const m=a.match(/^\d{1,2}:\d{2}(?::\d{2})?(?:\s*\((\d{2}\/\d{2}\/\d{4})\))?$/);
+        if(m?.[1]) eventDay=parseGB(m[1]);
+      }
+
+      const nextCivilDay =
+        (Number.isFinite(eventObj?.absSeconds) && eventObj.absSeconds >= 86400) ||
+        (Number.isFinite(eventDay) && Number.isFinite(baseDay) && eventDay>baseDay);
+
+      return nextCivilDay ? `आगामी ${plain}` : plain;
     }
 
-    /*
-      कुल दो पंक्तियाँ:
-      1: चन्द्रमा + बृहस्पति
-      2: मङ्गल + बुध + शुक्र + शनि
-    */
     const items=[];
-    if(moonItem) items.push(moonItem);
-    if(planetItemsByKey.guru) items.push(planetItemsByKey.guru);
-    ["mangal","budha","shukra","shani"].forEach(key=>{
+    if(mr?.timeText){
+      items.push(`<span class="odayika-event-chip"><strong>चन्द्रोदय</strong> ${moonPanchangaTime(mr.timeText,gb)} बजे</span>`);
+    }
+    if(ms?.timeText){
+      items.push(`<span class="odayika-event-chip"><strong>चन्द्रास्त</strong> ${(() => { const x=moonPanchangaTime(ms.timeText,gb); return x.startsWith("आगामी ") ? x : "आगामी "+x; })()} बजे</span>`);
+    }
+    ["mangal","budha","guru","shukra","shani"].forEach(key=>{
       if(planetItemsByKey[key]) items.push(planetItemsByKey[key]);
     });
 
     if(title) title.textContent="चन्द्रमा व पञ्चताराग्रह उदयास्त";
-    grid.innerHTML=items.join("");
+
+    /* चन्द्र से शनि तक selectable HTML text; दो स्थिर, सन्तुलित पंक्तियाँ।
+       चन्द्रोदय, चन्द्रास्त, मङ्गल, बुध / बृहस्पति, शुक्र, शनि */
+    const cut=Math.min(3,items.length);
+    const makeRow=rowItems=>rowItems.map((item,i)=>
+      `<span class="odayika-flow-entry">${item}${i<rowItems.length-1 ? '<span class="odayika-sep">,</span>' : ''}</span>`
+    ).join("");
+    const firstRow=items.slice(0,cut);
+    const secondRow=items.slice(cut);
+    grid.innerHTML=
+      `<div class="odayika-flow-row">${makeRow(firstRow)}</div>`+
+      (secondRow.length ? `<div class="odayika-flow-row">${makeRow(secondRow)}</div>` : "");
     box.hidden=!items.length;
   }
 
@@ -17477,5 +17706,951 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
 })(window);
 </script>
 
+
+
+<!-- Approved responsive औदयिक ग्रहस्पष्ट/ग्रहचक्र presentation merged 2026-10-01 -->
+<style id="odayika-grahaspashta-auto-fit-v4">
+/* सभी ग्रह-पंक्तियों पर एक ही स्वतः-fit नियम; किसी ग्रह का hard-coded adjustment नहीं। */
+.odayika-sp-box-title{
+  flex:0 0 auto !important;
+  margin:0 !important;
+  padding:0 !important;
+  line-height:.94 !important;
+}
+#odayikaSpashta{
+  margin-top:0 !important;
+  padding-top:0 !important;
+}
+.odayika-sp-head{
+  flex:0 0 auto !important;
+  min-height:0 !important;
+  margin:0 !important;
+  padding:0 0 1px !important;
+  line-height:.92 !important;
+}
+.odayika-sp-row{
+  flex:1 1 0 !important;
+  min-height:0 !important;
+  gap:0 !important;
+  padding:0 !important;
+  line-height:1.02 !important;
+  letter-spacing:0 !important;
+}
+.odayika-sp-left{min-width:0 !important;margin-right:.04em !important;}
+.odayika-sp-value{column-gap:0 !important;letter-spacing:0 !important;}
+.odayika-sp-num:not(:last-child)::after{margin-left:.01em !important;}
+.odayika-state,.odayika-sp-state-right{margin-left:0 !important;padding-right:0 !important;}
+.odayika-legend-inside{
+  flex:0 0 auto !important;
+  margin:1px 0 0 !important;
+  padding-top:1px !important;
+  line-height:1 !important;
+}
+/* शीर्षक को उपलब्ध चौड़ाई का थोड़ा अधिक उपयोग; ग्रहस्पष्ट box की कुल चौड़ाई अपरिवर्तित। */
+.odayika-sp-box-title{font-size:clamp(.90rem,1.42vw,1.10rem) !important;}
+/* इकाई-header पूरी चौड़ाई में सुव्यवस्थित रहे। */
+.odayika-sp-head{width:100% !important;}
+.odayika-sp-headtext{display:block !important;width:100% !important;white-space:nowrap !important;text-align:justify !important;text-align-last:justify !important;}
+/* अन्तिम केतु-पंक्ति को थोड़ा नीचे बैठाएँ ताकि के० की मात्रा को पूरा स्थान मिले। */
+.odayika-sp-row:last-child{transform:translateY(2px);padding-bottom:0 !important;}
+</style>
+
+<style id="odayika-grahaspashta-adaptive-v6">
+/* केवल तात्कालिक ग्रहस्पष्ट box: अक्षर/अंक actual content के अनुसार auto-fit */
+.odayika-spashta{padding:3px 3px 4px !important;}
+.odayika-sp-box-title{
+  margin:0 !important; padding:0 !important;
+  line-height:1.08 !important;
+  font-size:clamp(.94rem,1.48vw,1.14rem) !important;
+}
+#odayikaSpashta{margin:0 !important;padding:0 !important;min-height:0 !important;}
+.odayika-sp-head{
+  flex:.72 1 0 !important;
+  margin:0 !important; padding:0 1px 1px !important;
+  line-height:1.08 !important; overflow:hidden !important;
+}
+.odayika-sp-headtext{
+  display:block !important; width:100% !important;
+  text-align:justify !important; text-align-last:justify !important;
+  white-space:nowrap !important;
+}
+.odayika-sp-row{
+  flex:1 1 0 !important; min-height:0 !important;
+  padding:1px 1px 0 !important; gap:.03em !important;
+  line-height:1.18 !important; overflow:hidden !important;
+  align-items:center !important; transform:none !important;
+}
+.odayika-sp-left{
+  flex:0 0 auto !important; min-width:0 !important;
+  margin-right:.05em !important;
+}
+.odayika-sp-value{
+  flex:1 1 auto !important; min-width:0 !important;
+  display:grid !important; grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+  column-gap:0 !important; letter-spacing:0 !important;
+}
+.odayika-sp-num{min-width:0 !important;text-align:center !important;}
+.odayika-sp-num:not(:last-child)::after{margin:0 !important;}
+.odayika-state,.odayika-sp-state-right{
+  flex:0 0 auto !important; margin-left:.02em !important; padding-right:0 !important;
+}
+/* केतु में 'के०' की ऊपरी मात्रा के लिए अतिरिक्त breathing room; row नीचे की ओर हल्की बैठती है। */
+.odayika-sp-row:last-child{padding-top:2px !important;padding-bottom:0 !important;}
+.odayika-legend-inside{margin:2px 0 0 !important;padding-top:1px !important;line-height:1.05 !important;}
+</style>
+
+<style id="odayika-grahaspashta-v7-final-tune">
+/* केवल तात्कालिक ग्रहस्पष्ट box — अन्य settings अपरिवर्तित */
+.odayika-sp-box-title{
+  white-space:nowrap !important;
+  font-kerning:normal !important;
+  font-variant-ligatures:normal !important;
+  text-rendering:optimizeLegibility !important;
+}
+.odayika-sp-headtext{
+  white-space:nowrap !important;
+  overflow:hidden !important;
+}
+/* केतु की मात्रा के लिए अन्तिम row में थोड़ा अतिरिक्त ऊपरी अवकाश */
+.odayika-sp-row:last-child{padding-top:3px !important;}
+</style>
+
+<style id="odayika-grahaspashta-v8-rebuild">
+/* केवल तात्कालिक ग्रहस्पष्ट presentation का पुनर्निर्माण */
+.odayika-spashta{padding:3px 3px 4px !important;}
+.odayika-sp-box-title{
+  margin:0 !important; padding:0 !important; line-height:1.02 !important;
+  font-size:clamp(1.02rem,1.62vw,1.24rem) !important; white-space:nowrap !important;
+}
+#odayikaSpashta{display:flex !important;flex-direction:column !important;min-height:0 !important;margin:0 !important;padding:0 !important;}
+.odayika-sp-head{
+  flex:.72 1 0 !important; min-height:0 !important; margin:0 !important; padding:0 1px 1px !important;
+  display:flex !important; align-items:center !important; overflow:hidden !important; line-height:1 !important;
+}
+.odayika-sp-headtext{display:block !important;width:100% !important;white-space:nowrap !important;text-align:justify !important;text-align-last:justify !important;}
+.odayika-sp-row{
+  flex:1 1 0 !important; min-height:0 !important; padding:0 1px !important; margin:0 !important;
+  display:flex !important; align-items:center !important; overflow:visible !important; line-height:1.16 !important;
+}
+.odayika-sp-line{display:inline-flex !important;align-items:center !important;flex:none !important;white-space:nowrap !important;width:max-content !important;max-width:none !important;}
+.odayika-sp-left,.odayika-sp-value,.odayika-state{display:inline !important;flex:none !important;white-space:nowrap !important;}
+.odayika-sp-left{margin-right:.16em !important;}
+.odayika-sp-value{letter-spacing:0 !important;}
+.odayika-state{margin-left:.08em !important;}
+.odayika-sp-row:last-child{padding-top:3px !important;padding-bottom:0 !important;}
+.odayika-legend-inside{flex:0 0 auto !important;margin:1px 0 0 !important;padding-top:1px !important;line-height:1.04 !important;}
+</style>
+
+<style id="odayika-grahaspashta-v9-header-only">
+/* केवल “ग्र० -रा०।अं०।क०।वि०व०/अ०” पंक्ति */
+.odayika-sp-head{flex:.88 1 0 !important;}
+.odayika-sp-headtext{
+  display:block !important;
+  width:100% !important;
+  max-width:100% !important;
+  white-space:nowrap !important;
+  overflow:visible !important;
+  text-align:left !important;
+  text-align-last:auto !important;
+  line-height:1.08 !important;
+  letter-spacing:0 !important;
+}
+</style>
+
+<style id="odayika-grahaspashta-v10-title-header-only">
+/* केवल तात्कालिक ग्रहस्पष्ट शीर्षक और ग्र० header की दृश्य-सुधार */
+.odayika-sp-box-title{
+  transform:translateY(2px) !important;
+  padding-top:1px !important;
+  overflow:visible !important;
+}
+.odayika-sp-head{
+  overflow:visible !important;
+}
+.odayika-sp-headtext{
+  display:block !important;
+  box-sizing:border-box !important;
+  width:100% !important;
+  max-width:100% !important;
+  padding:0 1px !important;
+  white-space:nowrap !important;
+  overflow:visible !important;
+  text-align:left !important;
+  line-height:1.12 !important;
+}
+</style>
+
+<style id="odayika-grahaspashta-v12-header-only">
+/* केवल ग्र० -रा०।अं०।क०।वि०व०/अ० */
+.odayika-sp-head{
+  overflow:visible !important;
+  min-height:20px !important;
+  line-height:1.35 !important;
+  align-items:center !important;
+}
+.odayika-sp-headtext{
+  display:block !important;
+  width:100% !important;
+  max-width:100% !important;
+  box-sizing:border-box !important;
+  padding:0 1px !important;
+  white-space:nowrap !important;
+  overflow:visible !important;
+  text-align:left !important;
+  text-align-last:auto !important;
+  letter-spacing:0 !important;
+  line-height:1.25 !important;
+}
+</style>
+
+<style id="odayika-grahaspashta-v13-header-tiny-adjustment">
+/* केवल ग्र०-header: थोड़ा नीचे; शेष layout untouched */
+.odayika-sp-headtext{
+  position:relative !important;
+  top:4px !important;
+  font-size:14px !important;
+}
+</style>
+
+<style id="odayika-mobile-balanced-20260928">
+/* केवल मोबाइल दृश्य-सन्तुलन; desktop और गणना untouched */
+@media (max-width:700px){
+  /* ग्रहस्पष्ट को पर्याप्त चौड़ाई, ग्रहचक्र को शेष स्थान */
+  .odayika-dual{
+    grid-template-columns:minmax(0,.72fr) minmax(0,1.28fr) !important;
+    gap:3px !important;
+    align-items:stretch !important;
+  }
+  .odayika-spashta{
+    padding:3px 3px 4px !important;
+  }
+  .odayika-sp-box-title{
+    font-size:clamp(.90rem,3.75vw,1.08rem) !important;
+    line-height:1.12 !important;
+  }
+  .odayika-sp-head{
+    min-height:20px !important;
+    overflow:visible !important;
+  }
+  .odayika-sp-headtext{
+    font-size:clamp(12px,3.05vw,14px) !important;
+    top:3px !important;
+    overflow:visible !important;
+  }
+  /* ग्रह-पंक्तियों का मौजूदा independent auto-fit यथावत् */
+  .odayika-sp-row{overflow:visible !important;}
+
+  /* उदयास्त की चार ताराग्रह-पट्टियाँ मोबाइल पर एक पंक्ति में रहें */
+  #odayikaUdayastaGrid .odayika-event-chip{
+    padding:5px 4px !important;
+    font-size:clamp(.76rem,2.75vw,.88rem) !important;
+    line-height:1.22 !important;
+  }
+}
+@media (max-width:390px){
+  .odayika-dual{
+    grid-template-columns:minmax(0,.76fr) minmax(0,1.24fr) !important;
+  }
+  .odayika-sp-headtext{font-size:clamp(11px,3vw,13px) !important;}
+}
+</style>
+
+<style id="odayika-mobile-v16-minimal">
+/* v16: केवल mobile; desktop settings untouched */
+@media (max-width:700px){
+  /* v14 का उपयोगी लगभग 1:2 अनुपात बनाए रखें; किसी एक phone-width पर hard-code नहीं। */
+  .odayika-dual{
+    grid-template-columns:minmax(0,.64fr) minmax(0,1.36fr) !important;
+    gap:2px !important;
+    align-items:stretch !important;
+  }
+  .odayika-left,.odayika-spashta,.odayika-chart-box{min-width:0 !important;}
+  .odayika-chart{width:100% !important;height:auto !important;aspect-ratio:1/1 !important;}
+
+  /* उदयास्त: पहली पंक्ति 2 boxes, दूसरी 4; उपलब्ध screen-width के साथ fluid typography. */
+  #odayikaUdayastaGrid{gap:4px !important;}
+  #odayikaUdayastaGrid .odayika-event-chip{
+    padding:4px 3px !important;
+    font-size:clamp(11px,2.75vw,14px) !important;
+    line-height:1.18 !important;
+  }
+  #odayikaUdayastaGrid .odayika-event-chip.odayika-moon-chip{grid-column:1 / span 8 !important;}
+  #odayikaUdayastaGrid .odayika-event-chip.odayika-guru-chip{grid-column:9 / span 4 !important;}
+  #odayikaUdayastaGrid .odayika-event-chip.odayika-mangal-chip{grid-column:1 / span 3 !important;}
+  #odayikaUdayastaGrid .odayika-event-chip.odayika-budha-chip{grid-column:4 / span 3 !important;}
+  #odayikaUdayastaGrid .odayika-event-chip.odayika-shukra-chip{grid-column:7 / span 3 !important;}
+  #odayikaUdayastaGrid .odayika-event-chip.odayika-shani-chip{grid-column:10 / span 3 !important;}
+}
+@media (max-width:370px){
+  #odayikaUdayastaGrid .odayika-event-chip{font-size:clamp(10px,2.7vw,12px) !important;padding-inline:2px !important;}
+}
+</style>
+
+<style id="odayika-mobile-v18-visual-balance">
+/* v18: केवल mobile ग्रहस्पष्ट-header और ग्रहचक्र typography; उदयास्त/desktop untouched */
+@media (max-width:700px){
+  .odayika-sp-headtext{
+    overflow:visible !important;
+    white-space:nowrap !important;
+  }
+}
+</style>
+
+<style id="udayasta-two-line-autofit-20260929">
+/* उदयास्त : क्रम सुरक्षित, ठीक दो पंक्तियाँ, कोई आन्तरिक विभाजक नहीं */
+#odayikaUdayastaGrid{
+  display:grid !important;
+  grid-template-columns:minmax(0,2.05fr) minmax(0,1fr) minmax(0,1fr) !important;
+  grid-template-rows:auto auto !important;
+  gap:0 !important;
+  align-items:center !important;
+  width:100% !important;
+}
+#odayikaUdayastaGrid .odayika-event-chip{
+  min-width:0 !important;
+  margin:0 !important;
+  padding:.24em .32em !important;
+  border:0 !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+  background:transparent !important;
+  white-space:nowrap !important;
+  text-align:center !important;
+  line-height:1.35 !important;
+  overflow:visible !important;
+}
+#odayikaUdayastaGrid .odayika-moon-chip{
+  justify-content:flex-start !important;
+  padding-left:.55em !important;
+}
+</style>
+
+<style id="requested-final-layout-20260929">
+/* उदयास्त — अक्षरशः क्रम:
+   पंक्ति 1: चन्द्रमा | मङ्गल | बुध
+   पंक्ति 2: बृहस्पति | शुक्र | शनि */
+#odayikaUdayastaGrid{
+  display:grid !important;
+  grid-template-columns:minmax(0,2.15fr) minmax(0,1fr) minmax(0,1fr) !important;
+  grid-template-rows:auto auto !important;
+  gap:0 !important;
+}
+#odayikaUdayastaGrid .odayika-moon-chip{
+  grid-column:1 !important; grid-row:1 !important;
+  justify-content:flex-start !important;
+}
+#odayikaUdayastaGrid .odayika-mangal-chip{grid-column:2 !important;grid-row:1 !important}
+#odayikaUdayastaGrid .odayika-budha-chip{grid-column:3 !important;grid-row:1 !important}
+#odayikaUdayastaGrid .odayika-guru-chip{grid-column:1 !important;grid-row:2 !important}
+#odayikaUdayastaGrid .odayika-shukra-chip{grid-column:2 !important;grid-row:2 !important}
+#odayikaUdayastaGrid .odayika-shani-chip{grid-column:3 !important;grid-row:2 !important}
+
+/* Credit strip — desktop में सन्तुलित एक पंक्ति */
+.source-credit-card{
+  grid-template-areas:"calculator software details web" !important;
+  grid-template-columns:auto auto 1fr auto !important;
+  gap:6px 18px !important;
+}
+.source-credit-item{min-width:0}
+.source-credit-calculator{grid-area:calculator}
+.source-credit-software{grid-area:software}
+.source-credit-details{grid-area:details;text-align:center}
+.source-credit-web{grid-area:web;text-align:right}
+.source-credit-item a{color:#0b5555;text-decoration-thickness:1px;text-underline-offset:3px}
+.source-credit-details .source-credit-link{color:#7b1008}
+
+/* Mobile — ठीक दो पंक्तियाँ:
+   ऊपर: गणितकर्त्ता | विस्तृत परिचय...
+   नीचे: प्रयुक्त सॉफ्टवेयर | वेब-संयोजन... */
+@media(max-width:600px){
+  .source-credit-card{
+    grid-template-areas:
+      "calculator details"
+      "software web" !important;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
+    gap:4px 10px !important;
+    align-items:center !important;
+  }
+  .source-credit-calculator,.source-credit-software{text-align:left}
+  .source-credit-details,.source-credit-web{text-align:right}
+  .source-credit-item{
+    font-size:clamp(.68rem,2.55vw,.82rem);
+    line-height:1.42;
+  }
+  .source-credit-link{
+    font-size:inherit !important;
+    white-space:normal !important;
+  }
+}
+</style>
+
+<style id="balanced-final-layout-20260929">
+/* ===== उदयास्त : दोनों पंक्तियों में 3-3 समान खण्ड ===== */
+#odayikaUdayastaGrid{
+  display:grid !important;
+  grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+  grid-template-rows:auto auto !important;
+  width:100% !important;
+  gap:0 !important;
+  align-items:center !important;
+}
+#odayikaUdayastaGrid .odayika-event-chip{
+  width:100% !important;
+  min-width:0 !important;
+  padding:.28em .34em !important;
+  margin:0 !important;
+  border:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  white-space:nowrap !important;
+  text-align:center !important;
+  justify-content:center !important;
+}
+#odayikaUdayastaGrid .odayika-moon-chip{
+  grid-column:1 !important; grid-row:1 !important;
+  justify-content:center !important;
+  padding-left:.34em !important;
+}
+#odayikaUdayastaGrid .odayika-mangal-chip{grid-column:2 !important;grid-row:1 !important}
+#odayikaUdayastaGrid .odayika-budha-chip{grid-column:3 !important;grid-row:1 !important}
+#odayikaUdayastaGrid .odayika-guru-chip{grid-column:1 !important;grid-row:2 !important}
+#odayikaUdayastaGrid .odayika-shukra-chip{grid-column:2 !important;grid-row:2 !important}
+#odayikaUdayastaGrid .odayika-shani-chip{grid-column:3 !important;grid-row:2 !important}
+
+/* ===== श्रेय-पट्टी : दिया हुआ क्रम =====
+   1 गणितकर्त्ता  2 विस्तृत परिचय  3 सॉफ्टवेयर  4 वेब-संयोजन */
+.source-credit-card{
+  display:grid !important;
+  grid-template-areas:"calculator details software web" !important;
+  grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+  gap:6px 14px !important;
+  align-items:center !important;
+}
+.source-credit-calculator{grid-area:calculator !important;text-align:left !important}
+.source-credit-details{grid-area:details !important;text-align:center !important}
+.source-credit-software{grid-area:software !important;text-align:center !important}
+.source-credit-web{grid-area:web !important;text-align:right !important}
+.source-credit-item{
+  min-width:0 !important;
+  line-height:1.42 !important;
+}
+.source-credit-item a{
+  text-underline-offset:3px;
+}
+
+/* मोबाइल में उसी क्रम को 2 × 2 में बाँटना:
+   ऊपर: गणितकर्त्ता | विस्तृत परिचय
+   नीचे: सॉफ्टवेयर | वेब-संयोजन */
+@media(max-width:600px){
+  .source-credit-card{
+    grid-template-areas:
+      "calculator details"
+      "software web" !important;
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:5px 12px !important;
+  }
+  .source-credit-calculator,.source-credit-software{text-align:left !important}
+  .source-credit-details,.source-credit-web{text-align:right !important}
+  .source-credit-item{
+    font-size:clamp(.70rem,2.65vw,.84rem) !important;
+  }
+  .source-credit-link{
+    font-size:inherit !important;
+    white-space:normal !important;
+  }
+}
+</style>
+
+<style id="udayasta-balanced-stream-final-20260929">
+#odayikaUdayastaGrid{
+  display:block !important;
+  width:100% !important;
+}
+#odayikaUdayastaGrid .odayika-stream-source{display:none !important}
+#odayikaUdayastaGrid .odayika-flow-row{
+  display:flex !important;
+  flex-wrap:nowrap !important;
+  align-items:baseline !important;
+  justify-content:center !important;
+  width:100% !important;
+  min-width:0 !important;
+  white-space:nowrap !important;
+  line-height:1.45 !important;
+}
+#odayikaUdayastaGrid .odayika-flow-row + .odayika-flow-row{
+  margin-top:.20em !important;
+}
+#odayikaUdayastaGrid .odayika-event-chip{
+  display:inline !important;
+  position:static !important;
+  width:auto !important;
+  min-width:0 !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:0 !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+  background:transparent !important;
+  white-space:nowrap !important;
+  text-align:left !important;
+  line-height:inherit !important;
+  grid-column:auto !important;
+  grid-row:auto !important;
+}
+#odayikaUdayastaGrid .odayika-sep{
+  display:inline !important;
+  flex:0 0 auto !important;
+  margin:0 .42em 0 .12em !important;
+  font-weight:400 !important;
+}
+</style>
+
+<style id="udayasta-v15-stable-large-selectable">
+#odayikaUdayastaGrid{
+  display:block !important;
+  width:100% !important;
+  padding:0 .20em !important;
+  user-select:text !important;
+  -webkit-user-select:text !important;
+}
+#odayikaUdayastaGrid .odayika-flow-row{
+  display:flex !important;
+  flex-wrap:nowrap !important;
+  align-items:baseline !important;
+  justify-content:space-between !important;
+  width:100% !important;
+  white-space:nowrap !important;
+  font-size:clamp(15px,2.75vw,20px) !important;
+  line-height:1.40 !important;
+  user-select:text !important;
+  -webkit-user-select:text !important;
+}
+#odayikaUdayastaGrid .odayika-flow-row + .odayika-flow-row{margin-top:.16em !important}
+#odayikaUdayastaGrid .odayika-flow-entry{
+  display:inline-flex !important;
+  flex:0 0 auto !important;
+  align-items:baseline !important;
+  white-space:nowrap !important;
+  user-select:text !important;
+  -webkit-user-select:text !important;
+}
+#odayikaUdayastaGrid .odayika-event-chip{
+  display:inline !important;
+  width:auto !important;
+  min-width:0 !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:0 !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+  background:transparent !important;
+  white-space:nowrap !important;
+  line-height:inherit !important;
+  font-size:inherit !important;
+  user-select:text !important;
+  -webkit-user-select:text !important;
+}
+#odayikaUdayastaGrid .odayika-sep{
+  display:inline !important;
+  margin-left:.10em !important;
+  font-size:inherit !important;
+}
+#odayikaUdayastaTitle{
+  font-size:clamp(21px,3.25vw,25px) !important;
+  line-height:1.32 !important;
+  font-weight:700 !important;
+  text-align:center !important;
+  margin-bottom:.30em !important;
+  user-select:text !important;
+  -webkit-user-select:text !important;
+}
+@media(max-width:600px){
+  #odayikaUdayastaGrid .odayika-flow-row{
+    font-size:clamp(14px,3.45vw,18px) !important;
+  }
+  #odayikaUdayastaTitle{
+    font-size:clamp(20px,4.2vw,24px) !important;
+  }
+}
+</style>
+
+<style id="udayasta-v17-no-clipping">
+#odayikaUdayastaGrid{
+  box-sizing:border-box !important;
+}
+#odayikaUdayastaGrid .odayika-flow-row{
+  box-sizing:border-box !important;
+  max-width:100% !important;
+}
+#odayikaUdayastaGrid .odayika-flow-row:first-of-type{
+  font-size:clamp(14px,2.35vw,18px) !important;
+}
+#odayikaUdayastaGrid .odayika-flow-row:last-of-type{
+  font-size:clamp(13px,2.15vw,17px) !important;
+}
+@media(max-width:600px){
+  #odayikaUdayastaGrid .odayika-flow-row:first-of-type{
+    font-size:clamp(13px,3.15vw,17px) !important;
+  }
+  #odayikaUdayastaGrid .odayika-flow-row:last-of-type{
+    font-size:clamp(12px,2.95vw,16px) !important;
+  }
+  #odayikaUdayastaTitle{
+    font-size:clamp(22px,4.8vw,26px) !important;
+  }
+}
+</style>
+
+<style id="udayasta-v21-mobile-first-row-only">
+@media(max-width:600px){
+  #odayikaUdayastaGrid{
+    padding-left:.10em !important;
+    padding-right:.10em !important;
+  }
+  #odayikaUdayastaGrid .odayika-flow-row:first-of-type{
+    font-size:clamp(14px,3.55vw,18px) !important;
+  }
+  #odayikaUdayastaTitle{
+    font-size:clamp(22px,4.8vw,26px) !important;
+  }
+}
+</style>
+
+<style id="odayika-v22-mobile-grahaspashta-header-fix">
+@media(max-width:700px){
+  .odayika-sp-head{
+    min-height:24px !important;
+    height:auto !important;
+    padding:0 1px 2px !important;
+    overflow:visible !important;
+    align-items:center !important;
+  }
+  .odayika-sp-headtext{
+    position:relative !important;
+    top:1px !important;
+    display:block !important;
+    width:100% !important;
+    max-width:100% !important;
+    box-sizing:border-box !important;
+    line-height:1.30 !important;
+    overflow:visible !important;
+    transform-origin:left center !important;
+  }
+}
+</style>
+
+<style id="odayika-v23-final-visible-header-and-chart-numbers">
+/* 1. ग्र० -रा०।अं०।क०।वि०व०/अ० : कटाव समाप्त।
+   पुरानी flex-height/overflow/relative-top settings को निर्णायक रूप से override करें। */
+.odayika-sp-head{
+  flex:0 0 27px !important;
+  min-height:27px !important;
+  height:27px !important;
+  box-sizing:border-box !important;
+  margin:0 !important;
+  padding:2px 1px 3px !important;
+  overflow:visible !important;
+  display:flex !important;
+  align-items:center !important;
+  line-height:1.25 !important;
+}
+.odayika-sp-headtext{
+  position:static !important;
+  top:auto !important;
+  transform:none !important;
+  display:block !important;
+  width:100% !important;
+  max-width:100% !important;
+  box-sizing:border-box !important;
+  margin:0 !important;
+  padding:0 !important;
+  white-space:nowrap !important;
+  overflow:visible !important;
+  line-height:1.25 !important;
+  letter-spacing:-.02em !important;
+}
+
+/* 2. ग्रहचक्र: राशि-संख्याएँ ग्रहाक्षरों के तुल्य दृश्य-आकार में। */
+.odayika-chart .odayika-num{
+  font-size:62px !important;
+  font-weight:700 !important;
+}
+.odayika-chart .odayika-pl{
+  font-size:56px;
+  font-weight:700 !important;
+}
+
+@media(max-width:700px){
+  .odayika-sp-head{
+    flex-basis:28px !important;
+    min-height:28px !important;
+    height:28px !important;
+    padding:2px 1px 4px !important;
+  }
+  .odayika-sp-headtext{
+    font-size:clamp(12px,3.05vw,14px) !important;
+    line-height:1.30 !important;
+  }
+  /* SVG user-unit font sizes scale with the chart itself; same rule therefore
+     preserves the ग्रह/संख्या proportion on mobile without a separate tiny number rule. */
+  .odayika-chart .odayika-num{
+    font-size:64px !important;
+  }
+}
+</style>
+
+<style id="v27-mobile-spashta-row-edge">
+@media(max-width:700px){
+  .odayika-sp-row{
+    overflow:visible !important;
+    padding-right:0 !important;
+  }
+  .odayika-sp-line{
+    transform-origin:left center !important;
+  }
+}
+</style>
+
+<style id="responsive-header-credit-integration-v2">
+/* ===== Wide-screen refinement v2 =====
+   केवल presentation: header typography + credit strip integration.
+   Calculation/data/JS untouched. */
+
+/* बड़े/मध्यम desktop पर शीर्षक और navigation स्क्रीन के साथ सीमित रूप से बढ़ें। */
+@media (min-width:701px){
+  .site-header h1{
+    font-size:clamp(1.85rem,2.05vw,2.55rem) !important;
+    margin-bottom:clamp(8px,.7vw,14px) !important;
+  }
+  .site-nav{
+    gap:clamp(6px,.55vw,10px) clamp(18px,1.55vw,30px) !important;
+  }
+  .site-nav a{
+    font-size:clamp(1.02rem,1.12vw,1.28rem) !important;
+    line-height:1.45 !important;
+  }
+}
+
+/* छोटे स्क्रीन पर वृद्धि सीमित रहे। */
+@media (max-width:700px){
+  .site-header h1{
+    font-size:clamp(1.48rem,6.2vw,1.85rem) !important;
+  }
+  .site-nav a{
+    font-size:clamp(.90rem,3.8vw,1rem) !important;
+  }
+}
+
+/* Credit line को अलग floating card न दिखाकर नीचे की content-area का आरम्भ बनाना। */
+.source-credit-card{
+  width:min(calc(100% - 44px),1720px) !important;
+  margin:0 auto !important;
+  padding:8px 14px 7px !important;
+  background:transparent !important;
+  border:0 !important;
+  border-bottom:1px solid rgba(139,90,22,.24) !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+  font-size:clamp(.76rem,.82vw,.90rem) !important;
+  line-height:1.42 !important;
+}
+.source-credit-card + .page-shell{
+  padding-top:10px !important;
+}
+
+@media(max-width:600px){
+  .source-credit-card{
+    width:calc(100% - 16px) !important;
+    padding:6px 2px 5px !important;
+    font-size:.79rem !important;
+  }
+}
+</style>
+
+<style id="v25-mobile-only-final-fixes">
+@media(max-width:700px){
+
+  /* ग्रहस्पष्ट उपशीर्षक: पर्याप्त वास्तविक ऊँचाई, कोई clipping नहीं */
+  .odayika-sp-head{
+    flex:0 0 31px !important;
+    height:31px !important;
+    min-height:31px !important;
+    padding:3px 1px 4px !important;
+    overflow:visible !important;
+    box-sizing:border-box !important;
+    align-items:center !important;
+  }
+  .odayika-sp-headtext{
+    position:static !important;
+    top:auto !important;
+    transform:none !important;
+    width:100% !important;
+    max-width:100% !important;
+    font-size:13px !important;
+    line-height:1.25 !important;
+    white-space:nowrap !important;
+    overflow:visible !important;
+  }
+
+  /* ग्रहस्पष्ट की हर पंक्ति उपलब्ध चौड़ाई उपयोग करे */
+  .odayika-sp-row{
+    overflow:visible !important;
+  }
+  .odayika-sp-line{
+    display:block !important;
+    width:max-content !important;
+    max-width:none !important;
+    transform-origin:left center !important;
+  }
+
+  /* उदयास्त: केवल mobile में content के अनुसार JS font-size देगा */
+  #odayikaUdayastaGrid .odayika-flow-row{
+    width:100% !important;
+    max-width:100% !important;
+    box-sizing:border-box !important;
+    white-space:nowrap !important;
+  }
+}
+</style>
+
+<style id="v26-desktop-udayasta-containment">
+@media(min-width:701px){
+  #odayikaUdayastaGrid{
+    width:100% !important;
+    max-width:100% !important;
+    box-sizing:border-box !important;
+    padding-left:.18em !important;
+    padding-right:.18em !important;
+  }
+  #odayikaUdayastaGrid .odayika-flow-row{
+    width:100% !important;
+    max-width:100% !important;
+    box-sizing:border-box !important;
+    white-space:nowrap !important;
+  }
+}
+</style>
+
+<script id="v26-desktop-udayasta-autofit">
+(function(){
+  let raf=0;
+  function fitDesktop(){
+    raf=0;
+    if(!window.matchMedia("(min-width:701px)").matches) return;
+    document.querySelectorAll("#odayikaUdayastaGrid .odayika-flow-row").forEach(function(row,index){
+      const max=index===0 ? 20 : 18;
+      const min=11;
+      let size=max;
+      row.style.setProperty("font-size",size+"px","important");
+      while(size>min && row.scrollWidth>row.clientWidth+1){
+        size-=0.25;
+        row.style.setProperty("font-size",size+"px","important");
+      }
+    });
+  }
+  function schedule(){
+    cancelAnimationFrame(raf);
+    raf=requestAnimationFrame(fitDesktop);
+  }
+  document.addEventListener("DOMContentLoaded",function(){
+    const grid=document.getElementById("odayikaUdayastaGrid");
+    if(grid) new MutationObserver(schedule).observe(grid,{childList:true,subtree:true,characterData:true});
+    schedule();
+  });
+  window.addEventListener("resize",schedule);
+})();
+</script>
+
+<style id="final-mobile-grahaspashta-header-fit">
+@media(max-width:700px){
+  .odayika-sp-head{
+    box-sizing:border-box !important;
+    width:100% !important;
+    min-width:0 !important;
+    padding-left:1px !important;
+    padding-right:1px !important;
+    overflow:hidden !important;
+  }
+  .odayika-sp-headtext{
+    position:static !important;
+    display:block !important;
+    width:max-content !important;
+    max-width:none !important;
+    min-width:0 !important;
+    margin:0 !important;
+    padding:0 !important;
+    white-space:nowrap !important;
+    line-height:1.25 !important;
+    transform-origin:left center !important;
+  }
+}
+</style>
+
+<script id="final-mobile-grahaspashta-header-autofit">
+(function(){
+  function fitGrahaspashtaHeader(){
+    if(!window.matchMedia || !window.matchMedia("(max-width:700px)").matches) return;
+    const head=document.querySelector(".odayika-sp-head");
+    const text=document.querySelector(".odayika-sp-headtext");
+    if(!head || !text || head.clientWidth<=0) return;
+
+    text.style.setProperty("transform","none","important");
+    text.style.setProperty("font-size","14px","important");
+
+    const available=Math.max(1,head.clientWidth-2);
+    const natural=Math.max(1,text.scrollWidth);
+
+    if(natural>available){
+      const scale=Math.min(1,(available*.985)/natural);
+      text.style.setProperty("transform","scaleX("+scale.toFixed(4)+")","important");
+    }
+  }
+
+  function fitUdayastaRows(){
+  if(!window.matchMedia || !window.matchMedia("(max-width:700px)").matches) return;
+  document.querySelectorAll("#odayikaUdayastaGrid .odayika-flow-row").forEach(function(row){
+    if(row.clientWidth<=0) return;
+
+    row.style.setProperty("transform","none","important");
+    row.style.setProperty("transform-origin","left center","important");
+
+    const available=Math.max(1,row.clientWidth-2);
+    const natural=Math.max(1,row.scrollWidth);
+
+    if(natural>row.clientWidth){
+      const scale=Math.min(1,(available*.99)/natural);
+      row.style.setProperty(
+        "transform",
+        "scaleX("+scale.toFixed(4)+")",
+        "important"
+      );
+    }
+  });
+}
+
+  function fitMobileEdges(){
+    fitGrahaspashtaHeader();
+    fitUdayastaRows();
+  }
+
+  function schedule(){ requestAnimationFrame(fitMobileEdges); }
+
+  document.addEventListener("DOMContentLoaded",schedule);
+  window.addEventListener("load",schedule);
+  window.addEventListener("resize",schedule);
+  window.addEventListener("orientationchange",schedule);
+  if(document.fonts && document.fonts.ready){
+    document.fonts.ready.then(schedule).catch(function(){});
+  }
+
+  const obs=new MutationObserver(schedule);
+  document.addEventListener("DOMContentLoaded",function(){
+    const root=document.getElementById("odayikaSpashta");
+    const grid=document.getElementById("odayikaUdayastaGrid");
+    if(root) obs.observe(root,{childList:true,subtree:true,characterData:true});
+    if(grid) obs.observe(grid,{childList:true,subtree:true,characterData:true});
+  });
+})();
+</script>
 </body>
 </html>
