@@ -18756,5 +18756,98 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
 }
 </style>
 
+
+
+<!-- 2026-10-02: unify औदयिक headline + तात्कालिक ग्रहस्पष्ट fitting with RUNNING branch.
+     Secure-specific responsive engine earlier in the document redefined these functions
+     and made the left box typography smaller. This final override deliberately restores
+     the common per-row fitting logic; secure rise/set and sandhya reflow remain untouched. -->
+<script id="secure-odayika-unified-fit-v5-20261002">
+(function(){
+  "use strict";
+
+  window.odayikaFitHeadlineTypography = function(){
+    odayikaFitSingleLineText(document.getElementById("odayikaTitle"),{minPx:12,maxPx:28,fill:.985});
+    odayikaFitSingleLineText(document.getElementById("odayikaDateLine"),{minPx:11,maxPx:22,fill:.985});
+  };
+
+  window.odayikaFitSpashtaTypography = function(){
+    odayikaFitOuterTypography();
+    const root = document.getElementById("odayikaSpashta");
+    if(!root || root.clientWidth <= 0) return;
+    const header = root.querySelector(".odayika-sp-headtext");
+    const rows = [...root.querySelectorAll(".odayika-sp-row")];
+
+    rows.forEach(row => {
+      const line = row.querySelector(".odayika-sp-line");
+      if(!line) return;
+      let lo=11, hi=30;
+      for(let i=0;i<22;i++){
+        const mid=(lo+hi)/2;
+        row.style.fontSize=`${mid}px`;
+        const fitsW = line.scrollWidth <= Math.max(1,row.clientWidth-2);
+        const fitsH = line.scrollHeight <= Math.max(1,row.clientHeight-1);
+        if(fitsW && fitsH) lo=mid; else hi=mid;
+      }
+      row.style.fontSize=`${Math.max(11,lo-.10).toFixed(2)}px`;
+
+      line.style.transform="none";
+      line.style.transformOrigin="left center";
+      const label = (row.querySelector(".odayika-sp-left")?.textContent || "").trim();
+      const referenceRow = /^(चं०|गु०|शु०|श०)/.test(label);
+      if(!referenceRow){
+        const availableW = Math.max(1,row.clientWidth-2);
+        const naturalW = Math.max(1,line.getBoundingClientRect().width);
+        const scaleX = Math.min(1.16, availableW/naturalW);
+        if(scaleX > 1.005) line.style.transform=`scaleX(${scaleX.toFixed(3)})`;
+      }
+    });
+
+    if(window.matchMedia && window.matchMedia("(max-width:700px)").matches){
+      rows.forEach(row=>{
+        const line=row.querySelector(".odayika-sp-line");
+        if(!line) return;
+        line.style.transform="none";
+        line.style.transformOrigin="left center";
+        const availableW=Math.max(1,row.clientWidth-1);
+        const naturalW=Math.max(1,line.getBoundingClientRect().width);
+        const scaleX=availableW/naturalW;
+        line.style.transform=`scaleX(${scaleX.toFixed(4)})`;
+      });
+    }
+
+    if(header && !(window.matchMedia && window.matchMedia("(max-width:700px)").matches)){
+      const headBox = header.parentElement;
+      const available = Math.max(1,(headBox ? headBox.clientWidth : root.clientWidth)-2);
+      const range = document.createRange();
+      range.selectNodeContents(header);
+      let lo=8.0, hi=14.2;
+      for(let i=0;i<24;i++){
+        const mid=(lo+hi)/2;
+        header.style.setProperty("font-size",`${mid}px`,"important");
+        const textWidth = range.getBoundingClientRect().width;
+        if(textWidth <= available) lo=mid;
+        else hi=mid;
+      }
+      header.style.setProperty("font-size",`${Math.max(8.0,lo-.03).toFixed(2)}px`,"important");
+    }
+  };
+
+  function refit(){
+    try{ window.odayikaFitHeadlineTypography(); }catch(_){ }
+    try{ window.odayikaFitSpashtaTypography(); }catch(_){ }
+  }
+
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded",()=>setTimeout(refit,80),{once:true});
+  }else{
+    setTimeout(refit,80);
+  }
+  window.addEventListener("load",()=>setTimeout(refit,140),{once:true});
+  window.addEventListener("resize",()=>setTimeout(refit,50),{passive:true});
+  window.addEventListener("orientationchange",()=>setTimeout(refit,70),{passive:true});
+})();
+</script>
+
 </body>
 </html>
