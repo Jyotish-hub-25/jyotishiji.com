@@ -10236,18 +10236,29 @@ function showSelectedDate(){
       n => NAKSHATRA_MAP[n] || `नक्षत्र ${n}`
     );
 
-  setText(
-    "nakshatra",
-    `${mapNakshatra(row[16])} (${nakshatraEndText})` +
-    panchangaKshayaText(
-      nakshatraKshaya,
-      "नक्षत्र",
-      rowIndex,
-      row,
-      selectedDate
-    )
+  const nakshatraKshaya =
+  panchangaLostAngaInfo(
+    rowIndex,
+    16,
+    28,      // क्षयनक्षत्र का समाप्तिकाल
+    27,
+    n => NAKSHATRA_MAP[n] || `नक्षत्र ${n}`
   );
 
+let nakshatraDisplay =
+  `${mapNakshatra(row[16])} ${nakshatraEndText}`;
+
+if(nakshatraKshaya){
+  const kshayaEndText = !word952BlankLike(row[28])
+    ? `${excelTimeDev(row[28],selectedDate)} बजे तक`
+    : "";
+
+  nakshatraDisplay +=
+    ` तदुपरान्त क्षयनक्षत्र ${nakshatraKshaya.name}` +
+    (kshayaEndText ? ` ${kshayaEndText}` : "");
+}
+
+setText("nakshatra", nakshatraDisplay);
 
   /* योग */
   const yogaVriddhiFull =
