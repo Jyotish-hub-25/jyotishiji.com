@@ -6078,7 +6078,17 @@ function setText(id,value){
   const el = document.getElementById(id);
   if(el) el.textContent = value ?? "";
 }
+function setKaranaText(id,value){
+  const el = document.getElementById(id);
+  if(!el) return;
 
+  const text = String(value ?? "");
+
+  el.innerHTML = text.replace(
+    /\(भद्रा\)/g,
+    "<strong>(भद्रा)</strong>"
+  );
+}
 function mapNakshatra(raw){
   if(raw === undefined || raw === null) return "";
 
@@ -11418,7 +11428,7 @@ const k1 =
   `${KARANA_NAMES[seq[0]] || seq[0] || ""} ` +
   `(${panchangaKaalTimeText(row[8],rowIndex,row,selectedDate)})`;
 
-setText(
+setKaranaText(
   "karan1",
   k1
 );
@@ -11426,7 +11436,7 @@ setText(
 
 if(karanaCount === 2){
 
-  setText(
+  setKaranaText(
     "karan2",
     `${KARANA_NAMES[seq[1]] || seq[1] || ""} (सूर्योदयपर्यन्त)`
   );
@@ -11449,7 +11459,7 @@ if(karanaCount === 2){
 
 if(karanaCount === 3){
 
-  setText(
+  setKaranaText(
     "karan2",
     `${KARANA_NAMES[seq[1]] || seq[1] || ""} ` +
     `(${panchangaKaalTimeText(row[9],rowIndex,row,selectedDate)})`
@@ -11473,7 +11483,7 @@ if(karanaCount === 3){
 
 if(karanaCount === 4){
 
-  setText(
+  setKaranaText(
     "karan2",
     `${KARANA_NAMES[seq[1]] || seq[1] || ""} ` +
     `(${panchangaKaalTimeText(row[9],rowIndex,row,selectedDate)})`
