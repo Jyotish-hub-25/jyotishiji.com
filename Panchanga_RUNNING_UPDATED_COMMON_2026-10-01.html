@@ -3436,6 +3436,20 @@ body{display:flex;flex-direction:column;min-height:100vh}
 }
 </style>
 
+
+<style id="mobile-credit-font-fill-20261002">
+/* Mobile credit strip: बीच की रिक्त जगह घटाने हेतु केवल अक्षर आकार बढ़ाया गया है। */
+@media (max-width:600px){
+  .source-credit-card .source-credit-item{
+    font-size:clamp(.80rem,3.30vw,.94rem) !important;
+    line-height:1.40 !important;
+  }
+  .source-credit-card .source-credit-link{
+    font-size:inherit !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <header class="site-header">
