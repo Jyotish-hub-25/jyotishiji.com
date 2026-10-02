@@ -4463,7 +4463,91 @@ function isAngaVriddhiEndingDay(rowIndex,valueColumn){
     !sameAngaAtSunrise(current,next,valueColumn)
   );
 }
+/*
+  पञ्चाङ्ग-अङ्ग क्षय पहचान:
+  1. WORD_952 का explicit क्षय-अन्त समय उपलब्ध हो तो उसे प्राथमिकता।
+  2. explicit field रिक्त हो, पर अगले सूर्योदय पर क्रम एक अङ्ग
+     छोड़कर आगे बढ़ गया हो, तो क्षय स्वतः पहचानें।
+*/
+function panchangaLostAngaInfo(
+  rowIndex,
+  valueColumn,
+  lostTimeColumn,
+  maxNumber,
+  nameForNumber
+){
+  if(!workbookData) return null;
 
+  const current = workbookData[rowIndex];
+  const next = workbookData[rowIndex + 1];
+  if(!current) return null;
+
+  const currentNo = panchangaLeadingNumber(current[valueColumn]);
+  if(!Number.isFinite(currentNo)) return null;
+
+  const lostNo = panchangaNextCyclic(currentNo,maxNumber);
+  const afterLostNo = panchangaNextCyclic(lostNo,maxNumber);
+
+  const nextNo = next
+    ? panchangaLeadingNumber(next[valueColumn])
+    : NaN;
+
+  const explicitRaw = current[lostTimeColumn];
+  const hasExplicitTime = !word952BlankLike(explicitRaw);
+
+  /*
+    उदाहरण:
+    रोहिणी = 4 और अगले सूर्योदय पर आर्द्रा = 6
+    ⇒ बीच का 5 मृगशिरा क्षय।
+  */
+  const inferredFromSunriseJump =
+    Number.isFinite(nextNo) &&
+    nextNo === afterLostNo;
+
+  if(!hasExplicitTime && !inferredFromSunriseJump){
+    return null;
+  }
+
+  return {
+    number: lostNo,
+    name: nameForNumber(lostNo),
+    rawTime: hasExplicitTime ? explicitRaw : ""
+  };
+}
+
+
+/* योग-संख्या से योग-नाम */
+function yogaNameByNumber(n){
+  const key = Object.keys(YOG_MAP).find(k => {
+    const m = String(k).match(/^\s*(\d{1,2})/);
+    return m && Number(m[1]) === Number(n);
+  });
+
+  return key ? YOG_MAP[key] : `योग ${n}`;
+}
+
+
+/* मुख्य पञ्चाङ्ग में क्षय-पाठ */
+function panchangaKshayaText(
+  info,
+  kind,
+  rowIndex,
+  row,
+  selectedDate
+){
+  if(!info || !info.name) return "";
+
+  const timeText = info.rawTime
+    ? `, ${panchangaKaalTimeText(
+        info.rawTime,
+        rowIndex,
+        row,
+        selectedDate
+      )}`
+    : "";
+
+  return `; ${info.name} (${kind}क्षय${timeText})`;
+}
 
 /* पञ्चाङ्ग-अङ्गों के अन्त-समय के साथ उस समय का काल-नाम */
 function panchangaKaalLabelForRawTime(rawTime,rowIndex,row){
@@ -10080,41 +10164,131 @@ function showSelectedDate(){
       ? TITHI_MAP[tithiNumber]
       : (row[3] || "");
   
-    const tithiVriddhiFull = isVriddhi(row[4]) || isAngaVriddhiFullDay(rowIndex,3);
-    const tithiVriddhiEnding = !tithiVriddhiFull && isAngaVriddhiEndingDay(rowIndex,3);
-    const tithiEndText = tithiVriddhiFull
-      ? "अहोरात्र, तिथिवृद्धि से"
-      : panchangaKaalTimeText(row[4],rowIndex,row,selectedDate) +
-        (tithiVriddhiEnding ? ", तिथिवृद्धि से" : "");
+      const tithiVriddhiFull =
+    isVriddhi(row[4]) ||
+    isAngaVriddhiFullDay(rowIndex,3);
 
-setText(
-  "tithi",
-  `${tithiName} (${tithiEndText})`
-);
+  const tithiVriddhiEnding =
+    !tithiVriddhiFull &&
+    isAngaVriddhiEndingDay(rowIndex,3);
+
+  const tithiEndText = tithiVriddhiFull
+    ? "अहोरात्र, तिथिवृद्धि से"
+    : panchangaKaalTimeText(
+        row[4],
+        rowIndex,
+        row,
+        selectedDate
+      ) +
+      (tithiVriddhiEnding
+        ? ", तिथिवृद्धि से"
+        : "");
+
+  const tithiKshaya =
+    panchangaLostAngaInfo(
+      rowIndex,
+      3,       // तिथि
+      26,      // LostTithiEnd
+      30,
+      n => TITHI_MAP[n] || `तिथि ${n}`
+    );
+
+  setText(
+    "tithi",
+    `${tithiName} (${tithiEndText})` +
+    panchangaKshayaText(
+      tithiKshaya,
+      "तिथि",
+      rowIndex,
+      row,
+      selectedDate
+    )
+  );
+
+
   /* नक्षत्र */
-const nakshatraVriddhiFull = isVriddhi(row[15]) || isAngaVriddhiFullDay(rowIndex,16);
-const nakshatraVriddhiEnding = !nakshatraVriddhiFull && isAngaVriddhiEndingDay(rowIndex,16);
-const nakshatraEndText = nakshatraVriddhiFull
-  ? "अहोरात्र, नक्षत्रवृद्धि से"
-  : panchangaKaalTimeText(row[15],rowIndex,row,selectedDate) +
-    (nakshatraVriddhiEnding ? ", नक्षत्रवृद्धि से" : "");
+  const nakshatraVriddhiFull =
+    isVriddhi(row[15]) ||
+    isAngaVriddhiFullDay(rowIndex,16);
 
-setText(
-  "nakshatra",
-  `${mapNakshatra(row[16])} (${nakshatraEndText})`
-);
+  const nakshatraVriddhiEnding =
+    !nakshatraVriddhiFull &&
+    isAngaVriddhiEndingDay(rowIndex,16);
+
+  const nakshatraEndText = nakshatraVriddhiFull
+    ? "अहोरात्र, नक्षत्रवृद्धि से"
+    : panchangaKaalTimeText(
+        row[15],
+        rowIndex,
+        row,
+        selectedDate
+      ) +
+      (nakshatraVriddhiEnding
+        ? ", नक्षत्रवृद्धि से"
+        : "");
+
+  const nakshatraKshaya =
+    panchangaLostAngaInfo(
+      rowIndex,
+      16,      // नक्षत्र
+      28,      // LostNakshatraEnd
+      27,
+      n => NAKSHATRA_MAP[n] || `नक्षत्र ${n}`
+    );
+
+  setText(
+    "nakshatra",
+    `${mapNakshatra(row[16])} (${nakshatraEndText})` +
+    panchangaKshayaText(
+      nakshatraKshaya,
+      "नक्षत्र",
+      rowIndex,
+      row,
+      selectedDate
+    )
+  );
+
 
   /* योग */
-  const yogaVriddhiFull = isVriddhi(row[6]) || isAngaVriddhiFullDay(rowIndex,5);
-  const yogaVriddhiEnding = !yogaVriddhiFull && isAngaVriddhiEndingDay(rowIndex,5);
+  const yogaVriddhiFull =
+    isVriddhi(row[6]) ||
+    isAngaVriddhiFullDay(rowIndex,5);
+
+  const yogaVriddhiEnding =
+    !yogaVriddhiFull &&
+    isAngaVriddhiEndingDay(rowIndex,5);
+
   const yogaEndText = yogaVriddhiFull
     ? "अहोरात्र, योगवृद्धि से"
-    : panchangaKaalTimeText(row[6],rowIndex,row,selectedDate) +
-      (yogaVriddhiEnding ? ", योगवृद्धि से" : "");
+    : panchangaKaalTimeText(
+        row[6],
+        rowIndex,
+        row,
+        selectedDate
+      ) +
+      (yogaVriddhiEnding
+        ? ", योगवृद्धि से"
+        : "");
+
+  const yogaKshaya =
+    panchangaLostAngaInfo(
+      rowIndex,
+      5,       // योग
+      27,      // LostYogaEnd
+      27,
+      yogaNameByNumber
+    );
 
   setText(
     "yoga",
-    `${yogaDisplayName(row[5])} (${yogaEndText})`
+    `${yogaDisplayName(row[5])} (${yogaEndText})` +
+    panchangaKshayaText(
+      yogaKshaya,
+      "योग",
+      rowIndex,
+      row,
+      selectedDate
+    )
   );
 
   /* सूर्योदय/सूर्यास्त */
