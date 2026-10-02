@@ -18849,5 +18849,144 @@ PagoPago2026.xlsx   | Pacific/Pago_Pago  | UTC-11:00 | no DST
 })();
 </script>
 
+
+
+<!-- 2026-10-02 v6: औदयिक ग्रहस्पष्ट box का वास्तविक दृश्य-सन्तुलन.
+     लक्ष्य: चौड़े Panchanga-column पर बायाँ box अनावश्यक न फैले;
+     ग्रह-पंक्तियों की ऊँचाई का उपयोग कर अक्षर बड़े रहें और आवश्यकता पर केवल
+     हल्का horizontal compression हो. गणना/डेटा/ग्रहचक्र geometry अपरिवर्तित. -->
+<style id="odayika-left-balance-v6-20261002">
+/* ग्रहस्पष्ट box content-driven रहे; अतिरिक्त चौड़ाई ग्रहचक्र को मिले। */
+.odayika-dual{
+  grid-template-columns:clamp(120px,26%,136px) minmax(0,1fr) !important;
+  gap:4px !important;
+  align-items:stretch !important;
+}
+.odayika-left,
+.odayika-spashta{
+  min-width:0 !important;
+  width:100% !important;
+}
+.odayika-spashta{
+  padding:3px 2px 4px !important;
+}
+.odayika-sp-box-title{
+  font-size:clamp(.94rem,1.25vw,1.08rem) !important;
+  line-height:1.08 !important;
+}
+.odayika-sp-head{
+  padding:0 0 1px !important;
+  line-height:1.04 !important;
+}
+.odayika-sp-row{
+  padding:1px 0 0 !important;
+  line-height:1.10 !important;
+  overflow:hidden !important;
+}
+.odayika-legend-inside{
+  font-size:clamp(.70rem,.82vw,.78rem) !important;
+  line-height:1.05 !important;
+}
+
+/* बहुत छोटी वास्तविक screen पर अनुपात फिर fluid हो; chart को दबाया न जाए। */
+@media(max-width:420px){
+  .odayika-dual{
+    grid-template-columns:clamp(104px,31%,120px) minmax(0,1fr) !important;
+    gap:2px !important;
+  }
+  .odayika-sp-box-title{
+    font-size:clamp(.82rem,3.55vw,.96rem) !important;
+  }
+  .odayika-legend-inside{
+    font-size:clamp(.62rem,2.45vw,.72rem) !important;
+  }
+}
+</style>
+
+<script id="odayika-left-typography-v6-20261002">
+(function(){
+  "use strict";
+
+  function fitLineByHeightThenWidth(row, line){
+    if(!row || !line) return;
+
+    line.style.transform = "none";
+    line.style.transformOrigin = "left center";
+
+    const availableH = Math.max(1, row.clientHeight - 2);
+    const availableW = Math.max(1, row.clientWidth - 1);
+
+    /* पहले पंक्ति की वास्तविक ऊँचाई का उपयोग करें — चौड़ाई font को अनावश्यक छोटा न करे। */
+    let lo = 12, hi = 24;
+    for(let i=0;i<22;i++){
+      const mid = (lo + hi) / 2;
+      row.style.fontSize = `${mid}px`;
+      const h = Math.max(line.scrollHeight, line.getBoundingClientRect().height);
+      if(h <= availableH) lo = mid; else hi = mid;
+    }
+
+    let fontPx = Math.max(12, lo - .10);
+    row.style.fontSize = `${fontPx.toFixed(2)}px`;
+
+    /* चौड़ी content-row हो तो पहले हल्का संपीडन; अत्यधिक संपीडन से पहले font थोड़ा घटे। */
+    for(let pass=0; pass<10; pass++){
+      line.style.transform = "none";
+      const naturalW = Math.max(1, line.getBoundingClientRect().width);
+      const sx = availableW / naturalW;
+      if(sx >= .82 || fontPx <= 12.25) break;
+      fontPx *= .965;
+      row.style.fontSize = `${fontPx.toFixed(2)}px`;
+    }
+
+    line.style.transform = "none";
+    const naturalW = Math.max(1, line.getBoundingClientRect().width);
+    const scaleX = Math.max(.82, Math.min(1.045, availableW / naturalW));
+    line.style.transform = `scaleX(${scaleX.toFixed(4)})`;
+  }
+
+  window.odayikaFitSpashtaTypography = function(){
+    if(typeof window.odayikaFitOuterTypography === "function"){
+      window.odayikaFitOuterTypography();
+    }
+
+    const root = document.getElementById("odayikaSpashta");
+    if(!root || root.clientWidth <= 0) return;
+
+    const rows = [...root.querySelectorAll(".odayika-sp-row")];
+    rows.forEach(row => fitLineByHeightThenWidth(row, row.querySelector(".odayika-sp-line")));
+
+    const header = root.querySelector(".odayika-sp-headtext");
+    if(header){
+      const box = header.parentElement;
+      const availableW = Math.max(1, (box ? box.clientWidth : root.clientWidth) - 1);
+      header.style.transform = "none";
+      header.style.transformOrigin = "left center";
+      header.style.fontWeight = "700";
+      header.style.letterSpacing = "-0.02em";
+
+      let lo=11, hi=15.5;
+      const range=document.createRange();
+      range.selectNodeContents(header);
+      for(let i=0;i<20;i++){
+        const mid=(lo+hi)/2;
+        header.style.setProperty("font-size",`${mid}px`,"important");
+        const w=Math.max(1,range.getBoundingClientRect().width);
+        if(w <= availableW/.88) lo=mid; else hi=mid;
+      }
+      header.style.setProperty("font-size",`${Math.max(11,lo-.05).toFixed(2)}px`,"important");
+      const naturalW=Math.max(1,range.getBoundingClientRect().width);
+      const sx=Math.max(.86,Math.min(1.02,availableW/naturalW));
+      header.style.transform=`scaleX(${sx.toFixed(4)})`;
+    }
+  };
+
+  function refit(){
+    try{ window.odayikaFitSpashtaTypography(); }catch(_e){}
+  }
+  window.addEventListener("load",()=>setTimeout(refit,0));
+  window.addEventListener("resize",()=>requestAnimationFrame(refit),{passive:true});
+})();
+</script>
+
 </body>
 </html>
