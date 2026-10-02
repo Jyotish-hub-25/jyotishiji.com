@@ -3438,12 +3438,25 @@ body{display:flex;flex-direction:column;min-height:100vh}
 
 
 <style id="mobile-credit-font-fill-20261002">
-/* Mobile credit strip: बीच की रिक्त जगह घटाने हेतु केवल अक्षर आकार बढ़ाया गया है। */
 @media (max-width:600px){
-  .source-credit-card .source-credit-item{
-    font-size:clamp(.80rem,3.33vw,1.00rem) !important;
-    line-height:1.40 !important;
+
+  .source-credit-card{
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
+    column-gap:clamp(6px,2vw,12px) !important;
   }
+
+  .source-credit-card .source-credit-item{
+    font-size:clamp(.76rem,3.33vw,1rem) !important;
+    line-height:1.35 !important;
+    white-space:nowrap !important;
+  }
+
+  .source-credit-card .source-credit-item a{
+    white-space:nowrap !important;
+    overflow-wrap:normal !important;
+    word-break:normal !important;
+  }
+
   .source-credit-card .source-credit-link{
     font-size:inherit !important;
   }
@@ -12373,6 +12386,117 @@ if(document.readyState === "loading"){
   }
 }
 </style>
+<script>
+(function(){
 
+  const MIN_FONT = 10.5;
+  const MAX_FONT = 16;
+
+  function fitSourceCredits(){
+
+    const card = document.querySelector('.source-credit-card');
+    if(!card) return;
+
+    const calculator = card.querySelector('.source-credit-calculator');
+    const details    = card.querySelector('.source-credit-details');
+    const software   = card.querySelector('.source-credit-software');
+    const web        = card.querySelector('.source-credit-web');
+
+    const leftItems  = [calculator, software].filter(Boolean);
+    const rightItems = [details, web].filter(Boolean);
+    const allItems   = [...leftItems, ...rightItems];
+
+    /* Desktop को न छुएँ */
+    if(window.innerWidth > 600){
+      card.style.removeProperty('grid-template-columns');
+
+      allItems.forEach(function(el){
+        el.style.removeProperty('font-size');
+      });
+
+      return;
+    }
+
+    /* पहले अधिकतम आकार पर वास्तविक text-width मापें */
+    allItems.forEach(function(el){
+      el.style.setProperty(
+        'font-size',
+        MAX_FONT + 'px',
+        'important'
+      );
+    });
+
+    const leftNeed = Math.max(
+      ...leftItems.map(el => el.scrollWidth)
+    );
+
+    const rightNeed = Math.max(
+      ...rightItems.map(el => el.scrollWidth)
+    );
+
+    /* दोनों columns उनकी वास्तविक सामग्री के अनुपात में बनें */
+    card.style.setProperty(
+      'grid-template-columns',
+      'minmax(0,' + leftNeed + 'fr) minmax(0,' + rightNeed + 'fr)',
+      'important'
+    );
+
+    /* अब सबसे बड़ा ऐसा समान font-size खोजें
+       जिसमें चारों एक ही पंक्ति में समा जाएँ */
+    let low = MIN_FONT;
+    let high = MAX_FONT;
+
+    for(let i = 0; i < 12; i++){
+
+      const size = (low + high) / 2;
+
+      allItems.forEach(function(el){
+        el.style.setProperty(
+          'font-size',
+          size + 'px',
+          'important'
+        );
+      });
+
+      const fits = allItems.every(function(el){
+        return el.scrollWidth <= el.clientWidth + 1;
+      });
+
+      if(fits){
+        low = size;
+      }else{
+        high = size;
+      }
+    }
+
+    allItems.forEach(function(el){
+      el.style.setProperty(
+        'font-size',
+        low.toFixed(2) + 'px',
+        'important'
+      );
+    });
+  }
+
+  let creditRAF;
+
+  function scheduleCreditFit(){
+    cancelAnimationFrame(creditRAF);
+    creditRAF = requestAnimationFrame(fitSourceCredits);
+  }
+
+  window.addEventListener('resize', scheduleCreditFit);
+  window.addEventListener('orientationchange', scheduleCreditFit);
+
+  if(document.fonts && document.fonts.ready){
+    document.fonts.ready.then(fitSourceCredits);
+  }else{
+    window.addEventListener('load', fitSourceCredits);
+  }
+
+  fitSourceCredits();
+
+})();
+</script>
 </body>
 </html>
