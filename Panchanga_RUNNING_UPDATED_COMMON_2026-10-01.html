@@ -12299,5 +12299,53 @@ if(document.readyState === "loading"){
 
 
 <!-- ODAYIKA CHART TYPOGRAPHY FIX 2026-10-01 v3: container-width driven auto-enlarge/fit -->
+
+
+<style id="odayika-v4-balanced-left-column-20261002">
+/* 2026-10-02: ग्रहस्पष्ट column का दृश्य-सन्तुलन।
+   हाल की chart-width वृद्धि के बाद बायाँ box अनावश्यक चौड़ा हो गया था।
+   गणना/डेटा untouched; केवल responsive proportions और readability। */
+
+/* Desktop / tablet: ग्रहस्पष्ट लगभग 28%, ग्रहचक्र लगभग 72% */
+.odayika-dual{
+  grid-template-columns:minmax(0,.56fr) minmax(0,1.44fr) !important;
+  gap:3px !important;
+}
+.odayika-sp-box-title{
+  font-size:clamp(.98rem,1.18vw,1.10rem) !important;
+  line-height:1.12 !important;
+}
+.odayika-legend-inside{
+  font-size:clamp(.70rem,.90vw,.80rem) !important;
+  line-height:1.18 !important;
+}
+
+/* सामान्य मोबाइल/छोटा tablet: लगभग 30% : 70% */
+@media(max-width:700px){
+  .odayika-dual{
+    grid-template-columns:minmax(0,.60fr) minmax(0,1.40fr) !important;
+    gap:2px !important;
+  }
+  .odayika-spashta{
+    padding-left:2px !important;
+    padding-right:2px !important;
+  }
+  .odayika-sp-box-title{
+    font-size:clamp(.90rem,3.60vw,1.02rem) !important;
+    line-height:1.12 !important;
+  }
+  .odayika-legend-inside{
+    font-size:clamp(.64rem,2.35vw,.74rem) !important;
+  }
+}
+
+/* बहुत संकरी screen पर ग्रहस्पष्ट को न्यूनतम पठनीय चौड़ाई मिले। */
+@media(max-width:390px){
+  .odayika-dual{
+    grid-template-columns:minmax(0,.64fr) minmax(0,1.36fr) !important;
+  }
+}
+</style>
+
 </body>
 </html>
