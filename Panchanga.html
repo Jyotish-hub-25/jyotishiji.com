@@ -4579,13 +4579,24 @@ function panchangaKaalLabelForRawTime(rawTime,rowIndex,row){
     return "सायंकाल";
   }
 
-  /* स्थानीय रात्रिमान: मुख्य पञ्चाङ्ग में प्रदोष के बाद सामान्यतः केवल “रात्रि” लिखें।
-     विस्तृत रात्रि-विभाग अलग काल-मुहूर्त्त तालिका में यथावत् हैं। */
-  if(at >= sunset && at < nextSunrise){
-    const nightFifth=(nextSunrise-sunset)/5;
-    if(at < sunset+nightFifth) return "प्रदोषकाल";
-    return "रात्रि";
+  /* स्थानीय रात्रिमान:
+   प्रदोष के बाद सामान्य रात्रि तथा भोर में रात्रिशेष। */
+if(at >= sunset && at < nextSunrise){
+  const nightFifth=(nextSunrise-sunset)/5;
+
+  if(at < sunset+nightFifth){
+    return "प्रदोषकाल";
   }
+
+  const clockMinutes =
+    ((t % 1440) + 1440) % 1440;
+
+  if(clockMinutes >= RATRISHESH_FROM_HOUR * 60){
+    return "रात्रिशेष";
+  }
+
+  return "रात्रि";
+}
 
   /* यदि कोई अन्त-समय अगले सूर्योदय से भी आगे हो तो अगले दिन के दिवाभाग पर लागू करें। */
   const nextSunsetRaw=rawExcelMinutes(nextRow?.[11]);
@@ -10509,17 +10520,21 @@ if(karanaCount === 4){
 
 
   showOptionalKarana(
-    "karan3Row",
-    "karan3",
+  "karan3Row",
+  "karan3",
 
-    activeKaran3End
-      ? `${KARANA_NAMES[seq[2]] || seq[2] || ""} ` +
-        `(${panchangaKaalLabelForRawTime(activeKaran3End.raw,rowIndex,row) ? panchangaKaalLabelForRawTime(activeKaran3End.raw,rowIndex,row) + " " : ""}${activeKaran3End.display} बजे तक)`
-      : `${KARANA_NAMES[seq[2]] || seq[2] || ""}`,
+  activeKaran3End
+    ? `${KARANA_NAMES[seq[2]] || seq[2] || ""} ` +
+      `(${panchangaKaalTimeText(
+        karan3RoundedTime(activeKaran3End.raw),
+        rowIndex,
+        row,
+        selectedDate
+      )})`
+    : `${KARANA_NAMES[seq[2]] || seq[2] || ""}`,
 
-    true
-  );
-
+  true
+);
 
   showOptionalKarana(
     "karan4Row",
