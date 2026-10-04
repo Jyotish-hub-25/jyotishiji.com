@@ -4604,7 +4604,10 @@ if(at >= sunset && at < nextSunrise){
   const clockMinutes =
     ((t % 1440) + 1440) % 1440;
 
-  if(clockMinutes >= RATRISHESH_FROM_HOUR * 60){
+  if(
+  t >= 1440 &&
+  clockMinutes >= RATRISHESH_FROM_HOUR * 60
+)
     return "रात्रिशेष";
   }
 
