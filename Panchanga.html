@@ -2532,7 +2532,20 @@ body{display:flex;flex-direction:column;min-height:100vh}
 }
 
 </style>
-
+<style id="sanskrit-visarga-font-fix-20261004">
+/* विसर्ग ः पर Noto Serif Devanagari का अनचाहा stroke न आये */
+html[lang="sa"] .page-shell,
+html[lang="sa"] .panchanga-selector,
+html[lang="sa"] .panchanga-card,
+html[lang="sa"] .article-card,
+html[lang="sa"] .festival-decision-box,
+html[lang="sa"] .festival-audit-box,
+html[lang="sa"] .odayika-box,
+html[lang="sa"] .sandhya-full-box,
+html[lang="sa"] .muhurta-box{
+  font-family:"Noto Sans Devanagari","Nirmala UI","Mangal",sans-serif !important;
+}
+</style>
 </head>
 <body>
 <header class="site-header">
