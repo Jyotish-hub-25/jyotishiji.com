@@ -2534,15 +2534,15 @@ body{display:flex;flex-direction:column;min-height:100vh}
 </style>
 <style id="sanskrit-visarga-font-fix-20261004">
 /* विसर्ग ः पर Noto Serif Devanagari का अनचाहा stroke न आये */
-html[lang="sa"] .page-shell,
-html[lang="sa"] .panchanga-selector,
-html[lang="sa"] .panchanga-card,
-html[lang="sa"] .article-card,
-html[lang="sa"] .festival-decision-box,
-html[lang="sa"] .festival-audit-box,
-html[lang="sa"] .odayika-box,
-html[lang="sa"] .sandhya-full-box,
-html[lang="sa"] .muhurta-box{
+.page-shell,
+.panchanga-selector,
+.panchanga-card,
+.article-card,
+.festival-decision-box,
+.festival-audit-box,
+.odayika-box,
+.sandhya-full-box,
+.muhurta-box{
   font-family:"Noto Sans Devanagari","Nirmala UI","Mangal",sans-serif !important;
 }
 </style>
@@ -10264,17 +10264,16 @@ function showSelectedDate(){
       n => TITHI_MAP[n] || `तिथि ${n}`
     );
 
-  setText(
-    "tithi",
-    `${tithiName} (${tithiEndText})` +
-    panchangaKshayaText(
-      tithiKshaya,
-      "तिथि",
-      rowIndex,
-      row,
-      selectedDate
-    )
-  );
+  setAngaKshayaDisplay(
+  "tithi",
+  tithiName,
+  tithiEndText,
+  tithiKshaya,
+  "क्षयतिथि",
+  rowIndex,
+  row,
+  selectedDate
+);
 
 
   /* नक्षत्र */
@@ -10308,20 +10307,16 @@ function showSelectedDate(){
     );
 
   
-let nakshatraDisplay =
-  `${mapNakshatra(row[16])} ${nakshatraEndText}`;
-
-if(nakshatraKshaya){
-  const kshayaEndText = !word952BlankLike(row[28])
-    ? `${excelTimeDev(row[28],selectedDate)} बजे तक`
-    : "";
-
-  nakshatraDisplay +=
-    ` तदुपरान्त क्षयनक्षत्र ${nakshatraKshaya.name}` +
-    (kshayaEndText ? ` ${kshayaEndText}` : "");
-}
-
-setText("nakshatra", nakshatraDisplay);
+setAngaKshayaDisplay(
+  "nakshatra",
+  mapNakshatra(row[16]),
+  nakshatraEndText,
+  nakshatraKshaya,
+  "क्षयनक्षत्र",
+  rowIndex,
+  row,
+  selectedDate
+);
 
   /* योग */
   const yogaVriddhiFull =
@@ -10353,17 +10348,16 @@ setText("nakshatra", nakshatraDisplay);
       yogaNameByNumber
     );
 
-  setText(
-    "yoga",
-    `${yogaDisplayName(row[5])} (${yogaEndText})` +
-    panchangaKshayaText(
-      yogaKshaya,
-      "योग",
-      rowIndex,
-      row,
-      selectedDate
-    )
-  );
+  setAngaKshayaDisplay(
+  "yoga",
+  yogaDisplayName(row[5]),
+  yogaEndText,
+  yogaKshaya,
+  "क्षययोग",
+  rowIndex,
+  row,
+  selectedDate
+);
 
   /* सूर्योदय/सूर्यास्त */
 setText("sunrise",excelTimeDev(row[10],selectedDate) + " बजे");
