@@ -5261,7 +5261,54 @@ function setText(id,value){
   const el = document.getElementById(id);
   if(el) el.textContent = value ?? "";
 }
+function setAngaKshayaDisplay(
+  id,
+  currentName,
+  currentEndText,
+  kshayaInfo,
+  kshayaLabel,
+  rowIndex,
+  row,
+  selectedDate
+){
+  const el = document.getElementById(id);
+  if(!el) return;
 
+  el.replaceChildren();
+
+  const currentStrong = document.createElement("strong");
+  currentStrong.textContent = currentName || "";
+  el.appendChild(currentStrong);
+
+  if(currentEndText){
+    el.appendChild(
+      document.createTextNode(` (${currentEndText})`)
+    );
+  }
+
+  if(kshayaInfo && kshayaInfo.name){
+    el.appendChild(
+      document.createTextNode(` तदुपरान्त ${kshayaLabel} `)
+    );
+
+    const lostStrong = document.createElement("strong");
+    lostStrong.textContent = kshayaInfo.name;
+    el.appendChild(lostStrong);
+
+    if(kshayaInfo.rawTime){
+      const lostTime = panchangaKaalTimeText(
+        kshayaInfo.rawTime,
+        rowIndex,
+        row,
+        selectedDate
+      );
+
+      el.appendChild(
+        document.createTextNode(` (${lostTime})`)
+      );
+    }
+  }
+}
 function mapNakshatra(raw){
   if(raw === undefined || raw === null) return "";
 
