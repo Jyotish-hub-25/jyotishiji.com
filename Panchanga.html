@@ -2546,6 +2546,18 @@ body{display:flex;flex-direction:column;min-height:100vh}
   font-family:"Noto Sans Devanagari","Nirmala UI","Mangal",sans-serif !important;
 }
 </style>
+<style id="festival-decision-justified-responsive">
+/* पर्व-निर्णय के गद्य का सदा द्विपार्श्व समरेखन; शीर्षक एवं समय के नियम अपरिवर्तित। */
+#festivalDecisionDetails .festival-daily-item > div,
+#festivalDecisionSummary .festival-daily-item > p {
+  text-align: justify;
+  text-align-last: left;
+  text-justify: inter-word;
+  overflow-wrap: break-word;
+  word-break: normal;
+  white-space: normal;
+}
+</style>
 </head>
 <body>
 <header class="site-header">
@@ -2675,7 +2687,7 @@ body{display:flex;flex-direction:column;min-height:100vh}
 </section>
 <section class="special-section" hidden id="festivalTodayRow">
 <div class="data-row">
-<span class="data-label">विशेष :</span>
+<span class="data-label">विशेष</span>
 <span class="dash">-</span>
 <span class="data-value"><strong id="festivalTodayText"></strong></span>
 </div>
@@ -8205,7 +8217,13 @@ function festivalAstroIndex(){
     if(lastE!==null) while(e<=lastE) e+=360;
     if(lastM!==null) while(m<=lastM) m+=360;
     lastE=e; lastM=m;
-    samples.push({i,row,gb,t:gbToOrdinalMinutes(gb,sr),elongU:e,moonU:m,sun: sun.longitude,moon: moon.longitude});
+    // योग = सूर्यस्पष्ट + चन्द्रस्पष्ट; स्रोत श्रीसूर्यसिद्धान्तीय workbook ही है।
+    // longitude के चक्रीय अन्तर को इसी दिन के sampled सूर्य-चन्द्र डेटा से खोलें।
+    const previous=samples.length?samples[samples.length-1]:null;
+    let sunU=sun.longitude;
+    if(previous) while(sunU<=previous.sunU) sunU+=360;
+    const yogaU=sunU+m;
+    samples.push({i,row,gb,t:gbToOrdinalMinutes(gb,sr),elongU:e,moonU:m,sunU,yogaU,sun:sun.longitude,moon: moon.longitude});
   }
   const index={
     workbook:workbookData,
@@ -8213,6 +8231,7 @@ function festivalAstroIndex(){
     samples,
     tithi:buildCyclicIntervals(samples,"elongU",12,30),
     nakshatra:buildCyclicIntervals(samples,"moonU",360/27,27),
+    yoga:buildCyclicIntervals(samples,"yogaU",360/27,27),
     karana:buildKaranaIntervals(samples)
   };
   FESTIVAL_ASTRO_CACHE=index;
@@ -9166,12 +9185,129 @@ function decideMahalaya(){
   return makeDecision({id:"mahalaya",title:"महालय / पितृपक्ष",observanceGB:startGB,activeDates:[...new Set(active)],startGB,endGB,dayMap,status:festivalStatus("तिथ्यनुसार श्राद्ध","verified"),source:"निर्णयसिन्धु，धर्मसिन्धु (धर्मसिन्धुसार)।",rule:"भाद्रपद पूर्णिमा (षोडश-दिन गणना) तथा आश्विन कृष्ण प्रतिपदा से अमावास्या तक तिथ्यनुसार श्राद्ध। पार्वण हेतु अपराह्ण; एकोद्दिष्ट हेतु मध्याह्न।",details:[`षोडश-दिन गणना आरम्भ - ${festivalDateLabel(startGB)}`,`कृष्णपक्षीय मुख्य क्रम - ${festivalDateLabel(krishna[0].gb)} से ${festivalDateLabel(endGB)} तक`,`टिप्पणी - यह पूर्णिमा सहित षोडश-तिथि परीक्षण-क्रम है। तिथिक्षय/वृद्धि के कारण civil dates १५ अथवा १६ हो सकती हैं; एक ही दिन दो श्राद्ध-तिथियाँ पड़ें तो दोनों अलग-अलग दिखायी जाएँगी। निबन्धों में षोडश-दिन गणना की अन्य व्याख्याएँ भी मिलती हैं।`]});
 }
 
-function decideNavaratri(month,title,id,sunRashi0){
-  const iv=tithiInterval(month,1,sunRashi0); if(!iv) return null;
+/* KALASHA REVIEW ENGINE 2026-10-10: नियम, अपवाद और स्रोत-स्थिति।
+   केवल पूर्वविद्यमान सूर्यसिद्धान्तीय workbook को पढ़ता है; गणना-स्रोत नहीं बदलता।
+   अपर्याप्त तिथि/अङ्ग-सन्धि मिलने पर अनुमान को प्रमाणित नहीं बताता। */
+function navaratriIntersect(a,b){if(!a||!b)return null; const start=Math.max(a.start,b.start),end=Math.min(a.end,b.end);return end>start+0.01?{start,end}:null;}
+function navaratriSubtract(parts,cuts){let out=parts;for(const cut of cuts){let nx=[];for(const p of out){const z=navaratriIntersect(p,cut);if(!z){nx.push(p);continue;}if(p.start<z.start-.01)nx.push({start:p.start,end:z.start});if(z.end<p.end-.01)nx.push({start:z.end,end:p.end});}out=nx;}return out.filter(x=>x.end-x.start>=1);}
+function navaratriIntervalsAt(kind,num,range){return (festivalAstroIndex()[kind]||[]).filter(iv=>iv.number===num&&intervalsOverlap(iv,range));}
+function navaratriRangeLabel(r){return r?`${formatAbsForFestival(r.start)} से ${formatAbsForFestival(r.end)} तक`:'उपलब्ध नहीं';}
+function navaratriDaylightLabel(r,sunrise){
+  if(!r)return 'उपलब्ध नहीं';
+  const start=(r.start<=sunrise+1)?'सूर्योदय':`${formatAbsForFestival(r.start)}`;
+  const clock=toDev(absMinutesToGBClock(r.end).clock);
+  return `${start} से ${clock} बजे तक`;
+}
+function navaratriDayData(gb){const row=workbookRowByGBDate(gb);if(!row)return null;const s=rawExcelMinutes(row.row[10]),e=rawExcelMinutes(row.row[11]);if(!Number.isFinite(s)||!Number.isFinite(e)||e<=s)return null;return {gb,sunrise:gbToOrdinalMinutes(gb,s),sunset:gbToOrdinalMinutes(gb,e)};}
+function navaratriChooseDate(iv){
   const sr=tithiAtSunriseDates(iv);
-  let gb=sr.length?sr[0]:absToNominalGB(iv.start+.01);
-  const status=sr.length?festivalStatus("औदयिक परीक्षण","test"):festivalStatus("क्षय-स्थिति; विशेष जाँच","variant");
-  return makeDecision({id,title,observanceGB:gb,activeDates:[gb],status,source:`निर्णयसिन्धु/नवरात्र-निर्णय-परम्परा; व्रत-परिचय - गीताप्रेस ${month==="चैत्र"?"":""}`,rule:`${month} शुक्ल प्रतिपदा; औदयिक प्रतिपदा प्राथमिक। प्रतिपदा-क्षय में अमावास्या-अन्तोत्तर प्रारम्भ का परीक्षण।`,details:[`प्रतिपदा - ${formatAbsForFestival(iv.start)} से ${formatAbsForFestival(iv.end)} तक`,sr.length?`सूर्योदय पर प्रतिपदा - ${sr.map(festivalDateLabel).join(", ")}`:"प्रतिपदा किसी सूर्योदय पर नहीं मिली; क्षय-स्थिति का पृथक् शास्त्रीय audit आवश्यक।"]});
+  const trial=[];
+  let d=addDaysGB(absToNominalGB(iv.start),-1);
+  for(let i=0;i<5;i++,d=addDaysGB(d,1)){
+    const day=navaratriDayData(d);if(!day)continue;
+    const next=navaratriDayData(addDaysGB(d,1));
+    const after=iv.end-day.sunrise;
+    const atSun=iv.start<=day.sunrise+.01&&iv.end>day.sunrise+.01;
+    const dayTouch=iv.start<day.sunset&&iv.end>day.sunrise;
+    const afterSun=atSun?Math.max(0,after):0;
+    if(dayTouch||atSun)trial.push({...day,atSun,afterSun,after, nextSunrise:next?.sunrise??day.sunrise+1440});
+  }
+  const at=trial.filter(x=>x.atSun).sort((a,b)=>a.sunrise-b.sunrise);
+  const qualifying=at.filter(x=>x.afterSun>=144);
+  if(qualifying.length){return {day:qualifying[0],reason:'सूर्योदय के पश्चात् त्रिमुहूर्त अथवा अधिक प्रतिपदा',audit:at.length>1?'द्विसूर्योदय प्रतिपदा—पूर्वदिन को प्राथमिकता; विशेष पूर्वदिवस-अपवाद की जाँच भी अपेक्षित।':'त्रिमुहूर्तव्याप्ति का मुख्य नियम।'};}
+  const two=at.filter(x=>x.afterSun>=96);
+  if(two.length)return {day:two[0],reason:'त्रिमुहूर्ताभाव में द्विमुहूर्तव्याप्ति',audit:'द्विमुहूर्त अपवाद प्रयुक्त।'};
+  const one=at.filter(x=>x.afterSun>=48);
+  if(one.length)return {day:one[0],reason:'त्रि-द्विमुहूर्ताभाव में एकमुहूर्तव्याप्ति—मतान्तर',audit:'एकमुहूर्त-विधान सर्वसम्मत नहीं; शास्त्रीय समीक्षा अपेक्षित।',review:true};
+  // सूर्यादय-अस्पर्श अथवा एकमुहूर्त से न्यून: अमावास्यायुक्त पूर्वदिवस भी ग्राह्य।
+  const touch=trial.filter(x=>x.sunrise<iv.end&&x.sunset>iv.start).sort((a,b)=>a.sunrise-b.sunrise);
+  if(touch.length)return {day:touch[0],reason:'सूर्योदयास्पर्श/एकमुहूर्तन्यून प्रतिपदा—दर्शयुक्तापि ग्राह्या',audit:'प्रतिपदा के आरम्भ से ही स्थापना; अमावास्या में स्थापना नहीं।',review:true};
+  return {day:null,reason:'आवश्यक प्रतिपदा-दिन का स्थानीय विवरण नहीं मिला',audit:'डेटा-अभाव; अनुमानित दिन प्रकाशित न करें।',review:true};
+}
+function navaratriGhataDecision(day,iv,dayDecision){
+  const sunrise=day.sunrise,sunset=day.sunset;
+  const daylight=navaratriIntersect(iv,{start:sunrise,end:sunset});
+  const main=navaratriIntersect(iv,{start:sunrise,end:Math.min(sunrise+240,sunset)});
+  // अभिजित्: स्थानीय दिनमान के १५ मुहूर्तों में आठवाँ मुहूर्त।
+  const abhijit=navaratriIntersect(iv,{start:sunrise+(sunset-sunrise)*7/15,end:sunrise+(sunset-sunrise)*8/15});
+  if(!daylight)return {principal:null,status:'विशेष शास्त्रीय जाँच आवश्यक',details:['प्रतिपदा का ग्राह्य स्थानीय दिनकाल उपलब्ध नहीं।','रात्रि अथवा अमावस्या का मुहूर्त नहीं दिया गया।']};
+  const chitra=navaratriIntervalsAt('nakshatra',14,daylight);
+  const vaidhriti=navaratriIntervalsAt('yoga',27,daylight);
+  const first16={start:iv.start,end:Math.min(iv.end,iv.start+384)};
+  const cuts=[...chitra,...vaidhriti,first16];
+  const cleanMain=main?navaratriSubtract([main],cuts):[];
+  const cleanAbhijit=abhijit?navaratriSubtract([abhijit],cuts):[];
+  const cleanDay=navaratriSubtract([daylight],[...chitra,...vaidhriti]);
+  // सम्पूर्ण ग्राह्य प्रतिपदा-दिनकाल चित्रा अथवा वैधृति में: इस दशा में
+  // विशेष अभिजित् विधान; केवल 'प्रातः दोषयुक्त' से यह निष्कर्ष नहीं निकालते।
+  const fullDayDefect=cleanDay.length===0;
+  const first16TouchesDay=Boolean(navaratriIntersect(first16,daylight));
+  const details=[
+    `प्रतिपदा - ${navaratriRangeLabel(iv)}`,
+    `प्रतिपदादिननिर्णय - ${dayDecision.reason}`,
+    `चित्रा की ग्राह्य दिनकाल-व्याप्ति - ${chitra.length?chitra.map(r=>navaratriDaylightLabel(r,sunrise)).join('; '):'नहीं'}`,
+    `वैधृति की ग्राह्य दिनकाल-व्याप्ति - ${vaidhriti.length?vaidhriti.map(r=>navaratriDaylightLabel(r,sunrise)).join('; '):'नहीं'}`
+  ];
+  let principal=null,reason='',secondary='';
+  if(fullDayDefect){
+    if(abhijit){
+      principal=abhijit;
+      reason='सम्पूर्ण ग्राह्य प्रतिपदा-दिनकाल चित्रा अथवा वैधृति से दूषित; निर्णयसिन्धु में उद्धृत विशेष अभिजित्-विधान। प्रातः दशघटी प्रधान मुहूर्त नहीं।';
+    }else{
+      reason='सम्पूर्ण ग्राह्य प्रतिपदा-दिनकाल में चित्रा/वैधृति का परिहार असम्भव, पर अभिजित् के भीतर प्रतिपदा उपलब्ध नहीं; स्वचालित मुहूर्त घोषित नहीं।';
+    }
+  }else if(cleanMain.length){
+    principal=cleanMain[0];
+    reason='प्रतिपदायुक्त दशघटी में आद्यषोडशनाडी, चित्रा और वैधृति से मुक्त काल उपलब्ध।';
+    if(cleanAbhijit.length)secondary=`अन्य दोषरहित अभिजित् - ${navaratriRangeLabel(cleanAbhijit[0])}`;
+  }else if(cleanAbhijit.length){
+    principal=cleanAbhijit[0];
+    reason='दशघटी में दोषरहित काल नहीं, किन्तु प्रतिपदायुक्त अभिजित् में दोषपरिहार सम्भव।';
+  }else if(abhijit){
+    // मुख्य काल व अभिजित् दोनों दोषयुक्त: स्वतंत्र विशेष परीक्षण के बिना
+    // दोषयुक्त प्रातःकाल को प्रधान मुहूर्त नहीं घोषित करते।
+    principal=abhijit;
+    reason='प्रातः दशघटी में दोषरहित काल नहीं और अभिजित् भी दोषयुक्त; प्रतिपदा का त्याग न करने के सति सम्भवे सिद्धान्त सहित अभिजित्-विकल्प (विशेष पाठानुसार)।';
+  }else{
+    reason='दोषरहित दशघटी अथवा प्रतिपदायुक्त अभिजित् प्राप्त नहीं; स्वचालित मुहूर्त देना उचित नहीं।';
+  }
+  const detailsExtra=[
+    principal?`कलशस्थापन मुहूर्त्त दिन में ${toDev(absMinutesToGBClock(principal.start).clock)} बजे से ${toDev(absMinutesToGBClock(principal.end).clock)} बजे तक।`:'कलशस्थापन — शास्त्रीय परीक्षण अपेक्षित; समय प्रदर्शित नहीं।',
+    `प्रधान निर्णय का कारण — ${reason}`,
+    ...(secondary?[secondary]:[]),
+    'धर्मसिन्धु — चित्रा, वैधृति तथा आद्यषोडशनाडी का परिहार केवल सति सम्भवे; उनके कारण प्रतिपदा या विहित कर्मकाल का अतिक्रमण नहीं।',
+    'निर्णयसिन्धु — सम्पूर्ण प्रतिपदा चित्रा अथवा वैधृति से युक्त होने की विशेष दशा में अभिजित्-स्थापन का उद्धृत विधान।',
+  ];
+  // 'विशेष' में उसी दिन का स्थानानुसार संक्षिप्त निर्णय; कोई वर्षविशेष समय hardcode नहीं।
+  let specialLine='';
+  if(principal){
+    const chitraAll=navaratriSubtract([daylight],chitra).length===0;
+    const vaidhritiAll=navaratriSubtract([daylight],vaidhriti).length===0;
+    const defectNames=[chitraAll?'चित्रा':'',vaidhritiAll?'वैधृति':''].filter(Boolean);
+    const defectText=defectNames.length===2?'चित्रा+वैधृति सम्पूर्ण दिन में व्याप्ति':
+      defectNames.length===1?`${defectNames[0]} सम्पूर्ण ग्राह्य दिनकाल में व्याप्ति`:
+      'चित्रा अथवा वैधृति के कारण दोषरहित काल अनुपलब्ध';
+    const startClock=toDev(absMinutesToGBClock(principal.start).clock);
+    const endClock=toDev(absMinutesToGBClock(principal.end).clock);
+    if(fullDayDefect && abhijit){
+      specialLine=`${defectText} अतः कलशस्थापन अभिजित मुहूर्त्त दिन ${startClock} बजे से ${endClock} बजे तक।`;
+    }else{
+      specialLine=`कलशस्थापन ${startClock} बजे से ${endClock} बजे तक।`;
+    }
+  }
+  return {principal,specialLine,status:principal?'शास्त्रीय निर्णय':'शास्त्रीय पुनःपरीक्षण आवश्यक',details:[...details,...detailsExtra]};
+}
+function decideNavaratri(month,title,id,sunRashi0){
+  const iv=tithiInterval(month,1,sunRashi0);if(!iv)return null;
+  const chosen=navaratriChooseDate(iv);
+  const gb=chosen.day?.gb||absToNominalGB(iv.start+.01);
+  const ghata=chosen.day?navaratriGhataDecision(chosen.day,iv,chosen):null;
+  const details=ghata?ghata.details:[`प्रतिपदा - ${navaratriRangeLabel(iv)}`,chosen.reason,chosen.audit];
+  const status=festivalStatus(ghata?.status||'दिननिर्णय के लिए डेटा अपर्याप्त','variant');
+  return makeDecision({id,title,observanceGB:gb,activeDates:[gb],status,
+    specialLine:ghata?.specialLine||'',
+    source:'धर्मसिन्धु—नवरात्रारम्भनिर्णय; निर्णयसिन्धु—चित्रा/वैधृति एवं अभिजित्; पुरुषार्थचिन्तामणि—अमावास्यायुक्त प्रतिपदा के अपवाद',
+    rule:`${month} शुक्ल प्रतिपदा; त्रि/द्वि/एक-मुहूर्त तथा सूर्योदयास्पर्श के अपवाद, प्रतिपदायुक्त दशघटी, आद्यषोडशनाडी, चित्रा-वैधृति का सति सम्भवे परिहार तथा सम्पूर्ण दोषयुक्त ग्राह्य प्रतिपदा में विशेष अभिजित्-विधान; रात्रि-अमावस्या-अपराह्ण निषेध।`,details});
 }
 
 function decideMahaAshtami(anchorGB=""){
@@ -9309,7 +9445,7 @@ function decisionForDate(decision,gb){
     };
   }
   if((decision.activeDates||[]).includes(gb)){
-    return {title:decision.title,summary:`इस स्थान के स्थानीय पञ्चाङ्गानुसार आज ${decision.title} का निर्णय प्राप्त होता है।`,details:[...decision.details,`नियम - ${decision.rule}`,`स्रोत-परम्परा - ${decision.source}`],status:decision.status};
+    return {title:decision.title,specialLine:decision.specialLine||'',summary:`इस स्थान के स्थानीय पञ्चाङ्गानुसार आज ${decision.title} का निर्णय प्राप्त होता है।`,details:[...decision.details,`नियम - ${decision.rule}`,`स्रोत-परम्परा - ${decision.source}`],status:decision.status};
   }
   return null;
 }
@@ -9399,11 +9535,19 @@ function renderFestivalDecision(selectedGB){
     setText("festivalTodayText","");
     return;
   }
-  setText("festivalTodayText",active.map(x=>x.title).join(", ") + " आज");
+  const isAmavasyaVrata=active.some(x=>x.title==="अमावास्या-व्रत");
+  const isSarvapaitri=active.some(x=>x.title.includes("सर्वपितृश्राद्ध"));
+  const visibleActive=active.filter(x=>!(isAmavasyaVrata&&isSarvapaitri&&
+    (x.title==="अमावास्या-व्रत"||x.title.includes("सर्वपितृश्राद्ध"))));
+  const displayedSpecial=[
+    ...(isAmavasyaVrata&&isSarvapaitri?["अमावास्या व्रत, सर्वपैत्रीअमावास्या श्राद्ध आज।"]:[]),
+    ...visibleActive.map(x=>x.specialLine?`${x.title} आज，${x.specialLine}`:`${x.title} आज`)
+  ];
+  setText("festivalTodayText",displayedSpecial.join(" "));
   if(todayRow) todayRow.hidden=false;
   setText("festivalDecisionTitle",active.length===1?`${active[0].title} आज`:`आज के पर्व / श्राद्ध-निर्णय (${toDev(active.length)})`);
   const summary=document.getElementById("festivalDecisionSummary");
-  if(summary) summary.innerHTML=active.map(x=>`<div class="festival-daily-item"><h4>${x.title} <span class="festival-status ${festivalStatusClass(x.status)}">${x.status.label}</span></h4><p>${x.summary}</p><p class="festival-rule">${x.details[0]||""}</p></div>`).join("");
+  if(summary) summary.innerHTML=active.map(x=>`<div class="festival-daily-item"><h4>${x.title} <span class="festival-status ${festivalStatusClass(x.status)}">${x.status.label}</span></h4><p>${x.summary}</p><p class="festival-rule">${(x.title.includes("नवरात्रारम्भ") && x.details.find(y=>y.startsWith("कलशस्थापन —"))) || x.details[0] || ""}</p></div>`).join("");
   const details=document.getElementById("festivalDecisionDetails");
   if(details) details.innerHTML=active.map(x=>`<div class="festival-daily-item"><h4>${x.title}</h4>${x.details.map(y=>`<div>${y}</div>`).join("")}</div>`).join("");
   box.hidden=false;
