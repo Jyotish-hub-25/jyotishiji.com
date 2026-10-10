@@ -2546,6 +2546,18 @@ body{display:flex;flex-direction:column;min-height:100vh}
   font-family:"Noto Sans Devanagari","Nirmala UI","Mangal",sans-serif !important;
 }
 </style>
+<style id="festival-decision-justified-responsive">
+/* पर्व-निर्णय के गद्य का सदा द्विपार्श्व समरेखन; शीर्षक एवं समय के नियम अपरिवर्तित। */
+#festivalDecisionDetails .festival-daily-item > div,
+#festivalDecisionSummary .festival-daily-item > p {
+  text-align: justify;
+  text-align-last: left;
+  text-justify: inter-word;
+  overflow-wrap: break-word;
+  word-break: normal;
+  white-space: normal;
+}
+</style>
 </head>
 <body>
 <header class="site-header">
@@ -2675,7 +2687,7 @@ body{display:flex;flex-direction:column;min-height:100vh}
 </section>
 <section class="special-section" hidden id="festivalTodayRow">
 <div class="data-row">
-<span class="data-label">विशेष :</span>
+<span class="data-label">विशेष</span>
 <span class="dash">-</span>
 <span class="data-value"><strong id="festivalTodayText"></strong></span>
 </div>
@@ -9180,6 +9192,12 @@ function navaratriIntersect(a,b){if(!a||!b)return null; const start=Math.max(a.s
 function navaratriSubtract(parts,cuts){let out=parts;for(const cut of cuts){let nx=[];for(const p of out){const z=navaratriIntersect(p,cut);if(!z){nx.push(p);continue;}if(p.start<z.start-.01)nx.push({start:p.start,end:z.start});if(z.end<p.end-.01)nx.push({start:z.end,end:p.end});}out=nx;}return out.filter(x=>x.end-x.start>=1);}
 function navaratriIntervalsAt(kind,num,range){return (festivalAstroIndex()[kind]||[]).filter(iv=>iv.number===num&&intervalsOverlap(iv,range));}
 function navaratriRangeLabel(r){return r?`${formatAbsForFestival(r.start)} से ${formatAbsForFestival(r.end)} तक`:'उपलब्ध नहीं';}
+function navaratriDaylightLabel(r,sunrise){
+  if(!r)return 'उपलब्ध नहीं';
+  const start=(r.start<=sunrise+1)?'सूर्योदय':`${formatAbsForFestival(r.start)}`;
+  const clock=toDev(absMinutesToGBClock(r.end).clock);
+  return `${start} से ${clock} बजे तक`;
+}
 function navaratriDayData(gb){const row=workbookRowByGBDate(gb);if(!row)return null;const s=rawExcelMinutes(row.row[10]),e=rawExcelMinutes(row.row[11]);if(!Number.isFinite(s)||!Number.isFinite(e)||e<=s)return null;return {gb,sunrise:gbToOrdinalMinutes(gb,s),sunset:gbToOrdinalMinutes(gb,e)};}
 function navaratriChooseDate(iv){
   const sr=tithiAtSunriseDates(iv);
@@ -9227,8 +9245,8 @@ function navaratriGhataDecision(day,iv,dayDecision){
   const details=[
     `प्रतिपदा - ${navaratriRangeLabel(iv)}`,
     `प्रतिपदादिननिर्णय - ${dayDecision.reason}`,
-    `चित्रा की ग्राह्य दिनकाल-व्याप्ति - ${chitra.length?chitra.map(navaratriRangeLabel).join('; '):'नहीं'}`,
-    `वैधृति की ग्राह्य दिनकाल-व्याप्ति - ${vaidhriti.length?vaidhriti.map(navaratriRangeLabel).join('; '):'नहीं'}`
+    `चित्रा की ग्राह्य दिनकाल-व्याप्ति - ${chitra.length?chitra.map(r=>navaratriDaylightLabel(r,sunrise)).join('; '):'नहीं'}`,
+    `वैधृति की ग्राह्य दिनकाल-व्याप्ति - ${vaidhriti.length?vaidhriti.map(r=>navaratriDaylightLabel(r,sunrise)).join('; '):'नहीं'}`
   ];
   let principal=null,reason='',secondary='';
   if(fullDayDefect){
@@ -9254,7 +9272,7 @@ function navaratriGhataDecision(day,iv,dayDecision){
     reason='दोषरहित दशघटी अथवा प्रतिपदायुक्त अभिजित् प्राप्त नहीं; स्वचालित मुहूर्त देना उचित नहीं।';
   }
   const detailsExtra=[
-    principal?`कलशस्थापन — ${navaratriRangeLabel(principal)}`:'कलशस्थापन — शास्त्रीय परीक्षण अपेक्षित; समय प्रदर्शित नहीं।',
+    principal?`कलशस्थापन मुहूर्त्त दिन में ${toDev(absMinutesToGBClock(principal.start).clock)} बजे से ${toDev(absMinutesToGBClock(principal.end).clock)} बजे तक।`:'कलशस्थापन — शास्त्रीय परीक्षण अपेक्षित; समय प्रदर्शित नहीं।',
     `प्रधान निर्णय का कारण — ${reason}`,
     ...(secondary?[secondary]:[]),
     'धर्मसिन्धु — चित्रा, वैधृति तथा आद्यषोडशनाडी का परिहार केवल सति सम्भवे; उनके कारण प्रतिपदा या विहित कर्मकाल का अतिक्रमण नहीं।',
@@ -9277,7 +9295,7 @@ function navaratriGhataDecision(day,iv,dayDecision){
       specialLine=`कलशस्थापन ${startClock} बजे से ${endClock} बजे तक।`;
     }
   }
-  return {principal,specialLine,status:principal?'शास्त्रीय नियमाधारित परीक्षण—समय-पुष्टि अपेक्षित':'शास्त्रीय पुनःपरीक्षण आवश्यक',details:[...details,...detailsExtra]};
+  return {principal,specialLine,status:principal?'शास्त्रीय निर्णय':'शास्त्रीय पुनःपरीक्षण आवश्यक',details:[...details,...detailsExtra]};
 }
 function decideNavaratri(month,title,id,sunRashi0){
   const iv=tithiInterval(month,1,sunRashi0);if(!iv)return null;
@@ -9517,9 +9535,15 @@ function renderFestivalDecision(selectedGB){
     setText("festivalTodayText","");
     return;
   }
-  setText("festivalTodayText",active.map(x=>
-    x.specialLine?`${x.title} आज，${x.specialLine}`:`${x.title} आज`
-  ).join("; "));
+  const isAmavasyaVrata=active.some(x=>x.title==="अमावास्या-व्रत");
+  const isSarvapaitri=active.some(x=>x.title.includes("सर्वपितृश्राद्ध"));
+  const visibleActive=active.filter(x=>!(isAmavasyaVrata&&isSarvapaitri&&
+    (x.title==="अमावास्या-व्रत"||x.title.includes("सर्वपितृश्राद्ध"))));
+  const displayedSpecial=[
+    ...(isAmavasyaVrata&&isSarvapaitri?["अमावास्या व्रत, सर्वपैत्रीअमावास्या श्राद्ध आज।"]:[]),
+    ...visibleActive.map(x=>x.specialLine?`${x.title} आज，${x.specialLine}`:`${x.title} आज`)
+  ];
+  setText("festivalTodayText",displayedSpecial.join(" "));
   if(todayRow) todayRow.hidden=false;
   setText("festivalDecisionTitle",active.length===1?`${active[0].title} आज`:`आज के पर्व / श्राद्ध-निर्णय (${toDev(active.length)})`);
   const summary=document.getElementById("festivalDecisionSummary");
