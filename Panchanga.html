@@ -10625,11 +10625,29 @@ function renderFestivalDecision(selectedGB){
   const isSarvapaitri=active.some(x=>x.title.includes("सर्वपितृश्राद्ध"));
   const visibleActive=active.filter(x=>!(isAmavasyaVrata&&isSarvapaitri&&
     (x.title==="अमावास्या-व्रत"||x.title.includes("सर्वपितृश्राद्ध"))));
-  const displayedSpecial=[
-    ...(isAmavasyaVrata&&isSarvapaitri?["अमावास्या व्रत, सर्वपैत्रीअमावास्या श्राद्ध आज।"]:[]),
-    ...visibleActive.map(x=>x.specialLine?`${x.title} आज，${x.specialLine}`:`${x.title} आज`)
-  ];
-  setText("festivalTodayText",displayedSpecial.join(" "));
+  const specialTitles = [
+  ...(isAmavasyaVrata && isSarvapaitri
+    ? ["अमावास्या-व्रत एवं सर्वपितृश्राद्ध"]
+    : []),
+  ...visibleActive.map(x => String(x.title || "").trim())
+]
+.filter(Boolean)
+.map(s => s.replace(/\s+आज[।]?\s*$/u, ""));
+
+const specialHeading = specialTitles.length > 1
+  ? specialTitles.slice(0, -1).join(", ") +
+    " एवं " + specialTitles[specialTitles.length - 1]
+  : (specialTitles[0] || "");
+
+const specialNotes = visibleActive
+  .map(x => String(x.specialLine || "").trim())
+  .filter(Boolean);
+
+setText(
+  "festivalTodayText",
+  specialHeading + " आज" +
+  (specialNotes.length ? " — " + specialNotes.join("; ") : "")
+);
   if(todayRow) todayRow.hidden=false;
   setText("festivalDecisionTitle",active.length===1?`${active[0].title} आज`:`आज के पर्व / श्राद्ध-निर्णय (${toDev(active.length)})`);
   const summary=document.getElementById("festivalDecisionSummary");
