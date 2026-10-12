@@ -10622,12 +10622,12 @@ function renderFestivalDecision(selectedGB){
     return;
   }
   const isAmavasyaVrata=active.some(x=>x.title==="अमावास्या-व्रत");
-  const isSarvapaitri=active.some(x=>x.title.includes("सर्वपितृश्राद्ध"));
+  const isSarvapaitri=active.some(x=>x.title.includes("सर्वपैत्रीश्राद्ध"));
   const visibleActive=active.filter(x=>!(isAmavasyaVrata&&isSarvapaitri&&
-    (x.title==="अमावास्या-व्रत"||x.title.includes("सर्वपितृश्राद्ध"))));
+    (x.title==="अमावास्या-व्रत"||x.title.includes("सर्वपैत्रीश्राद्ध"))));
   const specialTitles = [
   ...(isAmavasyaVrata && isSarvapaitri
-    ? ["अमावास्या-व्रत एवं सर्वपितृश्राद्ध"]
+    ? ["अमावास्या-व्रत एवं सर्वपैत्रीश्राद्ध"]
     : []),
   ...visibleActive.map(x => String(x.title || "").trim())
 ]
