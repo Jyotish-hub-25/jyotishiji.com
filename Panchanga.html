@@ -12263,42 +12263,63 @@ if(document.readyState === "loading"){
       चन्द्रमा का समय मुख्य पञ्चाङ्ग-जैसे संक्षिप्त रूप में:
       seconds नहीं; अगली तिथि का bracket नहीं; काल-संज्ञा सहित।
     */
-    function moonPanchangaTime(t,baseGB){
-      const a=moonAsciiDigits(t).trim();
-      const m=a.match(/^(\d{1,2}):(\d{2})(?::\d{2})?(?:\s*\((\d{2}\/\d{2}\/\d{4})\))?$/);
-      if(!m) return String(t||"");
+    
+function moonPanchangaTime(t,baseGB){
+  // timeText में स्थानीय DST पहले ही समायोजित है।
+  const a=moonAsciiDigits(t).trim();
+  const m=a.match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?(?:\s*\((\d{2}\/\d{2}\/\d{4})\))?$/);
+  if(!m) return String(t||"");
 
-      const hh=Number(m[1]), mm=Number(m[2]);
-      const mins=hh*60+mm;
-      const eventGB=m[3]||baseGB;
+  const hh=Number(m[1]),mm=Number(m[2]),ss=Number(m[3]||0);
+  if(hh>23 || mm>59 || ss>60) return String(t||"");
 
-      let refRow=row;
-      try{
-        const hit=typeof workbookRowByGBDate==="function" ? workbookRowByGBDate(eventGB) : null;
-        if(hit?.row) refRow=hit.row;
-      }catch(_){}
+  // ३० सेकण्ड अथवा अधिक होने पर अगला मिनिट।
+  const roundedMinutes=Math.floor((hh*3600+mm*60+ss+30)/60);
+  const dayCarry=Math.floor(roundedMinutes/1440);
+  const minuteOfDay=roundedMinutes%1440;
+  const eventGB=addDaysGB(m[4]||baseGB,dayCarry);
 
-      let sr=NaN, ss=NaN;
-      try{
-        sr=moonClockMinutes(excelTimeDev(refRow?.[10],eventGB));
-        ss=moonClockMinutes(excelTimeDev(refRow?.[11],eventGB));
-      }catch(_){}
+  // घटना वाले स्थानीय दिनाङ्क का सूर्योदय-सूर्यास्त।
+  const hit=typeof workbookRowByGBDate==="function"
+    ? workbookRowByGBDate(eventGB) : null;
+  const refRow=hit?.row || (eventGB===baseGB ? row : null);
 
-      let kaal="";
-      if(Number.isFinite(sr) && mins < sr){
-        kaal="रात्रि";
-      }else if(Number.isFinite(ss) && mins >= ss){
-        kaal="रात्रि";
-      }else if(mins >= 12*60){
-        kaal="अपराह्न";
-      }else{
-        kaal="पूर्वाह्न";
-      }
+  let sr=NaN,ssClock=NaN;
+  if(refRow){
+    sr=moonClockMinutes(excelTimeDev(refRow[10],eventGB));
+    ssClock=moonClockMinutes(excelTimeDev(refRow[11],eventGB));
+  }
 
-      const rawClock=`${String(hh).padStart(2,"0")}:${String(mm).padStart(2,"0")}`;
-      const clock=typeof toDev==="function" ? toDev(rawClock) : rawClock;
-      return `${kaal} ${clock}`;
-    }
+  let kaal="";
+  if(Number.isFinite(sr) && Number.isFinite(ssClock) &&
+     sr>=0 && ssClock<1440 && ssClock>sr){
+
+    const fifth=(ssClock-sr)/5;
+
+    if(minuteOfDay<sr) kaal="रात्रि";
+    else if(minuteOfDay<sr+fifth) kaal="प्रातः";
+    else if(minuteOfDay<sr+2*fifth) kaal="पूर्वाह्न";
+    else if(minuteOfDay<sr+3*fifth) kaal="मध्याह्न";
+    else if(minuteOfDay<sr+4*fifth) kaal="अपराह्न";
+    else if(minuteOfDay<ssClock) kaal="सायाह्न";
+    else if(minuteOfDay<ssClock+144) kaal="प्रदोषकाल में";
+    else kaal="रात्रि";
+  }
+
+  // दिन-सूर्यास्त अनुपलब्ध हो तो काल-संज्ञा का अनुमान न दें।
+  const rawClock=`${String(Math.floor(minuteOfDay/60)).padStart(2,"0")}:${String(minuteOfDay%60).padStart(2,"0")}`;
+  const clock=typeof toDev==="function" ? toDev(rawClock) : rawClock;
+
+  const serial=d=>{
+    const p=String(d||"").split("/").map(Number);
+    return p.length===3 ? Date.UTC(p[2],p[1]-1,p[0]) : NaN;
+  };
+
+  const tomorrow=serial(eventGB)>serial(baseGB);
+
+  return `${tomorrow?"आगामी ":""}${kaal?kaal+" ":""}${clock}`;
+}
+
 
     /*
       यदि event time में bracket वाली GB date base पञ्चाङ्ग-date से आगे की है,
@@ -12343,7 +12364,7 @@ if(document.readyState === "loading"){
       items.push(`<span class="odayika-event-chip"><strong>चन्द्रोदय</strong> ${moonPanchangaTime(mr.timeText,gb)} बजे</span>`);
     }
     if(ms?.timeText){
-      items.push(`<span class="odayika-event-chip"><strong>चन्द्रास्त</strong> ${(() => { const x=moonPanchangaTime(ms.timeText,gb); return x.startsWith("आगामी ") ? x : "आगामी "+x; })()} बजे</span>`);
+      items.pushitems.push(`<span class="odayika-event-chip"><strong>चन्द्रास्त</strong> ${moonPanchangaTime(ms.timeText,gb)} बजे</span>`);
     }
     ["mangal","budha","guru","shukra","shani"].forEach(key=>{
       if(planetItemsByKey[key]) items.push(planetItemsByKey[key]);
