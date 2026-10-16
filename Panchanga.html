@@ -10400,9 +10400,20 @@ function decideMahaAshtami(anchorGB=""){
   const iv=(anchorGB?tithiIntervalAfterGB(anchorGB,8,3,14):null) || tithiInterval("आश्विन",8,6); if(!iv) return null;
   const sr=tithiAtSunriseDates(iv);
   let gb=sr.length?sr[0]:chooseByKaal(iv,"madhyahna","earlier","earlier").gb;
-  return makeDecision({id:"mahashtami",title:"दुर्गा महाष्टमी",observanceGB:gb,activeDates:[gb],status:festivalStatus("अपवाद-समेत परीक्षण अपेक्षित","test"),source:"धर्मसिन्धु (धर्मसिन्धुसार)，व्रत-परिचय - गीताप्रेस।",rule:"आश्विन शुक्ल अष्टमी; औदयिक अष्टमी प्रधान, सप्तमीविद्धा/नवमीयुक्ता के सूक्ष्म अपवाद पृथक्।",details:[`अष्टमी - ${formatAbsForFestival(iv.start)} से ${formatAbsForFestival(iv.end)} तक`,`औदयिक अष्टमी - ${sr.map(festivalDateLabel).join(", ")||"नहीं"}`]});
+  // पुरश्चरणार्णव, महाष्टमीनिर्णय: तिथिवृद्धि में प्रथम औदयिक दिन
+  // सूर्योदय से अगले सूर्योदय तक सम्पूर्ण अष्टमी हो तो पूर्वदिन ही व्रत में ग्राह्य।
+  const firstSunrise=sr.length>=2?festivalSunriseAbs(sr[0]):NaN;
+  const nextSunrise=sr.length>=2 && sr[1]===addDaysGB(sr[0],1)?festivalSunriseAbs(sr[1]):NaN;
+  const completeFirstDay=Number.isFinite(firstSunrise) && Number.isFinite(nextSunrise)
+    && iv.start<=firstSunrise && iv.end>nextSunrise;
+  if(sr.length>1) gb=completeFirstDay?sr[0]:sr[sr.length-1];
+  return makeDecision({id:"mahashtami",title:"दुर्गा महाष्टमी-व्रत",observanceGB:gb,activeDates:[gb],
+    status:completeFirstDay?festivalStatus("तिथिवृद्धि—सम्पूर्ण पूर्वदिन ग्राह्य","verified"):festivalStatus("अपवाद-समेत परीक्षण अपेक्षित","test"),
+    source:"धर्मसिन्धु (धर्मसिन्धुसार)，व्रत-परिचय - गीताप्रेस।"+(completeFirstDay?"; पुरश्चरणार्णव—महाष्टमीनिर्णय।":""),
+    rule:"आश्विन शुक्ल अष्टमी; औदयिक अष्टमी प्रधान, सप्तमीविद्धा/नवमीयुक्ता के सूक्ष्म अपवाद पृथक्। तिथिवृद्धि में यदि प्रथम दिन सूर्योदय से अगले सूर्योदय तक सम्पूर्ण अष्टमी रहे और अगले दिन भी औदयिक अष्टमी हो, तो महाष्टमी-व्रत प्रथम दिन ही ग्राह्य (पुरश्चरणार्णव)।",
+    details:[`अष्टमी - ${formatAbsForFestival(iv.start)} से ${formatAbsForFestival(iv.end)} तक`,`औदयिक अष्टमी - ${sr.map(festivalDateLabel).join(", ")||"नहीं"}`,
+      ...(completeFirstDay?[`तिथिवृद्धि-निर्णय - ${festivalDateLabel(sr[0])} को सूर्योदय से अगले सूर्योदय तक सम्पूर्ण अष्टमी; सप्तमी-संयोगरहित प्रथम दिन ही महाष्टमी-व्रत, परदिन नहीं।`]:[])]});
 }
-
 function decideMahaNavami(anchorGB=""){
   const iv=(anchorGB?tithiIntervalAfterGB(anchorGB,9,0,5):null) || tithiInterval("आश्विन",9,6); if(!iv) return null;
   const sr=tithiAtSunriseDates(iv);
